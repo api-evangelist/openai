@@ -16,7 +16,7 @@ OpenAI is a research organization that focuses on artificial intelligence (AI) a
 ## Timestamps
 
 - **Created:** 2024/04/14 
-- **Modified:** 2025-01-02 
+- **Modified:** 2025-08-14 
 
 ## APIs
 
@@ -217,6 +217,24 @@ https://platform.openai.com/docs/assistants/how-it-works/managing-threads-and-me
 - [Documentation](
 https://platform.openai.com/docs/assistants/how-it-works/managing-threads-and-messages)
 - [OpenAPI](openapi/threads-openapi-original.yml)
+
+## Common Properties
+
+- [Portal](https://platform.openai.com/docs/overview)
+- [GettingStarted](https://platform.openai.com/docs/quickstart)
+- [Pricing](https://platform.openai.com/docs/pricing)
+- [SDKs](https://platform.openai.com/docs/libraries)
+- [Forums](https://community.openai.com/categories)
+- [RateLimits](https://platform.openai.com/docs/guides/rate-limits)
+- [Deprecations](https://platform.openai.com/docs/deprecations)
+- [TermsOfService](https://openai.com/policies/)
+- [TermsOfService](https://openai.com/policies/terms-of-use/)
+- [PrivacyPolicy](https://openai.com/policies/privacy-policy/)
+- [Documentation](https://platform.openai.com/docs/overview)
+- [Support](https://help.openai.com/en)
+- [Status](https://status.openai.com/)
+- [Authentication](https://platform.openai.com/docs/api-reference/authentication)
+- [Webhooks](https://platform.openai.com/docs/api-reference/webhook_events/response)
 
 ## Maintainers
 
