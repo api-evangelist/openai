@@ -235,6 +235,8 @@ https://platform.openai.com/docs/assistants/how-it-works/managing-threads-and-me
 - [Status](https://status.openai.com/)
 - [Authentication](https://platform.openai.com/docs/api-reference/authentication)
 - [Webhooks](https://platform.openai.com/docs/api-reference/webhook_events/response)
+- [OpenAPI](properties/openai-openapi)
+- [GitHubOrganization](https://github.com/openai)
 
 ## Maintainers
 
