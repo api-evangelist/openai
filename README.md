@@ -15,13 +15,12 @@ OpenAI is a research organization that focuses on artificial intelligence (AI) a
 
 ## Timestamps
 
-- **Created:** 2024/04/14 
+- **Created:** 2024-04-14 
 - **Modified:** 2025-08-14 
 
 ## APIs
 
 ### OpenAI Assistants API
-
 The Assistants API allows you to build AI assistants within your own
 applications. An Assistant has instructions and can leverage models,
 tools, and knowledge to respond to user queries. The Assistants API
@@ -36,7 +35,7 @@ tools, and allow you to provide your own tools on our platform.
 
 #### Tags:
 
- - Assistants, Attaching, File, Files, Instructions, Models, Modifies, Returns
+ - Assistants
 
 #### Properties
 
@@ -55,7 +54,7 @@ model.
 
 #### Tags:
 
- - Audio, English, Generates, Inputs, Languages, Speech, Text, Transcribes, Transcriptions, Translations
+ - Audio
 
 #### Properties
 
@@ -74,7 +73,7 @@ users.
 
 #### Tags:
 
- - Chat, Completions, Conversations, Creates, Given, Models, Responses
+ - Chat
 
 #### Properties
 
@@ -94,7 +93,7 @@ conversation.
 
 #### Tags:
 
- - Chat, Completions, Conversations, Creates, Given, Models, Parameters, Prompts, Provided, Responses
+ - Chat, Completions
 
 #### Properties
 
@@ -112,14 +111,13 @@ OpenAI's text embeddings measure the relatedness of text strings.
 
 #### Tags:
 
- - Creates, Embedding, Embeddings, Inputs, Representing, Text, Vectors
+ - Embedding, Embeddings, Inputs, Representing, Text, Vectors
 
 #### Properties
 
 - [Documentation](https://platform.openai.com/docs/guides/embeddings)
 - [OpenAPI](openapi/embeddings-openapi-original.yml)
 ### OpenAI Files API
-
 Files are used to upload documents that can be used with features like
 Assistants and Fine-tuning. Upload a file that can be used across various
 endpoints. The size of all the files uploaded by one organization can be
@@ -139,7 +137,6 @@ up to 100 GB.
 - [Documentation](https://platform.openai.com/docs/api-reference/files)
 - [OpenAPI](openapi/files-openapi-original.yml)
 ### OpenAI Fine Tuning API
-
 Manage fine-tuning jobs to tailor a model to your specific training data.
 Creates a fine-tuning job which begins the process of creating a new model
 from a given dataset.Response includes details of the enqueued job
@@ -159,7 +156,6 @@ including job status and the name of the fine-tuned models once complete.
 - [Documentation](https://platform.openai.com/docs/guides/fine-tuning)
 - [OpenAPI](openapi/fine-tuning-openapi-original.yml)
 ### OpenAI Images API
-
 Learn how to generate or manipulate images with DALL_E in the API. The
 Images API provides three methods for interacting with images - creating
 images from scratch based on a text prompt, creating edited versions of
@@ -180,7 +176,6 @@ based on a new text prompt, Creating variations of an existing image.
 - [Documentation](https://platform.openai.com/docs/guides/images)
 - [OpenAPI](openapi/images-openapi-original.yml)
 ### OpenAI Models API
-
 List and describe the various models available in the API. You can refer
 to the Models documentation to understand what models are available and
 the differences between them.
@@ -201,9 +196,7 @@ the differences between them.
 ### OpenAI Threads API
 Create threads that assistants can interact with.
 
-**Human URL:** [
-https://platform.openai.com/docs/assistants/how-it-works/managing-threads-and-messages](
-https://platform.openai.com/docs/assistants/how-it-works/managing-threads-and-messages)
+**Human URL:** [https://platform.openai.com/docs/assistants/how-it-works/managing-threads-and-messages](https://platform.openai.com/docs/assistants/how-it-works/managing-threads-and-messages)
 
 **Base URL:** [https://api.openai.com](https://api.openai.com)
 
@@ -214,15 +207,13 @@ https://platform.openai.com/docs/assistants/how-it-works/managing-threads-and-me
 
 #### Properties
 
-- [Documentation](
-https://platform.openai.com/docs/assistants/how-it-works/managing-threads-and-messages)
+- [Documentation](https://platform.openai.com/docs/assistants/how-it-works/managing-threads-and-messages)
 - [OpenAPI](openapi/threads-openapi-original.yml)
 
 ## Common Properties
 
 - [Portal](https://platform.openai.com/docs/overview)
 - [GettingStarted](https://platform.openai.com/docs/quickstart)
-- [Pricing](https://platform.openai.com/docs/pricing)
 - [SDKs](https://platform.openai.com/docs/libraries)
 - [Forums](https://community.openai.com/categories)
 - [RateLimits](https://platform.openai.com/docs/guides/rate-limits)
@@ -237,6 +228,10 @@ https://platform.openai.com/docs/assistants/how-it-works/managing-threads-and-me
 - [Webhooks](https://platform.openai.com/docs/api-reference/webhook_events/response)
 - [OpenAPI](properties/openai-openapi)
 - [GitHubOrganization](https://github.com/openai)
+- [Plans](https://openai.com/api/pricing/)
+- [Pricing](https://openai.com/api/pricing/)
+- [Tiers](https://openai.com/api/pricing/)
+- [RateLimits](https://example.com/rate-limits)
 
 ## Maintainers
 
