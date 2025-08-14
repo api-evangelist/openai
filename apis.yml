@@ -86,20 +86,11 @@ apis:
     tags:
       - Chat
       - Completions
-      - Conversations
-      - Creates
-      - Given
-      - Models
-      - Parameters
-      - Prompts
-      - Provided
-      - Responses
     score: 281
     baseURL: https://api.openai.com
     humanURL: https://platform.openai.com/docs/api-reference/chat
     overlays:
       - url: >-
-
           overlays/https://github.com/apis-json/artisanal/tree/main/apis/openai/completions-openapi-search.yml
         type: APIs.io Search
       - url: overlays/completions-openapi-search.yml
@@ -109,7 +100,7 @@ apis:
     properties:
       - url: https://platform.openai.com/docs/api-reference/chat
         type: Documentation
-      - url: properties/openai-chat-completions-api-openapi.yml
+      - url: openapi/completions-openapi-original.yml
         type: OpenAPI
     description: |-
 
@@ -355,10 +346,6 @@ common:
     name: Developer quickstart - OpenAI API
     type: GettingStarted
     description: 'null'
-  - url: https://platform.openai.com/docs/pricing
-    name: Pricing - OpenAI API
-    type: Pricing
-    description: 'null'
   - url: https://platform.openai.com/docs/libraries
     name: Libraries - OpenAI API
     type: SDKs
@@ -413,14 +400,10 @@ common:
   - url: https://github.com/openai
     name: GitHub Organization
     type: GitHubOrganization
-  - name: Plans
-    type: Plans
-    description: This is the description of the plans for general OpenAI usage.
-    url: https://openai.com/api/pricing/
+  - url: https://openai.com/api/pricing/
     data:
       - id: free
         name: Free
-        description: Explore how AI can help with everyday tasks
         entries:
           - geo: US
             unit: 1
@@ -438,9 +421,9 @@ common:
               and voice mode
           - name: Code edits with the ChatGPT desktop app for macOS
           - name: Use custom GPTs
+        description: Explore how AI can help with everyday tasks
       - id: plus
         name: Plus
-        description: Level up productivity and creativity with expanded access
         entries:
           - geo: US
             unit: 1
@@ -460,9 +443,9 @@ common:
           - name: Create and use projects, tasks, and custom GPTs
           - name: Limited access to Sora video generation
           - name: Opportunities to test new features
+        description: Level up productivity and creativity with expanded access
       - id: pro
         name: Pro
-        description: Get the best of OpenAI with the highest level of access
         entries:
           - geo: US
             unit: 1
@@ -486,9 +469,9 @@ common:
           - name: Extended access to ChatGPT agent
           - name: Extended access to Sora video generation
           - name: Access to research preview of Codex agent
+        description: Get the best of OpenAI with the highest level of access
       - id: team
         name: Team
-        description: A secure, collaborative workspace for startups and growing teams
         entries:
           - geo: US
             unit: 1
@@ -521,9 +504,9 @@ common:
           - name: >-
               Includes access to Codex and ChatGPT agent for reasoning and
               taking action across your documents, tools, and codebases
+        description: A secure, collaborative workspace for startups and growing teams
       - id: enterprise
         name: Enterprise
-        description: Enterprise-grade AI, security, and support at scale
         entries:
           - geo: US
             unit: 1
@@ -551,14 +534,14 @@ common:
           - name: >-
               Built for scale with volume discounts, invoicing and ACH billing,
               and support for unlimited users
-  - name: Pricing
-    type: Pricing
-    description: this is the pricing for API usage across different models.
-    url: https://openai.com/api/pricing/
+        description: Enterprise-grade AI, security, and support at scale
+    name: Plans
+    type: Plans
+    description: This is the description of the plans for general OpenAI usage.
+  - url: https://openai.com/api/pricing/
     data:
       - id: gpt-5
         name: GPT-5
-        description: The best model for coding and agentic tasks across industries.
         type: Flagship
         entries:
           - geo: US
@@ -582,9 +565,9 @@ common:
             metric: token
             timeFrame: usage
             description: Output token usage-based pricing.
+        description: The best model for coding and agentic tasks across industries.
       - id: gpt-5-mini
         name: GPT-5 mini
-        description: A faster, cheaper version of GPT-5 for well-defined tasks.
         type: Flagship
         entries:
           - geo: US
@@ -608,11 +591,9 @@ common:
             metric: token
             timeFrame: usage
             description: Output token usage-based pricing.
+        description: A faster, cheaper version of GPT-5 for well-defined tasks.
       - id: gpt-5-nano
         name: GPT-5 nano
-        description: >-
-          The fastest, cheapest version of GPT-5great for summarization and
-          classification tasks.
         type: Flagship
         entries:
           - geo: US
@@ -636,9 +617,11 @@ common:
             metric: token
             timeFrame: usage
             description: Output token usage-based pricing.
+        description: >-
+          The fastest, cheapest version of GPT-5great for summarization and
+          classification tasks.
       - id: gpt-4-1
         name: GPT-4.1
-        description: No description.
         type: Fine-Tuning
         entries:
           - geo: US
@@ -669,9 +652,9 @@ common:
             metric: token
             timeFrame: usage
             description: Training token usage-based pricing.
+        description: No description.
       - id: gpt-4-1-mini
         name: GPT-4.1 mini
-        description: No description.
         type: Fine-Tuning
         entries:
           - geo: US
@@ -702,9 +685,9 @@ common:
             metric: token
             timeFrame: usage
             description: Training token usage-based pricing.
+        description: No description.
       - id: gpt-4-1-nano
         name: GPT-4.1 nano
-        description: No description.
         type: Fine-Tuning
         entries:
           - geo: US
@@ -735,9 +718,9 @@ common:
             metric: token
             timeFrame: usage
             description: Training token usage-based pricing.
+        description: No description.
       - id: o4-mini
         name: o4-mini
-        description: No description.
         type: Fine-Tuning
         entries:
           - geo: US
@@ -768,6 +751,10 @@ common:
             metric: token
             timeFrame: usage
             description: Training token usage-based pricing.
+        description: No description.
+    name: Pricing
+    type: Pricing
+    description: this is the pricing for API usage across different models.
 created: '2024-04-14'
 modified: '2025-08-14'
 position: Consuming
