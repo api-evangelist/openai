@@ -11,12 +11,12 @@ OpenAI is a research organization that focuses on artificial intelligence (AI) a
 
 ## Tags:
 
- - Artificial Intelligence, AI, Large Language Models
+ - Artificial Intelligence, AI, Large Language Models, T1
 
 ## Timestamps
 
 - **Created:** 2024-04-14 
-- **Modified:** 2025-08-14 
+- **Modified:** 2025-10-17 
 
 ## APIs
 
@@ -98,7 +98,7 @@ conversation.
 #### Properties
 
 - [Documentation](https://platform.openai.com/docs/api-reference/chat)
-- [OpenAPI](openapi/completions-openapi-original.yml)
+- [OpenAPI](properties/openai-chat-completions-api-openapi.yml)
 ### OpenAI Embeddings API
 
 Learn how to turn text into numbers, unlocking use cases like search.
@@ -149,7 +149,7 @@ including job status and the name of the fine-tuned models once complete.
 
 #### Tags:
 
- - About, Begins, Cancel, Creates, Creating, Dataset Response, Details, Enqueued, Events, Fine, Fine Tune, Fine Tuned, Fine Tuning, Given, Immediately, Includes, Including, Info, Jobs, Models, More, Names, Organization's, Process, Status, The, Tuning, Your
+ - Fine Tune, Fine Tuning
 
 #### Properties
 
@@ -169,7 +169,7 @@ based on a new text prompt, Creating variations of an existing image.
 
 #### Tags:
 
- - Creates, Edited, Edits, Extended, Generations, Given, Images, Original, Prompts, Variations
+ - Images
 
 #### Properties
 
@@ -187,7 +187,7 @@ the differences between them.
 
 #### Tags:
 
- - About, Availability, Available, Basic, Currently, Fine Tuned, Information, Instances, Models, Organizations, Owners, Permissioning, Provides, Providing, Roles
+ - Models, Large Language Models
 
 #### Properties
 
@@ -203,7 +203,7 @@ Create threads that assistants can interact with.
 
 #### Tags:
 
- - Belonging, Calls, Cancel, Cancels, Completed, Endpoints, File, Files, Given, Is, Messages, Modifies, One, Outputs, Returns, Runs, Single, Steps, Submit, Submitted, The, They're, Threads, Tool
+ - Threads, Assistants
 
 #### Properties
 
