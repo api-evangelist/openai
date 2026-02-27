@@ -1,5 +1,5 @@
 # OpenAI (openai)
-OpenAI is a research organization that focuses on artificial intelligence (AI) and machine learning. Their mission is to ensure that AI benefits all of humanity, and they work on developing AI technology in a way that is safe and beneficial for society. OpenAI conducts cutting-edge research in fields such as natural language processing, reinforcement learning, and robotics. They also develop and release tools and models that help advance the field of AI and are open-source and accessible to the public. Additionally, OpenAI engages in outreach and advocacy efforts to promote the responsible development and deployment of AI technologies.
+APIs for accessing OpenAI's artificial intelligence models including GPT, DALL-E, Whisper, and Embeddings
 
 **URL:** [Visit APIs.json URL](https://raw.githubusercontent.com/api-search/ai/main/_apis/openai/apis.md)
 
@@ -11,7 +11,7 @@ OpenAI is a research organization that focuses on artificial intelligence (AI) a
 
 ## Tags:
 
- - Artificial Intelligence, AI, Large Language Models, T1
+ - AI, Artificial Intelligence, Large Language Models, T1
 
 ## Timestamps
 
@@ -30,8 +30,6 @@ tools, and allow you to provide your own tools on our platform.
 
 **Human URL:** [https://platform.openai.com/docs/assistants/overview](https://platform.openai.com/docs/assistants/overview)
 
-**Base URL:** [https://api.openai.com](https://api.openai.com)
-
 
 #### Tags:
 
@@ -41,6 +39,7 @@ tools, and allow you to provide your own tools on our platform.
 
 - [Documentation](https://platform.openai.com/docs/assistants/overview)
 - [OpenAPI](openapi/assistants-openapi-original.yml)
+
 ### OpenAI Audio API
 
 The Audio API provides two speech to text endpoints, transcriptions and
@@ -48,8 +47,6 @@ translations, based on our state-of-the-art open source large-v2 Whisper
 model.
 
 **Human URL:** [https://platform.openai.com/docs/guides/text-to-speech](https://platform.openai.com/docs/guides/text-to-speech)
-
-**Base URL:** [https://api.openai.com](https://api.openai.com)
 
 
 #### Tags:
@@ -60,6 +57,7 @@ model.
 
 - [Documentation](https://platform.openai.com/docs/guides/text-to-speech)
 - [OpenAPI](openapi/audio-openapi-original.yml)
+
 ### OpenAI Chat API
 
 Given a list of messages comprising a conversation, the model will return
@@ -67,8 +65,6 @@ a response., providing an AI chat interface you can use to engage with
 users.
 
 **Human URL:** [https://platform.openai.com/docs/api-reference/chat](https://platform.openai.com/docs/api-reference/chat)
-
-**Base URL:** [https://api.openai.com](https://api.openai.com)
 
 
 #### Tags:
@@ -79,6 +75,7 @@ users.
 
 - [Documentation](https://platform.openai.com/docs/api-reference/chat)
 - [OpenAPI](openapi/chat-openapi-original.yml)
+
 ### OpenAI Chat Completions API
 
 Chat models take a list of messages as input and return a model-generated
@@ -87,8 +84,6 @@ conversations easy, it's just as useful for single-turn tasks without any
 conversation.
 
 **Human URL:** [https://platform.openai.com/docs/api-reference/chat](https://platform.openai.com/docs/api-reference/chat)
-
-**Base URL:** [https://api.openai.com](https://api.openai.com)
 
 
 #### Tags:
@@ -99,14 +94,13 @@ conversation.
 
 - [Documentation](https://platform.openai.com/docs/api-reference/chat)
 - [OpenAPI](properties/openai-chat-completions-api-openapi.yml)
+
 ### OpenAI Embeddings API
 
 Learn how to turn text into numbers, unlocking use cases like search.
 OpenAI's text embeddings measure the relatedness of text strings.
 
 **Human URL:** [https://platform.openai.com/docs/guides/embeddings](https://platform.openai.com/docs/guides/embeddings)
-
-**Base URL:** [https://api.openai.com](https://api.openai.com)
 
 
 #### Tags:
@@ -117,6 +111,7 @@ OpenAI's text embeddings measure the relatedness of text strings.
 
 - [Documentation](https://platform.openai.com/docs/guides/embeddings)
 - [OpenAPI](openapi/embeddings-openapi-original.yml)
+
 ### OpenAI Files API
 Files are used to upload documents that can be used with features like
 Assistants and Fine-tuning. Upload a file that can be used across various
@@ -124,8 +119,6 @@ endpoints. The size of all the files uploaded by one organization can be
 up to 100 GB.
 
 **Human URL:** [https://platform.openai.com/docs/api-reference/files](https://platform.openai.com/docs/api-reference/files)
-
-**Base URL:** [https://api.openai.com](https://api.openai.com)
 
 
 #### Tags:
@@ -136,6 +129,7 @@ up to 100 GB.
 
 - [Documentation](https://platform.openai.com/docs/api-reference/files)
 - [OpenAPI](openapi/files-openapi-original.yml)
+
 ### OpenAI Fine Tuning API
 Manage fine-tuning jobs to tailor a model to your specific training data.
 Creates a fine-tuning job which begins the process of creating a new model
@@ -143,8 +137,6 @@ from a given dataset.Response includes details of the enqueued job
 including job status and the name of the fine-tuned models once complete.
 
 **Human URL:** [https://platform.openai.com/docs/guides/fine-tuning](https://platform.openai.com/docs/guides/fine-tuning)
-
-**Base URL:** [https://api.openai.com](https://api.openai.com)
 
 
 #### Tags:
@@ -155,6 +147,7 @@ including job status and the name of the fine-tuned models once complete.
 
 - [Documentation](https://platform.openai.com/docs/guides/fine-tuning)
 - [OpenAPI](openapi/fine-tuning-openapi-original.yml)
+
 ### OpenAI Images API
 Learn how to generate or manipulate images with DALL_E in the API. The
 Images API provides three methods for interacting with images - creating
@@ -163,8 +156,6 @@ images by having the model replace some areas of a pre-existing image,
 based on a new text prompt, Creating variations of an existing image.
 
 **Human URL:** [https://platform.openai.com/docs/guides/images](https://platform.openai.com/docs/guides/images)
-
-**Base URL:** [https://api.openai.com](https://api.openai.com)
 
 
 #### Tags:
@@ -175,14 +166,13 @@ based on a new text prompt, Creating variations of an existing image.
 
 - [Documentation](https://platform.openai.com/docs/guides/images)
 - [OpenAPI](openapi/images-openapi-original.yml)
+
 ### OpenAI Models API
 List and describe the various models available in the API. You can refer
 to the Models documentation to understand what models are available and
 the differences between them.
 
 **Human URL:** [https://platform.openai.com/docs/models](https://platform.openai.com/docs/models)
-
-**Base URL:** [https://api.openai.com](https://api.openai.com)
 
 
 #### Tags:
@@ -193,12 +183,11 @@ the differences between them.
 
 - [Documentation](https://platform.openai.com/docs/models)
 - [OpenAPI](openapi/models-openapi-original.yml)
+
 ### OpenAI Threads API
 Create threads that assistants can interact with.
 
 **Human URL:** [https://platform.openai.com/docs/assistants/how-it-works/managing-threads-and-messages](https://platform.openai.com/docs/assistants/how-it-works/managing-threads-and-messages)
-
-**Base URL:** [https://api.openai.com](https://api.openai.com)
 
 
 #### Tags:
@@ -232,10 +221,14 @@ Create threads that assistants can interact with.
 - [Pricing](https://openai.com/api/pricing/)
 - [Tiers](https://openai.com/api/pricing/)
 - [RateLimits](https://example.com/rate-limits)
+- [Status Page](https://status.openai.com/)
+- [API Keys](https://platform.openai.com/api-keys)
 
 ## Maintainers
 
 **FN:** API Evangelist
 
 **Email:** info@apievangelist.com
+**FN:** OpenAI
 
+**Email:** support@openai.com
