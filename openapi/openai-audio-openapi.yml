@@ -1,0 +1,476 @@
+openapi: 3.1.0
+info:
+  title: OpenAI Audio API
+  description: >-
+    Turn audio into text or text into audio. The Audio API provides endpoints
+    for speech-to-text (transcriptions and translations) based on the Whisper
+    model, and text-to-speech using the TTS models. Supports multiple audio
+    formats including mp3, mp4, mpeg, mpga, m4a, wav, and webm with a maximum
+    file size of 25 MB for uploads.
+  version: 2.0.0
+  termsOfService: https://openai.com/policies/terms-of-use
+  contact:
+    name: OpenAI Support
+    url: https://help.openai.com/
+    email: support@openai.com
+  license:
+    name: MIT
+    url: https://github.com/openai/openai-openapi/blob/master/LICENSE
+servers:
+  - url: https://api.openai.com/v1
+    description: OpenAI API production server
+security:
+  - BearerAuth: []
+tags:
+  - name: Audio
+    description: >-
+      Learn how to turn audio into text or text into audio. Includes speech
+      generation, transcription, and translation.
+paths:
+  /audio/speech:
+    post:
+      operationId: createSpeech
+      tags:
+        - Audio
+      summary: Create speech
+      description: >-
+        Generates audio from the input text. Supports multiple voices and
+        audio output formats. The maximum input length is 4096 characters.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSpeechRequest'
+      responses:
+        '200':
+          description: Successful response with audio file.
+          content:
+            audio/mpeg:
+              schema:
+                type: string
+                format: binary
+            audio/opus:
+              schema:
+                type: string
+                format: binary
+            audio/aac:
+              schema:
+                type: string
+                format: binary
+            audio/flac:
+              schema:
+                type: string
+                format: binary
+            audio/wav:
+              schema:
+                type: string
+                format: binary
+            audio/pcm:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Bad request - invalid parameters.
+        '401':
+          description: Unauthorized - invalid or missing API key.
+        '429':
+          description: Rate limit exceeded.
+        '500':
+          description: Internal server error.
+  /audio/transcriptions:
+    post:
+      operationId: createTranscription
+      tags:
+        - Audio
+      summary: Create transcription
+      description: >-
+        Transcribes audio into the input language. Supports multiple audio
+        formats with a maximum file size of 25 MB. Uses the Whisper model
+        for accurate speech recognition in multiple languages.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateTranscriptionRequest'
+      responses:
+        '200':
+          description: Successful response with transcribed text.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TranscriptionResponse'
+            text/plain:
+              schema:
+                type: string
+        '400':
+          description: Bad request - invalid parameters or unsupported audio format.
+        '401':
+          description: Unauthorized - invalid or missing API key.
+        '429':
+          description: Rate limit exceeded.
+        '500':
+          description: Internal server error.
+  /audio/translations:
+    post:
+      operationId: createTranslation
+      tags:
+        - Audio
+      summary: Create translation
+      description: >-
+        Translates audio into English. Supports multiple input languages and
+        audio formats with a maximum file size of 25 MB. The audio is first
+        transcribed and then translated to English.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateTranslationRequest'
+      responses:
+        '200':
+          description: Successful response with translated text.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TranslationResponse'
+            text/plain:
+              schema:
+                type: string
+        '400':
+          description: Bad request - invalid parameters or unsupported audio format.
+        '401':
+          description: Unauthorized - invalid or missing API key.
+        '429':
+          description: Rate limit exceeded.
+        '500':
+          description: Internal server error.
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API Key
+      description: >-
+        OpenAI API key. Obtain from https://platform.openai.com/api-keys.
+        Pass as Authorization: Bearer YOUR_API_KEY.
+  schemas:
+    CreateSpeechRequest:
+      type: object
+      required:
+        - model
+        - input
+        - voice
+      properties:
+        model:
+          type: string
+          description: >-
+            One of the available TTS models. tts-1 is optimized for speed,
+            tts-1-hd is optimized for quality, and gpt-4o-mini-tts supports
+            advanced voice instructions.
+          examples:
+            - tts-1
+            - tts-1-hd
+            - gpt-4o-mini-tts
+        input:
+          type: string
+          maxLength: 4096
+          description: >-
+            The text to generate audio for. The maximum length is 4096
+            characters.
+        voice:
+          type: string
+          enum:
+            - alloy
+            - ash
+            - ballad
+            - coral
+            - echo
+            - fable
+            - onyx
+            - nova
+            - sage
+            - shimmer
+            - verse
+          description: >-
+            The voice to use when generating the audio. Previews of the voices
+            are available in the Text to Speech guide.
+        instructions:
+          type: string
+          description: >-
+            Control the voice of your generated audio with additional
+            instructions. Only supported with gpt-4o-mini-tts.
+        response_format:
+          type: string
+          enum:
+            - mp3
+            - opus
+            - aac
+            - flac
+            - wav
+            - pcm
+          default: mp3
+          description: >-
+            The format to audio in. Supported formats are mp3, opus, aac, flac,
+            wav, and pcm. Opus is recommended for internet streaming and
+            communication, aac for digital audio compression, and flac for
+            lossless audio compression.
+        speed:
+          type: number
+          minimum: 0.25
+          maximum: 4.0
+          default: 1.0
+          description: >-
+            The speed of the generated audio. Select a value from 0.25 to 4.0.
+            1.0 is the default.
+    CreateTranscriptionRequest:
+      type: object
+      required:
+        - file
+        - model
+      properties:
+        file:
+          type: string
+          format: binary
+          description: >-
+            The audio file object to transcribe, in one of these formats: flac,
+            mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm. File uploads are
+            limited to 25 MB.
+        model:
+          type: string
+          description: >-
+            ID of the model to use. Only whisper-1 and gpt-4o-transcribe are
+            currently available.
+          examples:
+            - whisper-1
+            - gpt-4o-transcribe
+        language:
+          type: string
+          description: >-
+            The language of the input audio. Supplying the input language in
+            ISO-639-1 format will improve accuracy and latency.
+        prompt:
+          type: string
+          description: >-
+            An optional text to guide the model's style or continue a previous
+            audio segment. The prompt should match the audio language.
+        response_format:
+          type: string
+          enum:
+            - json
+            - text
+            - srt
+            - verbose_json
+            - vtt
+          default: json
+          description: >-
+            The format of the transcript output. Defaults to json. verbose_json
+            includes additional metadata like word-level timestamps.
+        temperature:
+          type: number
+          minimum: 0
+          maximum: 1
+          default: 0
+          description: >-
+            The sampling temperature, between 0 and 1. Higher values like 0.8
+            will make the output more random, while lower values like 0.2 will
+            make it more focused and deterministic.
+        timestamp_granularities:
+          type: array
+          items:
+            type: string
+            enum:
+              - word
+              - segment
+          description: >-
+            The timestamp granularities to populate for this transcription.
+            response_format must be set to verbose_json to use this parameter.
+    CreateTranslationRequest:
+      type: object
+      required:
+        - file
+        - model
+      properties:
+        file:
+          type: string
+          format: binary
+          description: >-
+            The audio file to translate, in one of these formats: flac, mp3,
+            mp4, mpeg, mpga, m4a, ogg, wav, or webm. File uploads are limited
+            to 25 MB.
+        model:
+          type: string
+          description: >-
+            ID of the model to use. Only whisper-1 is currently available for
+            translation.
+          examples:
+            - whisper-1
+        prompt:
+          type: string
+          description: >-
+            An optional text to guide the model's style or continue a previous
+            audio segment. The prompt should be in English.
+        response_format:
+          type: string
+          enum:
+            - json
+            - text
+            - srt
+            - verbose_json
+            - vtt
+          default: json
+          description: >-
+            The format of the transcript output. Defaults to json.
+        temperature:
+          type: number
+          minimum: 0
+          maximum: 1
+          default: 0
+          description: >-
+            The sampling temperature, between 0 and 1.
+    TranscriptionResponse:
+      type: object
+      required:
+        - text
+      properties:
+        text:
+          type: string
+          description: The transcribed text.
+        task:
+          type: string
+          enum:
+            - transcribe
+          description: The task performed, always transcribe.
+        language:
+          type: string
+          description: The detected or specified language of the audio.
+        duration:
+          type: number
+          format: float
+          description: The duration of the input audio in seconds.
+        words:
+          type: array
+          description: >-
+            Extracted words and their corresponding timestamps. Only present
+            when timestamp_granularities includes word.
+          items:
+            type: object
+            properties:
+              word:
+                type: string
+                description: The text content of the word.
+              start:
+                type: number
+                format: float
+                description: Start time of the word in seconds.
+              end:
+                type: number
+                format: float
+                description: End time of the word in seconds.
+        segments:
+          type: array
+          description: >-
+            Segments of the transcribed text and their corresponding details.
+            Only present when timestamp_granularities includes segment or
+            response_format is verbose_json.
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: Unique identifier of the segment.
+              seek:
+                type: integer
+                description: Seek offset of the segment.
+              start:
+                type: number
+                format: float
+                description: Start time of the segment in seconds.
+              end:
+                type: number
+                format: float
+                description: End time of the segment in seconds.
+              text:
+                type: string
+                description: Text content of the segment.
+              tokens:
+                type: array
+                items:
+                  type: integer
+                description: Array of token IDs for the text content.
+              temperature:
+                type: number
+                format: float
+                description: Temperature parameter used for generating the segment.
+              avg_logprob:
+                type: number
+                format: float
+                description: >-
+                  Average logprob of the segment. If the value is lower than
+                  -1, consider the segment as potentially unreliable.
+              compression_ratio:
+                type: number
+                format: float
+                description: Compression ratio of the segment.
+              no_speech_prob:
+                type: number
+                format: float
+                description: >-
+                  Probability of no speech in the segment. If the value is
+                  higher than 1.0 and avg_logprob is below -1, consider the
+                  segment as silent.
+    TranslationResponse:
+      type: object
+      required:
+        - text
+      properties:
+        text:
+          type: string
+          description: The translated text in English.
+        task:
+          type: string
+          enum:
+            - translate
+          description: The task performed, always translate.
+        language:
+          type: string
+          description: The detected language of the input audio.
+        duration:
+          type: number
+          format: float
+          description: The duration of the input audio in seconds.
+        segments:
+          type: array
+          description: Segments of the translated text with timestamps.
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+              seek:
+                type: integer
+              start:
+                type: number
+                format: float
+              end:
+                type: number
+                format: float
+              text:
+                type: string
+              tokens:
+                type: array
+                items:
+                  type: integer
+              temperature:
+                type: number
+                format: float
+              avg_logprob:
+                type: number
+                format: float
+              compression_ratio:
+                type: number
+                format: float
+              no_speech_prob:
+                type: number
+                format: float

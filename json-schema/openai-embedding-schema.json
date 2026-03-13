@@ -1,0 +1,82 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://platform.openai.com/schemas/openai/embedding.json",
+  "title": "OpenAI Embedding Response",
+  "description": "A response object returned by the OpenAI Embeddings API. Contains a list of embedding vectors representing the input text as floating-point numbers, along with the model used and token usage statistics.",
+  "type": "object",
+  "required": ["object", "data", "model", "usage"],
+  "properties": {
+    "object": {
+      "type": "string",
+      "const": "list",
+      "description": "The object type, which is always list."
+    },
+    "data": {
+      "type": "array",
+      "description": "The list of embedding objects, one for each input.",
+      "items": {
+        "$ref": "#/$defs/Embedding"
+      }
+    },
+    "model": {
+      "type": "string",
+      "description": "The name of the model used to generate the embeddings (e.g., text-embedding-3-small, text-embedding-3-large, text-embedding-ada-002)."
+    },
+    "usage": {
+      "$ref": "#/$defs/Usage"
+    }
+  },
+  "$defs": {
+    "Embedding": {
+      "type": "object",
+      "description": "Represents an embedding vector returned by the Embeddings API. Each embedding corresponds to one input in the request.",
+      "required": ["object", "embedding", "index"],
+      "properties": {
+        "object": {
+          "type": "string",
+          "const": "embedding",
+          "description": "The object type, which is always embedding."
+        },
+        "embedding": {
+          "oneOf": [
+            {
+              "type": "array",
+              "description": "The embedding vector, which is a list of floats. The length of vector depends on the model (1536 for text-embedding-ada-002, up to 3072 for text-embedding-3-large) and the dimensions parameter if specified.",
+              "items": {
+                "type": "number",
+                "format": "float"
+              }
+            },
+            {
+              "type": "string",
+              "description": "The embedding vector as a base64-encoded string, returned when encoding_format is base64."
+            }
+          ],
+          "description": "The embedding vector representing the input text. The format depends on the encoding_format request parameter."
+        },
+        "index": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The index of the embedding in the list of embeddings, corresponding to the position of the input in the request."
+        }
+      }
+    },
+    "Usage": {
+      "type": "object",
+      "description": "Token usage statistics for the embedding request.",
+      "required": ["prompt_tokens", "total_tokens"],
+      "properties": {
+        "prompt_tokens": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The number of tokens in the input text."
+        },
+        "total_tokens": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The total number of tokens used in the request. For embeddings, this is the same as prompt_tokens."
+        }
+      }
+    }
+  }
+}

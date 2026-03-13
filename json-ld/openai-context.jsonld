@@ -1,0 +1,210 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "openai": "https://platform.openai.com/docs/ns/",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "dcterms": "http://purl.org/dc/terms/",
+
+    "ChatCompletion": {
+      "@id": "openai:ChatCompletion",
+      "@context": {
+        "id": "schema:identifier",
+        "object": "openai:objectType",
+        "created": {
+          "@id": "dcterms:created",
+          "@type": "xsd:integer"
+        },
+        "model": "openai:model",
+        "system_fingerprint": "openai:systemFingerprint",
+        "service_tier": "openai:serviceTier",
+        "choices": {
+          "@id": "openai:choices",
+          "@container": "@list"
+        },
+        "usage": "openai:usage"
+      }
+    },
+
+    "Choice": {
+      "@id": "openai:Choice",
+      "@context": {
+        "index": "openai:index",
+        "message": "openai:message",
+        "finish_reason": "openai:finishReason",
+        "logprobs": "openai:logprobs"
+      }
+    },
+
+    "Message": {
+      "@id": "openai:Message",
+      "@context": {
+        "role": "openai:role",
+        "content": "schema:text",
+        "name": "schema:name",
+        "tool_calls": {
+          "@id": "openai:toolCalls",
+          "@container": "@list"
+        },
+        "tool_call_id": "openai:toolCallId",
+        "refusal": "openai:refusal"
+      }
+    },
+
+    "ToolCall": {
+      "@id": "openai:ToolCall",
+      "@context": {
+        "id": "schema:identifier",
+        "type": "openai:toolType",
+        "function": "openai:function"
+      }
+    },
+
+    "Function": {
+      "@id": "openai:Function",
+      "@context": {
+        "name": "schema:name",
+        "description": "schema:description",
+        "parameters": "openai:parameters",
+        "arguments": "openai:arguments"
+      }
+    },
+
+    "Usage": {
+      "@id": "openai:Usage",
+      "@context": {
+        "prompt_tokens": "openai:promptTokens",
+        "completion_tokens": "openai:completionTokens",
+        "total_tokens": "openai:totalTokens",
+        "completion_tokens_details": "openai:completionTokensDetails",
+        "prompt_tokens_details": "openai:promptTokensDetails"
+      }
+    },
+
+    "Embedding": {
+      "@id": "openai:Embedding",
+      "@context": {
+        "object": "openai:objectType",
+        "embedding": "openai:embeddingVector",
+        "index": "openai:index",
+        "model": "openai:model",
+        "usage": "openai:usage"
+      }
+    },
+
+    "EmbeddingResponse": {
+      "@id": "openai:EmbeddingResponse",
+      "@context": {
+        "object": "openai:objectType",
+        "data": {
+          "@id": "openai:data",
+          "@container": "@list"
+        },
+        "model": "openai:model",
+        "usage": "openai:usage"
+      }
+    },
+
+    "Image": {
+      "@id": "openai:Image",
+      "@context": {
+        "url": {
+          "@id": "schema:contentUrl",
+          "@type": "@id"
+        },
+        "b64_json": "openai:base64Json",
+        "revised_prompt": "openai:revisedPrompt",
+        "created": {
+          "@id": "dcterms:created",
+          "@type": "xsd:integer"
+        }
+      }
+    },
+
+    "ImagesResponse": {
+      "@id": "openai:ImagesResponse",
+      "@context": {
+        "created": {
+          "@id": "dcterms:created",
+          "@type": "xsd:integer"
+        },
+        "data": {
+          "@id": "openai:data",
+          "@container": "@list"
+        }
+      }
+    },
+
+    "Transcription": {
+      "@id": "openai:Transcription",
+      "@context": {
+        "text": "schema:text",
+        "task": "openai:task",
+        "language": "schema:inLanguage",
+        "duration": {
+          "@id": "schema:duration",
+          "@type": "xsd:float"
+        },
+        "words": {
+          "@id": "openai:words",
+          "@container": "@list"
+        },
+        "segments": {
+          "@id": "openai:segments",
+          "@container": "@list"
+        }
+      }
+    },
+
+    "Translation": {
+      "@id": "openai:Translation",
+      "@context": {
+        "text": "schema:text",
+        "task": "openai:task",
+        "language": "schema:inLanguage",
+        "duration": {
+          "@id": "schema:duration",
+          "@type": "xsd:float"
+        },
+        "segments": {
+          "@id": "openai:segments",
+          "@container": "@list"
+        }
+      }
+    },
+
+    "Speech": {
+      "@id": "openai:Speech",
+      "@context": {
+        "model": "openai:model",
+        "voice": "openai:voice",
+        "input": "schema:text",
+        "response_format": "openai:responseFormat",
+        "speed": "openai:speed"
+      }
+    },
+
+    "Model": {
+      "@id": "openai:Model",
+      "@context": {
+        "id": "schema:identifier",
+        "object": "openai:objectType",
+        "created": {
+          "@id": "dcterms:created",
+          "@type": "xsd:integer"
+        },
+        "owned_by": "schema:creator"
+      }
+    },
+
+    "Error": {
+      "@id": "openai:Error",
+      "@context": {
+        "message": "schema:description",
+        "type": "openai:errorType",
+        "param": "openai:errorParam",
+        "code": "openai:errorCode"
+      }
+    }
+  }
+}

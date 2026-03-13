@@ -1,0 +1,338 @@
+openapi: 3.1.0
+info:
+  title: OpenAI Images API
+  description: >-
+    Generate and manipulate images using DALL-E and GPT Image models. The Images
+    API provides methods for creating images from scratch based on a text prompt,
+    creating edited versions of images by having the model replace some areas of
+    a pre-existing image based on a new text prompt, and creating variations of
+    an existing image. Supports DALL-E 2, DALL-E 3, and gpt-image-1 models.
+  version: 2.0.0
+  termsOfService: https://openai.com/policies/terms-of-use
+  contact:
+    name: OpenAI Support
+    url: https://help.openai.com/
+    email: support@openai.com
+  license:
+    name: MIT
+    url: https://github.com/openai/openai-openapi/blob/master/LICENSE
+servers:
+  - url: https://api.openai.com/v1
+    description: OpenAI API production server
+security:
+  - BearerAuth: []
+tags:
+  - name: Images
+    description: >-
+      Given a prompt and/or an input image, the model will generate a new image.
+paths:
+  /images/generations:
+    post:
+      operationId: createImage
+      tags:
+        - Images
+      summary: Create image
+      description: >-
+        Creates an image given a prompt. Supports DALL-E 2, DALL-E 3, and
+        gpt-image-1 models. Returns one or more generated images as URLs or
+        base64-encoded JSON.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateImageRequest'
+      responses:
+        '200':
+          description: Successful response with generated image(s).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImagesResponse'
+        '400':
+          description: Bad request - invalid parameters.
+        '401':
+          description: Unauthorized - invalid or missing API key.
+        '429':
+          description: Rate limit exceeded.
+        '500':
+          description: Internal server error.
+  /images/edits:
+    post:
+      operationId: createImageEdit
+      tags:
+        - Images
+      summary: Create image edit
+      description: >-
+        Creates an edited or extended image given an original image and a prompt.
+        The model will generate a new image based on the prompt, using the
+        original image and mask as context. Supports DALL-E 2 and gpt-image-1
+        models.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateImageEditRequest'
+      responses:
+        '200':
+          description: Successful response with edited image(s).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImagesResponse'
+        '400':
+          description: Bad request - invalid parameters.
+        '401':
+          description: Unauthorized - invalid or missing API key.
+        '429':
+          description: Rate limit exceeded.
+        '500':
+          description: Internal server error.
+  /images/variations:
+    post:
+      operationId: createImageVariation
+      tags:
+        - Images
+      summary: Create image variation
+      description: >-
+        Creates a variation of a given image. Only supported with DALL-E 2.
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CreateImageVariationRequest'
+      responses:
+        '200':
+          description: Successful response with image variation(s).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ImagesResponse'
+        '400':
+          description: Bad request - invalid parameters.
+        '401':
+          description: Unauthorized - invalid or missing API key.
+        '429':
+          description: Rate limit exceeded.
+        '500':
+          description: Internal server error.
+components:
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: API Key
+      description: >-
+        OpenAI API key. Obtain from https://platform.openai.com/api-keys.
+        Pass as Authorization: Bearer YOUR_API_KEY.
+  schemas:
+    CreateImageRequest:
+      type: object
+      required:
+        - prompt
+      properties:
+        prompt:
+          type: string
+          maxLength: 32000
+          description: >-
+            A text description of the desired image(s). The maximum length is
+            1000 characters for DALL-E 2 and 32000 characters for gpt-image-1.
+        model:
+          type: string
+          default: dall-e-2
+          description: >-
+            The model to use for image generation. Defaults to dall-e-2.
+          examples:
+            - dall-e-2
+            - dall-e-3
+            - gpt-image-1
+        n:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 1
+          description: >-
+            The number of images to generate. Must be between 1 and 10. For
+            DALL-E 3, only n=1 is supported.
+        quality:
+          type: string
+          enum:
+            - standard
+            - hd
+            - low
+            - medium
+            - high
+            - auto
+          default: auto
+          description: >-
+            The quality of the image. hd creates images with finer details and
+            greater consistency. For gpt-image-1 use low, medium, high, or auto.
+        response_format:
+          type: string
+          enum:
+            - url
+            - b64_json
+          default: url
+          description: >-
+            The format in which the generated images are returned. Must be one
+            of url or b64_json. URLs are only valid for 60 minutes.
+        size:
+          type: string
+          enum:
+            - 256x256
+            - 512x512
+            - 1024x1024
+            - 1792x1024
+            - 1024x1792
+            - auto
+          default: 1024x1024
+          description: >-
+            The size of the generated images. Must be one of the supported
+            sizes for the model being used.
+        style:
+          type: string
+          enum:
+            - vivid
+            - natural
+          default: vivid
+          description: >-
+            The style of the generated images. Vivid generates hyper-real and
+            dramatic images. Natural produces more natural, less hyper-real
+            images. Only supported for DALL-E 3.
+        user:
+          type: string
+          description: >-
+            A unique identifier representing your end-user, which can help
+            OpenAI to monitor and detect abuse.
+    CreateImageEditRequest:
+      type: object
+      required:
+        - image
+        - prompt
+      properties:
+        image:
+          type: string
+          format: binary
+          description: >-
+            The image to edit. Must be a valid PNG file, less than 4MB, and
+            square. If mask is not provided, the image must have transparency
+            which will be used as the mask.
+        prompt:
+          type: string
+          maxLength: 32000
+          description: >-
+            A text description of the desired image(s). The maximum length is
+            1000 characters for DALL-E 2 and 32000 characters for gpt-image-1.
+        mask:
+          type: string
+          format: binary
+          description: >-
+            An additional image whose fully transparent areas indicate where
+            the image should be edited. Must be a valid PNG file, less than
+            4MB, and have the same dimensions as image.
+        model:
+          type: string
+          default: dall-e-2
+          description: The model to use for image editing.
+          examples:
+            - dall-e-2
+            - gpt-image-1
+        n:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 1
+          description: The number of images to generate.
+        size:
+          type: string
+          enum:
+            - 256x256
+            - 512x512
+            - 1024x1024
+            - auto
+          default: 1024x1024
+          description: The size of the generated images.
+        response_format:
+          type: string
+          enum:
+            - url
+            - b64_json
+          default: url
+          description: The format in which the generated images are returned.
+        user:
+          type: string
+          description: A unique identifier representing your end-user.
+    CreateImageVariationRequest:
+      type: object
+      required:
+        - image
+      properties:
+        image:
+          type: string
+          format: binary
+          description: >-
+            The image to use as the basis for the variation(s). Must be a valid
+            PNG file, less than 4MB, and square.
+        model:
+          type: string
+          default: dall-e-2
+          description: The model to use for image variation. Only DALL-E 2 is supported.
+        n:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 1
+          description: The number of images to generate.
+        response_format:
+          type: string
+          enum:
+            - url
+            - b64_json
+          default: url
+          description: The format in which the generated images are returned.
+        size:
+          type: string
+          enum:
+            - 256x256
+            - 512x512
+            - 1024x1024
+          default: 1024x1024
+          description: The size of the generated images.
+        user:
+          type: string
+          description: A unique identifier representing your end-user.
+    ImagesResponse:
+      type: object
+      required:
+        - created
+        - data
+      properties:
+        created:
+          type: integer
+          description: The Unix timestamp (in seconds) when the images were created.
+        data:
+          type: array
+          description: The list of generated images.
+          items:
+            $ref: '#/components/schemas/Image'
+    Image:
+      type: object
+      properties:
+        url:
+          type: string
+          format: uri
+          description: >-
+            The URL of the generated image, if response_format is url. The URL
+            is valid for 60 minutes.
+        b64_json:
+          type: string
+          description: >-
+            The base64-encoded JSON of the generated image, if response_format
+            is b64_json.
+        revised_prompt:
+          type: string
+          description: >-
+            The prompt that was used to generate the image, if there was any
+            revision to the prompt. Only present for DALL-E 3 and gpt-image-1.
