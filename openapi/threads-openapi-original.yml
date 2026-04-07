@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: ' threads'
+  title: 'OpenAI threads'
   description: Needs description.
   version: 2.0.0
   termsOfService: https://openai.com/policies/terms-of-use
@@ -49,8 +49,8 @@ paths:
     post:
       operationId: createThread
       tags:
-        - - - - Assistants
-      summary: Create a thread.
+        -   -   -   - Assistants
+      summary: OpenAI Create a thread.
       requestBody:
         content:
           application/json:
@@ -173,8 +173,8 @@ paths:
     get:
       operationId: getThread
       tags:
-        - - - - Assistants
-      summary: Retrieves a thread.
+        -   -   -   - Assistants
+      summary: OpenAI Retrieves a thread.
       parameters:
         - in: path
           name: thread_id
@@ -233,8 +233,8 @@ paths:
     post:
       operationId: modifyThread
       tags:
-        - - - - Assistants
-      summary: Modifies a thread.
+        -   -   -   - Assistants
+      summary: OpenAI Modifies a thread.
       parameters:
         - in: path
           name: thread_id
@@ -317,8 +317,8 @@ paths:
     delete:
       operationId: deleteThread
       tags:
-        - - - - Assistants
-      summary: Delete a thread.
+        -   -   -   - Assistants
+      summary: OpenAI Delete a thread.
       parameters:
         - in: path
           name: thread_id
@@ -373,8 +373,8 @@ paths:
     get:
       operationId: listMessages
       tags:
-        - - - - Assistants
-      summary: Returns a list of messages for a given thread.
+        -   -   -   - Assistants
+      summary: OpenAI Returns a list of messages for a given thread.
       parameters:
         - in: path
           name: thread_id
@@ -520,8 +520,8 @@ paths:
     post:
       operationId: createMessage
       tags:
-        - - - - Assistants
-      summary: Create a message.
+        -   -   -   - Assistants
+      summary: OpenAI Create a message.
       parameters:
         - in: path
           name: thread_id
@@ -610,8 +610,8 @@ paths:
     get:
       operationId: getMessage
       tags:
-        - - - - Assistants
-      summary: Retrieve a message.
+        -   -   -   - Assistants
+      summary: OpenAI Retrieve a message.
       parameters:
         - in: path
           name: thread_id
@@ -698,8 +698,8 @@ paths:
     post:
       operationId: modifyMessage
       tags:
-        - - - - Assistants
-      summary: Modifies a message.
+        -   -   -   - Assistants
+      summary: OpenAI Modifies a message.
       parameters:
         - in: path
           name: thread_id
@@ -805,8 +805,8 @@ paths:
     post:
       operationId: createThreadAndRun
       tags:
-        - - - - Assistants
-      summary: Create a thread and run it in one request.
+        -   -   -   - Assistants
+      summary: OpenAI Create a thread and run it in one request.
       requestBody:
         required: true
         content:
@@ -896,8 +896,8 @@ paths:
     get:
       operationId: listRuns
       tags:
-        - - - - Assistants
-      summary: Returns a list of runs belonging to a thread.
+        -   -   -   - Assistants
+      summary: OpenAI Returns a list of runs belonging to a thread.
       parameters:
         - name: thread_id
           in: path
@@ -1059,8 +1059,8 @@ paths:
     post:
       operationId: createRun
       tags:
-        - - - - Assistants
-      summary: Create a run.
+        -   -   -   - Assistants
+      summary: OpenAI Create a run.
       parameters:
         - in: path
           name: thread_id
@@ -1152,8 +1152,8 @@ paths:
     get:
       operationId: getRun
       tags:
-        - - - - Assistants
-      summary: Retrieves a run.
+        -   -   -   - Assistants
+      summary: OpenAI Retrieves a run.
       parameters:
         - in: path
           name: thread_id
@@ -1247,8 +1247,8 @@ paths:
     post:
       operationId: modifyRun
       tags:
-        - - - - Assistants
-      summary: Modifies a run.
+        -   -   -   - Assistants
+      summary: OpenAI Modifies a run.
       parameters:
         - in: path
           name: thread_id
@@ -1363,12 +1363,9 @@ paths:
     post:
       operationId: submitToolOuputsToRun
       tags:
-        - - - - Assistants
-      summary: >
-        When a run has the `status: "requires_action"` and
-        `required_action.type` is `submit_tool_outputs`, this endpoint can be
-        used to submit the outputs from the tool calls once they're all
-        completed. All outputs must be submitted in a single request.
+        -   -   -   - Assistants
+      summary: >-
+        OpenAI When a run has the `status: "requires_action"` and `required_action.type` is `submit_tool_outputs`, this endpoint can be used to submit the outputs from the tool calls once they're all completed. All outputs must be submitted in a single request.
       parameters:
         - in: path
           name: thread_id
@@ -1511,8 +1508,8 @@ paths:
     post:
       operationId: cancelRun
       tags:
-        - - - - Assistants
-      summary: Cancels a run that is `in_progress`.
+        -   -   -   - Assistants
+      summary: OpenAI Cancels a run that is `in_progress`.
       parameters:
         - in: path
           name: thread_id
@@ -1602,8 +1599,8 @@ paths:
     get:
       operationId: listRunSteps
       tags:
-        - - - - Assistants
-      summary: Returns a list of run steps belonging to a run.
+        -   -   -   - Assistants
+      summary: OpenAI Returns a list of run steps belonging to a run.
       parameters:
         - name: thread_id
           in: path
@@ -1738,8 +1735,8 @@ paths:
     get:
       operationId: getRunStep
       tags:
-        - - - - Assistants
-      summary: Retrieves a run step.
+        -   -   -   - Assistants
+      summary: OpenAI Retrieves a run step.
       parameters:
         - in: path
           name: thread_id
@@ -1837,8 +1834,8 @@ paths:
     get:
       operationId: listMessageFiles
       tags:
-        - - - - Assistants
-      summary: Returns a list of message files.
+        -   -   -   - Assistants
+      summary: OpenAI Returns a list of message files.
       parameters:
         - name: thread_id
           in: path
@@ -1961,8 +1958,8 @@ paths:
     get:
       operationId: getMessageFile
       tags:
-        - - - - Assistants
-      summary: Retrieves a message file.
+        -   -   -   - Assistants
+      summary: OpenAI Retrieves a message file.
       parameters:
         - in: path
           name: thread_id
