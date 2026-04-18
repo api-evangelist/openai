@@ -18,22 +18,22 @@ info:
     name: MIT
     url: https://github.com/openai/openai-openapi/blob/master/LICENSE
 servers:
-  - url: https://api.openai.com/v1
-    description: OpenAI API production server
+- url: https://api.openai.com/v1
+  description: OpenAI API production server
 security:
-  - BearerAuth: []
+- BearerAuth: []
 tags:
-  - name: Embeddings
-    description: >-
-      Get a vector representation of a given input that can be easily consumed
-      by machine learning models and algorithms.
+- name: Embeddings
+  description: >-
+    Get a vector representation of a given input that can be easily consumed
+    by machine learning models and algorithms.
 paths:
   /embeddings:
     post:
       operationId: createEmbedding
       tags:
-        - Embeddings
-      summary: OpenAI Create embeddings
+      - Embeddings
+      summary: Openai Create Embeddings
       description: >-
         Creates an embedding vector representing the input text. The input can
         be a single string or an array of strings. Each input must not exceed
@@ -45,6 +45,16 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateEmbeddingRequest'
+            examples:
+              CreateembeddingRequestExample:
+                summary: Default createEmbedding request
+                x-microcks-default: true
+                value:
+                  model: example_value
+                  input: example_value
+                  encoding_format: float
+                  dimensions: 10
+                  user: example_value
       responses:
         '200':
           description: Successful response with embedding vectors.
@@ -52,6 +62,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateEmbeddingResponse'
+              examples:
+                Createembedding200Example:
+                  summary: Default createEmbedding 200 response
+                  x-microcks-default: true
+                  value:
+                    object: list
+                    data:
+                    - object: embedding
+                      embedding: example_value
+                      index: 10
+                    model: example_value
+                    usage:
+                      prompt_tokens: 10
+                      total_tokens: 10
         '400':
           description: Bad request - invalid parameters or input too long.
         '401':
@@ -60,6 +84,9 @@ paths:
           description: Rate limit exceeded.
         '500':
           description: Internal server error.
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
 components:
   securitySchemes:
     BearerAuth:
@@ -73,8 +100,8 @@ components:
     CreateEmbeddingRequest:
       type: object
       required:
-        - model
-        - input
+      - model
+      - input
       properties:
         model:
           type: string
@@ -82,122 +109,134 @@ components:
             ID of the model to use. You can use the List Models API to see
             all available models, or see the Model overview for descriptions.
           examples:
-            - text-embedding-3-small
-            - text-embedding-3-large
-            - text-embedding-ada-002
+          - text-embedding-3-small
+          - text-embedding-3-large
+          - text-embedding-ada-002
         input:
           oneOf:
-            - type: string
-              description: The string to embed.
-            - type: array
-              description: The array of strings to embed.
-              items:
-                type: string
-              minItems: 1
-              maxItems: 2048
-            - type: array
-              description: >-
-                The array of integers (token IDs) to embed. Each array must
-                have 8191 or fewer elements.
+          - type: string
+            description: The string to embed.
+          - type: array
+            description: The array of strings to embed.
+            items:
+              type: string
+            minItems: 1
+            maxItems: 2048
+          - type: array
+            description: >-
+              The array of integers (token IDs) to embed. Each array must
+              have 8191 or fewer elements.
+            items:
+              type: integer
+            minItems: 1
+          - type: array
+            description: >-
+              The array of arrays containing integers (token IDs) to embed.
+            items:
+              type: array
               items:
                 type: integer
               minItems: 1
-            - type: array
-              description: >-
-                The array of arrays containing integers (token IDs) to embed.
-              items:
-                type: array
-                items:
-                  type: integer
-                minItems: 1
-              minItems: 1
+            minItems: 1
           description: >-
             Input text to embed, encoded as a string or array of tokens. To
             embed multiple inputs in a single request, pass an array of strings
             or array of token arrays. The input must not exceed the max input
             tokens for the model.
+          example: example_value
         encoding_format:
           type: string
           enum:
-            - float
-            - base64
+          - float
+          - base64
           default: float
           description: >-
             The format to return the embeddings in. Can be either float or
             base64. Defaults to float.
+          example: float
         dimensions:
           type: integer
           minimum: 1
           description: >-
             The number of dimensions the resulting output embeddings should
             have. Only supported in text-embedding-3 and later models.
+          example: 10
         user:
           type: string
           description: >-
             A unique identifier representing your end-user, which can help
             OpenAI to monitor and detect abuse.
+          example: example_value
     CreateEmbeddingResponse:
       type: object
       required:
-        - object
-        - data
-        - model
-        - usage
+      - object
+      - data
+      - model
+      - usage
       properties:
         object:
           type: string
           enum:
-            - list
+          - list
           description: The object type, always list.
+          example: list
         data:
           type: array
           description: The list of embedding objects.
           items:
             $ref: '#/components/schemas/Embedding'
+          example: []
         model:
           type: string
           description: The name of the model used to generate the embedding.
+          example: example_value
         usage:
           $ref: '#/components/schemas/EmbeddingUsage'
     Embedding:
       type: object
       required:
-        - object
-        - embedding
-        - index
+      - object
+      - embedding
+      - index
       properties:
         object:
           type: string
           enum:
-            - embedding
+          - embedding
           description: The object type, always embedding.
+          example: embedding
         embedding:
           oneOf:
-            - type: array
-              description: >-
-                The embedding vector as an array of floats. The length of the
-                vector depends on the model and dimensions parameter.
-              items:
-                type: number
-                format: float
-            - type: string
-              description: >-
-                The embedding vector as a base64-encoded string when
-                encoding_format is base64.
+          - type: array
+            description: >-
+              The embedding vector as an array of floats. The length of the
+              vector depends on the model and dimensions parameter.
+            items:
+              type: number
+              format: float
+          - type: string
+            description: >-
+              The embedding vector as a base64-encoded string when
+              encoding_format is base64.
+          example: example_value
         index:
           type: integer
           description: >-
             The index of the embedding in the list of embeddings, corresponding
             to the position of the input.
+          example: 10
     EmbeddingUsage:
       type: object
       required:
-        - prompt_tokens
-        - total_tokens
+      - prompt_tokens
+      - total_tokens
       properties:
         prompt_tokens:
           type: integer
           description: The number of tokens in the input.
+          example: 10
         total_tokens:
           type: integer
           description: The total number of tokens used.
+          example: 10

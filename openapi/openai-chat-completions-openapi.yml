@@ -17,23 +17,23 @@ info:
     name: MIT
     url: https://github.com/openai/openai-openapi/blob/master/LICENSE
 servers:
-  - url: https://api.openai.com/v1
-    description: OpenAI API production server
+- url: https://api.openai.com/v1
+  description: OpenAI API production server
 security:
-  - BearerAuth: []
+- BearerAuth: []
 tags:
-  - name: Chat
-    description: >-
-      Given a list of messages comprising a conversation, the model will return
-      a response. Supports text, image, and audio inputs with text and audio
-      outputs.
+- name: Chat
+  description: >-
+    Given a list of messages comprising a conversation, the model will return
+    a response. Supports text, image, and audio inputs with text and audio
+    outputs.
 paths:
   /chat/completions:
     post:
       operationId: createChatCompletion
       tags:
-        - Chat
-      summary: OpenAI Create chat completion
+      - Chat
+      summary: Openai Create Chat Completion
       description: >-
         Creates a model response for the given chat conversation. Takes a list
         of messages comprising a conversation and returns a model-generated
@@ -45,6 +45,45 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateChatCompletionRequest'
+            examples:
+              CreatechatcompletionRequestExample:
+                summary: Default createChatCompletion request
+                x-microcks-default: true
+                value:
+                  model: example_value
+                  messages:
+                  - role: system
+                    content: example_value
+                    name: Example Title
+                    tool_calls: {}
+                    tool_call_id: '500123'
+                  frequency_penalty: 42.5
+                  logit_bias: example_value
+                  logprobs: true
+                  top_logprobs: 10
+                  max_tokens: 10
+                  max_completion_tokens: 10
+                  n: 10
+                  presence_penalty: 42.5
+                  response_format:
+                    type: text
+                    json_schema:
+                      name: Example Title
+                      schema: example_value
+                      strict: true
+                  seed: 10
+                  stop: example_value
+                  stream: true
+                  stream_options:
+                    include_usage: true
+                  temperature: 42.5
+                  top_p: 42.5
+                  tools:
+                  - type: function
+                    function: {}
+                  tool_choice: example_value
+                  parallel_tool_calls: true
+                  user: example_value
       responses:
         '200':
           description: Successful response with the chat completion.
@@ -52,6 +91,32 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CreateChatCompletionResponse'
+              examples:
+                Createchatcompletion200Example:
+                  summary: Default createChatCompletion 200 response
+                  x-microcks-default: true
+                  value:
+                    id: abc123
+                    object: chat.completion
+                    created: 10
+                    model: example_value
+                    choices:
+                    - index: 10
+                      message: {}
+                      finish_reason: stop
+                      logprobs: example_value
+                    usage:
+                      prompt_tokens: 10
+                      completion_tokens: 10
+                      total_tokens: 10
+                      completion_tokens_details:
+                        reasoning_tokens: 10
+                        accepted_prediction_tokens: 10
+                        rejected_prediction_tokens: 10
+                      prompt_tokens_details:
+                        cached_tokens: 10
+                    system_fingerprint: example_value
+                    service_tier: example_value
         '400':
           description: Bad request - invalid parameters.
         '401':
@@ -60,6 +125,9 @@ paths:
           description: Rate limit exceeded.
         '500':
           description: Internal server error.
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
 components:
   securitySchemes:
     BearerAuth:
@@ -73,8 +141,8 @@ components:
     CreateChatCompletionRequest:
       type: object
       required:
-        - model
-        - messages
+      - model
+      - messages
       properties:
         model:
           type: string
@@ -82,11 +150,11 @@ components:
             ID of the model to use. See the model endpoint compatibility table
             for which models work with the Chat API.
           examples:
-            - gpt-5
-            - gpt-4.1
-            - gpt-4.1-mini
-            - gpt-4.1-nano
-            - o4-mini
+          - gpt-5
+          - gpt-4.1
+          - gpt-4.1-mini
+          - gpt-4.1-nano
+          - o4-mini
         messages:
           type: array
           description: >-
@@ -95,6 +163,7 @@ components:
           minItems: 1
           items:
             $ref: '#/components/schemas/ChatCompletionMessage'
+          example: []
         frequency_penalty:
           type: number
           minimum: -2.0
@@ -104,6 +173,7 @@ components:
             Positive values penalize new tokens based on their existing
             frequency in the text so far, decreasing the model's likelihood to
             repeat the same line verbatim.
+          example: 42.5
         logit_bias:
           type: object
           additionalProperties:
@@ -113,11 +183,13 @@ components:
           description: >-
             Modify the likelihood of specified tokens appearing in the
             completion. Maps token IDs to bias values from -100 to 100.
+          example: example_value
         logprobs:
           type: boolean
           default: false
           description: >-
             Whether to return log probabilities of the output tokens.
+          example: true
         top_logprobs:
           type: integer
           minimum: 0
@@ -126,6 +198,7 @@ components:
             An integer specifying the number of most likely tokens to return
             at each token position, each with an associated log probability.
             logprobs must be set to true if this parameter is used.
+          example: 10
         max_tokens:
           type: integer
           minimum: 1
@@ -133,12 +206,14 @@ components:
             The maximum number of tokens that can be generated in the chat
             completion. The total length of input tokens and generated tokens
             is limited by the model's context length.
+          example: 10
         max_completion_tokens:
           type: integer
           minimum: 1
           description: >-
             An upper bound for the number of tokens that can be generated for
             a completion, including visible output tokens and reasoning tokens.
+          example: 10
         n:
           type: integer
           minimum: 1
@@ -148,6 +223,7 @@ components:
             How many chat completion choices to generate for each input message.
             Note that you will be charged based on the number of generated
             tokens across all of the choices.
+          example: 10
         presence_penalty:
           type: number
           minimum: -2.0
@@ -157,6 +233,7 @@ components:
             Positive values penalize new tokens based on whether they appear
             in the text so far, increasing the model's likelihood to talk about
             new topics.
+          example: 42.5
         response_format:
           type: object
           description: >-
@@ -167,9 +244,9 @@ components:
             type:
               type: string
               enum:
-                - text
-                - json_object
-                - json_schema
+              - text
+              - json_object
+              - json_schema
               description: The type of response format.
             json_schema:
               type: object
@@ -188,27 +265,31 @@ components:
                   default: false
                   description: >-
                     Whether to enable strict schema adherence.
+          example: example_value
         seed:
           type: integer
           description: >-
             If specified, the system will make a best effort to sample
             deterministically so that repeated requests with the same seed and
             parameters should return the same result.
+          example: 10
         stop:
           oneOf:
-            - type: string
-            - type: array
-              items:
-                type: string
-              maxItems: 4
+          - type: string
+          - type: array
+            items:
+              type: string
+            maxItems: 4
           description: >-
             Up to 4 sequences where the API will stop generating further tokens.
+          example: example_value
         stream:
           type: boolean
           default: false
           description: >-
             If set, partial message deltas will be sent as server-sent events.
             The stream is terminated by a data: [DONE] message.
+          example: true
         stream_options:
           type: object
           properties:
@@ -218,6 +299,7 @@ components:
                 If set, an additional chunk will be streamed with the token
                 usage statistics for the entire request.
           description: Options for streaming responses.
+          example: example_value
         temperature:
           type: number
           minimum: 0
@@ -227,6 +309,7 @@ components:
             What sampling temperature to use, between 0 and 2. Higher values
             make the output more random, lower values more focused and
             deterministic.
+          example: 42.5
         top_p:
           type: number
           minimum: 0
@@ -236,6 +319,7 @@ components:
             An alternative to sampling with temperature, called nucleus sampling.
             The model considers the results of the tokens with top_p probability
             mass.
+          example: 42.5
         tools:
           type: array
           description: >-
@@ -244,94 +328,105 @@ components:
             model may generate JSON inputs for.
           items:
             $ref: '#/components/schemas/ChatCompletionTool'
+          example: []
         tool_choice:
           oneOf:
-            - type: string
-              enum:
-                - none
-                - auto
-                - required
-            - type: object
-              properties:
-                type:
-                  type: string
-                  enum:
-                    - function
-                function:
-                  type: object
-                  required:
-                    - name
-                  properties:
-                    name:
-                      type: string
+          - type: string
+            enum:
+            - none
+            - auto
+            - required
+          - type: object
+            properties:
+              type:
+                type: string
+                enum:
+                - function
+              function:
+                type: object
+                required:
+                - name
+                properties:
+                  name:
+                    type: string
           description: >-
             Controls which (if any) tool is called by the model. none means the
             model will not call any tool. auto means the model can pick between
             generating a message or calling one or more tools. required means
             the model must call one or more tools.
+          example: example_value
         parallel_tool_calls:
           type: boolean
           default: true
           description: >-
             Whether to enable parallel function calling during tool use.
+          example: true
         user:
           type: string
           description: >-
             A unique identifier representing your end-user, which can help
             OpenAI to monitor and detect abuse.
+          example: example_value
     ChatCompletionMessage:
       type: object
       required:
-        - role
-        - content
+      - role
+      - content
       properties:
         role:
           type: string
           enum:
-            - system
-            - user
-            - assistant
-            - tool
+          - system
+          - user
+          - assistant
+          - tool
           description: The role of the message author.
+          example: system
         content:
           oneOf:
-            - type: string
-            - type: array
-              items:
-                $ref: '#/components/schemas/ContentPart'
+          - type: string
+          - type: array
+            items:
+              $ref: '#/components/schemas/ContentPart'
           description: >-
             The contents of the message. Can be a string or an array of content
             parts for multimodal inputs (text and images).
+          example: example_value
         name:
           type: string
           description: >-
             An optional name for the participant. Provides the model information
             to differentiate between participants of the same role.
+          example: Example Title
         tool_calls:
           type: array
           description: >-
             The tool calls generated by the model, such as function calls.
           items:
             $ref: '#/components/schemas/ToolCall'
+          example: []
         tool_call_id:
           type: string
           description: >-
             Tool call that this message is responding to. Required for tool
             role messages.
+          example: '500123'
     ContentPart:
       type: object
       required:
-        - type
+      - type
       properties:
         type:
           type: string
           enum:
-            - text
-            - image_url
+          - text
+          - image_url
           description: The type of the content part.
+          example: text
         text:
           type: string
           description: The text content. Required when type is text.
+          example: example_value
         image_url:
           type: object
           description: The image URL content. Required when type is image_url.
@@ -343,28 +438,30 @@ components:
             detail:
               type: string
               enum:
-                - auto
-                - low
-                - high
+              - auto
+              - low
+              - high
               default: auto
               description: >-
                 The detail level of the image. low uses fewer tokens, high
                 allows the model to see the image in more detail.
+          example: https://www.example.com
     ChatCompletionTool:
       type: object
       required:
-        - type
-        - function
+      - type
+      - function
       properties:
         type:
           type: string
           enum:
-            - function
+          - function
           description: The type of the tool. Currently, only function is supported.
+          example: function
         function:
           type: object
           required:
-            - name
+          - name
           properties:
             name:
               type: string
@@ -386,26 +483,29 @@ components:
                 Whether to enable strict schema adherence for the function
                 parameters. When enabled, the model will always follow the
                 exact schema defined in the parameters field.
+          example: example_value
     ToolCall:
       type: object
       required:
-        - id
-        - type
-        - function
+      - id
+      - type
+      - function
       properties:
         id:
           type: string
           description: The ID of the tool call.
+          example: abc123
         type:
           type: string
           enum:
-            - function
+          - function
           description: The type of the tool call.
+          example: function
         function:
           type: object
           required:
-            - name
-            - arguments
+          - name
+          - arguments
           properties:
             name:
               type: string
@@ -415,34 +515,40 @@ components:
               description: >-
                 The arguments to call the function with, as generated by the
                 model in JSON format.
+          example: example_value
     CreateChatCompletionResponse:
       type: object
       required:
-        - id
-        - object
-        - created
-        - model
-        - choices
+      - id
+      - object
+      - created
+      - model
+      - choices
       properties:
         id:
           type: string
           description: A unique identifier for the chat completion.
+          example: abc123
         object:
           type: string
           enum:
-            - chat.completion
+          - chat.completion
           description: The object type, always chat.completion.
+          example: chat.completion
         created:
           type: integer
           description: The Unix timestamp (in seconds) of when the completion was created.
+          example: 10
         model:
           type: string
           description: The model used for the chat completion.
+          example: example_value
         choices:
           type: array
           description: A list of chat completion choices.
           items:
             $ref: '#/components/schemas/ChatCompletionChoice'
+          example: []
         usage:
           $ref: '#/components/schemas/CompletionUsage'
         system_fingerprint:
@@ -451,31 +557,34 @@ components:
             This fingerprint represents the backend configuration that the
             model runs with. Can be used with the seed parameter to detect
             backend changes.
+          example: example_value
         service_tier:
           type: string
           description: The service tier used for processing the request.
+          example: example_value
     ChatCompletionChoice:
       type: object
       required:
-        - index
-        - message
-        - finish_reason
+      - index
+      - message
+      - finish_reason
       properties:
         index:
           type: integer
           description: The index of the choice in the list of choices.
+          example: 10
         message:
           type: object
           properties:
             role:
               type: string
               enum:
-                - assistant
+              - assistant
               description: The role of the author (always assistant).
             content:
               type:
-                - string
-                - 'null'
+              - string
+              - 'null'
               description: The generated message content.
             tool_calls:
               type: array
@@ -484,33 +593,35 @@ components:
                 $ref: '#/components/schemas/ToolCall'
             refusal:
               type:
-                - string
-                - 'null'
+              - string
+              - 'null'
               description: The refusal message if the model refused the request.
           description: The chat completion message generated by the model.
+          example: example_value
         finish_reason:
           type: string
           enum:
-            - stop
-            - length
-            - tool_calls
-            - content_filter
+          - stop
+          - length
+          - tool_calls
+          - content_filter
           description: >-
             The reason the model stopped generating tokens. stop means the
             model hit a natural stop point or provided stop sequence. length
             means the maximum token count was reached. tool_calls means the
             model called a tool. content_filter means content was omitted due
             to a flag from content filters.
+          example: stop
         logprobs:
           type:
-            - object
-            - 'null'
+          - object
+          - 'null'
           description: Log probability information for the choice.
           properties:
             content:
               type:
-                - array
-                - 'null'
+              - array
+              - 'null'
               items:
                 type: object
                 properties:
@@ -520,8 +631,8 @@ components:
                     type: number
                   bytes:
                     type:
-                      - array
-                      - 'null'
+                    - array
+                    - 'null'
                     items:
                       type: integer
                   top_logprobs:
@@ -535,26 +646,30 @@ components:
                           type: number
                         bytes:
                           type:
-                            - array
-                            - 'null'
+                          - array
+                          - 'null'
                           items:
                             type: integer
+          example: example_value
     CompletionUsage:
       type: object
       required:
-        - prompt_tokens
-        - completion_tokens
-        - total_tokens
+      - prompt_tokens
+      - completion_tokens
+      - total_tokens
       properties:
         prompt_tokens:
           type: integer
           description: Number of tokens in the prompt.
+          example: 10
         completion_tokens:
           type: integer
           description: Number of tokens in the generated completion.
+          example: 10
         total_tokens:
           type: integer
           description: Total number of tokens used in the request (prompt + completion).
+          example: 10
         completion_tokens_details:
           type: object
           description: Breakdown of completion tokens.
@@ -568,6 +683,7 @@ components:
             rejected_prediction_tokens:
               type: integer
               description: Predicted tokens that were rejected.
+          example: example_value
         prompt_tokens_details:
           type: object
           description: Breakdown of prompt tokens.
@@ -575,3 +691,4 @@ components:
             cached_tokens:
               type: integer
               description: Tokens that were cached from a previous request.
+          example: example_value

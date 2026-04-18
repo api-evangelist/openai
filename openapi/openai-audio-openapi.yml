@@ -17,22 +17,22 @@ info:
     name: MIT
     url: https://github.com/openai/openai-openapi/blob/master/LICENSE
 servers:
-  - url: https://api.openai.com/v1
-    description: OpenAI API production server
+- url: https://api.openai.com/v1
+  description: OpenAI API production server
 security:
-  - BearerAuth: []
+- BearerAuth: []
 tags:
-  - name: Audio
-    description: >-
-      Learn how to turn audio into text or text into audio. Includes speech
-      generation, transcription, and translation.
+- name: Audio
+  description: >-
+    Learn how to turn audio into text or text into audio. Includes speech
+    generation, transcription, and translation.
 paths:
   /audio/speech:
     post:
       operationId: createSpeech
       tags:
-        - Audio
-      summary: OpenAI Create speech
+      - Audio
+      summary: Openai Create Speech
       description: >-
         Generates audio from the input text. Supports multiple voices and
         audio output formats. The maximum input length is 4096 characters.
@@ -42,6 +42,17 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateSpeechRequest'
+            examples:
+              CreatespeechRequestExample:
+                summary: Default createSpeech request
+                x-microcks-default: true
+                value:
+                  model: example_value
+                  input: example_value
+                  voice: alloy
+                  instructions: example_value
+                  response_format: mp3
+                  speed: 42.5
       responses:
         '200':
           description: Successful response with audio file.
@@ -50,26 +61,56 @@ paths:
               schema:
                 type: string
                 format: binary
+              examples:
+                Createspeech200Example:
+                  summary: Default createSpeech 200 response
+                  x-microcks-default: true
+                  value: example_value
             audio/opus:
               schema:
                 type: string
                 format: binary
+              examples:
+                Createspeech200Example:
+                  summary: Default createSpeech 200 response
+                  x-microcks-default: true
+                  value: example_value
             audio/aac:
               schema:
                 type: string
                 format: binary
+              examples:
+                Createspeech200Example:
+                  summary: Default createSpeech 200 response
+                  x-microcks-default: true
+                  value: example_value
             audio/flac:
               schema:
                 type: string
                 format: binary
+              examples:
+                Createspeech200Example:
+                  summary: Default createSpeech 200 response
+                  x-microcks-default: true
+                  value: example_value
             audio/wav:
               schema:
                 type: string
                 format: binary
+              examples:
+                Createspeech200Example:
+                  summary: Default createSpeech 200 response
+                  x-microcks-default: true
+                  value: example_value
             audio/pcm:
               schema:
                 type: string
                 format: binary
+              examples:
+                Createspeech200Example:
+                  summary: Default createSpeech 200 response
+                  x-microcks-default: true
+                  value: example_value
         '400':
           description: Bad request - invalid parameters.
         '401':
@@ -78,12 +119,15 @@ paths:
           description: Rate limit exceeded.
         '500':
           description: Internal server error.
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /audio/transcriptions:
     post:
       operationId: createTranscription
       tags:
-        - Audio
-      summary: OpenAI Create transcription
+      - Audio
+      summary: Openai Create Transcription
       description: >-
         Transcribes audio into the input language. Supports multiple audio
         formats with a maximum file size of 25 MB. Uses the Whisper model
@@ -94,6 +138,19 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/CreateTranscriptionRequest'
+            examples:
+              CreatetranscriptionRequestExample:
+                summary: Default createTranscription request
+                x-microcks-default: true
+                value:
+                  file: example_value
+                  model: example_value
+                  language: example_value
+                  prompt: example_value
+                  response_format: json
+                  temperature: 42.5
+                  timestamp_granularities:
+                  - word
       responses:
         '200':
           description: Successful response with transcribed text.
@@ -101,9 +158,39 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TranscriptionResponse'
+              examples:
+                Createtranscription200Example:
+                  summary: Default createTranscription 200 response
+                  x-microcks-default: true
+                  value:
+                    text: example_value
+                    task: transcribe
+                    language: example_value
+                    duration: 42.5
+                    words:
+                    - word: example_value
+                      start: 42.5
+                      end: 42.5
+                    segments:
+                    - id: abc123
+                      seek: 10
+                      start: 42.5
+                      end: 42.5
+                      text: example_value
+                      tokens:
+                      - {}
+                      temperature: 42.5
+                      avg_logprob: 42.5
+                      compression_ratio: 42.5
+                      no_speech_prob: 42.5
             text/plain:
               schema:
                 type: string
+              examples:
+                Createtranscription200Example:
+                  summary: Default createTranscription 200 response
+                  x-microcks-default: true
+                  value: example_value
         '400':
           description: Bad request - invalid parameters or unsupported audio format.
         '401':
@@ -112,12 +199,15 @@ paths:
           description: Rate limit exceeded.
         '500':
           description: Internal server error.
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /audio/translations:
     post:
       operationId: createTranslation
       tags:
-        - Audio
-      summary: OpenAI Create translation
+      - Audio
+      summary: Openai Create Translation
       description: >-
         Translates audio into English. Supports multiple input languages and
         audio formats with a maximum file size of 25 MB. The audio is first
@@ -128,6 +218,16 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/CreateTranslationRequest'
+            examples:
+              CreatetranslationRequestExample:
+                summary: Default createTranslation request
+                x-microcks-default: true
+                value:
+                  file: example_value
+                  model: example_value
+                  prompt: example_value
+                  response_format: json
+                  temperature: 42.5
       responses:
         '200':
           description: Successful response with translated text.
@@ -135,9 +235,35 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/TranslationResponse'
+              examples:
+                Createtranslation200Example:
+                  summary: Default createTranslation 200 response
+                  x-microcks-default: true
+                  value:
+                    text: example_value
+                    task: translate
+                    language: example_value
+                    duration: 42.5
+                    segments:
+                    - id: abc123
+                      seek: 10
+                      start: 42.5
+                      end: 42.5
+                      text: example_value
+                      tokens:
+                      - {}
+                      temperature: 42.5
+                      avg_logprob: 42.5
+                      compression_ratio: 42.5
+                      no_speech_prob: 42.5
             text/plain:
               schema:
                 type: string
+              examples:
+                Createtranslation200Example:
+                  summary: Default createTranslation 200 response
+                  x-microcks-default: true
+                  value: example_value
         '400':
           description: Bad request - invalid parameters or unsupported audio format.
         '401':
@@ -146,6 +272,9 @@ paths:
           description: Rate limit exceeded.
         '500':
           description: Internal server error.
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
 components:
   securitySchemes:
     BearerAuth:
@@ -159,9 +288,9 @@ components:
     CreateSpeechRequest:
       type: object
       required:
-        - model
-        - input
-        - voice
+      - model
+      - input
+      - voice
       properties:
         model:
           type: string
@@ -170,52 +299,56 @@ components:
             tts-1-hd is optimized for quality, and gpt-4o-mini-tts supports
             advanced voice instructions.
           examples:
-            - tts-1
-            - tts-1-hd
-            - gpt-4o-mini-tts
+          - tts-1
+          - tts-1-hd
+          - gpt-4o-mini-tts
         input:
           type: string
           maxLength: 4096
           description: >-
             The text to generate audio for. The maximum length is 4096
             characters.
+          example: example_value
         voice:
           type: string
           enum:
-            - alloy
-            - ash
-            - ballad
-            - coral
-            - echo
-            - fable
-            - onyx
-            - nova
-            - sage
-            - shimmer
-            - verse
+          - alloy
+          - ash
+          - ballad
+          - coral
+          - echo
+          - fable
+          - onyx
+          - nova
+          - sage
+          - shimmer
+          - verse
           description: >-
             The voice to use when generating the audio. Previews of the voices
             are available in the Text to Speech guide.
+          example: alloy
         instructions:
           type: string
           description: >-
             Control the voice of your generated audio with additional
             instructions. Only supported with gpt-4o-mini-tts.
+          example: example_value
         response_format:
           type: string
           enum:
-            - mp3
-            - opus
-            - aac
-            - flac
-            - wav
-            - pcm
+          - mp3
+          - opus
+          - aac
+          - flac
+          - wav
+          - pcm
           default: mp3
           description: >-
             The format to audio in. Supported formats are mp3, opus, aac, flac,
             wav, and pcm. Opus is recommended for internet streaming and
             communication, aac for digital audio compression, and flac for
             lossless audio compression.
+          example: mp3
         speed:
           type: number
           minimum: 0.25
@@ -224,11 +357,12 @@ components:
           description: >-
             The speed of the generated audio. Select a value from 0.25 to 4.0.
             1.0 is the default.
+          example: 42.5
     CreateTranscriptionRequest:
       type: object
       required:
-        - file
-        - model
+      - file
+      - model
       properties:
         file:
           type: string
@@ -237,36 +371,40 @@ components:
             The audio file object to transcribe, in one of these formats: flac,
             mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm. File uploads are
             limited to 25 MB.
+          example: example_value
         model:
           type: string
           description: >-
             ID of the model to use. Only whisper-1 and gpt-4o-transcribe are
             currently available.
           examples:
-            - whisper-1
-            - gpt-4o-transcribe
+          - whisper-1
+          - gpt-4o-transcribe
         language:
           type: string
           description: >-
             The language of the input audio. Supplying the input language in
             ISO-639-1 format will improve accuracy and latency.
+          example: example_value
         prompt:
           type: string
           description: >-
             An optional text to guide the model's style or continue a previous
             audio segment. The prompt should match the audio language.
+          example: example_value
         response_format:
           type: string
           enum:
-            - json
-            - text
-            - srt
-            - verbose_json
-            - vtt
+          - json
+          - text
+          - srt
+          - verbose_json
+          - vtt
           default: json
           description: >-
             The format of the transcript output. Defaults to json. verbose_json
             includes additional metadata like word-level timestamps.
+          example: json
         temperature:
           type: number
           minimum: 0
@@ -276,21 +414,23 @@ components:
             The sampling temperature, between 0 and 1. Higher values like 0.8
             will make the output more random, while lower values like 0.2 will
             make it more focused and deterministic.
+          example: 42.5
         timestamp_granularities:
           type: array
           items:
             type: string
             enum:
-              - word
-              - segment
+            - word
+            - segment
           description: >-
             The timestamp granularities to populate for this transcription.
             response_format must be set to verbose_json to use this parameter.
+          example: []
     CreateTranslationRequest:
       type: object
       required:
-        - file
-        - model
+      - file
+      - model
       properties:
         file:
           type: string
@@ -299,29 +439,32 @@ components:
             The audio file to translate, in one of these formats: flac, mp3,
             mp4, mpeg, mpga, m4a, ogg, wav, or webm. File uploads are limited
             to 25 MB.
+          example: example_value
         model:
           type: string
           description: >-
             ID of the model to use. Only whisper-1 is currently available for
             translation.
           examples:
-            - whisper-1
+          - whisper-1
         prompt:
           type: string
           description: >-
             An optional text to guide the model's style or continue a previous
             audio segment. The prompt should be in English.
+          example: example_value
         response_format:
           type: string
           enum:
-            - json
-            - text
-            - srt
-            - verbose_json
-            - vtt
+          - json
+          - text
+          - srt
+          - verbose_json
+          - vtt
           default: json
           description: >-
             The format of the transcript output. Defaults to json.
+          example: json
         temperature:
           type: number
           minimum: 0
@@ -329,26 +472,31 @@ components:
           default: 0
           description: >-
             The sampling temperature, between 0 and 1.
+          example: 42.5
     TranscriptionResponse:
       type: object
       required:
-        - text
+      - text
       properties:
         text:
           type: string
           description: The transcribed text.
+          example: example_value
         task:
           type: string
           enum:
-            - transcribe
+          - transcribe
           description: The task performed, always transcribe.
+          example: transcribe
         language:
           type: string
           description: The detected or specified language of the audio.
+          example: example_value
         duration:
           type: number
           format: float
           description: The duration of the input audio in seconds.
+          example: 42.5
         words:
           type: array
           description: >-
@@ -368,6 +516,7 @@ components:
                 type: number
                 format: float
                 description: End time of the word in seconds.
+          example: []
         segments:
           type: array
           description: >-
@@ -420,26 +569,31 @@ components:
                   Probability of no speech in the segment. If the value is
                   higher than 1.0 and avg_logprob is below -1, consider the
                   segment as silent.
+          example: []
     TranslationResponse:
       type: object
       required:
-        - text
+      - text
       properties:
         text:
           type: string
           description: The translated text in English.
+          example: example_value
         task:
           type: string
           enum:
-            - translate
+          - translate
           description: The task performed, always translate.
+          example: translate
         language:
           type: string
           description: The detected language of the input audio.
+          example: example_value
         duration:
           type: number
           format: float
           description: The duration of the input audio in seconds.
+          example: 42.5
         segments:
           type: array
           description: Segments of the translated text with timestamps.
@@ -474,3 +628,4 @@ components:
               no_speech_prob:
                 type: number
                 format: float
+          example: []

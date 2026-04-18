@@ -1,0 +1,73 @@
+naftiko: "1.0.0-alpha1"
+info:
+  label: "OpenAI Embeddings"
+  description: "Embeddings API for generating vector representations of text for search and similarity."
+  tags:
+    - OpenAI
+    - Embeddings
+    - Vectors
+  created: "2026-04-18"
+  modified: "2026-04-18"
+binds:
+  - namespace: env
+    keys:
+      OPENAI_API_KEY: OPENAI_API_KEY
+capability:
+  consumes:
+    - type: http
+      namespace: openai-embeddings
+      baseUri: https://api.openai.com/v1
+      description: "OpenAI Embeddings API."
+      authentication:
+        type: bearer
+        token: "{{OPENAI_API_KEY}}"
+      resources:
+        - name: embeddings
+          path: /embeddings
+          description: "Embedding operations"
+          operations:
+            - name: create-embedding
+              method: POST
+              description: "Creates an embedding vector representing the input text."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+              body:
+                type: json
+                data:
+                  input: "{{tools.input}}"
+                  model: "{{tools.model}}"
+  exposes:
+    - type: rest
+      port: 8103
+      namespace: openai-embeddings-api
+      resources:
+        - path: /v1/embeddings
+          name: embeddings
+          description: "Embedding endpoint"
+          operations:
+            - method: POST
+              name: create-embedding
+              description: "Create an embedding"
+              call: "openai-embeddings.create-embedding"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+    - type: mcp
+      port: 9103
+      namespace: openai-embeddings-mcp
+      transport: http
+      tools:
+        - name: create-embedding
+          description: "Generate vector embeddings for text input"
+          hints:
+            readOnly: false
+          call: "openai-embeddings.create-embedding"
+          with:
+            input: "tools.input"
+            model: "tools.model"
+          outputParameters:
+            - type: object
+              mapping: "$."

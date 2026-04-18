@@ -1,0 +1,77 @@
+naftiko: "1.0.0-alpha1"
+info:
+  label: "OpenAI Chat"
+  description: "Chat Completions API for generating conversational responses using GPT models."
+  tags:
+    - OpenAI
+    - Chat
+    - Completions
+  created: "2026-04-18"
+  modified: "2026-04-18"
+binds:
+  - namespace: env
+    keys:
+      OPENAI_API_KEY: OPENAI_API_KEY
+capability:
+  consumes:
+    - type: http
+      namespace: openai-chat
+      baseUri: https://api.openai.com/v1
+      description: "OpenAI Chat Completions API."
+      authentication:
+        type: bearer
+        token: "{{OPENAI_API_KEY}}"
+      resources:
+        - name: chat
+          path: /chat
+          description: "Chat completion operations"
+          operations:
+            - name: create-chat-completion
+              method: POST
+              description: "Creates a model response for the given chat conversation."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+              body:
+                type: json
+                data:
+                  model: "{{tools.model}}"
+                  messages: "{{tools.messages}}"
+                  temperature: "{{tools.temperature}}"
+                  max_tokens: "{{tools.max_tokens}}"
+  exposes:
+    - type: rest
+      port: 8100
+      namespace: openai-chat-api
+      resources:
+        - path: /v1/chat/completions
+          name: completions
+          description: "Chat completion endpoint"
+          operations:
+            - method: POST
+              name: create-completion
+              description: "Create a chat completion"
+              call: "openai-chat.create-chat-completion"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+    - type: mcp
+      port: 9100
+      namespace: openai-chat-mcp
+      transport: http
+      tools:
+        - name: create-chat-completion
+          description: "Generate a chat completion response from GPT models"
+          hints:
+            readOnly: false
+          call: "openai-chat.create-chat-completion"
+          with:
+            model: "tools.model"
+            messages: "tools.messages"
+            temperature: "tools.temperature"
+            max_tokens: "tools.max_tokens"
+          outputParameters:
+            - type: object
+              mapping: "$."

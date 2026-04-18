@@ -1,0 +1,208 @@
+naftiko: "1.0.0-alpha1"
+
+info:
+  label: "OpenAI Content Generation"
+  description: "Unified content generation combining Chat, Images, Audio, and Embeddings APIs for developers to generate text, images, speech, and vector representations."
+  tags:
+    - OpenAI
+    - Content Generation
+    - AI
+  created: "2026-04-18"
+  modified: "2026-04-18"
+
+binds:
+  - namespace: env
+    keys:
+      OPENAI_API_KEY: OPENAI_API_KEY
+
+capability:
+  consumes:
+    - import: openai-chat
+      location: ./shared/chat.yaml
+    - import: openai-images
+      location: ./shared/images.yaml
+    - import: openai-audio
+      location: ./shared/audio.yaml
+    - import: openai-embeddings
+      location: ./shared/embeddings.yaml
+    - import: openai-models
+      location: ./shared/models.yaml
+
+  exposes:
+    - type: rest
+      port: 8080
+      namespace: content-generation-api
+      description: "Unified REST API for AI content generation."
+      resources:
+        - path: /v1/chat/completions
+          name: chat
+          description: "Chat completion"
+          operations:
+            - method: POST
+              name: create-chat-completion
+              description: "Create a chat completion"
+              call: "openai-chat.create-chat-completion"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/images/generations
+          name: images
+          description: "Image generation"
+          operations:
+            - method: POST
+              name: create-image
+              description: "Generate an image"
+              call: "openai-images.create-image"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/audio/speech
+          name: speech
+          description: "Text to speech"
+          operations:
+            - method: POST
+              name: create-speech
+              description: "Generate speech"
+              call: "openai-audio.create-speech"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/embeddings
+          name: embeddings
+          description: "Text embeddings"
+          operations:
+            - method: POST
+              name: create-embedding
+              description: "Create embeddings"
+              call: "openai-embeddings.create-embedding"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+        - path: /v1/models
+          name: models
+          description: "Available models"
+          operations:
+            - method: GET
+              name: list-models
+              description: "List models"
+              call: "openai-models.list-models"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+
+    - type: mcp
+      port: 9080
+      namespace: content-generation-mcp
+      transport: http
+      description: "MCP server for AI-assisted content generation across text, image, audio, and embedding modalities."
+      tools:
+        - name: chat-create-completion
+          description: "Generate a conversational response using GPT models"
+          hints:
+            readOnly: false
+          call: "openai-chat.create-chat-completion"
+          with:
+            model: "tools.model"
+            messages: "tools.messages"
+            temperature: "tools.temperature"
+            max_tokens: "tools.max_tokens"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: images-create
+          description: "Generate an image from a text prompt using DALL-E"
+          hints:
+            readOnly: false
+          call: "openai-images.create-image"
+          with:
+            prompt: "tools.prompt"
+            model: "tools.model"
+            n: "tools.n"
+            size: "tools.size"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: images-edit
+          description: "Edit an existing image with a text prompt"
+          hints:
+            readOnly: false
+          call: "openai-images.create-image-edit"
+          with:
+            image: "tools.image"
+            prompt: "tools.prompt"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: images-create-variation
+          description: "Create a variation of an existing image"
+          hints:
+            readOnly: false
+          call: "openai-images.create-image-variation"
+          with:
+            image: "tools.image"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: audio-create-speech
+          description: "Generate audio from text using TTS models"
+          hints:
+            readOnly: false
+          call: "openai-audio.create-speech"
+          with:
+            model: "tools.model"
+            input: "tools.input"
+            voice: "tools.voice"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: audio-create-transcription
+          description: "Transcribe audio to text using Whisper"
+          hints:
+            readOnly: false
+          call: "openai-audio.create-transcription"
+          with:
+            file: "tools.file"
+            model: "tools.model"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: audio-create-translation
+          description: "Translate audio to English text"
+          hints:
+            readOnly: false
+          call: "openai-audio.create-translation"
+          with:
+            file: "tools.file"
+            model: "tools.model"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: embeddings-create
+          description: "Generate vector embeddings for text input"
+          hints:
+            readOnly: false
+          call: "openai-embeddings.create-embedding"
+          with:
+            input: "tools.input"
+            model: "tools.model"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: models-list
+          description: "List all available OpenAI models"
+          hints:
+            readOnly: true
+          call: "openai-models.list-models"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: models-get
+          description: "Get details of a specific model"
+          hints:
+            readOnly: true
+          call: "openai-models.retrieve-model"
+          with:
+            model: "tools.model"
+          outputParameters:
+            - type: object
+              mapping: "$."

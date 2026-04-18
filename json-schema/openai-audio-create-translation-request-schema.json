@@ -1,0 +1,27 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CreateTranslationRequest",
+  "type": "object",
+  "properties": {
+    "file": {
+      "type": "string",
+      "description": "The audio file to translate, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm. File uploads are limited to 25 MB."
+    },
+    "model": {
+      "type": "string",
+      "description": "ID of the model to use. Only whisper-1 is currently available for translation."
+    },
+    "prompt": {
+      "type": "string",
+      "description": "An optional text to guide the model's style or continue a previous audio segment. The prompt should be in English."
+    },
+    "response_format": {
+      "type": "string",
+      "description": "The format of the transcript output. Defaults to json."
+    },
+    "temperature": {
+      "type": "number",
+      "description": "The sampling temperature, between 0 and 1."
+    }
+  }
+}

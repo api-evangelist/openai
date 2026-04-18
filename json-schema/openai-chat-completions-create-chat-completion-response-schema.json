@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CreateChatCompletionResponse",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "A unique identifier for the chat completion."
+    },
+    "object": {
+      "type": "string",
+      "description": "The object type, always chat.completion."
+    },
+    "created": {
+      "type": "integer",
+      "description": "The Unix timestamp (in seconds) of when the completion was created."
+    },
+    "model": {
+      "type": "string",
+      "description": "The model used for the chat completion."
+    },
+    "choices": {
+      "type": "array",
+      "description": "A list of chat completion choices."
+    },
+    "system_fingerprint": {
+      "type": "string",
+      "description": "This fingerprint represents the backend configuration that the model runs with. Can be used with the seed parameter to detect backend changes."
+    },
+    "service_tier": {
+      "type": "string",
+      "description": "The service tier used for processing the request."
+    }
+  }
+}

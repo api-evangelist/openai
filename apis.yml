@@ -1056,7 +1056,8 @@ common:
     type: RateLimits
     description: The rate limits for this API.
   - url: https://status.openai.com/
-    type: Status Page
+    name: OpenAI Status
+    type: StatusPage
   - url: https://platform.openai.com/api-keys
     type: API Keys
   - url: https://platform.openai.com/signup
@@ -1195,8 +1196,73 @@ common:
     name: OpenAI ChatKit JS SDK
     type: GitHubRepository
     description: 'null'
+  - type: SpectralRules
+    url: rules/openai-spectral-rules.yml
+  - type: Vocabulary
+    url: vocabulary/openai-vocabulary.yaml
+  - type: Features
+    url: https://platform.openai.com/docs/overview
+    data:
+      - name: Chat Completions
+        description: Generate conversational responses using GPT models with multi-turn message history, function calling, and structured outputs.
+      - name: Responses API
+        description: Advanced model response interface combining Chat Completions and Assistants with built-in tools like web search and code interpreter.
+      - name: Assistants
+        description: Build AI assistants with persistent threads, code interpreter, file search, and function calling capabilities.
+      - name: Realtime API
+        description: Low-latency bidirectional communication for speech-to-speech interactions via WebRTC, WebSocket, and SIP connections.
+      - name: Image Generation
+        description: Create, edit, and generate variations of images using DALL-E models from text prompts.
+      - name: Audio and Speech
+        description: Text-to-speech synthesis and speech-to-text transcription and translation using Whisper and TTS models.
+      - name: Embeddings
+        description: Generate vector representations of text for semantic search, clustering, and recommendation use cases.
+      - name: Fine-Tuning
+        description: Customize models on your own training data to improve performance for specific tasks and domains.
+      - name: Batch Processing
+        description: Asynchronous processing of up to 50,000 requests at 50% cost discount with 24-hour completion window.
+      - name: Evals
+        description: Programmatically configure and run evaluations to test model outputs against quality and content criteria.
+      - name: Video Generation
+        description: Create, extend, and remix videos using Sora models from text prompts via the Videos API.
+      - name: Vector Stores
+        description: Managed document storage with automatic chunking, embedding, and semantic search for file_search tool.
+  - type: UseCases
+    url: https://openai.com/api/
+    data:
+      - name: Conversational AI
+        description: Build chatbots, virtual assistants, and customer support agents using Chat Completions or Responses API.
+      - name: Content Generation
+        description: Generate marketing copy, articles, product descriptions, and creative writing with controllable tone and style.
+      - name: Code Generation
+        description: Automate code writing, debugging, refactoring, and documentation generation across programming languages.
+      - name: Document Analysis
+        description: Extract, summarize, and answer questions from uploaded documents using Assistants with file search.
+      - name: Voice Agents
+        description: Build real-time voice-based AI agents for customer service, sales, and interactive experiences.
+      - name: Semantic Search
+        description: Implement intelligent search using embeddings and vector stores for knowledge bases and document retrieval.
+      - name: Content Moderation
+        description: Automatically classify and filter harmful content across text and images using the Moderations API.
+      - name: Data Extraction
+        description: Extract structured data from unstructured text using function calling and structured outputs.
+  - type: Integrations
+    url: https://platform.openai.com/docs/libraries
+    data:
+      - name: Python SDK
+        description: Official Python client library for accessing all OpenAI API endpoints with async support and streaming.
+      - name: Node.js SDK
+        description: Official TypeScript and JavaScript client library for server-side and edge runtime OpenAI API integration.
+      - name: Microsoft Azure OpenAI
+        description: Run OpenAI models on Azure infrastructure with enterprise security, compliance, and regional data residency.
+      - name: LangChain
+        description: Framework integration for building LLM-powered applications with chains, agents, and retrieval-augmented generation.
+      - name: Vercel AI SDK
+        description: Integration with Vercel AI SDK for building streaming AI-powered web applications with React and Next.js.
+      - name: Zapier
+        description: No-code automation integration connecting OpenAI to thousands of apps for automated AI-powered workflows.
 created: '2024-04-14'
-modified: '2026-03-16'
+modified: '2026-04-18'
 position: Consuming
 description: >-
   APIs for accessing OpenAI's artificial intelligence models including GPT, DALL-E,

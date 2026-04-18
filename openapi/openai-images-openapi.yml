@@ -17,21 +17,21 @@ info:
     name: MIT
     url: https://github.com/openai/openai-openapi/blob/master/LICENSE
 servers:
-  - url: https://api.openai.com/v1
-    description: OpenAI API production server
+- url: https://api.openai.com/v1
+  description: OpenAI API production server
 security:
-  - BearerAuth: []
+- BearerAuth: []
 tags:
-  - name: Images
-    description: >-
-      Given a prompt and/or an input image, the model will generate a new image.
+- name: Images
+  description: >-
+    Given a prompt and/or an input image, the model will generate a new image.
 paths:
   /images/generations:
     post:
       operationId: createImage
       tags:
-        - Images
-      summary: OpenAI Create image
+      - Images
+      summary: Openai Create Image
       description: >-
         Creates an image given a prompt. Supports DALL-E 2, DALL-E 3, and
         gpt-image-1 models. Returns one or more generated images as URLs or
@@ -42,6 +42,19 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/CreateImageRequest'
+            examples:
+              CreateimageRequestExample:
+                summary: Default createImage request
+                x-microcks-default: true
+                value:
+                  prompt: example_value
+                  model: example_value
+                  n: 10
+                  quality: standard
+                  response_format: url
+                  size: 256x256
+                  style: vivid
+                  user: example_value
       responses:
         '200':
           description: Successful response with generated image(s).
@@ -49,6 +62,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ImagesResponse'
+              examples:
+                Createimage200Example:
+                  summary: Default createImage 200 response
+                  x-microcks-default: true
+                  value:
+                    created: 10
+                    data:
+                    - url: https://www.example.com
+                      b64_json: example_value
+                      revised_prompt: example_value
         '400':
           description: Bad request - invalid parameters.
         '401':
@@ -57,12 +80,15 @@ paths:
           description: Rate limit exceeded.
         '500':
           description: Internal server error.
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /images/edits:
     post:
       operationId: createImageEdit
       tags:
-        - Images
-      summary: OpenAI Create image edit
+      - Images
+      summary: Openai Create Image Edit
       description: >-
         Creates an edited or extended image given an original image and a prompt.
         The model will generate a new image based on the prompt, using the
@@ -74,6 +100,19 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/CreateImageEditRequest'
+            examples:
+              CreateimageeditRequestExample:
+                summary: Default createImageEdit request
+                x-microcks-default: true
+                value:
+                  image: example_value
+                  prompt: example_value
+                  mask: example_value
+                  model: example_value
+                  n: 10
+                  size: 256x256
+                  response_format: url
+                  user: example_value
       responses:
         '200':
           description: Successful response with edited image(s).
@@ -81,6 +120,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ImagesResponse'
+              examples:
+                Createimageedit200Example:
+                  summary: Default createImageEdit 200 response
+                  x-microcks-default: true
+                  value:
+                    created: 10
+                    data:
+                    - url: https://www.example.com
+                      b64_json: example_value
+                      revised_prompt: example_value
         '400':
           description: Bad request - invalid parameters.
         '401':
@@ -89,12 +138,15 @@ paths:
           description: Rate limit exceeded.
         '500':
           description: Internal server error.
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
   /images/variations:
     post:
       operationId: createImageVariation
       tags:
-        - Images
-      summary: OpenAI Create image variation
+      - Images
+      summary: Openai Create Image Variation
       description: >-
         Creates a variation of a given image. Only supported with DALL-E 2.
       requestBody:
@@ -103,6 +155,17 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/CreateImageVariationRequest'
+            examples:
+              CreateimagevariationRequestExample:
+                summary: Default createImageVariation request
+                x-microcks-default: true
+                value:
+                  image: example_value
+                  model: example_value
+                  n: 10
+                  response_format: url
+                  size: 256x256
+                  user: example_value
       responses:
         '200':
           description: Successful response with image variation(s).
@@ -110,6 +173,16 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ImagesResponse'
+              examples:
+                Createimagevariation200Example:
+                  summary: Default createImageVariation 200 response
+                  x-microcks-default: true
+                  value:
+                    created: 10
+                    data:
+                    - url: https://www.example.com
+                      b64_json: example_value
+                      revised_prompt: example_value
         '400':
           description: Bad request - invalid parameters.
         '401':
@@ -118,6 +191,9 @@ paths:
           description: Rate limit exceeded.
         '500':
           description: Internal server error.
+      x-microcks-operation:
+        delay: 0
+        dispatcher: FALLBACK
 components:
   securitySchemes:
     BearerAuth:
@@ -131,7 +207,7 @@ components:
     CreateImageRequest:
       type: object
       required:
-        - prompt
+      - prompt
       properties:
         prompt:
           type: string
@@ -139,15 +215,16 @@ components:
           description: >-
             A text description of the desired image(s). The maximum length is
             1000 characters for DALL-E 2 and 32000 characters for gpt-image-1.
+          example: example_value
         model:
           type: string
           default: dall-e-2
           description: >-
             The model to use for image generation. Defaults to dall-e-2.
           examples:
-            - dall-e-2
-            - dall-e-3
-            - gpt-image-1
+          - dall-e-2
+          - dall-e-3
+          - gpt-image-1
         n:
           type: integer
           minimum: 1
@@ -156,61 +233,67 @@ components:
           description: >-
             The number of images to generate. Must be between 1 and 10. For
             DALL-E 3, only n=1 is supported.
+          example: 10
         quality:
           type: string
           enum:
-            - standard
-            - hd
-            - low
-            - medium
-            - high
-            - auto
+          - standard
+          - hd
+          - low
+          - medium
+          - high
+          - auto
           default: auto
           description: >-
             The quality of the image. hd creates images with finer details and
             greater consistency. For gpt-image-1 use low, medium, high, or auto.
+          example: standard
         response_format:
           type: string
           enum:
-            - url
-            - b64_json
+          - url
+          - b64_json
           default: url
           description: >-
             The format in which the generated images are returned. Must be one
             of url or b64_json. URLs are only valid for 60 minutes.
+          example: url
         size:
           type: string
           enum:
-            - 256x256
-            - 512x512
-            - 1024x1024
-            - 1792x1024
-            - 1024x1792
-            - auto
+          - 256x256
+          - 512x512
+          - 1024x1024
+          - 1792x1024
+          - 1024x1792
+          - auto
           default: 1024x1024
           description: >-
             The size of the generated images. Must be one of the supported
             sizes for the model being used.
+          example: 256x256
         style:
           type: string
           enum:
-            - vivid
-            - natural
+          - vivid
+          - natural
           default: vivid
           description: >-
             The style of the generated images. Vivid generates hyper-real and
             dramatic images. Natural produces more natural, less hyper-real
             images. Only supported for DALL-E 3.
+          example: vivid
         user:
           type: string
           description: >-
             A unique identifier representing your end-user, which can help
             OpenAI to monitor and detect abuse.
+          example: example_value
     CreateImageEditRequest:
       type: object
       required:
-        - image
-        - prompt
+      - image
+      - prompt
       properties:
         image:
           type: string
@@ -219,12 +302,14 @@ components:
             The image to edit. Must be a valid PNG file, less than 4MB, and
             square. If mask is not provided, the image must have transparency
             which will be used as the mask.
+          example: example_value
         prompt:
           type: string
           maxLength: 32000
           description: >-
             A text description of the desired image(s). The maximum length is
             1000 characters for DALL-E 2 and 32000 characters for gpt-image-1.
+          example: example_value
         mask:
           type: string
           format: binary
@@ -232,42 +317,47 @@ components:
             An additional image whose fully transparent areas indicate where
             the image should be edited. Must be a valid PNG file, less than
             4MB, and have the same dimensions as image.
+          example: example_value
         model:
           type: string
           default: dall-e-2
           description: The model to use for image editing.
           examples:
-            - dall-e-2
-            - gpt-image-1
+          - dall-e-2
+          - gpt-image-1
         n:
           type: integer
           minimum: 1
           maximum: 10
           default: 1
           description: The number of images to generate.
+          example: 10
         size:
           type: string
           enum:
-            - 256x256
-            - 512x512
-            - 1024x1024
-            - auto
+          - 256x256
+          - 512x512
+          - 1024x1024
+          - auto
           default: 1024x1024
           description: The size of the generated images.
+          example: 256x256
         response_format:
           type: string
           enum:
-            - url
-            - b64_json
+          - url
+          - b64_json
           default: url
           description: The format in which the generated images are returned.
+          example: url
         user:
           type: string
           description: A unique identifier representing your end-user.
+          example: example_value
     CreateImageVariationRequest:
       type: object
       required:
-        - image
+      - image
       properties:
         image:
           type: string
@@ -275,48 +365,56 @@ components:
           description: >-
             The image to use as the basis for the variation(s). Must be a valid
             PNG file, less than 4MB, and square.
+          example: example_value
         model:
           type: string
           default: dall-e-2
           description: The model to use for image variation. Only DALL-E 2 is supported.
+          example: example_value
         n:
           type: integer
           minimum: 1
           maximum: 10
           default: 1
           description: The number of images to generate.
+          example: 10
         response_format:
           type: string
           enum:
-            - url
-            - b64_json
+          - url
+          - b64_json
           default: url
           description: The format in which the generated images are returned.
+          example: url
         size:
           type: string
           enum:
-            - 256x256
-            - 512x512
-            - 1024x1024
+          - 256x256
+          - 512x512
+          - 1024x1024
           default: 1024x1024
           description: The size of the generated images.
+          example: 256x256
         user:
           type: string
           description: A unique identifier representing your end-user.
+          example: example_value
     ImagesResponse:
       type: object
       required:
-        - created
-        - data
+      - created
+      - data
       properties:
         created:
           type: integer
           description: The Unix timestamp (in seconds) when the images were created.
+          example: 10
         data:
           type: array
           description: The list of generated images.
           items:
             $ref: '#/components/schemas/Image'
+          example: []
     Image:
       type: object
       properties:
@@ -326,13 +424,16 @@ components:
           description: >-
             The URL of the generated image, if response_format is url. The URL
             is valid for 60 minutes.
+          example: https://www.example.com
         b64_json:
           type: string
           description: >-
             The base64-encoded JSON of the generated image, if response_format
             is b64_json.
+          example: example_value
         revised_prompt:
           type: string
           description: >-
             The prompt that was used to generate the image, if there was any
             revision to the prompt. Only present for DALL-E 3 and gpt-image-1.
+          example: example_value

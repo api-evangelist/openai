@@ -1,0 +1,113 @@
+naftiko: "1.0.0-alpha1"
+info:
+  label: "OpenAI Models"
+  description: "Models API for listing, retrieving, and deleting available models."
+  tags:
+    - OpenAI
+    - Models
+  created: "2026-04-18"
+  modified: "2026-04-18"
+binds:
+  - namespace: env
+    keys:
+      OPENAI_API_KEY: OPENAI_API_KEY
+capability:
+  consumes:
+    - type: http
+      namespace: openai-models
+      baseUri: https://api.openai.com/v1
+      description: "OpenAI Models API."
+      authentication:
+        type: bearer
+        token: "{{OPENAI_API_KEY}}"
+      resources:
+        - name: models
+          path: /models
+          description: "Model operations"
+          operations:
+            - name: list-models
+              method: GET
+              description: "Lists the currently available models."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+            - name: retrieve-model
+              method: GET
+              description: "Retrieves a model instance by ID."
+              inputParameters:
+                - name: model
+                  in: path
+                  type: string
+                  required: true
+                  description: "Model ID."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+            - name: delete-model
+              method: DELETE
+              description: "Deletes a fine-tuned model."
+              inputParameters:
+                - name: model
+                  in: path
+                  type: string
+                  required: true
+                  description: "Model ID."
+              outputRawFormat: json
+              outputParameters:
+                - name: result
+                  type: object
+                  value: "$."
+  exposes:
+    - type: rest
+      port: 8104
+      namespace: openai-models-api
+      resources:
+        - path: /v1/models
+          name: models
+          description: "Models endpoint"
+          operations:
+            - method: GET
+              name: list-models
+              description: "List available models"
+              call: "openai-models.list-models"
+              outputParameters:
+                - type: object
+                  mapping: "$."
+    - type: mcp
+      port: 9104
+      namespace: openai-models-mcp
+      transport: http
+      tools:
+        - name: list-models
+          description: "List all available OpenAI models"
+          hints:
+            readOnly: true
+          call: "openai-models.list-models"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: retrieve-model
+          description: "Get details of a specific model"
+          hints:
+            readOnly: true
+          call: "openai-models.retrieve-model"
+          with:
+            model: "tools.model"
+          outputParameters:
+            - type: object
+              mapping: "$."
+        - name: delete-model
+          description: "Delete a fine-tuned model"
+          hints:
+            readOnly: false
+            destructive: true
+          call: "openai-models.delete-model"
+          with:
+            model: "tools.model"
+          outputParameters:
+            - type: object
+              mapping: "$."

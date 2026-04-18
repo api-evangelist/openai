@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "CreateImageRequest",
+  "type": "object",
+  "properties": {
+    "prompt": {
+      "type": "string",
+      "description": "A text description of the desired image(s). The maximum length is 1000 characters for DALL-E 2 and 32000 characters for gpt-image-1."
+    },
+    "model": {
+      "type": "string",
+      "description": "The model to use for image generation. Defaults to dall-e-2."
+    },
+    "n": {
+      "type": "integer",
+      "description": "The number of images to generate. Must be between 1 and 10. For DALL-E 3, only n=1 is supported."
+    },
+    "quality": {
+      "type": "string",
+      "description": "The quality of the image. hd creates images with finer details and greater consistency. For gpt-image-1 use low, medium, high, or auto."
+    },
+    "response_format": {
+      "type": "string",
+      "description": "The format in which the generated images are returned. Must be one of url or b64_json. URLs are only valid for 60 minutes."
+    },
+    "size": {
+      "type": "string",
+      "description": "The size of the generated images. Must be one of the supported sizes for the model being used."
+    },
+    "style": {
+      "type": "string",
+      "description": "The style of the generated images. Vivid generates hyper-real and dramatic images. Natural produces more natural, less hyper-real images. Only supported for DALL-E 3."
+    },
+    "user": {
+      "type": "string",
+      "description": "A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse."
+    }
+  }
+}
