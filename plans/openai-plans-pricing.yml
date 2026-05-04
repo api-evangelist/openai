@@ -1,0 +1,238 @@
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: OpenAI
+providerId: openai
+created: '2026-05-04'
+modified: '2026-05-04'
+reconciled: true
+tags:
+  - AI
+  - LLM
+  - GPT
+  - Foundation Models
+description: OpenAI per-token API pricing across the GPT-5 family. Standard tier; regional data residency
+  adds 10% uplift; Batch and Flex pricing offer reductions.
+sources:
+  - https://developers.openai.com/api/docs/pricing
+  - https://platform.openai.com/docs/guides/rate-limits
+plans:
+  - id: openai-gpt-5-5
+    name: GPT-5.5
+    type: usage-based
+    description: Flagship general-purpose model.
+    entries:
+      - label: Input tokens
+        name: input
+        type: metered
+        metric: tokens
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1000000
+        price: '5.00'
+        userMultiplied: false
+      - label: Output tokens
+        name: output
+        type: metered
+        metric: tokens
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1000000
+        price: '30.00'
+        userMultiplied: false
+      - label: Cached input
+        name: cached
+        type: metered
+        metric: tokens
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1000000
+        price: '0.50'
+        userMultiplied: false
+    elements:
+      - name: Vision
+      - name: Tool use
+      - name: Structured outputs
+      - name: Batch API (50% discount)
+  - id: openai-gpt-5-5-pro
+    name: GPT-5.5 Pro
+    type: usage-based
+    description: Highest reasoning tier.
+    entries:
+      - label: Input tokens
+        name: input
+        type: metered
+        metric: tokens
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1000000
+        price: '30.00'
+        userMultiplied: false
+      - label: Output tokens
+        name: output
+        type: metered
+        metric: tokens
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1000000
+        price: '180.00'
+        userMultiplied: false
+    elements:
+      - name: Extended reasoning
+      - name: Multimodal
+  - id: openai-gpt-5-4
+    name: GPT-5.4
+    type: usage-based
+    description: Mid-tier balanced model.
+    entries:
+      - label: Input tokens
+        name: input
+        type: metered
+        metric: tokens
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1000000
+        price: '2.50'
+        userMultiplied: false
+      - label: Output tokens
+        name: output
+        type: metered
+        metric: tokens
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1000000
+        price: '15.00'
+        userMultiplied: false
+      - label: Cached input
+        name: cached
+        type: metered
+        metric: tokens
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1000000
+        price: '0.25'
+        userMultiplied: false
+    elements:
+      - name: Vision
+      - name: Tool use
+  - id: openai-gpt-5-4-mini
+    name: GPT-5.4 Mini
+    type: usage-based
+    description: Cost-optimized model.
+    entries:
+      - label: Input tokens
+        name: input
+        type: metered
+        metric: tokens
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1000000
+        price: '0.75'
+        userMultiplied: false
+      - label: Output tokens
+        name: output
+        type: metered
+        metric: tokens
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1000000
+        price: '4.50'
+        userMultiplied: false
+      - label: Cached input
+        name: cached
+        type: metered
+        metric: tokens
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1000000
+        price: '0.075'
+        userMultiplied: false
+    elements:
+      - name: Vision
+      - name: Tool use
+  - id: openai-gpt-5-4-nano
+    name: GPT-5.4 Nano
+    type: usage-based
+    description: Cheapest model in the lineup.
+    entries:
+      - label: Input tokens
+        name: input
+        type: metered
+        metric: tokens
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1000000
+        price: '0.20'
+        userMultiplied: false
+      - label: Output tokens
+        name: output
+        type: metered
+        metric: tokens
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1000000
+        price: '1.25'
+        userMultiplied: false
+      - label: Cached input
+        name: cached
+        type: metered
+        metric: tokens
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1000000
+        price: '0.02'
+        userMultiplied: false
+    elements:
+      - name: High-volume use cases
+  - id: openai-realtime-1-5
+    name: GPT Realtime 1.5
+    type: usage-based
+    description: Realtime voice/audio model (text rates shown).
+    entries:
+      - label: Input text tokens
+        name: input_text
+        type: metered
+        metric: tokens
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1000000
+        price: '4.00'
+        userMultiplied: false
+      - label: Output text tokens
+        name: output_text
+        type: metered
+        metric: tokens
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1000000
+        price: '16.00'
+        userMultiplied: false
+      - label: Cached text
+        name: cached_text
+        type: metered
+        metric: tokens
+        limit: -1
+        timeFrame: usage
+        geo: global
+        unit: 1000000
+        price: '0.40'
+        userMultiplied: false
+    elements:
+      - name: Realtime voice
+      - name: Audio input/output (separate audio rates)

@@ -1,0 +1,86 @@
+specification: FinOps Framework
+specificationVersion: '1.0'
+schema: https://www.finops.org/framework/
+provider: OpenAI
+providerId: openai
+created: '2026-05-04'
+modified: '2026-05-04'
+reconciled: true
+tags:
+  - FinOps
+  - FOCUS
+  - AI
+  - Tokens
+description: 'FOCUS-aligned FinOps for OpenAI: token-based metering across model tiers with batch and
+  cached-input lanes.'
+sources:
+  - https://developers.openai.com/api/docs/pricing
+  - https://platform.openai.com/docs/guides/rate-limits
+alignedWith:
+  framework: FinOps Foundation Framework
+  frameworkUrl: https://www.finops.org/framework/
+  dataSpec: FOCUS
+  dataSpecVersion: '1.3'
+  dataSpecUrl: https://focus.finops.org/focus-specification/v1-3/
+publisherName: OpenAI
+serviceCategory: AI and Machine Learning
+billingModel:
+  pricingCategory: Usage-Based
+  billingFrequency: Monthly
+  billingCurrency: USD
+  primaryUnit: token
+focusColumns:
+  ServiceName: OpenAI API
+  ServiceCategory: AI and Machine Learning
+  ProviderName: OpenAI
+  PublisherName: OpenAI
+  PricingUnit: MTok
+meters:
+  - name: input_tokens
+    unit: token
+    aggregation: sum
+    dimensions:
+      - model
+      - project
+      - user
+      - cached
+  - name: output_tokens
+    unit: token
+    aggregation: sum
+    dimensions:
+      - model
+      - project
+      - user
+  - name: cached_input_tokens
+    unit: token
+    aggregation: sum
+    dimensions:
+      - model
+  - name: image_generations
+    unit: image
+    aggregation: sum
+  - name: audio_minutes
+    unit: minute
+    aggregation: sum
+  - name: embeddings_tokens
+    unit: token
+    aggregation: sum
+  - name: fine_tuning_training_tokens
+    unit: token
+    aggregation: sum
+discountModels:
+  - name: Cached input
+    discount: ~10x cheaper than uncached
+  - name: Batch API
+    discount: 50% off
+  - name: Flex tier
+    discount: Reduced cost / lower priority
+principles:
+  - name: Visibility
+    description: Use Usage dashboard and Cost Tracking API for per-project spend.
+  - name: Allocation
+    description: Use API keys per project; tag requests with metadata for chargeback.
+  - name: Optimization
+    description: Pick the smallest viable model, prompt-cache repeated content, batch async work.
+  - name: Accountability
+    description: Set per-project hard spend limits and email alerts.

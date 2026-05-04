@@ -1,0 +1,57 @@
+specification: API Commons Rate Limits
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
+provider: OpenAI
+providerId: openai
+created: '2026-05-04'
+modified: '2026-05-04'
+reconciled: true
+tags:
+  - Rate Limiting
+  - AI
+description: 'OpenAI rate limits scale by usage tier (Tier 1-5+) which advances automatically based on
+  cumulative spend. Five metrics: RPM, RPD, TPM, TPD, IPM.'
+sources:
+  - https://developers.openai.com/api/docs/pricing
+  - https://platform.openai.com/docs/guides/rate-limits
+headers:
+  limitRequests: x-ratelimit-limit-requests
+  limitTokens: x-ratelimit-limit-tokens
+  remainingRequests: x-ratelimit-remaining-requests
+  remainingTokens: x-ratelimit-remaining-tokens
+  resetRequests: x-ratelimit-reset-requests
+  resetTokens: x-ratelimit-reset-tokens
+responseCodes:
+  throttled: 429
+tiers:
+  - name: Free
+    qualification: trial credit
+    notes: Most-restricted limits, evaluation only.
+  - name: Tier 1
+    qualification: $5 paid
+    rpm_gpt5: 1000
+    tpm_gpt5: 500000
+  - name: Tier 2
+    qualification: $50 paid + 7 days
+  - name: Tier 3
+    qualification: $100 paid + 7 days
+  - name: Tier 4
+    qualification: $250 paid + 14 days
+  - name: Tier 5
+    qualification: $1,000 paid + 30 days
+    rpm_gpt5: 10000
+    tpm_gpt5: 5000000
+metrics:
+  - RPM (requests/minute)
+  - RPD (requests/day)
+  - TPM (tokens/minute)
+  - TPD (tokens/day)
+  - IPM (images/minute)
+policies:
+  - name: Auto tier advancement
+    description: Tier upgrades happen automatically when both spend and account-age thresholds are crossed.
+  - name: Above Tier 5
+    description: Contact OpenAI sales for custom limits beyond Tier 5.
+  - name: Per-model limits
+    description: Each model has its own RPM/TPM ceiling; check the platform.openai.com/account/limits
+      page.
