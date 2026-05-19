@@ -1,0 +1,80 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: OpenAI Chat — Chat
+  description: 'OpenAI Chat — Chat. 1 operations. Lead operation: OpenAI Creates a model response for the given chat conversation..
+    Self-contained Naftiko capability covering one Openai business surface.'
+  tags:
+  - Openai
+  - Chat
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    OPENAI_API_KEY: OPENAI_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: chat-chat
+    baseUri: https://api.openai.com/v1
+    description: OpenAI Chat — Chat business capability. Self-contained, no shared references.
+    resources:
+    - name: chat-completions
+      path: /chat/completions
+      operations:
+      - name: createchatcompletion
+        method: POST
+        description: OpenAI Creates a model response for the given chat conversation.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.OPENAI_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: chat-chat-rest
+    port: 8080
+    description: REST adapter for OpenAI Chat — Chat. One Spectral-compliant resource per consumed operation, prefixed with
+      /v1.
+    resources:
+    - path: /v1/chat/completions
+      name: chat-completions
+      description: REST surface for chat-completions.
+      operations:
+      - method: POST
+        name: createchatcompletion
+        description: OpenAI Creates a model response for the given chat conversation.
+        call: chat-chat.createchatcompletion
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: chat-chat-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for OpenAI Chat — Chat. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: openai-creates-model-response-given
+      description: OpenAI Creates a model response for the given chat conversation.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: chat-chat.createchatcompletion
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.

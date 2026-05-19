@@ -1,0 +1,153 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: OpenAI models — Models
+  description: 'OpenAI models — Models. 3 operations. Lead operation: OpenAI Lists the currently available models, and provides
+    basic information about each one such as the owner and availability.. Self-contained Naftiko capability covering one Openai
+    business surface.'
+  tags:
+  - Openai
+  - Models
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    OPENAI_API_KEY: OPENAI_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: models-models
+    baseUri: https://api.openai.com/v1
+    description: OpenAI models — Models business capability. Self-contained, no shared references.
+    resources:
+    - name: models
+      path: /models
+      operations:
+      - name: listmodels
+        method: GET
+        description: OpenAI Lists the currently available models, and provides basic information about each one such as the
+          owner and availability.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: models-model
+      path: /models/{model}
+      operations:
+      - name: retrievemodel
+        method: GET
+        description: OpenAI Retrieves a model instance, providing basic information about the model such as the owner and
+          permissioning.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: model
+          in: path
+          type: string
+          description: The ID of the model to use for this request
+          required: true
+      - name: deletemodel
+        method: DELETE
+        description: OpenAI Delete a fine-tuned model. You must have the Owner role in your organization to delete a model.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: model
+          in: path
+          type: string
+          description: The model to delete
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.OPENAI_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: models-models-rest
+    port: 8080
+    description: REST adapter for OpenAI models — Models. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/models
+      name: models
+      description: REST surface for models.
+      operations:
+      - method: GET
+        name: listmodels
+        description: OpenAI Lists the currently available models, and provides basic information about each one such as the
+          owner and availability.
+        call: models-models.listmodels
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/models/{model}
+      name: models-model
+      description: REST surface for models-model.
+      operations:
+      - method: GET
+        name: retrievemodel
+        description: OpenAI Retrieves a model instance, providing basic information about the model such as the owner and
+          permissioning.
+        call: models-models.retrievemodel
+        with:
+          model: rest.model
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deletemodel
+        description: OpenAI Delete a fine-tuned model. You must have the Owner role in your organization to delete a model.
+        call: models-models.deletemodel
+        with:
+          model: rest.model
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: models-models-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for OpenAI models — Models. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: openai-lists-currently-available-models
+      description: OpenAI Lists the currently available models, and provides basic information about each one such as the
+        owner and availability.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: models-models.listmodels
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: openai-retrieves-model-instance-providing
+      description: OpenAI Retrieves a model instance, providing basic information about the model such as the owner and permissioning.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: models-models.retrievemodel
+      with:
+        model: tools.model
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: openai-delete-fine-tuned-model
+      description: OpenAI Delete a fine-tuned model. You must have the Owner role in your organization to delete a model.
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: models-models.deletemodel
+      with:
+        model: tools.model
+      outputParameters:
+      - type: object
+        mapping: $.

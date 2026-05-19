@@ -1,0 +1,241 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: OpenAI files — Assistants
+  description: 'OpenAI files — Assistants. 4 operations. Lead operation: OpenAI Returns a list of assistant files.. Self-contained
+    Naftiko capability covering one Openai business surface.'
+  tags:
+  - Openai
+  - Assistants
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    OPENAI_API_KEY: OPENAI_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: files-assistants
+    baseUri: https://api.openai.com/v1
+    description: OpenAI files — Assistants business capability. Self-contained, no shared references.
+    resources:
+    - name: assistants-assistant_id-files
+      path: /assistants/{assistant_id}/files
+      operations:
+      - name: listassistantfiles
+        method: GET
+        description: OpenAI Returns a list of assistant files.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: assistant_id
+          in: path
+          type: string
+          description: The ID of the assistant the file belongs to.
+          required: true
+        - name: limit
+          in: query
+          type: integer
+          description: A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default
+            is 20.
+        - name: order
+          in: query
+          type: string
+          description: Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending
+            order.
+        - name: after
+          in: query
+          type: string
+          description: A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance,
+            if you make a list request and receive 100 objects, e
+        - name: before
+          in: query
+          type: string
+          description: 'A cursor for use in pagination. `before` is an object ID that defines your place in the list. For
+            instance, if you make a list request and receive 100 objects, '
+      - name: createassistantfile
+        method: POST
+        description: OpenAI Create an assistant file by attaching a [File](/docs/api-reference/files) to an [assistant](/docs/api-reference/assistants).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: assistant_id
+          in: path
+          type: string
+          description: The ID of the assistant for which to create a File.
+          required: true
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    - name: assistants-assistant_id-files-file_id
+      path: /assistants/{assistant_id}/files/{file_id}
+      operations:
+      - name: getassistantfile
+        method: GET
+        description: OpenAI Retrieves an AssistantFile.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: assistant_id
+          in: path
+          type: string
+          description: The ID of the assistant who the file belongs to.
+          required: true
+        - name: file_id
+          in: path
+          type: string
+          description: The ID of the file we're getting.
+          required: true
+      - name: deleteassistantfile
+        method: DELETE
+        description: OpenAI Delete an assistant file.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: assistant_id
+          in: path
+          type: string
+          description: The ID of the assistant that the file belongs to.
+          required: true
+        - name: file_id
+          in: path
+          type: string
+          description: The ID of the file to delete.
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.OPENAI_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: files-assistants-rest
+    port: 8080
+    description: REST adapter for OpenAI files — Assistants. One Spectral-compliant resource per consumed operation, prefixed
+      with /v1.
+    resources:
+    - path: /v1/assistants/{assistant-id}/files
+      name: assistants-assistant-id-files
+      description: REST surface for assistants-assistant_id-files.
+      operations:
+      - method: GET
+        name: listassistantfiles
+        description: OpenAI Returns a list of assistant files.
+        call: files-assistants.listassistantfiles
+        with:
+          assistant_id: rest.assistant_id
+          limit: rest.limit
+          order: rest.order
+          after: rest.after
+          before: rest.before
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: POST
+        name: createassistantfile
+        description: OpenAI Create an assistant file by attaching a [File](/docs/api-reference/files) to an [assistant](/docs/api-reference/assistants).
+        call: files-assistants.createassistantfile
+        with:
+          assistant_id: rest.assistant_id
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+    - path: /v1/assistants/{assistant-id}/files/{file-id}
+      name: assistants-assistant-id-files-file-id
+      description: REST surface for assistants-assistant_id-files-file_id.
+      operations:
+      - method: GET
+        name: getassistantfile
+        description: OpenAI Retrieves an AssistantFile.
+        call: files-assistants.getassistantfile
+        with:
+          assistant_id: rest.assistant_id
+          file_id: rest.file_id
+        outputParameters:
+        - type: object
+          mapping: $.
+      - method: DELETE
+        name: deleteassistantfile
+        description: OpenAI Delete an assistant file.
+        call: files-assistants.deleteassistantfile
+        with:
+          assistant_id: rest.assistant_id
+          file_id: rest.file_id
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: files-assistants-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for OpenAI files — Assistants. One tool per consumed operation, routed inline through this capability's
+      consumes block.
+    tools:
+    - name: openai-returns-list-assistant-files
+      description: OpenAI Returns a list of assistant files.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: files-assistants.listassistantfiles
+      with:
+        assistant_id: tools.assistant_id
+        limit: tools.limit
+        order: tools.order
+        after: tools.after
+        before: tools.before
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: openai-create-assistant-file-attaching
+      description: OpenAI Create an assistant file by attaching a [File](/docs/api-reference/files) to an [assistant](/docs/api-reference/assistants).
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: files-assistants.createassistantfile
+      with:
+        assistant_id: tools.assistant_id
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: openai-retrieves-assistantfile
+      description: OpenAI Retrieves an AssistantFile.
+      hints:
+        readOnly: true
+        destructive: false
+        idempotent: true
+      call: files-assistants.getassistantfile
+      with:
+        assistant_id: tools.assistant_id
+        file_id: tools.file_id
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: openai-delete-assistant-file
+      description: OpenAI Delete an assistant file.
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: files-assistants.deleteassistantfile
+      with:
+        assistant_id: tools.assistant_id
+        file_id: tools.file_id
+      outputParameters:
+      - type: object
+        mapping: $.

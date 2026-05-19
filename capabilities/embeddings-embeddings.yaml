@@ -1,0 +1,80 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: OpenAI Embeddings API — Embeddings
+  description: 'OpenAI Embeddings API — Embeddings. 1 operations. Lead operation: Openai Create Embeddings. Self-contained
+    Naftiko capability covering one Openai business surface.'
+  tags:
+  - Openai
+  - Embeddings
+  created: '2026-05-19'
+  modified: '2026-05-19'
+binds:
+- namespace: env
+  keys:
+    OPENAI_API_KEY: OPENAI_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: embeddings-embeddings
+    baseUri: https://api.openai.com/v1
+    description: OpenAI Embeddings API — Embeddings business capability. Self-contained, no shared references.
+    resources:
+    - name: embeddings
+      path: /embeddings
+      operations:
+      - name: createembedding
+        method: POST
+        description: Openai Create Embeddings
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON).
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.OPENAI_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: embeddings-embeddings-rest
+    port: 8080
+    description: REST adapter for OpenAI Embeddings API — Embeddings. One Spectral-compliant resource per consumed operation,
+      prefixed with /v1.
+    resources:
+    - path: /v1/embeddings
+      name: embeddings
+      description: REST surface for embeddings.
+      operations:
+      - method: POST
+        name: createembedding
+        description: Openai Create Embeddings
+        call: embeddings-embeddings.createembedding
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: embeddings-embeddings-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for OpenAI Embeddings API — Embeddings. One tool per consumed operation, routed inline through
+      this capability's consumes block.
+    tools:
+    - name: openai-create-embeddings
+      description: Openai Create Embeddings
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: embeddings-embeddings.createembedding
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
