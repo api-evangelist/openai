@@ -236,6 +236,8 @@ apis:
     - Agents
     - Responses
     - Text Generation
+    - Reasoning
+    - Tools
     score: 150
     baseURL: https://api.openai.com
     humanURL: https://platform.openai.com/docs/api-reference/responses
@@ -248,10 +250,15 @@ apis:
       type: Documentation
     - url: https://developers.openai.com/api/docs/guides/conversation-state/
       type: Documentation
+    - url: https://developers.openai.com/api/docs/guides/migrate-to-responses/
+      type: Documentation
+    - type: NaftikoCapability
+      url: capabilities/responses-responses.yaml
     description: The Responses API is OpenAI's most advanced interface for generating model responses. It combines the strengths
       of the Chat Completions and Assistants APIs into a single streamlined interface, supporting text and image inputs, text
-      outputs, and built-in tools like web search, file search, computer use, and code interpreter. Recommended for all new
-      projects.
+      outputs, and built-in tools like web search, file search, computer use, code interpreter, and image generation. The
+      upstream OpenAI OpenAPI spec exposes Responses as a dedicated tag group with create/retrieve/list/cancel/delete/stream
+      operations plus input items management. Recommended for all new projects.
   - aid: openai:openai-moderations-api
     name: OpenAI Moderations API
     tags:
@@ -265,6 +272,8 @@ apis:
       type: Documentation
     - url: https://platform.openai.com/docs/guides/moderation
       type: Documentation
+    - type: NaftikoCapability
+      url: capabilities/moderations-moderations.yaml
     description: The Moderations API can be used to check whether text or images are potentially harmful. It classifies content
       across several categories including harassment, hate speech, sexual content, self-harm, violence, and illicit content.
       The moderation endpoint is free to use and supports the omni-moderation-latest model for multi-modal inputs.
@@ -281,6 +290,8 @@ apis:
       type: Documentation
     - url: https://platform.openai.com/docs/guides/batch
       type: Documentation
+    - type: NaftikoCapability
+      url: capabilities/batch-batch.yaml
     description: The Batch API enables asynchronous processing of requests with 50% cost discount, higher rate limits, and completion
       within 24 hours. It supports /v1/responses, /v1/chat/completions, /v1/embeddings, /v1/completions, and /v1/moderations
       endpoints. A single batch may include up to 50,000 requests with a batch input file size up to 200 MB.
@@ -298,6 +309,8 @@ apis:
       type: Documentation
     - url: https://platform.openai.com/docs/guides/retrieval
       type: Documentation
+    - type: NaftikoCapability
+      url: capabilities/vector-stores-vector-stores.yaml
     description: Vector stores are collections of processed files that power semantic search for the file_search tool in the
       Responses and Assistants APIs. When you add a file to a vector store it is automatically chunked, embedded, and indexed.
       You can query a vector store using natural language to retrieve relevant chunks with similarity scores.
@@ -322,6 +335,8 @@ apis:
     - Realtime
     - Streaming
     - Voice
+    - SIP
+    - WebRTC
     score: 150
     baseURL: https://api.openai.com
     humanURL: https://platform.openai.com/docs/api-reference/realtime
@@ -336,9 +351,15 @@ apis:
       type: Documentation
     - url: https://developers.openai.com/api/docs/guides/realtime-conversations/
       type: Documentation
+    - url: https://github.com/openai/openai-realtime-agents
+      type: GitHubRepository
+    - type: NaftikoCapability
+      url: capabilities/realtime-realtime.yaml
     description: The Realtime API enables low-latency, bidirectional communication with models that natively support speech-to-speech
       interactions as well as multimodal inputs (audio, images, and text) and outputs (audio and text). It supports WebRTC,
-      WebSocket, and SIP connection methods for real-time voice agents and conversational interfaces.
+      WebSocket, and SIP connection methods for real-time voice agents and conversational interfaces. The Realtime API is
+      represented as a dedicated tag group in the upstream OpenAI OpenAPI specification with operations covering client/server
+      events, translation client secrets, and voice call lifecycle (accept, hangup, refer, reject).
   - aid: openai:openai-evals-api
     name: OpenAI Evals API
     tags:
@@ -390,6 +411,8 @@ apis:
       type: Documentation
     - url: https://platform.openai.com/docs/guides/video-generation
       type: Documentation
+    - type: NaftikoCapability
+      url: capabilities/videos-videos.yaml
     description: The Videos API enables programmatic creation, extension, and remixing of videos using Sora models. It provides
       endpoints for creating a new render job from a text prompt, checking video status, downloading finished MP4 files, listing
       videos with pagination, and deleting videos from storage. Supported models include sora-2 and sora-2-pro.
@@ -444,10 +467,66 @@ apis:
       type: Documentation
     - url: https://platform.openai.com/docs/guides/chatkit
       type: Documentation
+    - url: https://github.com/openai/chatkit-js
+      type: GitHubRepository
     description: ChatKit is the best way to build agentic chat experiences. It provides session and thread management for building
       internal knowledge base assistants, research companions, support agents, and more. ChatKit sessions include resolved feature
       configuration for automatic thread titling, file upload, and history settings. Threads have statuses including active,
       locked, and closed.
+  - aid: openai:openai-skills-api
+    name: OpenAI Skills API
+    tags:
+    - Agents
+    - Codex
+    - Skills
+    score: 100
+    baseURL: https://api.openai.com
+    humanURL: https://platform.openai.com/docs/api-reference
+    properties:
+    - url: https://platform.openai.com/docs/api-reference
+      type: Documentation
+    - url: https://github.com/openai/skills
+      type: GitHubRepository
+    description: The Skills API surfaces OpenAI's Agent Skills — discoverable folders of instructions, scripts, and resources
+      that agents (notably Codex) can use to perform specific tasks. Operations cover creating, retrieving, updating, deleting,
+      and versioning skills as well as retrieving skill content. The companion github.com/openai/skills repository hosts a
+      catalog of system, curated, and experimental skills.
+  - aid: openai:openai-agents-sdk
+    name: OpenAI Agents SDK
+    tags:
+    - Agents
+    - SDK
+    - Voice
+    - Sandbox
+    score: 100
+    baseURL: https://api.openai.com
+    humanURL: https://github.com/openai/openai-agents-python
+    properties:
+    - url: https://github.com/openai/openai-agents-python
+      type: GitHubRepository
+    - url: https://github.com/openai/openai-agents-js
+      type: GitHubRepository
+    description: The OpenAI Agents SDK is a lightweight framework for building multi-agent workflows in Python and TypeScript.
+      Primitives include agents (LLMs with instructions, tools, guardrails), handoffs between specialists, guardrails for safety
+      checks, sessions for conversation history, tracing for run observability, and realtime agents for voice workflows. The
+      SDK is provider-agnostic and supports OpenAI Responses and Chat Completions plus other LLM providers.
+  - aid: openai:openai-codex
+    name: OpenAI Codex
+    tags:
+    - Agents
+    - Codex
+    - Coding Agent
+    score: 100
+    baseURL: https://api.openai.com
+    humanURL: https://developers.openai.com/codex
+    properties:
+    - url: https://developers.openai.com/codex
+      type: Documentation
+    - url: https://github.com/openai/codex
+      type: GitHubRepository
+    description: OpenAI Codex is a lightweight coding agent that runs in the terminal, with companion IDE extensions, a desktop
+      app, and a web experience at chatgpt.com/codex. Codex authenticates with a ChatGPT Plus/Pro/Business/Edu/Enterprise account
+      or an API key, and integrates with the Skills catalog for repeatable task workflows.
 name: OpenAI
 tags:
   - AI
@@ -1100,12 +1179,64 @@ common:
     name: OpenAI OpenAPI Specification
     type: GitHubRepository
     description: 'null'
+  - url: openapi/openai-openapi-master.yml
+    name: OpenAI OpenAPI Master Specification
+    type: OpenAPI
+    description: Mirrored copy of the upstream openai/openai-openapi/master openapi.yaml.
   - url: https://github.com/openai/openai-python
     name: OpenAI Python SDK
     type: GitHubRepository
     description: 'null'
   - url: https://github.com/openai/openai-node
     name: OpenAI Node SDK
+    type: GitHubRepository
+    description: 'null'
+  - url: https://github.com/openai/openai-go
+    name: OpenAI Go SDK
+    type: GitHubRepository
+    description: 'null'
+  - url: https://github.com/openai/openai-dotnet
+    name: OpenAI .NET SDK
+    type: GitHubRepository
+    description: 'null'
+  - url: https://github.com/openai/openai-java
+    name: OpenAI Java SDK
+    type: GitHubRepository
+    description: 'null'
+  - url: https://github.com/openai/openai-ruby
+    name: OpenAI Ruby SDK
+    type: GitHubRepository
+    description: 'null'
+  - url: https://github.com/openai/openai-agents-python
+    name: OpenAI Agents SDK (Python)
+    type: GitHubRepository
+    description: 'null'
+  - url: https://github.com/openai/openai-agents-js
+    name: OpenAI Agents SDK (JavaScript)
+    type: GitHubRepository
+    description: 'null'
+  - url: https://github.com/openai/codex
+    name: OpenAI Codex CLI
+    type: GitHubRepository
+    description: 'null'
+  - url: https://github.com/openai/skills
+    name: OpenAI Skills Catalog
+    type: GitHubRepository
+    description: 'null'
+  - url: https://github.com/openai/gpt-oss
+    name: OpenAI gpt-oss Open-Weight Models
+    type: GitHubRepository
+    description: 'null'
+  - url: https://github.com/openai/openai-realtime-agents
+    name: OpenAI Realtime Agents Demo
+    type: GitHubRepository
+    description: 'null'
+  - url: https://github.com/openai/whisper
+    name: OpenAI Whisper
+    type: GitHubRepository
+    description: 'null'
+  - url: https://github.com/openai/tiktoken
+    name: tiktoken Tokenizer
     type: GitHubRepository
     description: 'null'
   - url: https://openai.com/policies/service-terms/
@@ -1247,7 +1378,7 @@ common:
     url: https://github.com/openai/skills
     type: AgentSkill
 created: '2024-04-14'
-modified: '2026-05-19'
+modified: '2026-05-22'
 position: Consuming
 description: APIs for accessing OpenAI's artificial intelligence models including GPT, DALL-E, Whisper, and Embeddings.
 maintainers:

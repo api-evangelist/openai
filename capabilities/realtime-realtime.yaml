@@ -1,0 +1,137 @@
+naftiko: 1.0.0-alpha2
+info:
+  label: OpenAI Realtime — Realtime
+  description: 'OpenAI Realtime — Realtime. Self-contained Naftiko capability covering the Realtime API
+    for low-latency speech-to-speech, multimodal voice agents. WebRTC, WebSocket, and SIP connection methods.
+    Bidirectional event streaming on a session.'
+  tags:
+  - Openai
+  - Realtime
+  - Voice
+  - Audio
+  created: '2026-05-22'
+  modified: '2026-05-22'
+binds:
+- namespace: env
+  keys:
+    OPENAI_API_KEY: OPENAI_API_KEY
+capability:
+  consumes:
+  - type: http
+    namespace: realtime-realtime
+    baseUri: https://api.openai.com/v1
+    description: OpenAI Realtime — Realtime business capability. HTTP control-plane operations only; the
+      realtime media plane runs over WebRTC / WebSocket / SIP and is not exposed as REST.
+    resources:
+    - name: realtime-client-secrets
+      path: /realtime/client_secrets
+      operations:
+      - name: createrealtimeclientsecret
+        method: POST
+        description: Create an ephemeral client secret for a Realtime session (used by browser/mobile clients to authenticate WebRTC connections without exposing the long-lived API key).
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: body
+          in: body
+          type: object
+          description: Request body (JSON) — session config.
+          required: true
+    - name: realtime-calls
+      path: /realtime/calls
+      operations:
+      - name: listrealtimecalls
+        method: GET
+        description: List active Realtime voice calls.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+    - name: realtime-call-accept
+      path: /realtime/calls/{call_id}/accept
+      operations:
+      - name: acceptrealtimecall
+        method: POST
+        description: Accept an inbound SIP/voice call.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: call_id
+          in: path
+          type: string
+          required: true
+    - name: realtime-call-hangup
+      path: /realtime/calls/{call_id}/hangup
+      operations:
+      - name: hangupreatimecall
+        method: POST
+        description: End an active Realtime voice call.
+        outputRawFormat: json
+        outputParameters:
+        - name: result
+          type: object
+          value: $.
+        inputParameters:
+        - name: call_id
+          in: path
+          type: string
+          required: true
+    authentication:
+      type: bearer
+      token: '{{env.OPENAI_API_KEY}}'
+  exposes:
+  - type: rest
+    namespace: realtime-realtime-rest
+    port: 8080
+    description: REST adapter for OpenAI Realtime control plane.
+    resources:
+    - path: /v1/realtime/client_secrets
+      name: realtime-client-secrets
+      description: Create an ephemeral client secret for a Realtime session.
+      operations:
+      - method: POST
+        name: createrealtimeclientsecret
+        description: Create an ephemeral client secret.
+        call: realtime-realtime.createrealtimeclientsecret
+        with:
+          body: rest.body
+        outputParameters:
+        - type: object
+          mapping: $.
+  - type: mcp
+    namespace: realtime-realtime-mcp
+    port: 9090
+    transport: http
+    description: MCP adapter for OpenAI Realtime.
+    tools:
+    - name: openai-create-realtime-client-secret
+      description: Mint an ephemeral client secret for a Realtime WebRTC session.
+      hints:
+        readOnly: false
+        destructive: false
+        idempotent: false
+      call: realtime-realtime.createrealtimeclientsecret
+      with:
+        body: tools.body
+      outputParameters:
+      - type: object
+        mapping: $.
+    - name: openai-hangup-realtime-call
+      description: End a Realtime voice call.
+      hints:
+        readOnly: false
+        destructive: true
+        idempotent: true
+      call: realtime-realtime.hangupreatimecall
+      with:
+        call_id: tools.call_id
+      outputParameters:
+      - type: object
+        mapping: $.

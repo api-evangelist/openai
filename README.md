@@ -18,7 +18,7 @@ APIs for accessing OpenAI's artificial intelligence models including GPT, DALL-E
 ## Timestamps
 
 - **Created:** 2024-04-14
-- **Modified:** 2026-04-18
+- **Modified:** 2026-05-22
 
 ## APIs
 
@@ -204,6 +204,34 @@ Build agentic chat experiences with session and thread management.
 
 **Human URL:** [https://platform.openai.com/docs/api-reference/chatkit](https://platform.openai.com/docs/api-reference/chatkit)
 
+### OpenAI Skills API
+Manage Agent Skills — discoverable folders of instructions, scripts, and resources that agents (notably Codex) can use to perform specific tasks.
+
+**Human URL:** [https://platform.openai.com/docs/api-reference](https://platform.openai.com/docs/api-reference)
+
+#### Properties
+
+- [GitHubRepository](https://github.com/openai/skills)
+
+### OpenAI Agents SDK
+Lightweight framework for multi-agent workflows in Python and TypeScript with agents, handoffs, guardrails, sessions, tracing, and realtime voice agents.
+
+**Human URL:** [https://github.com/openai/openai-agents-python](https://github.com/openai/openai-agents-python)
+
+#### Properties
+
+- [GitHubRepository](https://github.com/openai/openai-agents-python)
+- [GitHubRepository](https://github.com/openai/openai-agents-js)
+
+### OpenAI Codex
+Lightweight coding agent that runs in your terminal, with IDE extensions, desktop app, and web experience.
+
+**Human URL:** [https://developers.openai.com/codex](https://developers.openai.com/codex)
+
+#### Properties
+
+- [GitHubRepository](https://github.com/openai/codex)
+
 ## Common Properties
 
 - [Portal](https://platform.openai.com/docs/overview)
@@ -220,6 +248,18 @@ Build agentic chat experiences with session and thread management.
 - [GitHubRepository](https://github.com/openai/openai-openapi)
 - [GitHubRepository](https://github.com/openai/openai-python)
 - [GitHubRepository](https://github.com/openai/openai-node)
+- [GitHubRepository](https://github.com/openai/openai-go)
+- [GitHubRepository](https://github.com/openai/openai-dotnet)
+- [GitHubRepository](https://github.com/openai/openai-java)
+- [GitHubRepository](https://github.com/openai/openai-ruby)
+- [GitHubRepository](https://github.com/openai/openai-agents-python)
+- [GitHubRepository](https://github.com/openai/openai-agents-js)
+- [GitHubRepository](https://github.com/openai/codex)
+- [GitHubRepository](https://github.com/openai/skills)
+- [GitHubRepository](https://github.com/openai/gpt-oss)
+- [GitHubRepository](https://github.com/openai/openai-realtime-agents)
+- [GitHubRepository](https://github.com/openai/whisper)
+- [GitHubRepository](https://github.com/openai/tiktoken)
 - [SignUp](https://platform.openai.com/signup)
 - [Login](https://platform.openai.com/login)
 - [ChangeLog](https://developers.openai.com/changelog/)
@@ -274,6 +314,7 @@ Machine-readable API specifications organized by format.
 
 ### OpenAPI
 
+- [OpenAI OpenAPI Master](openapi/openai-openapi-master.yml) -- Mirrored copy of upstream openai/openai-openapi/master/openapi.yaml
 - [Assistants](openapi/assistants-openapi-original.yml)
 - [Audio](openapi/audio-openapi-original.yml)
 - [Chat](openapi/chat-openapi-original.yml)
@@ -288,21 +329,28 @@ Machine-readable API specifications organized by format.
 
 ## Capabilities
 
-Naftiko capabilities organized as shared per-API definitions composed into customer-facing workflows.
+Naftiko capabilities covering each major business surface of the OpenAI API.
 
-### Shared Per-API Definitions
-
-- [Chat](capabilities/shared/chat.yaml) -- 1 operation for chat completions
-- [Images](capabilities/shared/images.yaml) -- 3 operations for image generation and editing
-- [Audio](capabilities/shared/audio.yaml) -- 3 operations for speech and transcription
-- [Embeddings](capabilities/shared/embeddings.yaml) -- 1 operation for vector embeddings
-- [Models](capabilities/shared/models.yaml) -- 3 operations for model management
-
-### Workflow Capabilities
-
-| Workflow | APIs Combined | Tools | Persona |
-|----------|--------------|-------|---------|
-| [Content Generation](capabilities/content-generation.yaml) | Chat + Images + Audio + Embeddings + Models | 10 | Developer |
+- [Assistants](capabilities/assistants-assistants.yaml)
+- [Audio](capabilities/audio-audio.yaml)
+- [Batch](capabilities/batch-batch.yaml)
+- [Chat](capabilities/chat-chat.yaml)
+- [Chat Completions](capabilities/chat-completions-chat.yaml)
+- [Completions (Chat)](capabilities/completions-chat.yaml)
+- [Completions (Legacy)](capabilities/completions-completions.yaml)
+- [Embeddings](capabilities/embeddings-embeddings.yaml)
+- [Files (Assistants)](capabilities/files-assistants.yaml)
+- [Files (Files)](capabilities/files-files.yaml)
+- [Files (Threads)](capabilities/files-threads.yaml)
+- [Fine Tuning](capabilities/fine-tuning-fine-tuning.yaml)
+- [Images](capabilities/images-images.yaml)
+- [Models](capabilities/models-models.yaml)
+- [Moderations](capabilities/moderations-moderations.yaml)
+- [Realtime](capabilities/realtime-realtime.yaml)
+- [Responses](capabilities/responses-responses.yaml)
+- [Threads](capabilities/threads-threads.yaml)
+- [Vector Stores](capabilities/vector-stores-vector-stores.yaml)
+- [Videos (Sora)](capabilities/videos-videos.yaml)
 
 ## Rules
 
