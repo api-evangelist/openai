@@ -1,0 +1,79 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI Retrieve and Delete Fine-Tuned Model
+  summary: Inspect a model and delete it only when it is an owned fine-tuned model.
+  description: >-
+    Retrieves a model to inspect who owns it, then branches: when the model is
+    owned by the account (a fine-tuned model whose owner is not openai) it
+    deletes the model, otherwise the flow ends without deleting a shared base
+    model. Every step spells out its request inline so the flow can be read and
+    executed without opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: openaiApi
+  url: ../openapi/openai-openapi-master.yml
+  type: openapi
+workflows:
+- workflowId: retrieve-and-delete-model
+  summary: Retrieve a model and delete it only when it is an owned fine-tuned model.
+  description: >-
+    Reads a model's metadata and issues a delete only when the model is not an
+    OpenAI-owned base model, protecting shared models from accidental deletion.
+  inputs:
+    type: object
+    required:
+    - apiKey
+    - model
+    properties:
+      apiKey:
+        type: string
+        description: OpenAI API key used as a Bearer token.
+      model:
+        type: string
+        description: The id of the model to inspect and possibly delete.
+  steps:
+  - stepId: retrieveModel
+    description: Retrieve the model and branch on whether it is account-owned.
+    operationId: retrieveModel
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: model
+      in: path
+      value: $inputs.model
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      ownedBy: $response.body#/owned_by
+    onSuccess:
+    - name: ownedModel
+      type: goto
+      stepId: deleteModel
+      criteria:
+      - context: $response.body
+        condition: $.owned_by != "openai"
+        type: jsonpath
+    - name: baseModel
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.owned_by == "openai"
+        type: jsonpath
+  - stepId: deleteModel
+    description: Delete the account-owned fine-tuned model.
+    operationId: deleteModel
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: model
+      in: path
+      value: $inputs.model
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      deleted: $response.body#/deleted
+  outputs:
+    ownedBy: $steps.retrieveModel.outputs.ownedBy
+    deleted: $steps.deleteModel.outputs.deleted

@@ -1,0 +1,70 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI Create Embedding
+  summary: Confirm an embedding model exists, then embed input text.
+  description: >-
+    Lists the available models to confirm the requested embedding model is
+    present, then submits input text to the embeddings endpoint and returns the
+    resulting vector. Every step spells out its request inline so the flow can
+    be read and executed without opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: openaiApi
+  url: ../openapi/openai-openapi-master.yml
+  type: openapi
+workflows:
+- workflowId: create-embedding
+  summary: Create an embedding vector for input text.
+  description: >-
+    Verifies the embedding model is available, then sends input text to the
+    embeddings endpoint and returns the generated embedding vector and token
+    usage.
+  inputs:
+    type: object
+    required:
+    - apiKey
+    - model
+    - input
+    properties:
+      apiKey:
+        type: string
+        description: OpenAI API key used as a Bearer token.
+      model:
+        type: string
+        description: The embedding model id (e.g. text-embedding-3-small).
+      input:
+        type: string
+        description: The text to turn into an embedding vector.
+  steps:
+  - stepId: listModels
+    description: List available models to confirm the embedding model is present.
+    operationId: listModels
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      models: $response.body#/data
+  - stepId: createEmbedding
+    description: Create an embedding vector for the supplied input text.
+    operationId: createEmbedding
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    requestBody:
+      contentType: application/json
+      payload:
+        model: $inputs.model
+        input: $inputs.input
+        encoding_format: float
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      embedding: $response.body#/data/0/embedding
+      promptTokens: $response.body#/usage/prompt_tokens
+  outputs:
+    embedding: $steps.createEmbedding.outputs.embedding
+    promptTokens: $steps.createEmbedding.outputs.promptTokens

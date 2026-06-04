@@ -1,0 +1,83 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI Chat then Speak
+  summary: Generate a chat reply, then synthesize it to spoken audio.
+  description: >-
+    Creates a chat completion from a user prompt and then sends the assistant
+    reply to the text-to-speech endpoint to produce spoken audio. Every step
+    spells out its request inline so the flow can be read and executed without
+    opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: openaiApi
+  url: ../openapi/openai-openapi-master.yml
+  type: openapi
+workflows:
+- workflowId: chat-then-speak
+  summary: Create a chat reply and convert it to speech audio.
+  description: >-
+    Asks a chat model to answer a prompt, then feeds the reply text to the
+    speech endpoint and returns the synthesized audio.
+  inputs:
+    type: object
+    required:
+    - apiKey
+    - chatModel
+    - prompt
+    - speechModel
+    - voice
+    properties:
+      apiKey:
+        type: string
+        description: OpenAI API key used as a Bearer token.
+      chatModel:
+        type: string
+        description: The chat model id (e.g. gpt-4o-mini).
+      prompt:
+        type: string
+        description: The user prompt to answer.
+      speechModel:
+        type: string
+        description: The text-to-speech model id (e.g. gpt-4o-mini-tts or tts-1).
+      voice:
+        type: string
+        description: The voice to use for synthesis (e.g. alloy).
+  steps:
+  - stepId: createChat
+    description: Create a chat completion answering the user prompt.
+    operationId: createChatCompletion
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    requestBody:
+      contentType: application/json
+      payload:
+        model: $inputs.chatModel
+        messages:
+        - role: user
+          content: $inputs.prompt
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      reply: $response.body#/choices/0/message/content
+  - stepId: speak
+    description: Synthesize the chat reply into spoken audio.
+    operationId: createSpeech
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    requestBody:
+      contentType: application/json
+      payload:
+        model: $inputs.speechModel
+        input: $steps.createChat.outputs.reply
+        voice: $inputs.voice
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      audio: $response.body
+  outputs:
+    reply: $steps.createChat.outputs.reply
+    audio: $steps.speak.outputs.audio

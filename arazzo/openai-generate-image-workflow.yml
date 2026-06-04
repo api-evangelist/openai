@@ -1,0 +1,89 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI Moderate then Generate Image
+  summary: Screen an image prompt, then generate an image only when it is allowed.
+  description: >-
+    Runs the image prompt through the moderation classifier and branches: when
+    the prompt is flagged the flow ends, and when it is allowed it calls the
+    image generation endpoint. Every step spells out its request inline so the
+    flow can be read and executed without opening the underlying OpenAPI
+    description.
+  version: 1.0.0
+sourceDescriptions:
+- name: openaiApi
+  url: ../openapi/openai-openapi-master.yml
+  type: openapi
+workflows:
+- workflowId: moderate-then-generate-image
+  summary: Moderate an image prompt and generate an image only when allowed.
+  description: >-
+    Classifies the supplied prompt for policy violations, and only when the
+    prompt is not flagged does it request an image from the image generation
+    endpoint.
+  inputs:
+    type: object
+    required:
+    - apiKey
+    - imageModel
+    - prompt
+    properties:
+      apiKey:
+        type: string
+        description: OpenAI API key used as a Bearer token.
+      imageModel:
+        type: string
+        description: The image model id (e.g. dall-e-3 or gpt-image-1).
+      prompt:
+        type: string
+        description: A text description of the desired image.
+  steps:
+  - stepId: moderate
+    description: Classify the image prompt for policy violations.
+    operationId: createModeration
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    requestBody:
+      contentType: application/json
+      payload:
+        input: $inputs.prompt
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      flagged: $response.body#/results/0/flagged
+    onSuccess:
+    - name: promptAllowed
+      type: goto
+      stepId: generateImage
+      criteria:
+      - context: $response.body
+        condition: $.results[0].flagged == false
+        type: jsonpath
+    - name: promptFlagged
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.results[0].flagged == true
+        type: jsonpath
+  - stepId: generateImage
+    description: Generate an image from the moderated, allowed prompt.
+    operationId: createImage
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    requestBody:
+      contentType: application/json
+      payload:
+        model: $inputs.imageModel
+        prompt: $inputs.prompt
+        n: 1
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      created: $response.body#/created
+      firstImage: $response.body#/data/0
+  outputs:
+    flagged: $steps.moderate.outputs.flagged
+    firstImage: $steps.generateImage.outputs.firstImage

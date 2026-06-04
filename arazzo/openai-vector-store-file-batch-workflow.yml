@@ -1,0 +1,122 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI Vector Store File Batch
+  summary: Create a vector store, attach a batch of files, and poll the batch to completion.
+  description: >-
+    Creates a vector store, attaches a batch of already-uploaded file ids in a
+    single request, and polls the file batch until it reaches a terminal status,
+    branching on completion. The vector store endpoints require the OpenAI-Beta
+    header, which is supplied inline on every step. Every step spells out its
+    request inline so the flow can be read and executed without opening the
+    underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: openaiApi
+  url: ../openapi/openai-openapi-master.yml
+  type: openapi
+workflows:
+- workflowId: vector-store-file-batch
+  summary: Create a vector store and ingest a batch of files, polling to completion.
+  description: >-
+    Creates a vector store, submits a batch of file ids for ingestion, and polls
+    the batch until it reaches a terminal status, returning the file counts.
+  inputs:
+    type: object
+    required:
+    - apiKey
+    - storeName
+    - fileIds
+    properties:
+      apiKey:
+        type: string
+        description: OpenAI API key used as a Bearer token.
+      storeName:
+        type: string
+        description: A name for the new vector store.
+      fileIds:
+        type: array
+        description: A list of previously uploaded file ids to ingest as a batch.
+        items:
+          type: string
+  steps:
+  - stepId: createStore
+    description: Create a new vector store.
+    operationId: createVectorStore
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: OpenAI-Beta
+      in: header
+      value: assistants=v2
+    requestBody:
+      contentType: application/json
+      payload:
+        name: $inputs.storeName
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      storeId: $response.body#/id
+  - stepId: createBatch
+    description: Attach the batch of file ids to the vector store.
+    operationId: createVectorStoreFileBatch
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: OpenAI-Beta
+      in: header
+      value: assistants=v2
+    - name: vector_store_id
+      in: path
+      value: $steps.createStore.outputs.storeId
+    requestBody:
+      contentType: application/json
+      payload:
+        file_ids: $inputs.fileIds
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      batchId: $response.body#/id
+      status: $response.body#/status
+  - stepId: pollBatch
+    description: >-
+      Poll the file batch until it reaches a terminal status, ending when
+      completed and looping while it is still in progress.
+    operationId: getVectorStoreFileBatch
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: OpenAI-Beta
+      in: header
+      value: assistants=v2
+    - name: vector_store_id
+      in: path
+      value: $steps.createStore.outputs.storeId
+    - name: batch_id
+      in: path
+      value: $steps.createBatch.outputs.batchId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+      fileCounts: $response.body#/file_counts
+    onSuccess:
+    - name: batchCompleted
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.status == "completed"
+        type: jsonpath
+    - name: batchInProgress
+      type: goto
+      stepId: pollBatch
+      criteria:
+      - context: $response.body
+        condition: $.status == "in_progress"
+        type: jsonpath
+  outputs:
+    storeId: $steps.createStore.outputs.storeId
+    batchId: $steps.createBatch.outputs.batchId
+    fileCounts: $steps.pollBatch.outputs.fileCounts

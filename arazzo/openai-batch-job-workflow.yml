@@ -1,0 +1,121 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI Batch Job
+  summary: Upload a batch input file, create a batch, poll until complete, and read the output file id.
+  description: >-
+    Uploads a JSONL batch input file with the batch purpose, creates a batch
+    against a target endpoint, polls the batch until it reaches a terminal
+    status, and on completion returns the output file id holding the results.
+    Every step spells out its request inline so the flow can be read and executed
+    without opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: openaiApi
+  url: ../openapi/openai-openapi-master.yml
+  type: openapi
+workflows:
+- workflowId: batch-job
+  summary: Upload batch input, run a batch, poll to completion, and return output file id.
+  description: >-
+    Uploads the batch input file, creates the batch, polls its status, and on
+    completion returns the output and error file identifiers.
+  inputs:
+    type: object
+    required:
+    - apiKey
+    - batchInputFile
+    - endpoint
+    properties:
+      apiKey:
+        type: string
+        description: OpenAI API key used as a Bearer token.
+      batchInputFile:
+        type: string
+        description: The JSONL batch input file contents to upload (binary/multipart field).
+      endpoint:
+        type: string
+        description: The endpoint the batch runs against (e.g. /v1/chat/completions).
+  steps:
+  - stepId: uploadInput
+    description: Upload the JSONL batch input file with the batch purpose.
+    operationId: createFile
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    requestBody:
+      contentType: multipart/form-data
+      payload:
+        file: $inputs.batchInputFile
+        purpose: batch
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      inputFileId: $response.body#/id
+  - stepId: createBatch
+    description: Create a batch using the uploaded input file and target endpoint.
+    operationId: createBatch
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    requestBody:
+      contentType: application/json
+      payload:
+        input_file_id: $steps.uploadInput.outputs.inputFileId
+        endpoint: $inputs.endpoint
+        completion_window: 24h
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      batchId: $response.body#/id
+      status: $response.body#/status
+  - stepId: pollBatch
+    description: >-
+      Poll the batch until it reaches a terminal status, branching to the result
+      step when completed and looping while it is still processing.
+    operationId: retrieveBatch
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: batch_id
+      in: path
+      value: $steps.createBatch.outputs.batchId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+    onSuccess:
+    - name: batchCompleted
+      type: goto
+      stepId: getResult
+      criteria:
+      - context: $response.body
+        condition: $.status == "completed"
+        type: jsonpath
+    - name: batchProcessing
+      type: goto
+      stepId: pollBatch
+      criteria:
+      - context: $response.body
+        condition: $.status == "validating" || $.status == "in_progress" || $.status == "finalizing"
+        type: jsonpath
+  - stepId: getResult
+    description: Retrieve the completed batch and return its output and error file ids.
+    operationId: retrieveBatch
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: batch_id
+      in: path
+      value: $steps.createBatch.outputs.batchId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      outputFileId: $response.body#/output_file_id
+      errorFileId: $response.body#/error_file_id
+  outputs:
+    batchId: $steps.createBatch.outputs.batchId
+    outputFileId: $steps.getResult.outputs.outputFileId

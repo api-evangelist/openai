@@ -1,0 +1,79 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI Download Batch Results
+  summary: Retrieve a completed batch and download its output file contents.
+  description: >-
+    Retrieves a batch, branches on its status, and when the batch has completed
+    it downloads the contents of the output file that holds the results. Every
+    step spells out its request inline so the flow can be read and executed
+    without opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: openaiApi
+  url: ../openapi/openai-openapi-master.yml
+  type: openapi
+workflows:
+- workflowId: download-batch-results
+  summary: Download the output file of a completed batch.
+  description: >-
+    Reads the batch to find its output file id, and only when the batch is
+    completed does it download the raw output file contents.
+  inputs:
+    type: object
+    required:
+    - apiKey
+    - batchId
+    properties:
+      apiKey:
+        type: string
+        description: OpenAI API key used as a Bearer token.
+      batchId:
+        type: string
+        description: The id of the batch whose results should be downloaded.
+  steps:
+  - stepId: getBatch
+    description: Retrieve the batch and branch on whether it has completed.
+    operationId: retrieveBatch
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: batch_id
+      in: path
+      value: $inputs.batchId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+      outputFileId: $response.body#/output_file_id
+    onSuccess:
+    - name: batchCompleted
+      type: goto
+      stepId: downloadOutput
+      criteria:
+      - context: $response.body
+        condition: $.status == "completed"
+        type: jsonpath
+    - name: batchNotReady
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.status != "completed"
+        type: jsonpath
+  - stepId: downloadOutput
+    description: Download the contents of the batch output file.
+    operationId: downloadFile
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: file_id
+      in: path
+      value: $steps.getBatch.outputs.outputFileId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      contents: $response.body
+  outputs:
+    outputFileId: $steps.getBatch.outputs.outputFileId
+    contents: $steps.downloadOutput.outputs.contents

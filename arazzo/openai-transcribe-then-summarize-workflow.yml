@@ -1,0 +1,80 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI Transcribe then Summarize
+  summary: Transcribe an audio file, then summarize the transcript with a chat completion.
+  description: >-
+    Transcribes an uploaded audio file into text, then passes that transcript to
+    the chat completions endpoint to produce a concise summary. Every step spells
+    out its request inline so the flow can be read and executed without opening
+    the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: openaiApi
+  url: ../openapi/openai-openapi-master.yml
+  type: openapi
+workflows:
+- workflowId: transcribe-then-summarize
+  summary: Transcribe audio and summarize the resulting transcript.
+  description: >-
+    Sends an audio file to the transcription endpoint, then asks a chat model to
+    summarize the returned transcript text.
+  inputs:
+    type: object
+    required:
+    - apiKey
+    - audioFile
+    - transcribeModel
+    - chatModel
+    properties:
+      apiKey:
+        type: string
+        description: OpenAI API key used as a Bearer token.
+      audioFile:
+        type: string
+        description: The audio file contents to transcribe (binary/multipart field).
+      transcribeModel:
+        type: string
+        description: The transcription model id (e.g. gpt-4o-transcribe or whisper-1).
+      chatModel:
+        type: string
+        description: The chat model id used to summarize the transcript (e.g. gpt-4o-mini).
+  steps:
+  - stepId: transcribe
+    description: Transcribe the uploaded audio file into text.
+    operationId: createTranscription
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    requestBody:
+      contentType: multipart/form-data
+      payload:
+        file: $inputs.audioFile
+        model: $inputs.transcribeModel
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      transcript: $response.body#/text
+  - stepId: summarize
+    description: Summarize the transcript text with a chat completion.
+    operationId: createChatCompletion
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    requestBody:
+      contentType: application/json
+      payload:
+        model: $inputs.chatModel
+        messages:
+        - role: system
+          content: You summarize transcripts into a concise paragraph.
+        - role: user
+          content: $steps.transcribe.outputs.transcript
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      summary: $response.body#/choices/0/message/content
+  outputs:
+    transcript: $steps.transcribe.outputs.transcript
+    summary: $steps.summarize.outputs.summary

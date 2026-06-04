@@ -1,0 +1,121 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI Fine-Tuning Job
+  summary: Upload a training file, start a fine-tuning job, poll until terminal, and read the result.
+  description: >-
+    Uploads a JSONL training file with the fine-tune purpose, enqueues a
+    fine-tuning job against it, polls the job until it reaches a terminal status,
+    and branches on the outcome to return the fine-tuned model name on success.
+    Every step spells out its request inline so the flow can be read and executed
+    without opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: openaiApi
+  url: ../openapi/openai-openapi-master.yml
+  type: openapi
+workflows:
+- workflowId: fine-tuning-job
+  summary: Upload training data, run a fine-tuning job, and poll to completion.
+  description: >-
+    Uploads the training file, creates a fine-tuning job, polls the job status,
+    and on success returns the resulting fine-tuned model identifier.
+  inputs:
+    type: object
+    required:
+    - apiKey
+    - trainingFile
+    - model
+    properties:
+      apiKey:
+        type: string
+        description: OpenAI API key used as a Bearer token.
+      trainingFile:
+        type: string
+        description: The JSONL training file contents to upload (binary/multipart field).
+      model:
+        type: string
+        description: The base model to fine-tune (e.g. gpt-4o-mini).
+  steps:
+  - stepId: uploadTrainingFile
+    description: Upload the JSONL training file with the fine-tune purpose.
+    operationId: createFile
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    requestBody:
+      contentType: multipart/form-data
+      payload:
+        file: $inputs.trainingFile
+        purpose: fine-tune
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      fileId: $response.body#/id
+  - stepId: createJob
+    description: Create a fine-tuning job using the uploaded training file.
+    operationId: createFineTuningJob
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    requestBody:
+      contentType: application/json
+      payload:
+        model: $inputs.model
+        training_file: $steps.uploadTrainingFile.outputs.fileId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      jobId: $response.body#/id
+      status: $response.body#/status
+  - stepId: pollJob
+    description: >-
+      Poll the fine-tuning job until it reaches a terminal status, branching to
+      the result step when finished and looping while it is still running.
+    operationId: retrieveFineTuningJob
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: fine_tuning_job_id
+      in: path
+      value: $steps.createJob.outputs.jobId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+      fineTunedModel: $response.body#/fine_tuned_model
+    onSuccess:
+    - name: jobSucceeded
+      type: goto
+      stepId: getResult
+      criteria:
+      - context: $response.body
+        condition: $.status == "succeeded"
+        type: jsonpath
+    - name: jobStillRunning
+      type: goto
+      stepId: pollJob
+      criteria:
+      - context: $response.body
+        condition: $.status == "validating_files" || $.status == "queued" || $.status == "running"
+        type: jsonpath
+  - stepId: getResult
+    description: Retrieve the finished fine-tuning job and return the fine-tuned model.
+    operationId: retrieveFineTuningJob
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: fine_tuning_job_id
+      in: path
+      value: $steps.createJob.outputs.jobId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      fineTunedModel: $response.body#/fine_tuned_model
+      trainedTokens: $response.body#/trained_tokens
+  outputs:
+    jobId: $steps.createJob.outputs.jobId
+    fineTunedModel: $steps.getResult.outputs.fineTunedModel

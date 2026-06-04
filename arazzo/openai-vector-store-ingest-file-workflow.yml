@@ -1,0 +1,135 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI Vector Store Ingest File
+  summary: Create a vector store, upload a file, attach it, and poll until it is indexed.
+  description: >-
+    Creates a vector store, uploads a source file with the assistants purpose,
+    attaches the file to the vector store, and polls the vector store file until
+    it is indexed, branching on the terminal status. The vector store endpoints
+    require the OpenAI-Beta header, which is supplied inline on every step. Every
+    step spells out its request inline so the flow can be read and executed
+    without opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: openaiApi
+  url: ../openapi/openai-openapi-master.yml
+  type: openapi
+workflows:
+- workflowId: vector-store-ingest-file
+  summary: Create a vector store and ingest a single file, polling until indexed.
+  description: >-
+    Creates a vector store, uploads a file, attaches it to the store, and polls
+    the vector store file until it reaches a terminal indexing status.
+  inputs:
+    type: object
+    required:
+    - apiKey
+    - storeName
+    - file
+    properties:
+      apiKey:
+        type: string
+        description: OpenAI API key used as a Bearer token.
+      storeName:
+        type: string
+        description: A name for the new vector store.
+      file:
+        type: string
+        description: The file contents to upload and ingest (binary/multipart field).
+  steps:
+  - stepId: createStore
+    description: Create a new vector store.
+    operationId: createVectorStore
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: OpenAI-Beta
+      in: header
+      value: assistants=v2
+    requestBody:
+      contentType: application/json
+      payload:
+        name: $inputs.storeName
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      storeId: $response.body#/id
+  - stepId: uploadFile
+    description: Upload the source file with the assistants purpose.
+    operationId: createFile
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    requestBody:
+      contentType: multipart/form-data
+      payload:
+        file: $inputs.file
+        purpose: assistants
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      fileId: $response.body#/id
+  - stepId: attachFile
+    description: Attach the uploaded file to the vector store.
+    operationId: createVectorStoreFile
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: OpenAI-Beta
+      in: header
+      value: assistants=v2
+    - name: vector_store_id
+      in: path
+      value: $steps.createStore.outputs.storeId
+    requestBody:
+      contentType: application/json
+      payload:
+        file_id: $steps.uploadFile.outputs.fileId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      vectorStoreFileId: $response.body#/id
+      status: $response.body#/status
+  - stepId: pollFile
+    description: >-
+      Poll the vector store file until indexing reaches a terminal status,
+      ending when completed and looping while it is still in progress.
+    operationId: getVectorStoreFile
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: OpenAI-Beta
+      in: header
+      value: assistants=v2
+    - name: vector_store_id
+      in: path
+      value: $steps.createStore.outputs.storeId
+    - name: file_id
+      in: path
+      value: $steps.attachFile.outputs.vectorStoreFileId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+    onSuccess:
+    - name: fileIndexed
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.status == "completed"
+        type: jsonpath
+    - name: fileIndexing
+      type: goto
+      stepId: pollFile
+      criteria:
+      - context: $response.body
+        condition: $.status == "in_progress"
+        type: jsonpath
+  outputs:
+    storeId: $steps.createStore.outputs.storeId
+    vectorStoreFileId: $steps.attachFile.outputs.vectorStoreFileId
+    status: $steps.pollFile.outputs.status

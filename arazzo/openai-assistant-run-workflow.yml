@@ -1,0 +1,187 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI Assistant Run
+  summary: Create an assistant, open a thread, add a message, run it, poll the run, and read the reply.
+  description: >-
+    Builds an Assistants v2 conversation end to end: it creates an assistant,
+    opens a thread, adds a user message, starts a run, polls the run until it
+    reaches a terminal status, and on completion lists the thread messages to
+    return the assistant reply. The Assistants endpoints require the OpenAI-Beta
+    header, which is supplied inline on every beta step. Every step spells out
+    its request inline so the flow can be read and executed without opening the
+    underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: openaiApi
+  url: ../openapi/openai-openapi-master.yml
+  type: openapi
+workflows:
+- workflowId: assistant-run
+  summary: Create an assistant and run a thread to completion, returning the reply.
+  description: >-
+    Creates an assistant, opens a thread with a user message, starts a run,
+    polls the run status to a terminal state, and lists the resulting messages.
+  inputs:
+    type: object
+    required:
+    - apiKey
+    - model
+    - instructions
+    - userMessage
+    properties:
+      apiKey:
+        type: string
+        description: OpenAI API key used as a Bearer token.
+      model:
+        type: string
+        description: The model id for the assistant and run (e.g. gpt-4o).
+      instructions:
+        type: string
+        description: The system instructions for the assistant.
+      userMessage:
+        type: string
+        description: The user message to add to the thread.
+  steps:
+  - stepId: createAssistant
+    description: Create an assistant with the supplied model and instructions.
+    operationId: createAssistant
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: OpenAI-Beta
+      in: header
+      value: assistants=v2
+    requestBody:
+      contentType: application/json
+      payload:
+        model: $inputs.model
+        instructions: $inputs.instructions
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      assistantId: $response.body#/id
+  - stepId: createThread
+    description: Open a new conversation thread.
+    operationId: createThread
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: OpenAI-Beta
+      in: header
+      value: assistants=v2
+    requestBody:
+      contentType: application/json
+      payload: {}
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      threadId: $response.body#/id
+  - stepId: addMessage
+    description: Add the user message to the thread.
+    operationId: createMessage
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: OpenAI-Beta
+      in: header
+      value: assistants=v2
+    - name: thread_id
+      in: path
+      value: $steps.createThread.outputs.threadId
+    requestBody:
+      contentType: application/json
+      payload:
+        role: user
+        content: $inputs.userMessage
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      messageId: $response.body#/id
+  - stepId: createRun
+    description: Start a run of the assistant on the thread.
+    operationId: createRun
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: OpenAI-Beta
+      in: header
+      value: assistants=v2
+    - name: thread_id
+      in: path
+      value: $steps.createThread.outputs.threadId
+    requestBody:
+      contentType: application/json
+      payload:
+        assistant_id: $steps.createAssistant.outputs.assistantId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      runId: $response.body#/id
+      status: $response.body#/status
+  - stepId: pollRun
+    description: >-
+      Poll the run until it reaches a terminal status, branching to read the
+      messages when completed and looping while it is still in progress.
+    operationId: getRun
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: OpenAI-Beta
+      in: header
+      value: assistants=v2
+    - name: thread_id
+      in: path
+      value: $steps.createThread.outputs.threadId
+    - name: run_id
+      in: path
+      value: $steps.createRun.outputs.runId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+    onSuccess:
+    - name: runCompleted
+      type: goto
+      stepId: listMessages
+      criteria:
+      - context: $response.body
+        condition: $.status == "completed"
+        type: jsonpath
+    - name: runInProgress
+      type: goto
+      stepId: pollRun
+      criteria:
+      - context: $response.body
+        condition: $.status == "queued" || $.status == "in_progress" || $.status == "cancelling"
+        type: jsonpath
+  - stepId: listMessages
+    description: List the thread messages and return the most recent assistant reply.
+    operationId: listMessages
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: OpenAI-Beta
+      in: header
+      value: assistants=v2
+    - name: thread_id
+      in: path
+      value: $steps.createThread.outputs.threadId
+    - name: order
+      in: query
+      value: desc
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      messages: $response.body#/data
+      latestReply: $response.body#/data/0/content
+  outputs:
+    assistantId: $steps.createAssistant.outputs.assistantId
+    threadId: $steps.createThread.outputs.threadId
+    runId: $steps.createRun.outputs.runId
+    latestReply: $steps.listMessages.outputs.latestReply

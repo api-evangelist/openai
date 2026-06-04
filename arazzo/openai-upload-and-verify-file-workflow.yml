@@ -1,0 +1,82 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI Upload and Verify File
+  summary: Upload a file, confirm it appears in the file list, and retrieve its metadata.
+  description: >-
+    Uploads a file for a given purpose, lists the account files to confirm the
+    upload is present, and retrieves the file metadata to return its processing
+    status. Every step spells out its request inline so the flow can be read and
+    executed without opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: openaiApi
+  url: ../openapi/openai-openapi-master.yml
+  type: openapi
+workflows:
+- workflowId: upload-and-verify-file
+  summary: Upload a file and verify it by listing and retrieving it.
+  description: >-
+    Uploads a file, lists the files for the account, then retrieves the uploaded
+    file metadata and returns its status and byte size.
+  inputs:
+    type: object
+    required:
+    - apiKey
+    - file
+    - purpose
+    properties:
+      apiKey:
+        type: string
+        description: OpenAI API key used as a Bearer token.
+      file:
+        type: string
+        description: The file contents to upload (binary/multipart field).
+      purpose:
+        type: string
+        description: The intended purpose (assistants, batch, fine-tune, vision, user_data, or evals).
+  steps:
+  - stepId: uploadFile
+    description: Upload the file for the supplied purpose.
+    operationId: createFile
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    requestBody:
+      contentType: multipart/form-data
+      payload:
+        file: $inputs.file
+        purpose: $inputs.purpose
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      fileId: $response.body#/id
+  - stepId: listFiles
+    description: List the account files to confirm the upload is present.
+    operationId: listFiles
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      files: $response.body#/data
+  - stepId: retrieveFile
+    description: Retrieve the uploaded file metadata and return its status.
+    operationId: retrieveFile
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: file_id
+      in: path
+      value: $steps.uploadFile.outputs.fileId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+      bytes: $response.body#/bytes
+  outputs:
+    fileId: $steps.uploadFile.outputs.fileId
+    status: $steps.retrieveFile.outputs.status

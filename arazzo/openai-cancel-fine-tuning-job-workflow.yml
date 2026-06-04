@@ -1,0 +1,79 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI Cancel Fine-Tuning Job
+  summary: Inspect a running fine-tuning job and cancel it only if it is still in progress.
+  description: >-
+    Retrieves a fine-tuning job, branches on its status, and cancels the job only
+    when it is still validating, queued, or running; if it has already reached a
+    terminal status the flow ends without issuing a cancel. Every step spells out
+    its request inline so the flow can be read and executed without opening the
+    underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: openaiApi
+  url: ../openapi/openai-openapi-master.yml
+  type: openapi
+workflows:
+- workflowId: cancel-fine-tuning-job
+  summary: Cancel an in-progress fine-tuning job after checking its status.
+  description: >-
+    Reads the current state of a fine-tuning job and issues a cancel request only
+    when the job is still running, returning the post-cancel status.
+  inputs:
+    type: object
+    required:
+    - apiKey
+    - jobId
+    properties:
+      apiKey:
+        type: string
+        description: OpenAI API key used as a Bearer token.
+      jobId:
+        type: string
+        description: The id of the fine-tuning job to inspect and possibly cancel.
+  steps:
+  - stepId: getJob
+    description: Retrieve the fine-tuning job and branch on whether it is still running.
+    operationId: retrieveFineTuningJob
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: fine_tuning_job_id
+      in: path
+      value: $inputs.jobId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+    onSuccess:
+    - name: jobRunning
+      type: goto
+      stepId: cancelJob
+      criteria:
+      - context: $response.body
+        condition: $.status == "validating_files" || $.status == "queued" || $.status == "running"
+        type: jsonpath
+    - name: jobTerminal
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.status == "succeeded" || $.status == "failed" || $.status == "cancelled"
+        type: jsonpath
+  - stepId: cancelJob
+    description: Cancel the still-running fine-tuning job.
+    operationId: cancelFineTuningJob
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: fine_tuning_job_id
+      in: path
+      value: $inputs.jobId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+  outputs:
+    initialStatus: $steps.getJob.outputs.status
+    finalStatus: $steps.cancelJob.outputs.status

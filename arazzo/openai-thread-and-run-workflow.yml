@@ -1,0 +1,127 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI Create Thread and Run
+  summary: Start a thread and run in one request against an existing assistant, then poll and read the reply.
+  description: >-
+    Uses the combined create-thread-and-run endpoint to start a conversation
+    with an existing assistant in a single call, polls the run until it reaches a
+    terminal status, and on completion lists the thread messages to return the
+    assistant reply. The Assistants endpoints require the OpenAI-Beta header,
+    which is supplied inline on every beta step. Every step spells out its
+    request inline so the flow can be read and executed without opening the
+    underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: openaiApi
+  url: ../openapi/openai-openapi-master.yml
+  type: openapi
+workflows:
+- workflowId: thread-and-run
+  summary: Create a thread and run in one call, poll to completion, and read messages.
+  description: >-
+    Calls the combined thread-and-run endpoint with an existing assistant and an
+    initial user message, polls the run status, then lists the resulting thread
+    messages.
+  inputs:
+    type: object
+    required:
+    - apiKey
+    - assistantId
+    - userMessage
+    properties:
+      apiKey:
+        type: string
+        description: OpenAI API key used as a Bearer token.
+      assistantId:
+        type: string
+        description: The id of an existing assistant to execute the run.
+      userMessage:
+        type: string
+        description: The initial user message to seed the thread.
+  steps:
+  - stepId: createThreadAndRun
+    description: Create a thread seeded with the user message and immediately run it.
+    operationId: createThreadAndRun
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: OpenAI-Beta
+      in: header
+      value: assistants=v2
+    requestBody:
+      contentType: application/json
+      payload:
+        assistant_id: $inputs.assistantId
+        thread:
+          messages:
+          - role: user
+            content: $inputs.userMessage
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      runId: $response.body#/id
+      threadId: $response.body#/thread_id
+      status: $response.body#/status
+  - stepId: pollRun
+    description: >-
+      Poll the run until it reaches a terminal status, branching to read the
+      messages when completed and looping while it is still in progress.
+    operationId: getRun
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: OpenAI-Beta
+      in: header
+      value: assistants=v2
+    - name: thread_id
+      in: path
+      value: $steps.createThreadAndRun.outputs.threadId
+    - name: run_id
+      in: path
+      value: $steps.createThreadAndRun.outputs.runId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      status: $response.body#/status
+    onSuccess:
+    - name: runCompleted
+      type: goto
+      stepId: listMessages
+      criteria:
+      - context: $response.body
+        condition: $.status == "completed"
+        type: jsonpath
+    - name: runInProgress
+      type: goto
+      stepId: pollRun
+      criteria:
+      - context: $response.body
+        condition: $.status == "queued" || $.status == "in_progress" || $.status == "cancelling"
+        type: jsonpath
+  - stepId: listMessages
+    description: List the thread messages and return the most recent assistant reply.
+    operationId: listMessages
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    - name: OpenAI-Beta
+      in: header
+      value: assistants=v2
+    - name: thread_id
+      in: path
+      value: $steps.createThreadAndRun.outputs.threadId
+    - name: order
+      in: query
+      value: desc
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      messages: $response.body#/data
+      latestReply: $response.body#/data/0/content
+  outputs:
+    threadId: $steps.createThreadAndRun.outputs.threadId
+    runId: $steps.createThreadAndRun.outputs.runId
+    latestReply: $steps.listMessages.outputs.latestReply

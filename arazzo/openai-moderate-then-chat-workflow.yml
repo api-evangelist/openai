@@ -1,0 +1,89 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI Moderate then Chat
+  summary: Screen user input with the moderation endpoint, then chat only if it is safe.
+  description: >-
+    Runs the supplied user text through the moderation classifier and branches:
+    when the content is flagged the flow ends without calling the model, and
+    when it is not flagged it creates a chat completion. Every step spells out
+    its request inline so the flow can be read and executed without opening the
+    underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: openaiApi
+  url: ../openapi/openai-openapi-master.yml
+  type: openapi
+workflows:
+- workflowId: moderate-then-chat
+  summary: Moderate input text and create a chat completion only when it is allowed.
+  description: >-
+    Classifies the user input for policy violations, and only when the content
+    is not flagged does it forward the message to the chat completions endpoint.
+  inputs:
+    type: object
+    required:
+    - apiKey
+    - chatModel
+    - userMessage
+    properties:
+      apiKey:
+        type: string
+        description: OpenAI API key used as a Bearer token.
+      chatModel:
+        type: string
+        description: The model id for the chat completion (e.g. gpt-4o-mini).
+      userMessage:
+        type: string
+        description: The user message to moderate and then send to the model.
+  steps:
+  - stepId: moderate
+    description: Classify the user input for policy violations.
+    operationId: createModeration
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    requestBody:
+      contentType: application/json
+      payload:
+        input: $inputs.userMessage
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      flagged: $response.body#/results/0/flagged
+    onSuccess:
+    - name: contentAllowed
+      type: goto
+      stepId: createChat
+      criteria:
+      - context: $response.body
+        condition: $.results[0].flagged == false
+        type: jsonpath
+    - name: contentFlagged
+      type: end
+      criteria:
+      - context: $response.body
+        condition: $.results[0].flagged == true
+        type: jsonpath
+  - stepId: createChat
+    description: Create a chat completion for the moderated, allowed user message.
+    operationId: createChatCompletion
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    requestBody:
+      contentType: application/json
+      payload:
+        model: $inputs.chatModel
+        messages:
+        - role: user
+          content: $inputs.userMessage
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      completionId: $response.body#/id
+      reply: $response.body#/choices/0/message/content
+  outputs:
+    flagged: $steps.moderate.outputs.flagged
+    reply: $steps.createChat.outputs.reply

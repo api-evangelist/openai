@@ -1,0 +1,75 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI List Models then Create Chat Completion
+  summary: Discover an available model, then generate a chat completion with it.
+  description: >-
+    Lists the models available to the authenticated account, confirms the
+    requested model id is present, and then creates a chat completion using
+    that model. Every step spells out its request inline so the flow can be
+    read and executed without opening the underlying OpenAPI description.
+  version: 1.0.0
+sourceDescriptions:
+- name: openaiApi
+  url: ../openapi/openai-openapi-master.yml
+  type: openapi
+workflows:
+- workflowId: list-models-then-chat
+  summary: List models and create a chat completion with a selected model.
+  description: >-
+    Retrieves the catalog of available models so a caller can confirm the
+    target model exists, then sends a single user message to the chat
+    completions endpoint and returns the assistant reply.
+  inputs:
+    type: object
+    required:
+    - apiKey
+    - model
+    - userMessage
+    properties:
+      apiKey:
+        type: string
+        description: OpenAI API key used as a Bearer token.
+      model:
+        type: string
+        description: The model id to use for the chat completion (e.g. gpt-4o-mini).
+      userMessage:
+        type: string
+        description: The user message content to send to the model.
+  steps:
+  - stepId: listModels
+    description: List the models available to the authenticated account.
+    operationId: listModels
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      models: $response.body#/data
+  - stepId: createChat
+    description: >-
+      Create a chat completion using the selected model and the supplied user
+      message.
+    operationId: createChatCompletion
+    parameters:
+    - name: Authorization
+      in: header
+      value: "Bearer $inputs.apiKey"
+    requestBody:
+      contentType: application/json
+      payload:
+        model: $inputs.model
+        messages:
+        - role: user
+          content: $inputs.userMessage
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      completionId: $response.body#/id
+      reply: $response.body#/choices/0/message/content
+      finishReason: $response.body#/choices/0/finish_reason
+  outputs:
+    models: $steps.listModels.outputs.models
+    completionId: $steps.createChat.outputs.completionId
+    reply: $steps.createChat.outputs.reply

@@ -539,6 +539,60 @@ kind: contract
 score: 308
 access: 3rd-Party
 common:
+  - type: ArazzoWorkflows
+    url: arazzo/
+    workflows:
+    - url: arazzo/openai-assistant-run-workflow.yml
+      name: OpenAI Assistant Run
+      summary: Create an assistant, open a thread, add a message, run it, poll the run, and read the reply.
+    - url: arazzo/openai-batch-job-workflow.yml
+      name: OpenAI Batch Job
+      summary: Upload a batch input file, create a batch, poll until complete, and read the output file id.
+    - url: arazzo/openai-cancel-fine-tuning-job-workflow.yml
+      name: OpenAI Cancel Fine-Tuning Job
+      summary: Inspect a running fine-tuning job and cancel it only if it is still in progress.
+    - url: arazzo/openai-chat-then-speak-workflow.yml
+      name: OpenAI Chat then Speak
+      summary: Generate a chat reply, then synthesize it to spoken audio.
+    - url: arazzo/openai-create-embedding-workflow.yml
+      name: OpenAI Create Embedding
+      summary: Confirm an embedding model exists, then embed input text.
+    - url: arazzo/openai-download-batch-results-workflow.yml
+      name: OpenAI Download Batch Results
+      summary: Retrieve a completed batch and download its output file contents.
+    - url: arazzo/openai-fine-tuning-job-workflow.yml
+      name: OpenAI Fine-Tuning Job
+      summary: Upload a training file, start a fine-tuning job, poll until terminal, and read the result.
+    - url: arazzo/openai-generate-image-workflow.yml
+      name: OpenAI Moderate then Generate Image
+      summary: Screen an image prompt, then generate an image only when it is allowed.
+    - url: arazzo/openai-list-models-then-chat-workflow.yml
+      name: OpenAI List Models then Create Chat Completion
+      summary: Discover an available model, then generate a chat completion with it.
+    - url: arazzo/openai-moderate-then-chat-workflow.yml
+      name: OpenAI Moderate then Chat
+      summary: Screen user input with the moderation endpoint, then chat only if it is safe.
+    - url: arazzo/openai-retrieve-and-delete-model-workflow.yml
+      name: OpenAI Retrieve and Delete Fine-Tuned Model
+      summary: Inspect a model and delete it only when it is an owned fine-tuned model.
+    - url: arazzo/openai-thread-and-run-workflow.yml
+      name: OpenAI Create Thread and Run
+      summary: Start a thread and run in one request against an existing assistant, then poll and read the reply.
+    - url: arazzo/openai-transcribe-then-summarize-workflow.yml
+      name: OpenAI Transcribe then Summarize
+      summary: Transcribe an audio file, then summarize the transcript with a chat completion.
+    - url: arazzo/openai-upload-and-verify-file-workflow.yml
+      name: OpenAI Upload and Verify File
+      summary: Upload a file, confirm it appears in the file list, and retrieve its metadata.
+    - url: arazzo/openai-vector-store-file-batch-workflow.yml
+      name: OpenAI Vector Store File Batch
+      summary: Create a vector store, attach a batch of files, and poll the batch to completion.
+    - url: arazzo/openai-vector-store-ingest-file-workflow.yml
+      name: OpenAI Vector Store Ingest File
+      summary: Create a vector store, upload a file, attach it, and poll until it is indexed.
+    - url: arazzo/openai-vector-store-search-workflow.yml
+      name: OpenAI Vector Store Search
+      summary: Attach a file to a vector store, wait until it is indexed, then run a semantic search.
   - type: LinkedIn
     url: https://www.linkedin.com/company/openai
   - url: https://platform.openai.com/docs/overview
