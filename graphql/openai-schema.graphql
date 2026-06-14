@@ -1,0 +1,1244 @@
+"""
+OpenAI GraphQL Schema (Conceptual)
+Derived from the OpenAI REST API — https://platform.openai.com/docs/api-reference
+OpenAI has no native public GraphQL endpoint. This schema models the REST surface
+for tooling, federation, and design-reference purposes.
+"""
+
+# ─── Scalars ───────────────────────────────────────────────────────────────────
+
+scalar JSON
+scalar Upload
+
+# ─── Enums ─────────────────────────────────────────────────────────────────────
+
+enum Role {
+  system
+  user
+  assistant
+  tool
+  function
+}
+
+enum ImageSize {
+  SIZE_256x256
+  SIZE_512x512
+  SIZE_1024x1024
+  SIZE_1792x1024
+  SIZE_1024x1792
+}
+
+enum ImageFormat {
+  url
+  b64_json
+}
+
+enum ImageQuality {
+  standard
+  hd
+}
+
+enum AudioFormat {
+  mp3
+  opus
+  aac
+  flac
+  wav
+  pcm
+}
+
+enum TranscriptionFormat {
+  json
+  text
+  srt
+  verbose_json
+  vtt
+}
+
+enum FilePurpose {
+  fine_tune
+  assistants
+  batch
+  vision
+  user_data
+}
+
+enum FileStatus {
+  uploaded
+  processed
+  error
+}
+
+enum FineTuningJobStatus {
+  validating_files
+  queued
+  running
+  succeeded
+  failed
+  cancelled
+}
+
+enum BatchStatus {
+  validating
+  failed
+  in_progress
+  finalizing
+  completed
+  expired
+  cancelling
+  cancelled
+}
+
+enum BatchEndpoint {
+  CHAT_COMPLETIONS
+  EMBEDDINGS
+  COMPLETIONS
+  RESPONSES
+  MODERATIONS
+}
+
+enum AssistantToolType {
+  code_interpreter
+  file_search
+  function
+}
+
+enum ThreadStatus {
+  active
+  locked
+  closed
+}
+
+enum RunStatus {
+  queued
+  in_progress
+  requires_action
+  cancelling
+  cancelled
+  failed
+  completed
+  incomplete
+  expired
+}
+
+enum RunStepType {
+  message_creation
+  tool_calls
+}
+
+enum RunStepStatus {
+  in_progress
+  cancelled
+  failed
+  completed
+  expired
+}
+
+enum MessageRole {
+  user
+  assistant
+}
+
+enum MessageStatus {
+  in_progress
+  incomplete
+  completed
+}
+
+enum VectorStoreStatus {
+  expired
+  in_progress
+  completed
+}
+
+enum VectorStoreFileStatus {
+  in_progress
+  completed
+  cancelled
+  failed
+}
+
+enum ChunkingStrategyType {
+  auto
+  static
+}
+
+enum UploadStatus {
+  pending
+  completed
+  cancelled
+  expired
+}
+
+enum ModerationModel {
+  text_moderation_stable
+  text_moderation_latest
+  omni_moderation_latest
+}
+
+enum AuditLogEventType {
+  api_key_created
+  api_key_updated
+  api_key_deleted
+  invite_sent
+  invite_accepted
+  invite_deleted
+  login_failed
+  logout
+  organization_updated
+  project_created
+  project_updated
+  project_archived
+  service_account_created
+  service_account_updated
+  service_account_deleted
+  user_added
+  user_updated
+  user_deleted
+  fine_tuning_job_created
+  fine_tuning_job_cancelled
+  fine_tuning_job_failed
+  fine_tuning_job_succeeded
+}
+
+enum ProjectStatus {
+  active
+  archived
+}
+
+enum OrganizationRole {
+  owner
+  reader
+}
+
+enum ProjectUserRole {
+  owner
+  member
+}
+
+# ─── Core Chat Types ────────────────────────────────────────────────────────────
+
+type Model {
+  id: String!
+  object: String!
+  created: Int!
+  owned_by: String!
+}
+
+type ModelList {
+  object: String!
+  data: [Model!]!
+}
+
+type TextContent {
+  type: String!
+  text: String!
+}
+
+type ImageUrl {
+  url: String!
+  detail: String
+}
+
+type ImageContent {
+  type: String!
+  image_url: ImageUrl!
+}
+
+union MessageContent = TextContent | ImageContent
+
+type FunctionDefinition {
+  name: String!
+  description: String
+  parameters: JSON
+  strict: Boolean
+}
+
+type FunctionTool {
+  type: String!
+  function: FunctionDefinition!
+}
+
+type Tool {
+  type: String!
+  function: FunctionDefinition
+}
+
+type FunctionCall {
+  name: String!
+  arguments: String!
+}
+
+type ToolCall {
+  id: String!
+  type: String!
+  function: FunctionCall!
+}
+
+type ChatCompletionMessage {
+  role: Role!
+  content: String
+  tool_calls: [ToolCall]
+  tool_call_id: String
+  name: String
+  refusal: String
+}
+
+type CompletionUsage {
+  prompt_tokens: Int!
+  completion_tokens: Int!
+  total_tokens: Int!
+  prompt_tokens_details: JSON
+  completion_tokens_details: JSON
+}
+
+type ChatCompletionChoice {
+  index: Int!
+  message: ChatCompletionMessage!
+  finish_reason: String!
+  logprobs: JSON
+}
+
+type ChatCompletion {
+  id: String!
+  object: String!
+  created: Int!
+  model: String!
+  choices: [ChatCompletionChoice!]!
+  usage: CompletionUsage
+  system_fingerprint: String
+  service_tier: String
+}
+
+# ─── Streaming / Chunk Types ────────────────────────────────────────────────────
+
+type ChatCompletionChunkDelta {
+  role: Role
+  content: String
+  tool_calls: [ToolCall]
+  refusal: String
+}
+
+type ChatCompletionChunkChoice {
+  index: Int!
+  delta: ChatCompletionChunkDelta!
+  finish_reason: String
+  logprobs: JSON
+}
+
+type ChatCompletionChunk {
+  id: String!
+  object: String!
+  created: Int!
+  model: String!
+  choices: [ChatCompletionChunkChoice!]!
+  usage: CompletionUsage
+  system_fingerprint: String
+}
+
+# ─── Completion Request (legacy + chat input) ───────────────────────────────────
+
+input CompletionRequest {
+  model: String!
+  prompt: String
+  max_tokens: Int
+  temperature: Float
+  top_p: Float
+  n: Int
+  stream: Boolean
+  stop: [String]
+  presence_penalty: Float
+  frequency_penalty: Float
+  logit_bias: JSON
+  user: String
+}
+
+# ─── Embeddings ─────────────────────────────────────────────────────────────────
+
+input EmbeddingInput {
+  model: String!
+  input: JSON!
+  encoding_format: String
+  dimensions: Int
+  user: String
+}
+
+type Embedding {
+  object: String!
+  embedding: [Float!]!
+  index: Int!
+}
+
+type EmbeddingResult {
+  object: String!
+  data: [Embedding!]!
+  model: String!
+  usage: CompletionUsage!
+}
+
+# ─── Images ─────────────────────────────────────────────────────────────────────
+
+type Image {
+  url: String
+  b64_json: String
+  revised_prompt: String
+}
+
+type ImageList {
+  created: Int!
+  data: [Image!]!
+}
+
+input ImageGeneration {
+  prompt: String!
+  model: String
+  n: Int
+  quality: ImageQuality
+  response_format: ImageFormat
+  size: ImageSize
+  style: String
+  user: String
+}
+
+input ImageEdit {
+  image: Upload!
+  prompt: String!
+  mask: Upload
+  model: String
+  n: Int
+  size: ImageSize
+  response_format: ImageFormat
+  user: String
+}
+
+input ImageVariation {
+  image: Upload!
+  model: String
+  n: Int
+  response_format: ImageFormat
+  size: ImageSize
+  user: String
+}
+
+# ─── Audio ──────────────────────────────────────────────────────────────────────
+
+type Transcription {
+  text: String!
+  task: String
+  language: String
+  duration: Float
+  words: [JSON]
+  segments: [JSON]
+}
+
+type Translation {
+  text: String!
+}
+
+type Audio {
+  content_type: String!
+  data: String!
+}
+
+input TranscriptionRequest {
+  file: Upload!
+  model: String!
+  language: String
+  prompt: String
+  response_format: TranscriptionFormat
+  temperature: Float
+  timestamp_granularities: [String]
+}
+
+input TranslationRequest {
+  file: Upload!
+  model: String!
+  prompt: String
+  response_format: TranscriptionFormat
+  temperature: Float
+}
+
+# ─── Files ──────────────────────────────────────────────────────────────────────
+
+type File {
+  id: String!
+  object: String!
+  bytes: Int!
+  created_at: Int!
+  filename: String!
+  purpose: FilePurpose!
+  status: FileStatus
+  status_details: String
+}
+
+type FileList {
+  object: String!
+  data: [File!]!
+  has_more: Boolean!
+}
+
+type FileDeleteResponse {
+  id: String!
+  object: String!
+  deleted: Boolean!
+}
+
+# ─── Fine-Tuning ────────────────────────────────────────────────────────────────
+
+type FineTuningHyperparameters {
+  batch_size: JSON
+  learning_rate_multiplier: JSON
+  n_epochs: JSON
+}
+
+type FineTuningIntegration {
+  type: String!
+  wandb: JSON
+}
+
+type FineTuningJob {
+  id: String!
+  object: String!
+  created_at: Int!
+  error: JSON
+  fine_tuned_model: String
+  finished_at: Int
+  hyperparameters: FineTuningHyperparameters
+  model: String!
+  organization_id: String!
+  result_files: [String!]!
+  seed: Int
+  status: FineTuningJobStatus!
+  trained_tokens: Int
+  training_file: String!
+  validation_file: String
+  integrations: [FineTuningIntegration]
+  estimated_finish: Int
+}
+
+type FineTuningJobList {
+  object: String!
+  data: [FineTuningJob!]!
+  has_more: Boolean!
+}
+
+type FineTuningEvent {
+  id: String!
+  object: String!
+  created_at: Int!
+  level: String!
+  message: String!
+  data: JSON
+  type: String!
+}
+
+type FineTuningEventList {
+  object: String!
+  data: [FineTuningEvent!]!
+  has_more: Boolean!
+}
+
+type FineTuningCheckpoint {
+  id: String!
+  object: String!
+  created_at: Int!
+  fine_tuned_model_checkpoint: String!
+  fine_tuning_job_id: String!
+  metrics: JSON
+  step_number: Int!
+}
+
+type FineTuningCheckpointList {
+  object: String!
+  data: [FineTuningCheckpoint!]!
+  has_more: Boolean!
+}
+
+# ─── Batch ──────────────────────────────────────────────────────────────────────
+
+type BatchRequestCounts {
+  total: Int!
+  completed: Int!
+  failed: Int!
+}
+
+type Batch {
+  id: String!
+  object: String!
+  endpoint: String!
+  errors: JSON
+  input_file_id: String!
+  completion_window: String!
+  status: BatchStatus!
+  output_file_id: String
+  error_file_id: String
+  created_at: Int!
+  in_progress_at: Int
+  expires_at: Int
+  finalizing_at: Int
+  completed_at: Int
+  failed_at: Int
+  expired_at: Int
+  cancelling_at: Int
+  cancelled_at: Int
+  request_counts: BatchRequestCounts
+  metadata: JSON
+}
+
+type BatchList {
+  object: String!
+  data: [Batch!]!
+  first_id: String
+  last_id: String
+  has_more: Boolean!
+}
+
+input BatchRequest {
+  input_file_id: String!
+  endpoint: String!
+  completion_window: String!
+  metadata: JSON
+}
+
+type BatchResponse {
+  id: String!
+  custom_id: String
+  response: JSON
+  error: JSON
+}
+
+# ─── Assistants ─────────────────────────────────────────────────────────────────
+
+type AssistantTool {
+  type: AssistantToolType!
+  function: FunctionDefinition
+}
+
+type Assistant {
+  id: String!
+  object: String!
+  created_at: Int!
+  name: String
+  description: String
+  model: String!
+  instructions: String
+  tools: [AssistantTool!]!
+  tool_resources: JSON
+  metadata: JSON
+  temperature: Float
+  top_p: Float
+  response_format: JSON
+}
+
+type AssistantList {
+  object: String!
+  data: [Assistant!]!
+  first_id: String
+  last_id: String
+  has_more: Boolean!
+}
+
+type AssistantDeleteResponse {
+  id: String!
+  object: String!
+  deleted: Boolean!
+}
+
+# ─── Threads ────────────────────────────────────────────────────────────────────
+
+type Thread {
+  id: String!
+  object: String!
+  created_at: Int!
+  tool_resources: JSON
+  metadata: JSON
+}
+
+type ThreadDeleteResponse {
+  id: String!
+  object: String!
+  deleted: Boolean!
+}
+
+# ─── Messages ───────────────────────────────────────────────────────────────────
+
+type AnnotationFile {
+  type: String!
+  text: String!
+  file_citation: JSON
+  start_index: Int!
+  end_index: Int!
+}
+
+type AnnotationURL {
+  type: String!
+  text: String!
+  file_path: JSON
+  start_index: Int!
+  end_index: Int!
+}
+
+type MessageContentBlock {
+  type: String!
+  text: JSON
+  image_file: JSON
+  image_url: JSON
+  refusal: String
+}
+
+type Attachment {
+  file_id: String
+  tools: [AssistantTool]
+}
+
+type Message {
+  id: String!
+  object: String!
+  created_at: Int!
+  thread_id: String!
+  status: MessageStatus!
+  incomplete_details: JSON
+  completed_at: Int
+  incomplete_at: Int
+  role: MessageRole!
+  content: [MessageContentBlock!]!
+  assistant_id: String
+  run_id: String
+  attachments: [Attachment]
+  metadata: JSON
+}
+
+type MessageList {
+  object: String!
+  data: [Message!]!
+  first_id: String
+  last_id: String
+  has_more: Boolean!
+}
+
+type MessageDeleteResponse {
+  id: String!
+  object: String!
+  deleted: Boolean!
+}
+
+# ─── Runs ────────────────────────────────────────────────────────────────────────
+
+type RequiredAction {
+  type: String!
+  submit_tool_outputs: JSON
+}
+
+type RunUsage {
+  completion_tokens: Int!
+  prompt_tokens: Int!
+  total_tokens: Int!
+}
+
+type Run {
+  id: String!
+  object: String!
+  created_at: Int!
+  thread_id: String!
+  assistant_id: String!
+  status: RunStatus!
+  required_action: RequiredAction
+  last_error: JSON
+  expires_at: Int
+  started_at: Int
+  cancelled_at: Int
+  failed_at: Int
+  completed_at: Int
+  model: String!
+  instructions: String
+  tools: [AssistantTool!]!
+  metadata: JSON
+  usage: RunUsage
+  temperature: Float
+  top_p: Float
+  max_prompt_tokens: Int
+  max_completion_tokens: Int
+  truncation_strategy: JSON
+  tool_choice: JSON
+  parallel_tool_calls: Boolean
+  response_format: JSON
+  incomplete_details: JSON
+}
+
+type RunList {
+  object: String!
+  data: [Run!]!
+  first_id: String
+  last_id: String
+  has_more: Boolean!
+}
+
+input ToolOutput {
+  tool_call_id: String!
+  output: String!
+}
+
+type RunStep {
+  id: String!
+  object: String!
+  created_at: Int!
+  assistant_id: String!
+  thread_id: String!
+  run_id: String!
+  type: RunStepType!
+  status: RunStepStatus!
+  step_details: JSON
+  last_error: JSON
+  expired_at: Int
+  cancelled_at: Int
+  failed_at: Int
+  completed_at: Int
+  metadata: JSON
+  usage: RunUsage
+}
+
+type RunStepList {
+  object: String!
+  data: [RunStep!]!
+  first_id: String
+  last_id: String
+  has_more: Boolean!
+}
+
+# ─── Vector Stores ───────────────────────────────────────────────────────────────
+
+type VectorStoreFileCounts {
+  in_progress: Int!
+  completed: Int!
+  failed: Int!
+  cancelled: Int!
+  total: Int!
+}
+
+type VectorStoreExpiresAfter {
+  anchor: String!
+  days: Int!
+}
+
+type VectorStore {
+  id: String!
+  object: String!
+  created_at: Int!
+  name: String
+  usage_bytes: Int!
+  file_counts: VectorStoreFileCounts!
+  status: VectorStoreStatus!
+  expires_after: VectorStoreExpiresAfter
+  expires_at: Int
+  last_active_at: Int
+  metadata: JSON
+}
+
+type VectorStoreList {
+  object: String!
+  data: [VectorStore!]!
+  first_id: String
+  last_id: String
+  has_more: Boolean!
+}
+
+type VectorStoreDeleteResponse {
+  id: String!
+  object: String!
+  deleted: Boolean!
+}
+
+type VectorStoreChunkingStrategy {
+  type: ChunkingStrategyType!
+  static: JSON
+}
+
+type VectorStoreFile {
+  id: String!
+  object: String!
+  usage_bytes: Int!
+  created_at: Int!
+  vector_store_id: String!
+  status: VectorStoreFileStatus!
+  last_error: JSON
+  chunking_strategy: VectorStoreChunkingStrategy
+  attributes: JSON
+}
+
+type VectorStoreFileList {
+  object: String!
+  data: [VectorStoreFile!]!
+  first_id: String
+  last_id: String
+  has_more: Boolean!
+}
+
+type VectorStoreFileDeleteResponse {
+  id: String!
+  object: String!
+  deleted: Boolean!
+}
+
+type VectorStoreFileBatch {
+  id: String!
+  object: String!
+  created_at: Int!
+  vector_store_id: String!
+  status: VectorStoreFileStatus!
+  file_counts: VectorStoreFileCounts!
+}
+
+# ─── Uploads ─────────────────────────────────────────────────────────────────────
+
+type UploadPart {
+  id: String!
+  object: String!
+  created_at: Int!
+  upload_id: String!
+}
+
+type UploadObject {
+  id: String!
+  object: String!
+  bytes: Int!
+  created_at: Int!
+  filename: String!
+  purpose: FilePurpose!
+  status: UploadStatus!
+  expires_at: Int!
+  file: File
+}
+
+# ─── Moderation ──────────────────────────────────────────────────────────────────
+
+type ModerationCategories {
+  hate: Boolean!
+  hate_threatening: Boolean!
+  harassment: Boolean!
+  harassment_threatening: Boolean!
+  self_harm: Boolean!
+  self_harm_intent: Boolean!
+  self_harm_instructions: Boolean!
+  sexual: Boolean!
+  sexual_minors: Boolean!
+  violence: Boolean!
+  violence_graphic: Boolean!
+  illicit: Boolean!
+  illicit_violent: Boolean!
+}
+
+type ModerationCategoryScores {
+  hate: Float!
+  hate_threatening: Float!
+  harassment: Float!
+  harassment_threatening: Float!
+  self_harm: Float!
+  self_harm_intent: Float!
+  self_harm_instructions: Float!
+  sexual: Float!
+  sexual_minors: Float!
+  violence: Float!
+  violence_graphic: Float!
+  illicit: Float!
+  illicit_violent: Float!
+}
+
+type ModerationResult {
+  flagged: Boolean!
+  categories: ModerationCategories!
+  category_scores: ModerationCategoryScores!
+  category_applied_input_types: JSON
+}
+
+type ModerationResponse {
+  id: String!
+  model: String!
+  results: [ModerationResult!]!
+}
+
+# ─── Administration ───────────────────────────────────────────────────────────────
+
+type Organization {
+  id: String!
+  object: String!
+  created: Int!
+  name: String!
+  description: String
+  personal: Boolean!
+  settings: JSON
+}
+
+type OrganizationUser {
+  object: String!
+  id: String!
+  name: String!
+  email: String!
+  role: OrganizationRole!
+  added_at: Int!
+}
+
+type OrganizationUserList {
+  object: String!
+  data: [OrganizationUser!]!
+  first_id: String
+  last_id: String
+  has_more: Boolean!
+}
+
+type Project {
+  id: String!
+  object: String!
+  name: String!
+  created_at: Int!
+  archived_at: Int
+  status: ProjectStatus!
+}
+
+type ProjectList {
+  object: String!
+  data: [Project!]!
+  first_id: String
+  last_id: String
+  has_more: Boolean!
+}
+
+type ProjectUser {
+  object: String!
+  id: String!
+  name: String!
+  email: String!
+  role: ProjectUserRole!
+  added_at: Int!
+}
+
+type ProjectUserList {
+  object: String!
+  data: [ProjectUser!]!
+  first_id: String
+  last_id: String
+  has_more: Boolean!
+}
+
+type ApiKey {
+  object: String!
+  redacted_value: String!
+  name: String!
+  created_at: Int!
+  id: String!
+  owner: JSON
+  last_used_at: Int
+}
+
+type ApiKeyList {
+  object: String!
+  data: [ApiKey!]!
+  first_id: String
+  last_id: String
+  has_more: Boolean!
+}
+
+type ApiKeyDeleteResponse {
+  object: String!
+  id: String!
+  deleted: Boolean!
+}
+
+type Quota {
+  object: String!
+  requests: Int
+  tokens: Int
+  images: Int
+  audio_seconds: Int
+  training_tokens: Int
+  batch_queue_size: Int
+}
+
+type RateLimit {
+  object: String!
+  id: String!
+  model: String!
+  max_requests_per_1_minute: Int
+  max_tokens_per_1_minute: Int
+  max_images_per_1_minute: Int
+  max_audio_megabytes_per_1_minute: Int
+  max_requests_per_1_day: Int
+  batch_1_day_max_input_tokens: Int
+}
+
+type RateLimitList {
+  object: String!
+  data: [RateLimit!]!
+  first_id: String
+  last_id: String
+  has_more: Boolean!
+}
+
+type AuditLog {
+  id: String!
+  type: AuditLogEventType!
+  effective_at: Int!
+  project: JSON
+  actor: JSON
+  api_key: JSON
+  invite: JSON
+  login: JSON
+  logout: JSON
+  organization: JSON
+  service_account: JSON
+  user: JSON
+}
+
+type AuditLogList {
+  object: String!
+  data: [AuditLog!]!
+  first_id: String
+  last_id: String
+  has_more: Boolean!
+  has_missing_events: Boolean!
+}
+
+# ─── Query ───────────────────────────────────────────────────────────────────────
+
+type Query {
+  # Models
+  listModels: ModelList!
+  retrieveModel(model: String!): Model!
+
+  # Files
+  listFiles(purpose: FilePurpose, limit: Int, order: String, after: String): FileList!
+  retrieveFile(file_id: String!): File!
+  retrieveFileContent(file_id: String!): String!
+
+  # Fine-Tuning
+  listFineTuningJobs(after: String, limit: Int): FineTuningJobList!
+  retrieveFineTuningJob(fine_tuning_job_id: String!): FineTuningJob!
+  listFineTuningEvents(fine_tuning_job_id: String!, after: String, limit: Int): FineTuningEventList!
+  listFineTuningCheckpoints(fine_tuning_job_id: String!, after: String, limit: Int): FineTuningCheckpointList!
+
+  # Batches
+  listBatches(after: String, limit: Int): BatchList!
+  retrieveBatch(batch_id: String!): Batch!
+
+  # Assistants
+  listAssistants(limit: Int, order: String, after: String, before: String): AssistantList!
+  retrieveAssistant(assistant_id: String!): Assistant!
+
+  # Threads
+  retrieveThread(thread_id: String!): Thread!
+
+  # Messages
+  listMessages(thread_id: String!, limit: Int, order: String, after: String, before: String, run_id: String): MessageList!
+  retrieveMessage(thread_id: String!, message_id: String!): Message!
+
+  # Runs
+  listRuns(thread_id: String!, limit: Int, order: String, after: String, before: String): RunList!
+  retrieveRun(thread_id: String!, run_id: String!): Run!
+  listRunSteps(thread_id: String!, run_id: String!, limit: Int, order: String, after: String, before: String): RunStepList!
+  retrieveRunStep(thread_id: String!, run_id: String!, step_id: String!): RunStep!
+
+  # Vector Stores
+  listVectorStores(limit: Int, order: String, after: String, before: String): VectorStoreList!
+  retrieveVectorStore(vector_store_id: String!): VectorStore!
+  listVectorStoreFiles(vector_store_id: String!, limit: Int, order: String, after: String, before: String, filter: String): VectorStoreFileList!
+  retrieveVectorStoreFile(vector_store_id: String!, file_id: String!): VectorStoreFile!
+  retrieveVectorStoreFileBatch(vector_store_id: String!, batch_id: String!): VectorStoreFileBatch!
+  listFilesInVectorStoreFileBatch(vector_store_id: String!, batch_id: String!, limit: Int, order: String, after: String, before: String, filter: String): VectorStoreFileList!
+
+  # Uploads
+  retrieveUpload(upload_id: String!): UploadObject!
+
+  # Administration
+  listOrganizationUsers(limit: Int, after: String): OrganizationUserList!
+  listProjects(limit: Int, after: String, include_archived: Boolean): ProjectList!
+  retrieveProject(project_id: String!): Project!
+  listProjectUsers(project_id: String!, limit: Int, after: String): ProjectUserList!
+  listProjectApiKeys(project_id: String!, limit: Int, after: String): ApiKeyList!
+  retrieveProjectApiKey(project_id: String!, key_id: String!): ApiKey!
+  listProjectRateLimits(project_id: String!, limit: Int, after: String, before: String): RateLimitList!
+  listAuditLogs(effective_at_gt: Int, effective_at_gte: Int, effective_at_lt: Int, effective_at_lte: Int, project_ids: [String], event_types: [AuditLogEventType], actor_ids: [String], actor_emails: [String], resource_ids: [String], limit: Int, after: String, before: String): AuditLogList!
+}
+
+# ─── Mutation ────────────────────────────────────────────────────────────────────
+
+type Mutation {
+  # Chat Completions
+  createChatCompletion(model: String!, messages: JSON!, temperature: Float, top_p: Float, n: Int, stream: Boolean, stop: JSON, max_completion_tokens: Int, max_tokens: Int, presence_penalty: Float, frequency_penalty: Float, logit_bias: JSON, user: String, tools: JSON, tool_choice: JSON, response_format: JSON, seed: Int, parallel_tool_calls: Boolean, service_tier: String, store: Boolean, metadata: JSON): ChatCompletion!
+
+  # Embeddings
+  createEmbedding(input: EmbeddingInput!): EmbeddingResult!
+
+  # Images
+  createImage(input: ImageGeneration!): ImageList!
+  createImageEdit(input: ImageEdit!): ImageList!
+  createImageVariation(input: ImageVariation!): ImageList!
+
+  # Audio
+  createTranscription(input: TranscriptionRequest!): Transcription!
+  createTranslation(input: TranslationRequest!): Translation!
+  createSpeech(model: String!, input: String!, voice: String!, response_format: AudioFormat, speed: Float): Audio!
+
+  # Moderations
+  createModeration(input: String!, model: ModerationModel): ModerationResponse!
+
+  # Files
+  uploadFile(file: Upload!, purpose: FilePurpose!): File!
+  deleteFile(file_id: String!): FileDeleteResponse!
+
+  # Fine-Tuning
+  createFineTuningJob(model: String!, training_file: String!, hyperparameters: JSON, suffix: String, validation_file: String, integrations: JSON, seed: Int): FineTuningJob!
+  cancelFineTuningJob(fine_tuning_job_id: String!): FineTuningJob!
+
+  # Models
+  deleteModel(model: String!): JSON!
+
+  # Batches
+  createBatch(input: BatchRequest!): Batch!
+  cancelBatch(batch_id: String!): Batch!
+
+  # Assistants
+  createAssistant(model: String!, name: String, description: String, instructions: String, tools: JSON, tool_resources: JSON, metadata: JSON, temperature: Float, top_p: Float, response_format: JSON): Assistant!
+  modifyAssistant(assistant_id: String!, model: String, name: String, description: String, instructions: String, tools: JSON, tool_resources: JSON, metadata: JSON, temperature: Float, top_p: Float, response_format: JSON): Assistant!
+  deleteAssistant(assistant_id: String!): AssistantDeleteResponse!
+
+  # Threads
+  createThread(messages: JSON, tool_resources: JSON, metadata: JSON): Thread!
+  modifyThread(thread_id: String!, tool_resources: JSON, metadata: JSON): Thread!
+  deleteThread(thread_id: String!): ThreadDeleteResponse!
+
+  # Messages
+  createMessage(thread_id: String!, role: MessageRole!, content: JSON!, attachments: JSON, metadata: JSON): Message!
+  modifyMessage(thread_id: String!, message_id: String!, metadata: JSON): Message!
+  deleteMessage(thread_id: String!, message_id: String!): MessageDeleteResponse!
+
+  # Runs
+  createRun(thread_id: String!, assistant_id: String!, model: String, instructions: String, additional_instructions: String, additional_messages: JSON, tools: JSON, metadata: JSON, temperature: Float, top_p: Float, stream: Boolean, max_prompt_tokens: Int, max_completion_tokens: Int, truncation_strategy: JSON, tool_choice: JSON, parallel_tool_calls: Boolean, response_format: JSON): Run!
+  createThreadAndRun(assistant_id: String!, thread: JSON, model: String, instructions: String, tools: JSON, tool_resources: JSON, metadata: JSON, temperature: Float, top_p: Float, stream: Boolean, max_prompt_tokens: Int, max_completion_tokens: Int, truncation_strategy: JSON, tool_choice: JSON, parallel_tool_calls: Boolean, response_format: JSON): Run!
+  modifyRun(thread_id: String!, run_id: String!, metadata: JSON): Run!
+  cancelRun(thread_id: String!, run_id: String!): Run!
+  submitToolOutputsToRun(thread_id: String!, run_id: String!, tool_outputs: [JSON!]!, stream: Boolean): Run!
+
+  # Vector Stores
+  createVectorStore(file_ids: [String], name: String, expires_after: JSON, chunking_strategy: JSON, metadata: JSON): VectorStore!
+  modifyVectorStore(vector_store_id: String!, name: String, expires_after: JSON, metadata: JSON): VectorStore!
+  deleteVectorStore(vector_store_id: String!): VectorStoreDeleteResponse!
+  createVectorStoreFile(vector_store_id: String!, file_id: String!, chunking_strategy: JSON, attributes: JSON): VectorStoreFile!
+  deleteVectorStoreFile(vector_store_id: String!, file_id: String!): VectorStoreFileDeleteResponse!
+  createVectorStoreFileBatch(vector_store_id: String!, file_ids: [String!]!, chunking_strategy: JSON, attributes: JSON): VectorStoreFileBatch!
+  cancelVectorStoreFileBatch(vector_store_id: String!, batch_id: String!): VectorStoreFileBatch!
+
+  # Uploads
+  createUpload(filename: String!, purpose: FilePurpose!, bytes: Int!, mime_type: String!): UploadObject!
+  addUploadPart(upload_id: String!, data: Upload!): UploadPart!
+  completeUpload(upload_id: String!, part_ids: [String!]!, md5: String): UploadObject!
+  cancelUpload(upload_id: String!): UploadObject!
+
+  # Administration
+  createProject(name: String!): Project!
+  modifyProject(project_id: String!, name: String!): Project!
+  archiveProject(project_id: String!): Project!
+  createProjectUser(project_id: String!, user_id: String!, role: ProjectUserRole!): ProjectUser!
+  modifyProjectUser(project_id: String!, user_id: String!, role: ProjectUserRole!): ProjectUser!
+  deleteProjectUser(project_id: String!, user_id: String!): JSON!
+  deleteProjectApiKey(project_id: String!, key_id: String!): ApiKeyDeleteResponse!
+  modifyProjectRateLimit(project_id: String!, rate_limit_id: String!, max_requests_per_1_minute: Int, max_tokens_per_1_minute: Int, max_images_per_1_minute: Int, max_audio_megabytes_per_1_minute: Int, max_requests_per_1_day: Int, batch_1_day_max_input_tokens: Int): RateLimit!
+}
