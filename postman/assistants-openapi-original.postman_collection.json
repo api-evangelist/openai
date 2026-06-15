@@ -1,0 +1,1021 @@
+{
+  "info": {
+    "_postman_id": "a9c3edc0-1604-4567-96c4-dbea18709ab6",
+    "name": "OpenAI Assistants",
+    "description": "The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.\n\nContact Support:\n Name: OpenAI Support",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "createdAt": "2026-06-05T15:13:34.000Z",
+    "updatedAt": "2026-06-05T15:13:34.000Z",
+    "lastUpdatedBy": "35240",
+    "uid": "35240-a9c3edc0-1604-4567-96c4-dbea18709ab6"
+  },
+  "item": [
+    {
+      "name": "assistants",
+      "item": [
+        {
+          "name": "{assistant_id}",
+          "item": [
+            {
+              "name": "files",
+              "item": [
+                {
+                  "name": "{file_id}",
+                  "item": [
+                    {
+                      "name": "OpenAI Retrieves an AssistantFile.",
+                      "id": "7be630aa-9722-4124-86f8-94093d42e03a",
+                      "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                      },
+                      "request": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/assistants/:assistant_id/files/:file_id",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "assistants",
+                            ":assistant_id",
+                            "files",
+                            ":file_id"
+                          ],
+                          "variable": [
+                            {
+                              "id": "114f05b8-205d-4ef7-aaa1-96013e38f07d",
+                              "key": "assistant_id",
+                              "value": "<string>",
+                              "description": "(Required) The ID of the assistant who the file belongs to."
+                            },
+                            {
+                              "id": "7be8e2ed-1f5b-490a-a47f-0f9ba27eaff5",
+                              "key": "file_id",
+                              "value": "<string>",
+                              "description": "(Required) The ID of the file we're getting."
+                            }
+                          ]
+                        }
+                      },
+                      "response": [
+                        {
+                          "id": "43537c88-e063-47e7-b22d-acc6325691ea",
+                          "name": "OK",
+                          "originalRequest": {
+                            "method": "GET",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              },
+                              {
+                                "description": "Added as a part of security scheme: bearer",
+                                "key": "Authorization",
+                                "value": "Bearer <token>"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/assistants/:assistant_id/files/:file_id",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "assistants",
+                                ":assistant_id",
+                                "files",
+                                ":file_id"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "assistant_id"
+                                },
+                                {
+                                  "key": "file_id"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"id\": \"<string>\",\n  \"object\": \"assistant.file\",\n  \"created_at\": \"<integer>\",\n  \"assistant_id\": \"<string>\"\n}",
+                          "createdAt": "2026-06-05T15:13:34.000Z",
+                          "updatedAt": "2026-06-05T15:13:34.000Z",
+                          "uid": "35240-43537c88-e063-47e7-b22d-acc6325691ea"
+                        }
+                      ],
+                      "createdAt": "2026-06-05T15:13:34.000Z",
+                      "updatedAt": "2026-06-05T15:13:34.000Z",
+                      "uid": "35240-7be630aa-9722-4124-86f8-94093d42e03a"
+                    },
+                    {
+                      "name": "OpenAI Delete an assistant file.",
+                      "id": "18792488-3fed-458a-8037-fd9520fe8c74",
+                      "protocolProfileBehavior": {
+                        "disableBodyPruning": true
+                      },
+                      "request": {
+                        "method": "DELETE",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/assistants/:assistant_id/files/:file_id",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "assistants",
+                            ":assistant_id",
+                            "files",
+                            ":file_id"
+                          ],
+                          "variable": [
+                            {
+                              "id": "0c2caf39-5cba-4353-98af-ae8f3b07ab77",
+                              "key": "assistant_id",
+                              "value": "<string>",
+                              "description": "(Required) The ID of the assistant that the file belongs to."
+                            },
+                            {
+                              "id": "bb3c998d-ab93-4f21-a997-0d7c7a56c375",
+                              "key": "file_id",
+                              "value": "<string>",
+                              "description": "(Required) The ID of the file to delete."
+                            }
+                          ]
+                        }
+                      },
+                      "response": [
+                        {
+                          "id": "c2235dd9-2640-4a03-beed-8216c479d4f4",
+                          "name": "OK",
+                          "originalRequest": {
+                            "method": "DELETE",
+                            "header": [
+                              {
+                                "key": "Accept",
+                                "value": "application/json"
+                              },
+                              {
+                                "description": "Added as a part of security scheme: bearer",
+                                "key": "Authorization",
+                                "value": "Bearer <token>"
+                              }
+                            ],
+                            "url": {
+                              "raw": "{{baseUrl}}/assistants/:assistant_id/files/:file_id",
+                              "host": [
+                                "{{baseUrl}}"
+                              ],
+                              "path": [
+                                "assistants",
+                                ":assistant_id",
+                                "files",
+                                ":file_id"
+                              ],
+                              "variable": [
+                                {
+                                  "key": "assistant_id"
+                                },
+                                {
+                                  "key": "file_id"
+                                }
+                              ]
+                            }
+                          },
+                          "status": "OK",
+                          "code": 200,
+                          "_postman_previewlanguage": "json",
+                          "header": [
+                            {
+                              "key": "Content-Type",
+                              "value": "application/json"
+                            }
+                          ],
+                          "cookie": [],
+                          "responseTime": null,
+                          "body": "{\n  \"id\": \"<string>\",\n  \"object\": \"assistant.file.deleted\",\n  \"deleted\": \"<boolean>\"\n}",
+                          "createdAt": "2026-06-05T15:13:34.000Z",
+                          "updatedAt": "2026-06-05T15:13:34.000Z",
+                          "uid": "35240-c2235dd9-2640-4a03-beed-8216c479d4f4"
+                        }
+                      ],
+                      "createdAt": "2026-06-05T15:13:34.000Z",
+                      "updatedAt": "2026-06-05T15:13:34.000Z",
+                      "uid": "35240-18792488-3fed-458a-8037-fd9520fe8c74"
+                    }
+                  ],
+                  "id": "0056c44d-1b22-4802-9443-8948373a6947",
+                  "createdAt": "2026-06-05T15:13:34.000Z",
+                  "updatedAt": "2026-06-05T15:13:34.000Z",
+                  "uid": "35240-0056c44d-1b22-4802-9443-8948373a6947"
+                },
+                {
+                  "name": "OpenAI Returns a list of assistant files.",
+                  "id": "c5fc4bda-979d-47a0-9a77-c48211aeaf34",
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/assistants/:assistant_id/files?limit=20&order=desc&after=<string>&before=<string>",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "assistants",
+                        ":assistant_id",
+                        "files"
+                      ],
+                      "query": [
+                        {
+                          "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n",
+                          "key": "limit",
+                          "value": "20"
+                        },
+                        {
+                          "description": "Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.\n",
+                          "key": "order",
+                          "value": "desc"
+                        },
+                        {
+                          "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n",
+                          "key": "after",
+                          "value": "<string>"
+                        },
+                        {
+                          "description": "A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.\n",
+                          "key": "before",
+                          "value": "<string>"
+                        }
+                      ],
+                      "variable": [
+                        {
+                          "id": "e4ff5f7f-89b7-470b-9b92-bebef6c7ad0a",
+                          "key": "assistant_id",
+                          "value": "<string>",
+                          "description": "(Required) The ID of the assistant the file belongs to."
+                        }
+                      ]
+                    }
+                  },
+                  "response": [
+                    {
+                      "id": "76858f74-144c-4e7f-ac32-136a86df9f70",
+                      "name": "OK",
+                      "originalRequest": {
+                        "method": "GET",
+                        "header": [
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "url": {
+                          "raw": "{{baseUrl}}/assistants/:assistant_id/files?limit=20&order=desc&after=<string>&before=<string>",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "assistants",
+                            ":assistant_id",
+                            "files"
+                          ],
+                          "query": [
+                            {
+                              "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n",
+                              "key": "limit",
+                              "value": "20"
+                            },
+                            {
+                              "description": "Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.\n",
+                              "key": "order",
+                              "value": "desc"
+                            },
+                            {
+                              "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n",
+                              "key": "after",
+                              "value": "<string>"
+                            },
+                            {
+                              "description": "A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.\n",
+                              "key": "before",
+                              "value": "<string>"
+                            }
+                          ],
+                          "variable": [
+                            {
+                              "key": "assistant_id"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"object\": \"<string>\",\n  \"data\": [\n    {\n      \"id\": \"<string>\",\n      \"object\": \"assistant.file\",\n      \"created_at\": \"<integer>\",\n      \"assistant_id\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"object\": \"assistant.file\",\n      \"created_at\": \"<integer>\",\n      \"assistant_id\": \"<string>\"\n    }\n  ],\n  \"first_id\": \"<string>\",\n  \"last_id\": \"<string>\",\n  \"has_more\": \"<boolean>\",\n  \"items\": \"magna sit commodo culpa\"\n}",
+                      "createdAt": "2026-06-05T15:13:34.000Z",
+                      "updatedAt": "2026-06-05T15:13:34.000Z",
+                      "uid": "35240-76858f74-144c-4e7f-ac32-136a86df9f70"
+                    }
+                  ],
+                  "createdAt": "2026-06-05T15:13:34.000Z",
+                  "updatedAt": "2026-06-05T15:13:34.000Z",
+                  "uid": "35240-c5fc4bda-979d-47a0-9a77-c48211aeaf34"
+                },
+                {
+                  "name": "OpenAI Create an assistant file by attaching a [File](/docs/api-reference/files) to an [assistant](/docs/api-reference/assistants).",
+                  "id": "159ac6f3-b16f-415f-90e4-c3b10e07293a",
+                  "protocolProfileBehavior": {
+                    "disableBodyPruning": true
+                  },
+                  "request": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"file_id\": \"<string>\"\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/assistants/:assistant_id/files",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "assistants",
+                        ":assistant_id",
+                        "files"
+                      ],
+                      "variable": [
+                        {
+                          "id": "0e4af935-b6e2-4308-a755-c51d89678ebc",
+                          "key": "assistant_id",
+                          "value": "<string>",
+                          "description": "(Required) The ID of the assistant for which to create a File.\n"
+                        }
+                      ]
+                    }
+                  },
+                  "response": [
+                    {
+                      "id": "bab840fc-0525-4193-93ce-a9127779772d",
+                      "name": "OK",
+                      "originalRequest": {
+                        "method": "POST",
+                        "header": [
+                          {
+                            "key": "Content-Type",
+                            "value": "application/json"
+                          },
+                          {
+                            "key": "Accept",
+                            "value": "application/json"
+                          },
+                          {
+                            "description": "Added as a part of security scheme: bearer",
+                            "key": "Authorization",
+                            "value": "Bearer <token>"
+                          }
+                        ],
+                        "body": {
+                          "mode": "raw",
+                          "raw": "{\n  \"file_id\": \"<string>\"\n}",
+                          "options": {
+                            "raw": {
+                              "headerFamily": "json",
+                              "language": "json"
+                            }
+                          }
+                        },
+                        "url": {
+                          "raw": "{{baseUrl}}/assistants/:assistant_id/files",
+                          "host": [
+                            "{{baseUrl}}"
+                          ],
+                          "path": [
+                            "assistants",
+                            ":assistant_id",
+                            "files"
+                          ],
+                          "variable": [
+                            {
+                              "key": "assistant_id"
+                            }
+                          ]
+                        }
+                      },
+                      "status": "OK",
+                      "code": 200,
+                      "_postman_previewlanguage": "json",
+                      "header": [
+                        {
+                          "key": "Content-Type",
+                          "value": "application/json"
+                        }
+                      ],
+                      "cookie": [],
+                      "responseTime": null,
+                      "body": "{\n  \"id\": \"<string>\",\n  \"object\": \"assistant.file\",\n  \"created_at\": \"<integer>\",\n  \"assistant_id\": \"<string>\"\n}",
+                      "createdAt": "2026-06-05T15:13:34.000Z",
+                      "updatedAt": "2026-06-05T15:13:34.000Z",
+                      "uid": "35240-bab840fc-0525-4193-93ce-a9127779772d"
+                    }
+                  ],
+                  "createdAt": "2026-06-05T15:13:34.000Z",
+                  "updatedAt": "2026-06-05T15:13:34.000Z",
+                  "uid": "35240-159ac6f3-b16f-415f-90e4-c3b10e07293a"
+                }
+              ],
+              "id": "e9d10b0a-13fb-465a-b35f-e93a0a469376",
+              "createdAt": "2026-06-05T15:13:34.000Z",
+              "updatedAt": "2026-06-05T15:13:34.000Z",
+              "uid": "35240-e9d10b0a-13fb-465a-b35f-e93a0a469376"
+            },
+            {
+              "name": "OpenAI Retrieves an assistant.",
+              "id": "97727999-b723-42b8-b1d2-f94f7d294fe0",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/assistants/:assistant_id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assistants",
+                    ":assistant_id"
+                  ],
+                  "variable": [
+                    {
+                      "id": "90d732fd-95c5-4431-9808-5b8417fcf90e",
+                      "key": "assistant_id",
+                      "value": "<string>",
+                      "description": "(Required) The ID of the assistant to retrieve."
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "id": "7e0b0ed5-77b0-46c6-8829-226950413f08",
+                  "name": "OK",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/assistants/:assistant_id",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "assistants",
+                        ":assistant_id"
+                      ],
+                      "variable": [
+                        {
+                          "key": "assistant_id"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"id\": \"<string>\",\n  \"object\": \"assistant\",\n  \"created_at\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"description\": \"<string>\",\n  \"model\": \"<string>\",\n  \"instructions\": \"<string>\",\n  \"tools\": [],\n  \"file_ids\": [],\n  \"metadata\": {}\n}",
+                  "createdAt": "2026-06-05T15:13:34.000Z",
+                  "updatedAt": "2026-06-05T15:13:34.000Z",
+                  "uid": "35240-7e0b0ed5-77b0-46c6-8829-226950413f08"
+                }
+              ],
+              "createdAt": "2026-06-05T15:13:34.000Z",
+              "updatedAt": "2026-06-05T15:13:34.000Z",
+              "uid": "35240-97727999-b723-42b8-b1d2-f94f7d294fe0"
+            },
+            {
+              "name": "OpenAI Modifies an assistant.",
+              "id": "5719dc60-0988-4c32-bff0-dfbd10935901",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"name\": \"<string>\",\n  \"description\": \"<string>\",\n  \"instructions\": \"<string>\",\n  \"metadata\": {}\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/assistants/:assistant_id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assistants",
+                    ":assistant_id"
+                  ],
+                  "variable": [
+                    {
+                      "id": "678265c1-00b6-4fa1-9cc3-48412907e78c",
+                      "key": "assistant_id",
+                      "value": "<string>",
+                      "description": "(Required) The ID of the assistant to modify."
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "id": "235034ab-75da-4e84-9223-4c4d65483c43",
+                  "name": "OK",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"model\": \"<string>\",\n  \"name\": \"<string>\",\n  \"description\": \"<string>\",\n  \"instructions\": \"<string>\",\n  \"metadata\": {}\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/assistants/:assistant_id",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "assistants",
+                        ":assistant_id"
+                      ],
+                      "variable": [
+                        {
+                          "key": "assistant_id"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"id\": \"<string>\",\n  \"object\": \"assistant\",\n  \"created_at\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"description\": \"<string>\",\n  \"model\": \"<string>\",\n  \"instructions\": \"<string>\",\n  \"tools\": [],\n  \"file_ids\": [],\n  \"metadata\": {}\n}",
+                  "createdAt": "2026-06-05T15:13:34.000Z",
+                  "updatedAt": "2026-06-05T15:13:34.000Z",
+                  "uid": "35240-235034ab-75da-4e84-9223-4c4d65483c43"
+                }
+              ],
+              "createdAt": "2026-06-05T15:13:34.000Z",
+              "updatedAt": "2026-06-05T15:13:34.000Z",
+              "uid": "35240-5719dc60-0988-4c32-bff0-dfbd10935901"
+            },
+            {
+              "name": "OpenAI Delete an assistant.",
+              "id": "d3631b5a-4b0a-4145-952a-9496d10da1d4",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/assistants/:assistant_id",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assistants",
+                    ":assistant_id"
+                  ],
+                  "variable": [
+                    {
+                      "id": "7d713a7d-5fe8-4f64-8958-8672f3f95fae",
+                      "key": "assistant_id",
+                      "value": "<string>",
+                      "description": "(Required) The ID of the assistant to delete."
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "id": "8fc623e2-77bd-4d2c-af2b-9bd1437a4519",
+                  "name": "OK",
+                  "originalRequest": {
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/assistants/:assistant_id",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "assistants",
+                        ":assistant_id"
+                      ],
+                      "variable": [
+                        {
+                          "key": "assistant_id"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"id\": \"<string>\",\n  \"object\": \"assistant.deleted\",\n  \"deleted\": \"<boolean>\"\n}",
+                  "createdAt": "2026-06-05T15:13:34.000Z",
+                  "updatedAt": "2026-06-05T15:13:34.000Z",
+                  "uid": "35240-8fc623e2-77bd-4d2c-af2b-9bd1437a4519"
+                }
+              ],
+              "createdAt": "2026-06-05T15:13:34.000Z",
+              "updatedAt": "2026-06-05T15:13:34.000Z",
+              "uid": "35240-d3631b5a-4b0a-4145-952a-9496d10da1d4"
+            }
+          ],
+          "id": "35b20fc4-7b2a-4767-85df-41d7a18685b3",
+          "createdAt": "2026-06-05T15:13:34.000Z",
+          "updatedAt": "2026-06-05T15:13:34.000Z",
+          "uid": "35240-35b20fc4-7b2a-4767-85df-41d7a18685b3"
+        },
+        {
+          "name": "OpenAI Returns a list of assistants.",
+          "id": "1b62db4a-3d64-4e17-8a57-70a79e39c62e",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/assistants?limit=20&order=desc&after=<string>&before=<string>",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assistants"
+              ],
+              "query": [
+                {
+                  "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n",
+                  "key": "limit",
+                  "value": "20"
+                },
+                {
+                  "description": "Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.\n",
+                  "key": "order",
+                  "value": "desc"
+                },
+                {
+                  "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n",
+                  "key": "after",
+                  "value": "<string>"
+                },
+                {
+                  "description": "A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.\n",
+                  "key": "before",
+                  "value": "<string>"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "03180eb1-83e1-459b-8530-c9420d62a7da",
+              "name": "OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: bearer",
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/assistants?limit=20&order=desc&after=<string>&before=<string>",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assistants"
+                  ],
+                  "query": [
+                    {
+                      "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n",
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "description": "Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.\n",
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n",
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "description": "A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.\n",
+                      "key": "before",
+                      "value": "<string>"
+                    }
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"object\": \"<string>\",\n  \"data\": [\n    {\n      \"id\": \"<string>\",\n      \"object\": \"assistant\",\n      \"created_at\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"description\": \"<string>\",\n      \"model\": \"<string>\",\n      \"instructions\": \"<string>\",\n      \"metadata\": {}\n    },\n    {\n      \"id\": \"<string>\",\n      \"object\": \"assistant\",\n      \"created_at\": \"<integer>\",\n      \"name\": \"<string>\",\n      \"description\": \"<string>\",\n      \"model\": \"<string>\",\n      \"instructions\": \"<string>\",\n      \"metadata\": {}\n    }\n  ],\n  \"first_id\": \"<string>\",\n  \"last_id\": \"<string>\",\n  \"has_more\": \"<boolean>\"\n}",
+              "createdAt": "2026-06-05T15:13:34.000Z",
+              "updatedAt": "2026-06-05T15:13:34.000Z",
+              "uid": "35240-03180eb1-83e1-459b-8530-c9420d62a7da"
+            }
+          ],
+          "createdAt": "2026-06-05T15:13:34.000Z",
+          "updatedAt": "2026-06-05T15:13:34.000Z",
+          "uid": "35240-1b62db4a-3d64-4e17-8a57-70a79e39c62e"
+        },
+        {
+          "name": "OpenAI Create an assistant with a model and instructions.",
+          "id": "64973b51-306f-4060-93f3-ac2a050b1c86",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"<string>\",\n  \"name\": \"<string>\",\n  \"description\": \"<string>\",\n  \"instructions\": \"<string>\",\n  \"metadata\": {}\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/assistants",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "assistants"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "7ea903b5-d76f-436b-998a-982c150dd951",
+              "name": "OK",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: bearer",
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"name\": \"<string>\",\n  \"description\": \"<string>\",\n  \"instructions\": \"<string>\",\n  \"metadata\": {}\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/assistants",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "assistants"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"id\": \"<string>\",\n  \"object\": \"assistant\",\n  \"created_at\": \"<integer>\",\n  \"name\": \"<string>\",\n  \"description\": \"<string>\",\n  \"model\": \"<string>\",\n  \"instructions\": \"<string>\",\n  \"tools\": [],\n  \"file_ids\": [],\n  \"metadata\": {}\n}",
+              "createdAt": "2026-06-05T15:13:34.000Z",
+              "updatedAt": "2026-06-05T15:13:34.000Z",
+              "uid": "35240-7ea903b5-d76f-436b-998a-982c150dd951"
+            }
+          ],
+          "createdAt": "2026-06-05T15:13:34.000Z",
+          "updatedAt": "2026-06-05T15:13:34.000Z",
+          "uid": "35240-64973b51-306f-4060-93f3-ac2a050b1c86"
+        }
+      ],
+      "id": "9475fba4-4e3e-4e1a-ad5f-71188e20f62d",
+      "createdAt": "2026-06-05T15:13:34.000Z",
+      "updatedAt": "2026-06-05T15:13:34.000Z",
+      "uid": "35240-9475fba4-4e3e-4e1a-ad5f-71188e20f62d"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.openai.com/v1"
+    }
+  ]
+}

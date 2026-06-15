@@ -1,0 +1,328 @@
+{
+  "info": {
+    "_postman_id": "451dcae7-8dda-4aa2-bb0e-6ab8519d2c24",
+    "name": "OpenAI Embeddings API",
+    "description": "Get a vector representation of a given input that can be easily consumed by machine learning models and algorithms. OpenAI's text embeddings measure the relatedness of text strings. Embeddings are commonly used for search, clustering, recommendations, anomaly detection, diversity measurement, and classification. An embedding is a vector (list of floating point numbers) where the distance between two vectors measures their relatedness.\n\nContact Support:\n Name: OpenAI Support\n Email: support@openai.com",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "createdAt": "2026-06-05T15:13:50.000Z",
+    "updatedAt": "2026-06-05T15:13:50.000Z",
+    "lastUpdatedBy": "35240",
+    "uid": "35240-451dcae7-8dda-4aa2-bb0e-6ab8519d2c24"
+  },
+  "item": [
+    {
+      "name": "embeddings",
+      "item": [
+        {
+          "name": "Openai Create Embeddings",
+          "id": "1b4b4f9f-b5ea-4448-8385-d878a276d617",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"<string>\",\n  \"input\": \"<string>\",\n  \"encoding_format\": \"float\",\n  \"dimensions\": \"<integer>\",\n  \"user\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "headerFamily": "json",
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/embeddings",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "embeddings"
+              ]
+            },
+            "description": "Creates an embedding vector representing the input text. The input can be a single string or an array of strings. Each input must not exceed the max input tokens for the model (8191 tokens for text-embedding-3-small and text-embedding-3-large, 8191 tokens for text-embedding-ada-002)."
+          },
+          "response": [
+            {
+              "id": "36f487c8-5ba6-42d4-b1b3-c52a875c3344",
+              "name": "Successful response with embedding vectors.",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: bearer",
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"input\": \"<string>\",\n  \"encoding_format\": \"float\",\n  \"dimensions\": \"<integer>\",\n  \"user\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/embeddings",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "embeddings"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": \"embedding\",\n      \"embedding\": [\n        \"<float>\",\n        \"<float>\"\n      ],\n      \"index\": \"<integer>\"\n    },\n    {\n      \"object\": \"embedding\",\n      \"embedding\": [\n        \"<float>\",\n        \"<float>\"\n      ],\n      \"index\": \"<integer>\"\n    }\n  ],\n  \"model\": \"<string>\",\n  \"usage\": {\n    \"prompt_tokens\": \"<integer>\",\n    \"total_tokens\": \"<integer>\"\n  }\n}",
+              "createdAt": "2026-06-05T15:13:50.000Z",
+              "updatedAt": "2026-06-05T15:13:50.000Z",
+              "uid": "35240-36f487c8-5ba6-42d4-b1b3-c52a875c3344"
+            },
+            {
+              "id": "9d16c9c8-2911-4c93-9bc6-128dbbd0e84b",
+              "name": "Bad request - invalid parameters or input too long.",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: bearer",
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"input\": \"<string>\",\n  \"encoding_format\": \"float\",\n  \"dimensions\": \"<integer>\",\n  \"user\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/embeddings",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "embeddings"
+                  ]
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "_postman_previewlanguage": "text",
+              "header": [],
+              "cookie": [],
+              "responseTime": null,
+              "body": null,
+              "createdAt": "2026-06-05T15:13:50.000Z",
+              "updatedAt": "2026-06-05T15:13:50.000Z",
+              "uid": "35240-9d16c9c8-2911-4c93-9bc6-128dbbd0e84b"
+            },
+            {
+              "id": "f691151d-09b0-43c6-88e4-c9d5ac50b8a2",
+              "name": "Unauthorized - invalid or missing API key.",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: bearer",
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"input\": \"<string>\",\n  \"encoding_format\": \"float\",\n  \"dimensions\": \"<integer>\",\n  \"user\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/embeddings",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "embeddings"
+                  ]
+                }
+              },
+              "status": "Unauthorized",
+              "code": 401,
+              "_postman_previewlanguage": "text",
+              "header": [],
+              "cookie": [],
+              "responseTime": null,
+              "body": null,
+              "createdAt": "2026-06-05T15:13:50.000Z",
+              "updatedAt": "2026-06-05T15:13:50.000Z",
+              "uid": "35240-f691151d-09b0-43c6-88e4-c9d5ac50b8a2"
+            },
+            {
+              "id": "9b33efca-6f02-4fe3-b37b-a3b304226e01",
+              "name": "Rate limit exceeded.",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: bearer",
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"input\": \"<string>\",\n  \"encoding_format\": \"float\",\n  \"dimensions\": \"<integer>\",\n  \"user\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/embeddings",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "embeddings"
+                  ]
+                }
+              },
+              "status": "Too Many Requests",
+              "code": 429,
+              "_postman_previewlanguage": "text",
+              "header": [],
+              "cookie": [],
+              "responseTime": null,
+              "body": null,
+              "createdAt": "2026-06-05T15:13:50.000Z",
+              "updatedAt": "2026-06-05T15:13:50.000Z",
+              "uid": "35240-9b33efca-6f02-4fe3-b37b-a3b304226e01"
+            },
+            {
+              "id": "de58f009-9dcd-4531-a429-8a2a001a7729",
+              "name": "Internal server error.",
+              "originalRequest": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: bearer",
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"input\": \"<string>\",\n  \"encoding_format\": \"float\",\n  \"dimensions\": \"<integer>\",\n  \"user\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/embeddings",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "embeddings"
+                  ]
+                }
+              },
+              "status": "Internal Server Error",
+              "code": 500,
+              "_postman_previewlanguage": "text",
+              "header": [],
+              "cookie": [],
+              "responseTime": null,
+              "body": null,
+              "createdAt": "2026-06-05T15:13:50.000Z",
+              "updatedAt": "2026-06-05T15:13:50.000Z",
+              "uid": "35240-de58f009-9dcd-4531-a429-8a2a001a7729"
+            }
+          ],
+          "createdAt": "2026-06-05T15:13:50.000Z",
+          "updatedAt": "2026-06-05T15:13:50.000Z",
+          "uid": "35240-1b4b4f9f-b5ea-4448-8385-d878a276d617"
+        }
+      ],
+      "id": "2981de09-1dae-45b5-b736-edbd2a617d49",
+      "createdAt": "2026-06-05T15:13:50.000Z",
+      "updatedAt": "2026-06-05T15:13:50.000Z",
+      "uid": "35240-2981de09-1dae-45b5-b736-edbd2a617d49"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.openai.com/v1"
+    }
+  ]
+}

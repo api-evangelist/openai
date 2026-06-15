@@ -1,0 +1,294 @@
+{
+  "info": {
+    "_postman_id": "fdea27b8-9620-46ad-936d-c979cce929f8",
+    "name": "OpenAI models",
+    "description": "Needs description.\n\nContact Support:\n Name: OpenAI Support",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "createdAt": "2026-06-05T15:13:56.000Z",
+    "updatedAt": "2026-06-05T15:13:57.000Z",
+    "lastUpdatedBy": "35240",
+    "uid": "35240-fdea27b8-9620-46ad-936d-c979cce929f8"
+  },
+  "item": [
+    {
+      "name": "models",
+      "item": [
+        {
+          "name": "{model}",
+          "item": [
+            {
+              "name": "OpenAI Retrieves a model instance, providing basic information about the model such as the owner and permissioning.",
+              "id": "a92aedda-bb77-4dee-a1ec-b91ec6745091",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/models/:model",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "models",
+                    ":model"
+                  ],
+                  "variable": [
+                    {
+                      "id": "f15c66cb-0451-4dec-b5ad-9a74eca97d95",
+                      "key": "model",
+                      "value": "<string>",
+                      "description": "(Required) The ID of the model to use for this request"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "id": "50e59a86-4019-41ad-8052-20a39caeb197",
+                  "name": "OK",
+                  "originalRequest": {
+                    "method": "GET",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/models/:model",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "models",
+                        ":model"
+                      ],
+                      "variable": [
+                        {
+                          "key": "model"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"id\": \"<string>\",\n  \"object\": \"model\",\n  \"created\": \"<integer>\",\n  \"owned_by\": \"<string>\"\n}",
+                  "createdAt": "2026-06-05T15:13:57.000Z",
+                  "updatedAt": "2026-06-05T15:13:57.000Z",
+                  "uid": "35240-50e59a86-4019-41ad-8052-20a39caeb197"
+                }
+              ],
+              "createdAt": "2026-06-05T15:13:57.000Z",
+              "updatedAt": "2026-06-05T15:13:57.000Z",
+              "uid": "35240-a92aedda-bb77-4dee-a1ec-b91ec6745091"
+            },
+            {
+              "name": "OpenAI Delete a fine-tuned model. You must have the Owner role in your organization to delete a model.",
+              "id": "85fb0a61-dffd-45f3-b140-8ded0e189cbd",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "DELETE",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/models/:model",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "models",
+                    ":model"
+                  ],
+                  "variable": [
+                    {
+                      "id": "2cb57a68-a3b8-4318-8aa5-6c660988fbbf",
+                      "key": "model",
+                      "value": "<string>",
+                      "description": "(Required) The model to delete"
+                    }
+                  ]
+                }
+              },
+              "response": [
+                {
+                  "id": "a86b64c1-121d-4b80-8250-c7dcfe067df2",
+                  "name": "OK",
+                  "originalRequest": {
+                    "method": "DELETE",
+                    "header": [
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "url": {
+                      "raw": "{{baseUrl}}/models/:model",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "models",
+                        ":model"
+                      ],
+                      "variable": [
+                        {
+                          "key": "model"
+                        }
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"id\": \"<string>\",\n  \"object\": \"<string>\",\n  \"deleted\": \"<boolean>\"\n}",
+                  "createdAt": "2026-06-05T15:13:57.000Z",
+                  "updatedAt": "2026-06-05T15:13:57.000Z",
+                  "uid": "35240-a86b64c1-121d-4b80-8250-c7dcfe067df2"
+                }
+              ],
+              "createdAt": "2026-06-05T15:13:57.000Z",
+              "updatedAt": "2026-06-05T15:13:57.000Z",
+              "uid": "35240-85fb0a61-dffd-45f3-b140-8ded0e189cbd"
+            }
+          ],
+          "id": "a42ebe44-645c-4293-bfdd-1876aa010056",
+          "createdAt": "2026-06-05T15:13:57.000Z",
+          "updatedAt": "2026-06-05T15:13:57.000Z",
+          "uid": "35240-a42ebe44-645c-4293-bfdd-1876aa010056"
+        },
+        {
+          "name": "OpenAI Lists the currently available models, and provides basic information about each one such as the owner and availability.",
+          "id": "e32791a0-1fed-4cb4-a767-b18fcabb8cd2",
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          },
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/models",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "models"
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "fa3098ca-785e-4e1e-a197-d9fad905a612",
+              "name": "OK",
+              "originalRequest": {
+                "method": "GET",
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  },
+                  {
+                    "description": "Added as a part of security scheme: bearer",
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  }
+                ],
+                "url": {
+                  "raw": "{{baseUrl}}/models",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "models"
+                  ]
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "_postman_previewlanguage": "json",
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "cookie": [],
+              "responseTime": null,
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"<string>\",\n      \"object\": \"model\",\n      \"created\": \"<integer>\",\n      \"owned_by\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"object\": \"model\",\n      \"created\": \"<integer>\",\n      \"owned_by\": \"<string>\"\n    }\n  ]\n}",
+              "createdAt": "2026-06-05T15:13:57.000Z",
+              "updatedAt": "2026-06-05T15:13:57.000Z",
+              "uid": "35240-fa3098ca-785e-4e1e-a197-d9fad905a612"
+            }
+          ],
+          "createdAt": "2026-06-05T15:13:57.000Z",
+          "updatedAt": "2026-06-05T15:13:57.000Z",
+          "uid": "35240-e32791a0-1fed-4cb4-a767-b18fcabb8cd2"
+        }
+      ],
+      "id": "4d66e97e-cb11-41a4-af4f-445490bc0b15",
+      "createdAt": "2026-06-05T15:13:57.000Z",
+      "updatedAt": "2026-06-05T15:13:57.000Z",
+      "uid": "35240-4d66e97e-cb11-41a4-af4f-445490bc0b15"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.openai.com/v1"
+    }
+  ]
+}

@@ -1,367 +1,739 @@
 # OpenAI (openai)
+
 APIs for accessing OpenAI's artificial intelligence models including GPT, DALL-E, Whisper, and Embeddings.
 
-**URL:** [Visit APIs.json URL](https://raw.githubusercontent.com/api-evangelist/openai/refs/heads/main/apis.yml)
-
-**Run:** [Capabilities Using Naftiko](https://github.com/naftiko/fleet?utm_source=api-evangelist&utm_medium=readme&utm_campaign=company-api-evangelist&utm_content=repo)
+**APIs.json:** [https://raw.githubusercontent.com/api-evangelist/openai/refs/heads/main/apis.yml](https://raw.githubusercontent.com/api-evangelist/openai/refs/heads/main/apis.yml)
 
 ## Scope
 
-- **Type:** Contract
 - **Position:** Consuming
 - **Access:** 3rd-Party
 
-## Tags:
+## Tags
 
- - AI, Artificial Intelligence, Large Language Models, T1
+- AI
+- Artificial Intelligence
+- Large Language Models
+- T1
 
 ## Timestamps
 
 - **Created:** 2024-04-14
-- **Modified:** 2026-05-22
+- **Modified:** 2026-05-29
 
 ## APIs
 
 ### OpenAI Assistants API
-The Assistants API allows you to build AI assistants within your own applications with instructions, tools, and knowledge.
 
-**Human URL:** [https://platform.openai.com/docs/assistants/overview](https://platform.openai.com/docs/assistants/overview)
+The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.
 
-#### Tags:
+- **Human URL:** [https://platform.openai.com/docs/assistants/overview](https://platform.openai.com/docs/assistants/overview)
+- **Base URL:** `https://api.openai.com`
 
- - Assistants
+#### Tags
+
+- Assistants
 
 #### Properties
 
 - [Documentation](https://platform.openai.com/docs/assistants/overview)
-- [OpenAPI](openapi/assistants-openapi-original.yml)
+- [Documentation](https://platform.openai.com/docs/api-reference/assistants)
+- [OpenAPI](openapi/assistants-openapi-original.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
 
 ### OpenAI Audio API
-The Audio API provides speech to text and text to speech endpoints based on Whisper and TTS models.
 
-**Human URL:** [https://platform.openai.com/docs/guides/text-to-speech](https://platform.openai.com/docs/guides/text-to-speech)
+The Audio API provides two speech to text endpoints, transcriptions and translations, based on our state-of-the-art open source large-v2 Whisper model.
 
-#### Tags:
+- **Human URL:** [https://platform.openai.com/docs/guides/text-to-speech](https://platform.openai.com/docs/guides/text-to-speech)
+- **Base URL:** `https://api.openai.com`
 
- - Audio
+#### Tags
+
+- Audio
 
 #### Properties
 
 - [Documentation](https://platform.openai.com/docs/guides/text-to-speech)
-- [OpenAPI](openapi/audio-openapi-original.yml)
-- [JSONLD](json-ld/openai-context.jsonld)
+- [Documentation](https://platform.openai.com/docs/api-reference/audio)
+- [Documentation](https://platform.openai.com/docs/guides/speech-to-text)
+- [Documentation](https://developers.openai.com/api/docs/guides/audio/)
+- [Documentation](https://developers.openai.com/api/docs/guides/voice-agents/)
+- [OpenAPI](openapi/audio-openapi-original.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
+- [OpenAPI](openapi/openai-audio-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
+- [Postman Collection](collections/openai-audio.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-audio.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [JSON-LD](json-ld/openai-context.jsonld) — [JSON-LD](https://www.w3.org/TR/json-ld11/)
 
 ### OpenAI Chat API
-Given a list of messages comprising a conversation, the model will return a response.
 
-**Human URL:** [https://platform.openai.com/docs/api-reference/chat](https://platform.openai.com/docs/api-reference/chat)
+Given a list of messages comprising a conversation, the model will return a response., providing an AI chat interface you can use to engage with users.
 
-#### Tags:
+- **Human URL:** [https://platform.openai.com/docs/api-reference/chat](https://platform.openai.com/docs/api-reference/chat)
+- **Base URL:** `https://api.openai.com`
 
- - Chat
+#### Tags
+
+- Chat
 
 #### Properties
 
 - [Documentation](https://platform.openai.com/docs/api-reference/chat)
-- [OpenAPI](openapi/chat-openapi-original.yml)
-- [JSONSchema](json-schema/openai-chat-completion-schema.json)
-- [JSONLD](json-ld/openai-context.jsonld)
+- [OpenAPI](openapi/chat-openapi-original.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
+- [OpenAPI](openapi/openai-chat-completions-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
+- [Postman Collection](collections/openai-chat-completions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-chat-completions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [JSON Schema](json-schema/openai-chat-completion-schema.json) — [JSON Schema](https://json-schema.org/specification)
+- [JSON-LD](json-ld/openai-context.jsonld) — [JSON-LD](https://www.w3.org/TR/json-ld11/)
 
 ### OpenAI Chat Completions API
-Chat models take a list of messages as input and return a model-generated message as output.
 
-**Human URL:** [https://platform.openai.com/docs/api-reference/chat](https://platform.openai.com/docs/api-reference/chat)
+Chat models take a list of messages as input and return a model-generated message as output. Although the chat format is designed to make multi-turn conversations easy, it's just as useful for single-turn tasks without any conversation.
 
-#### Tags:
+- **Human URL:** [https://platform.openai.com/docs/api-reference/chat](https://platform.openai.com/docs/api-reference/chat)
+- **Base URL:** `https://api.openai.com`
 
- - Chat, Completions
+#### Tags
+
+- Chat
+- Completions
 
 #### Properties
 
-- [OpenAPI](openapi/openai-chat-completions-openapi.yml)
-- [JSONSchema](json-schema/openai-chat-completion-schema.json)
+- [Documentation](https://platform.openai.com/docs/api-reference/chat)
+- [OpenAPI](properties/openai-chat-completions-api-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
+- [OpenAPI](openapi/openai-chat-completions-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
+- [Postman Collection](collections/openai-chat-completions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-chat-completions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [JSON Schema](json-schema/openai-chat-completion-schema.json) — [JSON Schema](https://json-schema.org/specification)
+- [JSON-LD](json-ld/openai-context.jsonld) — [JSON-LD](https://www.w3.org/TR/json-ld11/)
 
 ### OpenAI Embeddings API
-Text embeddings measure the relatedness of text strings as vector representations.
 
-**Human URL:** [https://platform.openai.com/docs/guides/embeddings](https://platform.openai.com/docs/guides/embeddings)
+Learn how to turn text into numbers, unlocking use cases like search. OpenAI's text embeddings measure the relatedness of text strings.
 
-#### Tags:
+- **Human URL:** [https://platform.openai.com/docs/guides/embeddings](https://platform.openai.com/docs/guides/embeddings)
+- **Base URL:** `https://api.openai.com`
 
- - Embeddings, Vectors
+#### Tags
+
+- Embedding
+- Embeddings
+- Inputs
+- Representing
+- Text
+- Vectors
 
 #### Properties
 
-- [OpenAPI](openapi/embeddings-openapi-original.yml)
-- [JSONSchema](json-schema/openai-embedding-schema.json)
+- [Documentation](https://platform.openai.com/docs/guides/embeddings)
+- [Documentation](https://platform.openai.com/docs/api-reference/embeddings)
+- [OpenAPI](openapi/embeddings-openapi-original.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
+- [OpenAPI](openapi/openai-embeddings-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
+- [Postman Collection](collections/openai-embeddings.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-embeddings.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [JSON Schema](json-schema/openai-embedding-schema.json) — [JSON Schema](https://json-schema.org/specification)
+- [JSON-LD](json-ld/openai-context.jsonld) — [JSON-LD](https://www.w3.org/TR/json-ld11/)
 
 ### OpenAI Files API
-Files are used to upload documents for features like Assistants and Fine-tuning.
 
-**Human URL:** [https://platform.openai.com/docs/api-reference/files](https://platform.openai.com/docs/api-reference/files)
+Files are used to upload documents that can be used with features like Assistants and Fine-tuning. Upload a file that can be used across various endpoints. The size of all the files uploaded by one organization can be up to 100 GB.
+
+- **Human URL:** [https://platform.openai.com/docs/api-reference/files](https://platform.openai.com/docs/api-reference/files)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- AI
+- Artificial Intelligence
+- Files
 
 #### Properties
 
-- [OpenAPI](openapi/files-openapi-original.yml)
+- [Documentation](https://platform.openai.com/docs/api-reference/files)
+- [OpenAPI](openapi/files-openapi-original.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
 
 ### OpenAI Fine Tuning API
-Manage fine-tuning jobs to tailor a model to your specific training data.
 
-**Human URL:** [https://platform.openai.com/docs/guides/fine-tuning](https://platform.openai.com/docs/guides/fine-tuning)
+Manage fine-tuning jobs to tailor a model to your specific training data. Creates a fine-tuning job which begins the process of creating a new model from a given dataset.Response includes details of the enqueued job including job status and the name of the fine-tuned models once complete.
+
+- **Human URL:** [https://platform.openai.com/docs/guides/fine-tuning](https://platform.openai.com/docs/guides/fine-tuning)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- Fine Tune
+- Fine Tuning
 
 #### Properties
 
-- [OpenAPI](openapi/fine-tuning-openapi-original.yml)
+- [Documentation](https://platform.openai.com/docs/guides/fine-tuning)
+- [Documentation](https://platform.openai.com/docs/api-reference/fine-tuning)
+- [OpenAPI](openapi/fine-tuning-openapi-original.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
 
 ### OpenAI Images API
-Generate or manipulate images with DALL-E.
 
-**Human URL:** [https://platform.openai.com/docs/guides/images](https://platform.openai.com/docs/guides/images)
+Learn how to generate or manipulate images with DALL_E in the API. The Images API provides three methods for interacting with images - creating images from scratch based on a text prompt, creating edited versions of images by having the model replace some areas of a pre-existing image, based on a new text prompt, Creating variations of an existing image.
+
+- **Human URL:** [https://platform.openai.com/docs/guides/images](https://platform.openai.com/docs/guides/images)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- Images
 
 #### Properties
 
-- [OpenAPI](openapi/images-openapi-original.yml)
-- [JSONLD](json-ld/openai-context.jsonld)
+- [Documentation](https://platform.openai.com/docs/guides/images)
+- [Documentation](https://platform.openai.com/docs/api-reference/images)
+- [Documentation](https://platform.openai.com/docs/guides/image-generation)
+- [Documentation](https://platform.openai.com/docs/guides/images-vision)
+- [OpenAPI](openapi/images-openapi-original.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
+- [OpenAPI](openapi/openai-images-openapi.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
+- [Postman Collection](collections/openai-images.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-images.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [JSON-LD](json-ld/openai-context.jsonld) — [JSON-LD](https://www.w3.org/TR/json-ld11/)
 
 ### OpenAI Models API
-List and describe the various models available in the API.
 
-**Human URL:** [https://platform.openai.com/docs/models](https://platform.openai.com/docs/models)
+List and describe the various models available in the API. You can refer to the Models documentation to understand what models are available and the differences between them.
+
+- **Human URL:** [https://platform.openai.com/docs/models](https://platform.openai.com/docs/models)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- Large Language Models
+- Models
 
 #### Properties
 
-- [OpenAPI](openapi/models-openapi-original.yml)
+- [Documentation](https://platform.openai.com/docs/models)
+- [Documentation](https://platform.openai.com/docs/api-reference/models)
+- [OpenAPI](openapi/models-openapi-original.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
 
 ### OpenAI Threads API
+
 Create threads that assistants can interact with.
 
-**Human URL:** [https://platform.openai.com/docs/assistants/how-it-works/managing-threads-and-messages](https://platform.openai.com/docs/assistants/how-it-works/managing-threads-and-messages)
+- **Human URL:** [https://platform.openai.com/docs/assistants/how-it-works/managing-threads-and-messages](https://platform.openai.com/docs/assistants/how-it-works/managing-threads-and-messages)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- Assistants
+- Threads
 
 #### Properties
 
-- [OpenAPI](openapi/threads-openapi-original.yml)
+- [Documentation](https://platform.openai.com/docs/assistants/how-it-works/managing-threads-and-messages)
+- [Documentation](https://platform.openai.com/docs/api-reference/threads)
+- [OpenAPI](openapi/threads-openapi-original.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
 
 ### OpenAI Responses API
-The most advanced interface for generating model responses with built-in tools.
 
-**Human URL:** [https://platform.openai.com/docs/api-reference/responses](https://platform.openai.com/docs/api-reference/responses)
+The Responses API is OpenAI's most advanced interface for generating model responses. It combines the strengths of the Chat Completions and Assistants APIs into a single streamlined interface, supporting text and image inputs, text outputs, and built-in tools like web search, file search, computer use, code interpreter, and image generation. The upstream OpenAI OpenAPI spec exposes Responses as a dedicated tag group with create/retrieve/list/cancel/delete/stream operations plus input items management. Recommended for all new projects.
+
+- **Human URL:** [https://platform.openai.com/docs/api-reference/responses](https://platform.openai.com/docs/api-reference/responses)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- Agents
+- Responses
+- Text Generation
+- Reasoning
+- Tools
 
 #### Properties
 
 - [Documentation](https://platform.openai.com/docs/api-reference/responses)
+- [Documentation](https://platform.openai.com/docs/guides/text)
+- [Documentation](https://developers.openai.com/api/docs/guides/deep-research/)
+- [Documentation](https://developers.openai.com/api/docs/guides/conversation-state/)
+- [Documentation](https://developers.openai.com/api/docs/guides/migrate-to-responses/)
+- [Postman Collection](collections/openai-audio.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-audio.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-chat-completions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-chat-completions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-embeddings.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-embeddings.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-images.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-images.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-openapi-master.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-openapi-master.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
 
 ### OpenAI Moderations API
-Check whether text or images are potentially harmful.
 
-**Human URL:** [https://platform.openai.com/docs/api-reference/moderations](https://platform.openai.com/docs/api-reference/moderations)
+The Moderations API can be used to check whether text or images are potentially harmful. It classifies content across several categories including harassment, hate speech, sexual content, self-harm, violence, and illicit content. The moderation endpoint is free to use and supports the omni-moderation-latest model for multi-modal inputs.
+
+- **Human URL:** [https://platform.openai.com/docs/api-reference/moderations](https://platform.openai.com/docs/api-reference/moderations)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- Content Safety
+- Moderation
+
+#### Properties
+
+- [Documentation](https://platform.openai.com/docs/api-reference/moderations)
+- [Documentation](https://platform.openai.com/docs/guides/moderation)
+- [Postman Collection](collections/openai-audio.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-audio.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-chat-completions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-chat-completions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-embeddings.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-embeddings.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-images.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-images.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-openapi-master.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-openapi-master.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
 
 ### OpenAI Batch API
-Asynchronous processing of requests with 50% cost discount.
 
-**Human URL:** [https://platform.openai.com/docs/api-reference/batch](https://platform.openai.com/docs/api-reference/batch)
+The Batch API enables asynchronous processing of requests with 50% cost discount, higher rate limits, and completion within 24 hours. It supports /v1/responses, /v1/chat/completions, /v1/embeddings, /v1/completions, and /v1/moderations endpoints. A single batch may include up to 50,000 requests with a batch input file size up to 200 MB.
+
+- **Human URL:** [https://platform.openai.com/docs/api-reference/batch](https://platform.openai.com/docs/api-reference/batch)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- Async
+- Batch
+
+#### Properties
+
+- [Documentation](https://platform.openai.com/docs/api-reference/batch)
+- [Documentation](https://platform.openai.com/docs/guides/batch)
+- [Postman Collection](collections/openai-audio.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-audio.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-chat-completions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-chat-completions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-embeddings.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-embeddings.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-images.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-images.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-openapi-master.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-openapi-master.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
 
 ### OpenAI Vector Stores API
-Managed document storage with automatic chunking, embedding, and semantic search.
 
-**Human URL:** [https://platform.openai.com/docs/api-reference/vector-stores](https://platform.openai.com/docs/api-reference/vector-stores)
+Vector stores are collections of processed files that power semantic search for the file_search tool in the Responses and Assistants APIs. When you add a file to a vector store it is automatically chunked, embedded, and indexed. You can query a vector store using natural language to retrieve relevant chunks with similarity scores.
+
+- **Human URL:** [https://platform.openai.com/docs/api-reference/vector-stores](https://platform.openai.com/docs/api-reference/vector-stores)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- Retrieval
+- Search
+- Vector Stores
+
+#### Properties
+
+- [Documentation](https://platform.openai.com/docs/api-reference/vector-stores)
+- [Documentation](https://platform.openai.com/docs/guides/retrieval)
+- [Postman Collection](collections/openai-audio.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-audio.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-chat-completions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-chat-completions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-embeddings.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-embeddings.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-images.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-images.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-openapi-master.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-openapi-master.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+
+### OpenAI Uploads API
+
+The Uploads API creates an intermediate Upload object that you can add Parts to, enabling large file uploads. Currently an Upload can accept at most 8 GB in total and expires after an hour. Once you complete the Upload, a File object is created that can be used across the platform.
+
+- **Human URL:** [https://platform.openai.com/docs/api-reference/uploads](https://platform.openai.com/docs/api-reference/uploads)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- Files
+- Uploads
+
+#### Properties
+
+- [Documentation](https://platform.openai.com/docs/api-reference/uploads)
+- [Postman Collection](collections/openai-audio.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-audio.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-chat-completions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-chat-completions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-embeddings.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-embeddings.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-images.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-images.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-openapi-master.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-openapi-master.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
 
 ### OpenAI Realtime API
-Low-latency bidirectional communication for speech-to-speech interactions.
 
-**Human URL:** [https://platform.openai.com/docs/api-reference/realtime](https://platform.openai.com/docs/api-reference/realtime)
+The Realtime API enables low-latency, bidirectional communication with models that natively support speech-to-speech interactions as well as multimodal inputs (audio, images, and text) and outputs (audio and text). It supports WebRTC, WebSocket, and SIP connection methods for real-time voice agents and conversational interfaces. The Realtime API is represented as a dedicated tag group in the upstream OpenAI OpenAPI specification with operations covering client/server events, translation client secrets, and voice call lifecycle (accept, hangup, refer, reject).
+
+- **Human URL:** [https://platform.openai.com/docs/api-reference/realtime](https://platform.openai.com/docs/api-reference/realtime)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- Audio
+- Realtime
+- Streaming
+- Voice
+- SIP
+- WebRTC
+
+#### Properties
+
+- [Documentation](https://platform.openai.com/docs/api-reference/realtime)
+- [Documentation](https://platform.openai.com/docs/guides/realtime)
+- [Documentation](https://platform.openai.com/docs/guides/realtime-webrtc)
+- [Documentation](https://platform.openai.com/docs/guides/realtime-server-controls)
+- [Documentation](https://developers.openai.com/api/docs/guides/realtime-conversations/)
+- [GitHub Repository](https://github.com/openai/openai-realtime-agents)
+- [AsyncAPI](asyncapi/openai-realtime-asyncapi.yml) — [AsyncAPI Specification](https://www.asyncapi.com/docs/reference/specification/latest)
+- [Postman Collection](collections/openai-audio.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-audio.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-chat-completions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-chat-completions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-embeddings.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-embeddings.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-images.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-images.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-openapi-master.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-openapi-master.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
 
 ### OpenAI Evals API
-Programmatically configure and run evaluations to test model outputs.
 
-**Human URL:** [https://platform.openai.com/docs/api-reference/evals](https://platform.openai.com/docs/api-reference/evals)
+The Evals API allows you to programmatically configure and run evaluations to test model outputs against your expectations. Evaluations ensure model responses meet style and content criteria you specify, and are essential for building reliable LLM applications, especially when upgrading or trying new models.
+
+- **Human URL:** [https://platform.openai.com/docs/api-reference/evals](https://platform.openai.com/docs/api-reference/evals)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- Evals
+- Evaluation
+- Testing
+
+#### Properties
+
+- [Documentation](https://platform.openai.com/docs/api-reference/evals)
+- [Documentation](https://platform.openai.com/docs/guides/evals)
+- [Postman Collection](collections/openai-audio.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-audio.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-chat-completions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-chat-completions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-embeddings.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-embeddings.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-images.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-images.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-openapi-master.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-openapi-master.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
 
 ### OpenAI Completions API
-Legacy freeform text completion interface.
 
-**Human URL:** [https://platform.openai.com/docs/api-reference/completions](https://platform.openai.com/docs/api-reference/completions)
+The legacy Completions API endpoint provides a freeform text completion interface using a text prompt. Unlike the Chat Completions endpoint which uses a list of messages, the Completions API input is a freeform text string called a prompt. This endpoint received its last update in July 2023.
+
+- **Human URL:** [https://platform.openai.com/docs/api-reference/completions](https://platform.openai.com/docs/api-reference/completions)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- Completions
+- Legacy
 
 #### Properties
 
-- [OpenAPI](openapi/completions-openapi-original.yml)
+- [Documentation](https://platform.openai.com/docs/api-reference/completions)
+- [OpenAPI](openapi/completions-openapi-original.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
 
 ### OpenAI Videos API
-Create, extend, and remix videos using Sora models.
 
-**Human URL:** [https://platform.openai.com/docs/api-reference/videos](https://platform.openai.com/docs/api-reference/videos)
+The Videos API enables programmatic creation, extension, and remixing of videos using Sora models. It provides endpoints for creating a new render job from a text prompt, checking video status, downloading finished MP4 files, listing videos with pagination, and deleting videos from storage. Supported models include sora-2 and sora-2-pro.
+
+- **Human URL:** [https://platform.openai.com/docs/api-reference/videos](https://platform.openai.com/docs/api-reference/videos)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- Sora
+- Video Generation
+- Videos
+
+#### Properties
+
+- [Documentation](https://platform.openai.com/docs/api-reference/videos)
+- [Documentation](https://platform.openai.com/docs/guides/video-generation)
+- [Postman Collection](collections/openai-audio.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-audio.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-chat-completions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-chat-completions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-embeddings.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-embeddings.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-images.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-images.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-openapi-master.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-openapi-master.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
 
 ### OpenAI Conversations API
-Create and manage stateful conversations for the Responses API.
 
-**Human URL:** [https://platform.openai.com/docs/api-reference/conversations/create](https://platform.openai.com/docs/api-reference/conversations/create)
+The Conversations API allows you to create and manage stateful conversations for use with the Responses API. A conversation object contains an id, a created_at timestamp, and metadata. Because conversations are stateful, managing context across conversations is handled automatically, and the /responses/compact endpoint can shrink context for long-running conversations.
+
+- **Human URL:** [https://platform.openai.com/docs/api-reference/conversations/create](https://platform.openai.com/docs/api-reference/conversations/create)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- Conversations
+- State Management
+
+#### Properties
+
+- [Documentation](https://platform.openai.com/docs/api-reference/conversations/create)
+- [Documentation](https://developers.openai.com/api/docs/guides/conversation-state/)
+- [Postman Collection](collections/openai-audio.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-audio.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-chat-completions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-chat-completions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-embeddings.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-embeddings.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-images.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-images.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-openapi-master.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-openapi-master.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
 
 ### OpenAI Containers API
-Manage sandboxed containers for Code Interpreter.
 
-**Human URL:** [https://platform.openai.com/docs/api-reference/containers](https://platform.openai.com/docs/api-reference/containers)
+The Containers API manages sandboxed containers used by Code Interpreter for running Python, data work, file transforms, and iterative debugging. Containers can be created explicitly or auto-managed, with configurable memory limits of 1g, 4g, 16g, or 64g. Container files can be uploaded, listed, retrieved, and downloaded. Containers expire after 20 minutes of inactivity.
+
+- **Human URL:** [https://platform.openai.com/docs/api-reference/containers](https://platform.openai.com/docs/api-reference/containers)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- Code Interpreter
+- Containers
+- Sandbox
+
+#### Properties
+
+- [Documentation](https://platform.openai.com/docs/api-reference/containers)
+- [Documentation](https://platform.openai.com/docs/api-reference/container-files)
+- [Documentation](https://developers.openai.com/api/docs/guides/tools-code-interpreter/)
+- [Postman Collection](collections/openai-audio.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-audio.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-chat-completions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-chat-completions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-embeddings.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-embeddings.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-images.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-images.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-openapi-master.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-openapi-master.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
 
 ### OpenAI ChatKit API
-Build agentic chat experiences with session and thread management.
 
-**Human URL:** [https://platform.openai.com/docs/api-reference/chatkit](https://platform.openai.com/docs/api-reference/chatkit)
+ChatKit is the best way to build agentic chat experiences. It provides session and thread management for building internal knowledge base assistants, research companions, support agents, and more. ChatKit sessions include resolved feature configuration for automatic thread titling, file upload, and history settings. Threads have statuses including active, locked, and closed.
+
+- **Human URL:** [https://platform.openai.com/docs/api-reference/chatkit](https://platform.openai.com/docs/api-reference/chatkit)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- Agents
+- Chat
+- ChatKit
+
+#### Properties
+
+- [Documentation](https://platform.openai.com/docs/api-reference/chatkit)
+- [Documentation](https://platform.openai.com/docs/guides/chatkit)
+- [GitHub Repository](https://github.com/openai/chatkit-js)
+- [Postman Collection](collections/openai-audio.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-audio.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-chat-completions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-chat-completions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-embeddings.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-embeddings.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-images.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-images.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-openapi-master.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-openapi-master.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
 
 ### OpenAI Skills API
-Manage Agent Skills — discoverable folders of instructions, scripts, and resources that agents (notably Codex) can use to perform specific tasks.
 
-**Human URL:** [https://platform.openai.com/docs/api-reference](https://platform.openai.com/docs/api-reference)
+The Skills API surfaces OpenAI's Agent Skills — discoverable folders of instructions, scripts, and resources that agents (notably Codex) can use to perform specific tasks. Operations cover creating, retrieving, updating, deleting, and versioning skills as well as retrieving skill content. The companion github.com/openai/skills repository hosts a catalog of system, curated, and experimental skills.
+
+- **Human URL:** [https://platform.openai.com/docs/api-reference](https://platform.openai.com/docs/api-reference)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- Agents
+- Codex
+- Skills
 
 #### Properties
 
-- [GitHubRepository](https://github.com/openai/skills)
+- [Documentation](https://platform.openai.com/docs/api-reference)
+- [GitHub Repository](https://github.com/openai/skills)
+- [Postman Collection](collections/openai-audio.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-audio.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-chat-completions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-chat-completions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-embeddings.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-embeddings.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-images.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-images.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-openapi-master.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-openapi-master.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
 
 ### OpenAI Agents SDK
-Lightweight framework for multi-agent workflows in Python and TypeScript with agents, handoffs, guardrails, sessions, tracing, and realtime voice agents.
 
-**Human URL:** [https://github.com/openai/openai-agents-python](https://github.com/openai/openai-agents-python)
+The OpenAI Agents SDK is a lightweight framework for building multi-agent workflows in Python and TypeScript. Primitives include agents (LLMs with instructions, tools, guardrails), handoffs between specialists, guardrails for safety checks, sessions for conversation history, tracing for run observability, and realtime agents for voice workflows. The SDK is provider-agnostic and supports OpenAI Responses and Chat Completions plus other LLM providers.
+
+- **Human URL:** [https://github.com/openai/openai-agents-python](https://github.com/openai/openai-agents-python)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- Agents
+- SDK
+- Voice
+- Sandbox
 
 #### Properties
 
-- [GitHubRepository](https://github.com/openai/openai-agents-python)
-- [GitHubRepository](https://github.com/openai/openai-agents-js)
+- [GitHub Repository](https://github.com/openai/openai-agents-python)
+- [GitHub Repository](https://github.com/openai/openai-agents-js)
+- [Postman Collection](collections/openai-audio.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-audio.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-chat-completions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-chat-completions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-embeddings.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-embeddings.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-images.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-images.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-openapi-master.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-openapi-master.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
 
 ### OpenAI Codex
-Lightweight coding agent that runs in your terminal, with IDE extensions, desktop app, and web experience.
 
-**Human URL:** [https://developers.openai.com/codex](https://developers.openai.com/codex)
+OpenAI Codex is a lightweight coding agent that runs in the terminal, with companion IDE extensions, a desktop app, and a web experience at chatgpt.com/codex. Codex authenticates with a ChatGPT Plus/Pro/Business/Edu/Enterprise account or an API key, and integrates with the Skills catalog for repeatable task workflows.
+
+- **Human URL:** [https://developers.openai.com/codex](https://developers.openai.com/codex)
+- **Base URL:** `https://api.openai.com`
+
+#### Tags
+
+- Agents
+- Codex
+- Coding Agent
 
 #### Properties
 
-- [GitHubRepository](https://github.com/openai/codex)
+- [Documentation](https://developers.openai.com/codex)
+- [GitHub Repository](https://github.com/openai/codex)
+- [Postman Collection](collections/openai-audio.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-audio.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-chat-completions.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-chat-completions.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-embeddings.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-embeddings.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-images.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-images.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
+- [Postman Collection](collections/openai-openapi-master.postman_collection.json) — [Postman Collection 2.1](https://schema.getpostman.com/json/collection/v2.1.0/collection.json)
+- [Open Collection](collections/openai-openapi-master.opencollection.json) — [Open Collection 1.0](https://schema.opencollection.com/opencollection/v1.0.0.json)
 
 ## Common Properties
 
+- [Arazzo Workflows](arazzo/) — [Arazzo Specification](https://spec.openapis.org/arazzo/latest.html)
+- [LinkedIn](https://www.linkedin.com/company/openai)
 - [Portal](https://platform.openai.com/docs/overview)
-- [GettingStarted](https://platform.openai.com/docs/quickstart)
-- [SDK](https://platform.openai.com/docs/libraries)
-- [RateLimits](https://platform.openai.com/docs/guides/rate-limits)
-- [TermsOfService](https://openai.com/policies/)
-- [PrivacyPolicy](https://openai.com/policies/privacy-policy/)
+- [Getting Started](https://platform.openai.com/docs/quickstart)
+- [S D Ks](https://platform.openai.com/docs/libraries)
+- [Forums](https://community.openai.com/categories)
+- [Rate Limits](https://platform.openai.com/docs/guides/rate-limits)
+- [Deprecations](https://platform.openai.com/docs/deprecations)
+- [Terms of Service](https://openai.com/policies/)
+- [Terms of Service](https://openai.com/policies/terms-of-use/)
+- [Privacy Policy](https://openai.com/policies/privacy-policy/)
 - [Documentation](https://platform.openai.com/docs/overview)
 - [Support](https://help.openai.com/en)
-- [StatusPage](https://status.openai.com/)
+- [Status Page](https://status.openai.com/)
 - [Authentication](https://platform.openai.com/docs/api-reference/authentication)
-- [GitHubOrganization](https://github.com/openai)
-- [GitHubRepository](https://github.com/openai/openai-openapi)
-- [GitHubRepository](https://github.com/openai/openai-python)
-- [GitHubRepository](https://github.com/openai/openai-node)
-- [GitHubRepository](https://github.com/openai/openai-go)
-- [GitHubRepository](https://github.com/openai/openai-dotnet)
-- [GitHubRepository](https://github.com/openai/openai-java)
-- [GitHubRepository](https://github.com/openai/openai-ruby)
-- [GitHubRepository](https://github.com/openai/openai-agents-python)
-- [GitHubRepository](https://github.com/openai/openai-agents-js)
-- [GitHubRepository](https://github.com/openai/codex)
-- [GitHubRepository](https://github.com/openai/skills)
-- [GitHubRepository](https://github.com/openai/gpt-oss)
-- [GitHubRepository](https://github.com/openai/openai-realtime-agents)
-- [GitHubRepository](https://github.com/openai/whisper)
-- [GitHubRepository](https://github.com/openai/tiktoken)
-- [SignUp](https://platform.openai.com/signup)
+- [Webhooks](https://platform.openai.com/docs/api-reference/webhook_events/response)
+- [OpenAPI](properties/openai-openapi) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
+- [JSON Schema](json-schema/openai-chat-completion-schema.json) — [JSON Schema](https://json-schema.org/specification)
+- [JSON Schema](json-schema/openai-embedding-schema.json) — [JSON Schema](https://json-schema.org/specification)
+- [JSON-LD](json-ld/openai-context.jsonld) — [JSON-LD](https://www.w3.org/TR/json-ld11/)
+- [GitHub Organization](https://github.com/openai)
+- [Plans](https://openai.com/api/pricing/)
+- [Pricing](https://openai.com/api/pricing/)
+- [Tiers](https://openai.com/api/pricing/)
+- [Rate Limits](https://example.com/rate-limits)
+- [Status Page](https://status.openai.com/)
+- [A P I  Keys](https://platform.openai.com/api-keys)
+- [Sign Up](https://platform.openai.com/signup)
 - [Login](https://platform.openai.com/login)
-- [ChangeLog](https://developers.openai.com/changelog/)
+- [Changelog](https://developers.openai.com/changelog/)
 - [Blog](https://developers.openai.com/blog/)
-- [BestPractices](https://platform.openai.com/docs/guides/production-best-practices)
+- [Cookbook](https://cookbook.openai.com/)
+- [Safety Best Practices](https://platform.openai.com/docs/guides/safety-best-practices)
+- [Best Practices](https://platform.openai.com/docs/guides/production-best-practices)
 - [Security](https://openai.com/security-and-privacy/)
-
-## Features
-
-| Name | Description |
-|------|-------------|
-| Chat Completions | Generate conversational responses using GPT models with multi-turn message history, function calling, and structured outputs. |
-| Responses API | Advanced model response interface combining Chat Completions and Assistants with built-in tools like web search and code interpreter. |
-| Assistants | Build AI assistants with persistent threads, code interpreter, file search, and function calling capabilities. |
-| Realtime API | Low-latency bidirectional communication for speech-to-speech interactions via WebRTC, WebSocket, and SIP connections. |
-| Image Generation | Create, edit, and generate variations of images using DALL-E models from text prompts. |
-| Audio and Speech | Text-to-speech synthesis and speech-to-text transcription and translation using Whisper and TTS models. |
-| Embeddings | Generate vector representations of text for semantic search, clustering, and recommendation use cases. |
-| Fine-Tuning | Customize models on your own training data to improve performance for specific tasks and domains. |
-| Batch Processing | Asynchronous processing of up to 50,000 requests at 50% cost discount with 24-hour completion window. |
-| Evals | Programmatically configure and run evaluations to test model outputs against quality and content criteria. |
-| Video Generation | Create, extend, and remix videos using Sora models from text prompts via the Videos API. |
-| Vector Stores | Managed document storage with automatic chunking, embedding, and semantic search for file_search tool. |
-
-## Use Cases
-
-| Name | Description |
-|------|-------------|
-| Conversational AI | Build chatbots, virtual assistants, and customer support agents using Chat Completions or Responses API. |
-| Content Generation | Generate marketing copy, articles, product descriptions, and creative writing with controllable tone and style. |
-| Code Generation | Automate code writing, debugging, refactoring, and documentation generation across programming languages. |
-| Document Analysis | Extract, summarize, and answer questions from uploaded documents using Assistants with file search. |
-| Voice Agents | Build real-time voice-based AI agents for customer service, sales, and interactive experiences. |
-| Semantic Search | Implement intelligent search using embeddings and vector stores for knowledge bases and document retrieval. |
-| Content Moderation | Automatically classify and filter harmful content across text and images using the Moderations API. |
-| Data Extraction | Extract structured data from unstructured text using function calling and structured outputs. |
-
-## Integrations
-
-| Name | Description |
-|------|-------------|
-| Python SDK | Official Python client library for accessing all OpenAI API endpoints with async support and streaming. |
-| Node.js SDK | Official TypeScript and JavaScript client library for server-side and edge runtime OpenAI API integration. |
-| Microsoft Azure OpenAI | Run OpenAI models on Azure infrastructure with enterprise security, compliance, and regional data residency. |
-| LangChain | Framework integration for building LLM-powered applications with chains, agents, and retrieval-augmented generation. |
-| Vercel AI SDK | Integration with Vercel AI SDK for building streaming AI-powered web applications with React and Next.js. |
-| Zapier | No-code automation integration connecting OpenAI to thousands of apps for automated AI-powered workflows. |
-
-## Artifacts
-
-Machine-readable API specifications organized by format.
-
-### OpenAPI
-
-- [OpenAI OpenAPI Master](openapi/openai-openapi-master.yml) -- Mirrored copy of upstream openai/openai-openapi/master/openapi.yaml
-- [Assistants](openapi/assistants-openapi-original.yml)
-- [Audio](openapi/audio-openapi-original.yml)
-- [Chat](openapi/chat-openapi-original.yml)
-- [Chat Completions](openapi/openai-chat-completions-openapi.yml)
-- [Completions](openapi/completions-openapi-original.yml)
-- [Embeddings](openapi/embeddings-openapi-original.yml)
-- [Files](openapi/files-openapi-original.yml)
-- [Fine Tuning](openapi/fine-tuning-openapi-original.yml)
-- [Images](openapi/images-openapi-original.yml)
-- [Models](openapi/models-openapi-original.yml)
-- [Threads](openapi/threads-openapi-original.yml)
-
-## Capabilities
-
-Naftiko capabilities covering each major business surface of the OpenAI API.
-
-- [Assistants](capabilities/assistants-assistants.yaml)
-- [Audio](capabilities/audio-audio.yaml)
-- [Batch](capabilities/batch-batch.yaml)
-- [Chat](capabilities/chat-chat.yaml)
-- [Chat Completions](capabilities/chat-completions-chat.yaml)
-- [Completions (Chat)](capabilities/completions-chat.yaml)
-- [Completions (Legacy)](capabilities/completions-completions.yaml)
-- [Embeddings](capabilities/embeddings-embeddings.yaml)
-- [Files (Assistants)](capabilities/files-assistants.yaml)
-- [Files (Files)](capabilities/files-files.yaml)
-- [Files (Threads)](capabilities/files-threads.yaml)
-- [Fine Tuning](capabilities/fine-tuning-fine-tuning.yaml)
-- [Images](capabilities/images-images.yaml)
-- [Models](capabilities/models-models.yaml)
-- [Moderations](capabilities/moderations-moderations.yaml)
-- [Realtime](capabilities/realtime-realtime.yaml)
-- [Responses](capabilities/responses-responses.yaml)
-- [Threads](capabilities/threads-threads.yaml)
-- [Vector Stores](capabilities/vector-stores-vector-stores.yaml)
-- [Videos (Sora)](capabilities/videos-videos.yaml)
-
-## Rules
-
-- [OpenAI Spectral Rules](rules/openai-spectral-rules.yml)
-
-## Vocabulary
-
-- [OpenAI Vocabulary](vocabulary/openai-vocabulary.yaml)
+- [Documentation](https://platform.openai.com/docs/api-reference/administration)
+- [Documentation](https://platform.openai.com/docs/api-reference/audit-logs)
+- [Documentation](https://platform.openai.com/docs/api-reference/usage)
+- [Documentation](https://platform.openai.com/docs/guides/function-calling)
+- [Documentation](https://platform.openai.com/docs/guides/structured-outputs)
+- [GitHub Repository](https://github.com/openai/openai-openapi)
+- [OpenAPI](openapi/openai-openapi-master.yml) — [OpenAPI Specification](https://spec.openapis.org/oas/latest.html)
+- [GitHub Repository](https://github.com/openai/openai-python)
+- [GitHub Repository](https://github.com/openai/openai-node)
+- [GitHub Repository](https://github.com/openai/openai-go)
+- [GitHub Repository](https://github.com/openai/openai-dotnet)
+- [GitHub Repository](https://github.com/openai/openai-java)
+- [GitHub Repository](https://github.com/openai/openai-ruby)
+- [GitHub Repository](https://github.com/openai/openai-agents-python)
+- [GitHub Repository](https://github.com/openai/openai-agents-js)
+- [GitHub Repository](https://github.com/openai/codex)
+- [GitHub Repository](https://github.com/openai/skills)
+- [GitHub Repository](https://github.com/openai/gpt-oss)
+- [GitHub Repository](https://github.com/openai/openai-realtime-agents)
+- [GitHub Repository](https://github.com/openai/whisper)
+- [GitHub Repository](https://github.com/openai/tiktoken)
+- [Terms of Service](https://openai.com/policies/service-terms/)
+- [Documentation](https://platform.openai.com/docs/guides/webhooks)
+- [Documentation](https://platform.openai.com/docs/api-reference/webhook-events)
+- [Documentation](https://developers.openai.com/api/docs/guides/deep-research/)
+- [Documentation](https://developers.openai.com/api/docs/guides/voice-agents/)
+- [Documentation](https://developers.openai.com/api/docs/guides/code-generation/)
+- [Documentation](https://platform.openai.com/docs/guides/images-vision)
+- [Documentation](https://developers.openai.com/api/docs/guides/conversation-state/)
+- [Documentation](https://developers.openai.com/api/docs/guides/migrate-to-responses/)
+- [Documentation](https://platform.openai.com/docs/api-reference/containers)
+- [Documentation](https://platform.openai.com/docs/api-reference/container-files)
+- [Documentation](https://platform.openai.com/docs/api-reference/chatkit)
+- [Documentation](https://platform.openai.com/docs/api-reference/videos)
+- [Documentation](https://platform.openai.com/docs/api-reference/conversations/create)
+- [Portal](https://developers.openai.com/)
+- [Documentation](https://developers.openai.com/api/reference/)
+- [Documentation](https://developers.openai.com/codex)
+- [GitHub Repository](https://github.com/openai/chatkit-js)
+- [Spectral Rules](rules/openai-spectral-rules.yml)
+- [Vocabulary](vocabulary/openai-vocabulary.yaml)
+- [Features](https://platform.openai.com/docs/overview)
+- [Use Cases](https://openai.com/api/)
+- [Integrations](https://platform.openai.com/docs/libraries)
+- [Agent Skill](https://github.com/openai/skills)
+- [L L Ms Txt](https://developers.openai.com/llms.txt)
 
 ## Maintainers
 
 **FN:** Kin Lane
-
 **Email:** kin@apievangelist.com

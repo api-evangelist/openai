@@ -1,0 +1,69 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "OpenAI Images API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Images",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Openai Create Image",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/images/generations",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates an image given a prompt. Supports DALL-E 2, DALL-E 3, and gpt-image-1 models. Returns one or more generated images as URLs or base64-encoded JSON."
+        },
+        {
+          "info": {
+            "name": "Openai Create Image Edit",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/images/edits",
+            "body": {
+              "type": "multipart-form",
+              "data": []
+            }
+          },
+          "docs": "Creates an edited or extended image given an original image and a prompt. The model will generate a new image based on the prompt, using the original image and mask as context. Supports DALL-E 2 and gpt-image-1 models."
+        },
+        {
+          "info": {
+            "name": "Openai Create Image Variation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/images/variations",
+            "body": {
+              "type": "multipart-form",
+              "data": []
+            }
+          },
+          "docs": "Creates a variation of a given image. Only supported with DALL-E 2."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

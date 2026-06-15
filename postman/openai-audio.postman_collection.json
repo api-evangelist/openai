@@ -1,0 +1,1313 @@
+{
+  "info": {
+    "_postman_id": "ed3f17ef-dbfe-4554-b458-99bf965334d4",
+    "name": "OpenAI Audio API",
+    "description": "Turn audio into text or text into audio. The Audio API provides endpoints for speech-to-text (transcriptions and translations) based on the Whisper model, and text-to-speech using the TTS models. Supports multiple audio formats including mp3, mp4, mpeg, mpga, m4a, wav, and webm with a maximum file size of 25 MB for uploads.\n\nContact Support:\n Name: OpenAI Support\n Email: support@openai.com",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "createdAt": "2026-06-05T15:13:36.000Z",
+    "updatedAt": "2026-06-05T15:13:36.000Z",
+    "lastUpdatedBy": "35240",
+    "uid": "35240-ed3f17ef-dbfe-4554-b458-99bf965334d4"
+  },
+  "item": [
+    {
+      "name": "audio",
+      "item": [
+        {
+          "name": "speech",
+          "item": [
+            {
+              "name": "Openai Create Speech",
+              "id": "a8e7ac78-57e7-4433-970e-14dc4ab96f95",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "application/json"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "audio/mpeg"
+                  }
+                ],
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"input\": \"<string>\",\n  \"voice\": \"echo\",\n  \"instructions\": \"<string>\",\n  \"response_format\": \"mp3\",\n  \"speed\": 1\n}",
+                  "options": {
+                    "raw": {
+                      "headerFamily": "json",
+                      "language": "json"
+                    }
+                  }
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/audio/speech",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "audio",
+                    "speech"
+                  ]
+                },
+                "description": "Generates audio from the input text. Supports multiple voices and audio output formats. The maximum input length is 4096 characters."
+              },
+              "response": [
+                {
+                  "id": "4df09f19-05d6-43a6-9288-d9dc3e972a83",
+                  "name": "Successful response with audio file.",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "audio/mpeg"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"model\": \"<string>\",\n  \"input\": \"<string>\",\n  \"voice\": \"echo\",\n  \"instructions\": \"<string>\",\n  \"response_format\": \"mp3\",\n  \"speed\": 1\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/audio/speech",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "audio",
+                        "speech"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "text",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "audio/mpeg"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "<binary>",
+                  "createdAt": "2026-06-05T15:13:36.000Z",
+                  "updatedAt": "2026-06-05T15:13:36.000Z",
+                  "uid": "35240-4df09f19-05d6-43a6-9288-d9dc3e972a83"
+                },
+                {
+                  "id": "1e323023-3d83-4fc0-8179-f90a039fadbd",
+                  "name": "Bad request - invalid parameters.",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"model\": \"<string>\",\n  \"input\": \"<string>\",\n  \"voice\": \"echo\",\n  \"instructions\": \"<string>\",\n  \"response_format\": \"mp3\",\n  \"speed\": 1\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/audio/speech",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "audio",
+                        "speech"
+                      ]
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "text",
+                  "header": [],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": null,
+                  "createdAt": "2026-06-05T15:13:36.000Z",
+                  "updatedAt": "2026-06-05T15:13:36.000Z",
+                  "uid": "35240-1e323023-3d83-4fc0-8179-f90a039fadbd"
+                },
+                {
+                  "id": "d0e89506-7523-49b2-bf59-3539d35bd545",
+                  "name": "Unauthorized - invalid or missing API key.",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"model\": \"<string>\",\n  \"input\": \"<string>\",\n  \"voice\": \"echo\",\n  \"instructions\": \"<string>\",\n  \"response_format\": \"mp3\",\n  \"speed\": 1\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/audio/speech",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "audio",
+                        "speech"
+                      ]
+                    }
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "_postman_previewlanguage": "text",
+                  "header": [],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": null,
+                  "createdAt": "2026-06-05T15:13:36.000Z",
+                  "updatedAt": "2026-06-05T15:13:36.000Z",
+                  "uid": "35240-d0e89506-7523-49b2-bf59-3539d35bd545"
+                },
+                {
+                  "id": "bb2e5594-3312-4249-b28c-c8c7fbd7bb31",
+                  "name": "Rate limit exceeded.",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"model\": \"<string>\",\n  \"input\": \"<string>\",\n  \"voice\": \"echo\",\n  \"instructions\": \"<string>\",\n  \"response_format\": \"mp3\",\n  \"speed\": 1\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/audio/speech",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "audio",
+                        "speech"
+                      ]
+                    }
+                  },
+                  "status": "Too Many Requests",
+                  "code": 429,
+                  "_postman_previewlanguage": "text",
+                  "header": [],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": null,
+                  "createdAt": "2026-06-05T15:13:36.000Z",
+                  "updatedAt": "2026-06-05T15:13:36.000Z",
+                  "uid": "35240-bb2e5594-3312-4249-b28c-c8c7fbd7bb31"
+                },
+                {
+                  "id": "aa8de788-2297-489c-a8e7-759da1955988",
+                  "name": "Internal server error.",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "raw",
+                      "raw": "{\n  \"model\": \"<string>\",\n  \"input\": \"<string>\",\n  \"voice\": \"echo\",\n  \"instructions\": \"<string>\",\n  \"response_format\": \"mp3\",\n  \"speed\": 1\n}",
+                      "options": {
+                        "raw": {
+                          "headerFamily": "json",
+                          "language": "json"
+                        }
+                      }
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/audio/speech",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "audio",
+                        "speech"
+                      ]
+                    }
+                  },
+                  "status": "Internal Server Error",
+                  "code": 500,
+                  "_postman_previewlanguage": "text",
+                  "header": [],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": null,
+                  "createdAt": "2026-06-05T15:13:36.000Z",
+                  "updatedAt": "2026-06-05T15:13:36.000Z",
+                  "uid": "35240-aa8de788-2297-489c-a8e7-759da1955988"
+                }
+              ],
+              "createdAt": "2026-06-05T15:13:36.000Z",
+              "updatedAt": "2026-06-05T15:13:36.000Z",
+              "uid": "35240-a8e7ac78-57e7-4433-970e-14dc4ab96f95"
+            }
+          ],
+          "id": "b2bfcca6-529f-40ec-b95a-c99c17a843ed",
+          "createdAt": "2026-06-05T15:13:36.000Z",
+          "updatedAt": "2026-06-05T15:13:36.000Z",
+          "uid": "35240-b2bfcca6-529f-40ec-b95a-c99c17a843ed"
+        },
+        {
+          "name": "transcriptions",
+          "item": [
+            {
+              "name": "Openai Create Transcription",
+              "id": "66d866be-6984-4a5a-b3a3-87bb49331a89",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "multipart/form-data"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "description": "(Required) The audio file object to transcribe, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm. File uploads are limited to 25 MB.",
+                      "key": "file",
+                      "type": "file",
+                      "value": null
+                    },
+                    {
+                      "description": "(Required) ID of the model to use. Only whisper-1 and gpt-4o-transcribe are currently available.",
+                      "key": "model",
+                      "value": "<string>",
+                      "type": "text"
+                    },
+                    {
+                      "description": "The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency.",
+                      "key": "language",
+                      "value": "<string>",
+                      "type": "text"
+                    },
+                    {
+                      "description": "An optional text to guide the model's style or continue a previous audio segment. The prompt should match the audio language.",
+                      "key": "prompt",
+                      "value": "<string>",
+                      "type": "text"
+                    },
+                    {
+                      "description": "The format of the transcript output. Defaults to json. verbose_json includes additional metadata like word-level timestamps. (This can only be one of json,text,srt,verbose_json,vtt)",
+                      "key": "response_format",
+                      "value": "json",
+                      "type": "text"
+                    },
+                    {
+                      "description": "The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.",
+                      "key": "temperature",
+                      "value": "0",
+                      "type": "text"
+                    },
+                    {
+                      "description": "The timestamp granularities to populate for this transcription. response_format must be set to verbose_json to use this parameter.",
+                      "key": "timestamp_granularities",
+                      "value": "segment,segment",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/audio/transcriptions",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "audio",
+                    "transcriptions"
+                  ]
+                },
+                "description": "Transcribes audio into the input language. Supports multiple audio formats with a maximum file size of 25 MB. Uses the Whisper model for accurate speech recognition in multiple languages."
+              },
+              "response": [
+                {
+                  "id": "ddfcb0a2-45a4-4bda-994b-13a1aa4c5896",
+                  "name": "Successful response with transcribed text.",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "multipart/form-data"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        {
+                          "description": "(Required) The audio file object to transcribe, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm. File uploads are limited to 25 MB.",
+                          "key": "file",
+                          "type": "file"
+                        },
+                        {
+                          "description": "(Required) ID of the model to use. Only whisper-1 and gpt-4o-transcribe are currently available.",
+                          "key": "model",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency.",
+                          "key": "language",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "An optional text to guide the model's style or continue a previous audio segment. The prompt should match the audio language.",
+                          "key": "prompt",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The format of the transcript output. Defaults to json. verbose_json includes additional metadata like word-level timestamps. (This can only be one of json,text,srt,verbose_json,vtt)",
+                          "key": "response_format",
+                          "value": "json",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.",
+                          "key": "temperature",
+                          "value": "0",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The timestamp granularities to populate for this transcription. response_format must be set to verbose_json to use this parameter.",
+                          "key": "timestamp_granularities",
+                          "value": "segment,segment",
+                          "type": "text"
+                        }
+                      ]
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/audio/transcriptions",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "audio",
+                        "transcriptions"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"text\": \"<string>\",\n  \"task\": \"transcribe\",\n  \"language\": \"<string>\",\n  \"duration\": \"<float>\",\n  \"words\": [\n    {\n      \"word\": \"<string>\",\n      \"start\": \"<float>\",\n      \"end\": \"<float>\"\n    },\n    {\n      \"word\": \"<string>\",\n      \"start\": \"<float>\",\n      \"end\": \"<float>\"\n    }\n  ],\n  \"segments\": [\n    {\n      \"id\": \"<integer>\",\n      \"seek\": \"<integer>\",\n      \"start\": \"<float>\",\n      \"end\": \"<float>\",\n      \"text\": \"<string>\",\n      \"tokens\": [\n        \"<integer>\",\n        \"<integer>\"\n      ],\n      \"temperature\": \"<float>\",\n      \"avg_logprob\": \"<float>\",\n      \"compression_ratio\": \"<float>\",\n      \"no_speech_prob\": \"<float>\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"seek\": \"<integer>\",\n      \"start\": \"<float>\",\n      \"end\": \"<float>\",\n      \"text\": \"<string>\",\n      \"tokens\": [\n        \"<integer>\",\n        \"<integer>\"\n      ],\n      \"temperature\": \"<float>\",\n      \"avg_logprob\": \"<float>\",\n      \"compression_ratio\": \"<float>\",\n      \"no_speech_prob\": \"<float>\"\n    }\n  ]\n}",
+                  "createdAt": "2026-06-05T15:13:36.000Z",
+                  "updatedAt": "2026-06-05T15:13:36.000Z",
+                  "uid": "35240-ddfcb0a2-45a4-4bda-994b-13a1aa4c5896"
+                },
+                {
+                  "id": "6db20a12-c752-4590-8f0b-6272e20bff59",
+                  "name": "Bad request - invalid parameters or unsupported audio format.",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "multipart/form-data"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        {
+                          "description": "(Required) The audio file object to transcribe, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm. File uploads are limited to 25 MB.",
+                          "key": "file",
+                          "type": "file"
+                        },
+                        {
+                          "description": "(Required) ID of the model to use. Only whisper-1 and gpt-4o-transcribe are currently available.",
+                          "key": "model",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency.",
+                          "key": "language",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "An optional text to guide the model's style or continue a previous audio segment. The prompt should match the audio language.",
+                          "key": "prompt",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The format of the transcript output. Defaults to json. verbose_json includes additional metadata like word-level timestamps. (This can only be one of json,text,srt,verbose_json,vtt)",
+                          "key": "response_format",
+                          "value": "json",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.",
+                          "key": "temperature",
+                          "value": "0",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The timestamp granularities to populate for this transcription. response_format must be set to verbose_json to use this parameter.",
+                          "key": "timestamp_granularities",
+                          "value": "segment,segment",
+                          "type": "text"
+                        }
+                      ]
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/audio/transcriptions",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "audio",
+                        "transcriptions"
+                      ]
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "text",
+                  "header": [],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": null,
+                  "createdAt": "2026-06-05T15:13:36.000Z",
+                  "updatedAt": "2026-06-05T15:13:36.000Z",
+                  "uid": "35240-6db20a12-c752-4590-8f0b-6272e20bff59"
+                },
+                {
+                  "id": "658c670e-f98e-4697-ae48-8b4cf9f860cb",
+                  "name": "Unauthorized - invalid or missing API key.",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "multipart/form-data"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        {
+                          "description": "(Required) The audio file object to transcribe, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm. File uploads are limited to 25 MB.",
+                          "key": "file",
+                          "type": "file"
+                        },
+                        {
+                          "description": "(Required) ID of the model to use. Only whisper-1 and gpt-4o-transcribe are currently available.",
+                          "key": "model",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency.",
+                          "key": "language",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "An optional text to guide the model's style or continue a previous audio segment. The prompt should match the audio language.",
+                          "key": "prompt",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The format of the transcript output. Defaults to json. verbose_json includes additional metadata like word-level timestamps. (This can only be one of json,text,srt,verbose_json,vtt)",
+                          "key": "response_format",
+                          "value": "json",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.",
+                          "key": "temperature",
+                          "value": "0",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The timestamp granularities to populate for this transcription. response_format must be set to verbose_json to use this parameter.",
+                          "key": "timestamp_granularities",
+                          "value": "segment,segment",
+                          "type": "text"
+                        }
+                      ]
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/audio/transcriptions",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "audio",
+                        "transcriptions"
+                      ]
+                    }
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "_postman_previewlanguage": "text",
+                  "header": [],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": null,
+                  "createdAt": "2026-06-05T15:13:36.000Z",
+                  "updatedAt": "2026-06-05T15:13:36.000Z",
+                  "uid": "35240-658c670e-f98e-4697-ae48-8b4cf9f860cb"
+                },
+                {
+                  "id": "b50c1157-c99a-4b72-b184-a07556dafadd",
+                  "name": "Rate limit exceeded.",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "multipart/form-data"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        {
+                          "description": "(Required) The audio file object to transcribe, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm. File uploads are limited to 25 MB.",
+                          "key": "file",
+                          "type": "file"
+                        },
+                        {
+                          "description": "(Required) ID of the model to use. Only whisper-1 and gpt-4o-transcribe are currently available.",
+                          "key": "model",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency.",
+                          "key": "language",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "An optional text to guide the model's style or continue a previous audio segment. The prompt should match the audio language.",
+                          "key": "prompt",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The format of the transcript output. Defaults to json. verbose_json includes additional metadata like word-level timestamps. (This can only be one of json,text,srt,verbose_json,vtt)",
+                          "key": "response_format",
+                          "value": "json",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.",
+                          "key": "temperature",
+                          "value": "0",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The timestamp granularities to populate for this transcription. response_format must be set to verbose_json to use this parameter.",
+                          "key": "timestamp_granularities",
+                          "value": "segment,segment",
+                          "type": "text"
+                        }
+                      ]
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/audio/transcriptions",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "audio",
+                        "transcriptions"
+                      ]
+                    }
+                  },
+                  "status": "Too Many Requests",
+                  "code": 429,
+                  "_postman_previewlanguage": "text",
+                  "header": [],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": null,
+                  "createdAt": "2026-06-05T15:13:36.000Z",
+                  "updatedAt": "2026-06-05T15:13:36.000Z",
+                  "uid": "35240-b50c1157-c99a-4b72-b184-a07556dafadd"
+                },
+                {
+                  "id": "6a0954a3-fdb6-49ef-87a3-351d7de191c0",
+                  "name": "Internal server error.",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "multipart/form-data"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        {
+                          "description": "(Required) The audio file object to transcribe, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm. File uploads are limited to 25 MB.",
+                          "key": "file",
+                          "type": "file"
+                        },
+                        {
+                          "description": "(Required) ID of the model to use. Only whisper-1 and gpt-4o-transcribe are currently available.",
+                          "key": "model",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The language of the input audio. Supplying the input language in ISO-639-1 format will improve accuracy and latency.",
+                          "key": "language",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "An optional text to guide the model's style or continue a previous audio segment. The prompt should match the audio language.",
+                          "key": "prompt",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The format of the transcript output. Defaults to json. verbose_json includes additional metadata like word-level timestamps. (This can only be one of json,text,srt,verbose_json,vtt)",
+                          "key": "response_format",
+                          "value": "json",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic.",
+                          "key": "temperature",
+                          "value": "0",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The timestamp granularities to populate for this transcription. response_format must be set to verbose_json to use this parameter.",
+                          "key": "timestamp_granularities",
+                          "value": "segment,segment",
+                          "type": "text"
+                        }
+                      ]
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/audio/transcriptions",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "audio",
+                        "transcriptions"
+                      ]
+                    }
+                  },
+                  "status": "Internal Server Error",
+                  "code": 500,
+                  "_postman_previewlanguage": "text",
+                  "header": [],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": null,
+                  "createdAt": "2026-06-05T15:13:36.000Z",
+                  "updatedAt": "2026-06-05T15:13:36.000Z",
+                  "uid": "35240-6a0954a3-fdb6-49ef-87a3-351d7de191c0"
+                }
+              ],
+              "createdAt": "2026-06-05T15:13:36.000Z",
+              "updatedAt": "2026-06-05T15:13:36.000Z",
+              "uid": "35240-66d866be-6984-4a5a-b3a3-87bb49331a89"
+            }
+          ],
+          "id": "44aaf2d5-9c9e-4ba4-afe0-6b22248ef9c7",
+          "createdAt": "2026-06-05T15:13:36.000Z",
+          "updatedAt": "2026-06-05T15:13:36.000Z",
+          "uid": "35240-44aaf2d5-9c9e-4ba4-afe0-6b22248ef9c7"
+        },
+        {
+          "name": "translations",
+          "item": [
+            {
+              "name": "Openai Create Translation",
+              "id": "bb26613f-4154-4d36-931a-a21568f1afaa",
+              "protocolProfileBehavior": {
+                "disableBodyPruning": true
+              },
+              "request": {
+                "method": "POST",
+                "header": [
+                  {
+                    "key": "Content-Type",
+                    "value": "multipart/form-data"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "body": {
+                  "mode": "formdata",
+                  "formdata": [
+                    {
+                      "description": "(Required) The audio file to translate, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm. File uploads are limited to 25 MB.",
+                      "key": "file",
+                      "type": "file",
+                      "value": null
+                    },
+                    {
+                      "description": "(Required) ID of the model to use. Only whisper-1 is currently available for translation.",
+                      "key": "model",
+                      "value": "<string>",
+                      "type": "text"
+                    },
+                    {
+                      "description": "An optional text to guide the model's style or continue a previous audio segment. The prompt should be in English.",
+                      "key": "prompt",
+                      "value": "<string>",
+                      "type": "text"
+                    },
+                    {
+                      "description": "The format of the transcript output. Defaults to json. (This can only be one of json,text,srt,verbose_json,vtt)",
+                      "key": "response_format",
+                      "value": "json",
+                      "type": "text"
+                    },
+                    {
+                      "description": "The sampling temperature, between 0 and 1.",
+                      "key": "temperature",
+                      "value": "0",
+                      "type": "text"
+                    }
+                  ]
+                },
+                "url": {
+                  "raw": "{{baseUrl}}/audio/translations",
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "path": [
+                    "audio",
+                    "translations"
+                  ]
+                },
+                "description": "Translates audio into English. Supports multiple input languages and audio formats with a maximum file size of 25 MB. The audio is first transcribed and then translated to English."
+              },
+              "response": [
+                {
+                  "id": "f1740cd4-c649-4b1d-acf6-cbd4e9efd8e8",
+                  "name": "Successful response with translated text.",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "multipart/form-data"
+                      },
+                      {
+                        "key": "Accept",
+                        "value": "application/json"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        {
+                          "description": "(Required) The audio file to translate, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm. File uploads are limited to 25 MB.",
+                          "key": "file",
+                          "type": "file"
+                        },
+                        {
+                          "description": "(Required) ID of the model to use. Only whisper-1 is currently available for translation.",
+                          "key": "model",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "An optional text to guide the model's style or continue a previous audio segment. The prompt should be in English.",
+                          "key": "prompt",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The format of the transcript output. Defaults to json. (This can only be one of json,text,srt,verbose_json,vtt)",
+                          "key": "response_format",
+                          "value": "json",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The sampling temperature, between 0 and 1.",
+                          "key": "temperature",
+                          "value": "0",
+                          "type": "text"
+                        }
+                      ]
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/audio/translations",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "audio",
+                        "translations"
+                      ]
+                    }
+                  },
+                  "status": "OK",
+                  "code": 200,
+                  "_postman_previewlanguage": "json",
+                  "header": [
+                    {
+                      "key": "Content-Type",
+                      "value": "application/json"
+                    }
+                  ],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": "{\n  \"text\": \"<string>\",\n  \"task\": \"translate\",\n  \"language\": \"<string>\",\n  \"duration\": \"<float>\",\n  \"segments\": [\n    {\n      \"id\": \"<integer>\",\n      \"seek\": \"<integer>\",\n      \"start\": \"<float>\",\n      \"end\": \"<float>\",\n      \"text\": \"<string>\",\n      \"tokens\": [\n        \"<integer>\",\n        \"<integer>\"\n      ],\n      \"temperature\": \"<float>\",\n      \"avg_logprob\": \"<float>\",\n      \"compression_ratio\": \"<float>\",\n      \"no_speech_prob\": \"<float>\"\n    },\n    {\n      \"id\": \"<integer>\",\n      \"seek\": \"<integer>\",\n      \"start\": \"<float>\",\n      \"end\": \"<float>\",\n      \"text\": \"<string>\",\n      \"tokens\": [\n        \"<integer>\",\n        \"<integer>\"\n      ],\n      \"temperature\": \"<float>\",\n      \"avg_logprob\": \"<float>\",\n      \"compression_ratio\": \"<float>\",\n      \"no_speech_prob\": \"<float>\"\n    }\n  ]\n}",
+                  "createdAt": "2026-06-05T15:13:36.000Z",
+                  "updatedAt": "2026-06-05T15:13:36.000Z",
+                  "uid": "35240-f1740cd4-c649-4b1d-acf6-cbd4e9efd8e8"
+                },
+                {
+                  "id": "584ae612-be34-443e-bfe8-96d953985d27",
+                  "name": "Bad request - invalid parameters or unsupported audio format.",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "multipart/form-data"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        {
+                          "description": "(Required) The audio file to translate, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm. File uploads are limited to 25 MB.",
+                          "key": "file",
+                          "type": "file"
+                        },
+                        {
+                          "description": "(Required) ID of the model to use. Only whisper-1 is currently available for translation.",
+                          "key": "model",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "An optional text to guide the model's style or continue a previous audio segment. The prompt should be in English.",
+                          "key": "prompt",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The format of the transcript output. Defaults to json. (This can only be one of json,text,srt,verbose_json,vtt)",
+                          "key": "response_format",
+                          "value": "json",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The sampling temperature, between 0 and 1.",
+                          "key": "temperature",
+                          "value": "0",
+                          "type": "text"
+                        }
+                      ]
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/audio/translations",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "audio",
+                        "translations"
+                      ]
+                    }
+                  },
+                  "status": "Bad Request",
+                  "code": 400,
+                  "_postman_previewlanguage": "text",
+                  "header": [],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": null,
+                  "createdAt": "2026-06-05T15:13:36.000Z",
+                  "updatedAt": "2026-06-05T15:13:36.000Z",
+                  "uid": "35240-584ae612-be34-443e-bfe8-96d953985d27"
+                },
+                {
+                  "id": "51ea4224-ebc5-44f1-ac50-7e2c633639c2",
+                  "name": "Unauthorized - invalid or missing API key.",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "multipart/form-data"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        {
+                          "description": "(Required) The audio file to translate, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm. File uploads are limited to 25 MB.",
+                          "key": "file",
+                          "type": "file"
+                        },
+                        {
+                          "description": "(Required) ID of the model to use. Only whisper-1 is currently available for translation.",
+                          "key": "model",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "An optional text to guide the model's style or continue a previous audio segment. The prompt should be in English.",
+                          "key": "prompt",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The format of the transcript output. Defaults to json. (This can only be one of json,text,srt,verbose_json,vtt)",
+                          "key": "response_format",
+                          "value": "json",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The sampling temperature, between 0 and 1.",
+                          "key": "temperature",
+                          "value": "0",
+                          "type": "text"
+                        }
+                      ]
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/audio/translations",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "audio",
+                        "translations"
+                      ]
+                    }
+                  },
+                  "status": "Unauthorized",
+                  "code": 401,
+                  "_postman_previewlanguage": "text",
+                  "header": [],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": null,
+                  "createdAt": "2026-06-05T15:13:36.000Z",
+                  "updatedAt": "2026-06-05T15:13:36.000Z",
+                  "uid": "35240-51ea4224-ebc5-44f1-ac50-7e2c633639c2"
+                },
+                {
+                  "id": "de82f167-9e87-4680-ab69-ef397520200d",
+                  "name": "Rate limit exceeded.",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "multipart/form-data"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        {
+                          "description": "(Required) The audio file to translate, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm. File uploads are limited to 25 MB.",
+                          "key": "file",
+                          "type": "file"
+                        },
+                        {
+                          "description": "(Required) ID of the model to use. Only whisper-1 is currently available for translation.",
+                          "key": "model",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "An optional text to guide the model's style or continue a previous audio segment. The prompt should be in English.",
+                          "key": "prompt",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The format of the transcript output. Defaults to json. (This can only be one of json,text,srt,verbose_json,vtt)",
+                          "key": "response_format",
+                          "value": "json",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The sampling temperature, between 0 and 1.",
+                          "key": "temperature",
+                          "value": "0",
+                          "type": "text"
+                        }
+                      ]
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/audio/translations",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "audio",
+                        "translations"
+                      ]
+                    }
+                  },
+                  "status": "Too Many Requests",
+                  "code": 429,
+                  "_postman_previewlanguage": "text",
+                  "header": [],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": null,
+                  "createdAt": "2026-06-05T15:13:36.000Z",
+                  "updatedAt": "2026-06-05T15:13:36.000Z",
+                  "uid": "35240-de82f167-9e87-4680-ab69-ef397520200d"
+                },
+                {
+                  "id": "2affbe43-988e-4278-8891-d97cb228d9db",
+                  "name": "Internal server error.",
+                  "originalRequest": {
+                    "method": "POST",
+                    "header": [
+                      {
+                        "key": "Content-Type",
+                        "value": "multipart/form-data"
+                      },
+                      {
+                        "description": "Added as a part of security scheme: bearer",
+                        "key": "Authorization",
+                        "value": "Bearer <token>"
+                      }
+                    ],
+                    "body": {
+                      "mode": "formdata",
+                      "formdata": [
+                        {
+                          "description": "(Required) The audio file to translate, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm. File uploads are limited to 25 MB.",
+                          "key": "file",
+                          "type": "file"
+                        },
+                        {
+                          "description": "(Required) ID of the model to use. Only whisper-1 is currently available for translation.",
+                          "key": "model",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "An optional text to guide the model's style or continue a previous audio segment. The prompt should be in English.",
+                          "key": "prompt",
+                          "value": "<string>",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The format of the transcript output. Defaults to json. (This can only be one of json,text,srt,verbose_json,vtt)",
+                          "key": "response_format",
+                          "value": "json",
+                          "type": "text"
+                        },
+                        {
+                          "description": "The sampling temperature, between 0 and 1.",
+                          "key": "temperature",
+                          "value": "0",
+                          "type": "text"
+                        }
+                      ]
+                    },
+                    "url": {
+                      "raw": "{{baseUrl}}/audio/translations",
+                      "host": [
+                        "{{baseUrl}}"
+                      ],
+                      "path": [
+                        "audio",
+                        "translations"
+                      ]
+                    }
+                  },
+                  "status": "Internal Server Error",
+                  "code": 500,
+                  "_postman_previewlanguage": "text",
+                  "header": [],
+                  "cookie": [],
+                  "responseTime": null,
+                  "body": null,
+                  "createdAt": "2026-06-05T15:13:36.000Z",
+                  "updatedAt": "2026-06-05T15:13:36.000Z",
+                  "uid": "35240-2affbe43-988e-4278-8891-d97cb228d9db"
+                }
+              ],
+              "createdAt": "2026-06-05T15:13:36.000Z",
+              "updatedAt": "2026-06-05T15:13:36.000Z",
+              "uid": "35240-bb26613f-4154-4d36-931a-a21568f1afaa"
+            }
+          ],
+          "id": "b7599c54-663c-4f78-943f-5454ce8465d7",
+          "createdAt": "2026-06-05T15:13:36.000Z",
+          "updatedAt": "2026-06-05T15:13:36.000Z",
+          "uid": "35240-b7599c54-663c-4f78-943f-5454ce8465d7"
+        }
+      ],
+      "id": "4b4afa7b-5c2d-40a6-b6fb-8dec0e0f06f4",
+      "createdAt": "2026-06-05T15:13:36.000Z",
+      "updatedAt": "2026-06-05T15:13:36.000Z",
+      "uid": "35240-4b4afa7b-5c2d-40a6-b6fb-8dec0e0f06f4"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.openai.com/v1"
+    }
+  ]
+}

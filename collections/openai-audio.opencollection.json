@@ -1,0 +1,69 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "OpenAI Audio API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Audio",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Openai Create Speech",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/audio/speech",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Generates audio from the input text. Supports multiple voices and audio output formats. The maximum input length is 4096 characters."
+        },
+        {
+          "info": {
+            "name": "Openai Create Transcription",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/audio/transcriptions",
+            "body": {
+              "type": "multipart-form",
+              "data": []
+            }
+          },
+          "docs": "Transcribes audio into the input language. Supports multiple audio formats with a maximum file size of 25 MB. Uses the Whisper model for accurate speech recognition in multiple languages."
+        },
+        {
+          "info": {
+            "name": "Openai Create Translation",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/audio/translations",
+            "body": {
+              "type": "multipart-form",
+              "data": []
+            }
+          },
+          "docs": "Translates audio into English. Supports multiple input languages and audio formats with a maximum file size of 25 MB. The audio is first transcribed and then translated to English."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
