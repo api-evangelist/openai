@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: OpenAI Assistants Files API
+  title: OpenAI Assistants Models API
   description: The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.
   version: 2.0.0
   termsOfService: https://openai.com/policies/terms-of-use
@@ -15,333 +15,169 @@ servers:
 security:
 - ApiKeyAuth: []
 tags:
-- name: Files
-  description: Files are used to upload documents that can be used with features like Assistants and Fine-tuning.
+- name: Models
+  description: List and describe the various models available in the API.
 paths:
-  /files:
+  /models:
     get:
-      operationId: listFiles
+      operationId: listModels
       tags:
-      - Files
-      summary: OpenAI Returns a list of files that belong to the user's organization.
-      parameters:
-      - in: query
-        name: purpose
-        required: false
-        schema:
-          type: string
-        description: Only return files with the given purpose.
+      - Models
+      summary: OpenAI Lists the currently available models, and provides basic information about each one such as the owner and availability.
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListFilesResponse'
+                $ref: '#/components/schemas/ListModelsResponse'
       x-oaiMeta:
-        name: List files
-        group: files
-        returns: A list of [File](/docs/api-reference/files/object) objects.
+        name: List models
+        group: models
+        returns: A list of [model](/docs/api-reference/models/object) objects.
         examples:
           request:
-            curl: "curl https://api.openai.com/v1/files \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\"\n"
+            curl: "curl https://api.openai.com/v1/models \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\"\n"
             python: 'from openai import OpenAI
 
               client = OpenAI()
 
 
-              client.files.list()
+              client.models.list()
 
               '
-            node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const list = await openai.files.list();\n\n  for await (const file of list) {\n    console.log(file);\n  }\n}\n\nmain();"
-          response: "{\n  \"data\": [\n    {\n      \"id\": \"file-abc123\",\n      \"object\": \"file\",\n      \"bytes\": 175,\n      \"created_at\": 1613677385,\n      \"filename\": \"salesOverview.pdf\",\n      \"purpose\": \"assistants\",\n    },\n    {\n      \"id\": \"file-abc123\",\n      \"object\": \"file\",\n      \"bytes\": 140,\n      \"created_at\": 1613779121,\n      \"filename\": \"puppy.jsonl\",\n      \"purpose\": \"fine-tune\",\n    }\n  ],\n  \"object\": \"list\"\n}\n"
-    post:
-      operationId: createFile
+            node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const list = await openai.models.list();\n\n  for await (const model of list) {\n    console.log(model);\n  }\n}\nmain();"
+          response: "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"model-id-0\",\n      \"object\": \"model\",\n      \"created\": 1686935002,\n      \"owned_by\": \"organization-owner\"\n    },\n    {\n      \"id\": \"model-id-1\",\n      \"object\": \"model\",\n      \"created\": 1686935002,\n      \"owned_by\": \"organization-owner\",\n    },\n    {\n      \"id\": \"model-id-2\",\n      \"object\": \"model\",\n      \"created\": 1686935002,\n      \"owned_by\": \"openai\"\n    },\n  ],\n  \"object\": \"list\"\n}\n"
+  /models/{model}:
+    get:
+      operationId: retrieveModel
       tags:
-      - Files
-      summary: 'Upload a file that can be used across various endpoints. The size of all the files uploaded by one organization can be up to 100 GB.
-
-
-        The size of individual files can be a maximum of 512 MB or 2 million tokens for Assistants. See the [Assistants Tools guide](/docs/assistants/tools) to learn more about the types of files supported. The Fine-tuning API only supports `.jsonl` files.
-
-
-        Please [contact us](https://help.openai.com/) if you need to increase these storage limits.
-
-        '
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/CreateFileRequest'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OpenAIFile'
-      x-oaiMeta:
-        name: Upload file
-        group: files
-        returns: The uploaded [File](/docs/api-reference/files/object) object.
-        examples:
-          request:
-            curl: "curl https://api.openai.com/v1/files \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\" \\\n  -F purpose=\"fine-tune\" \\\n  -F file=\"@mydata.jsonl\"\n"
-            python: "from openai import OpenAI\nclient = OpenAI()\n\nclient.files.create(\n  file=open(\"mydata.jsonl\", \"rb\"),\n  purpose=\"fine-tune\"\n)\n"
-            node.js: "import fs from \"fs\";\nimport OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const file = await openai.files.create({\n    file: fs.createReadStream(\"mydata.jsonl\"),\n    purpose: \"fine-tune\",\n  });\n\n  console.log(file);\n}\n\nmain();"
-          response: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"file\",\n  \"bytes\": 120000,\n  \"created_at\": 1677610602,\n  \"filename\": \"mydata.jsonl\",\n  \"purpose\": \"fine-tune\",\n}\n"
-  /files/{file_id}:
-    delete:
-      operationId: deleteFile
-      tags:
-      - Files
-      summary: OpenAI Delete a file.
+      - Models
+      summary: OpenAI Retrieves a model instance, providing basic information about the model such as the owner and permissioning.
       parameters:
       - in: path
-        name: file_id
+        name: model
         required: true
         schema:
           type: string
-        description: The ID of the file to use for this request.
+          example: gpt-3.5-turbo
+        description: The ID of the model to use for this request
       responses:
         '200':
           description: OK
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DeleteFileResponse'
+                $ref: '#/components/schemas/Model'
       x-oaiMeta:
-        name: Delete file
-        group: files
+        name: Retrieve model
+        group: models
+        returns: The [model](/docs/api-reference/models/object) object matching the specified ID.
+        examples:
+          request:
+            curl: "curl https://api.openai.com/v1/models/VAR_model_id \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\"\n"
+            python: 'from openai import OpenAI
+
+              client = OpenAI()
+
+
+              client.models.retrieve("VAR_model_id")
+
+              '
+            node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const model = await openai.models.retrieve(\"gpt-3.5-turbo\");\n\n  console.log(model);\n}\n\nmain();"
+          response: "{\n  \"id\": \"VAR_model_id\",\n  \"object\": \"model\",\n  \"created\": 1686935002,\n  \"owned_by\": \"openai\"\n}\n"
+    delete:
+      operationId: deleteModel
+      tags:
+      - Models
+      summary: OpenAI Delete a fine-tuned model. You must have the Owner role in your organization to delete a model.
+      parameters:
+      - in: path
+        name: model
+        required: true
+        schema:
+          type: string
+          example: ft:gpt-3.5-turbo:acemeco:suffix:abc123
+        description: The model to delete
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteModelResponse'
+      x-oaiMeta:
+        name: Delete a fine-tuned model
+        group: models
         returns: Deletion status.
         examples:
           request:
-            curl: "curl https://api.openai.com/v1/files/file-abc123 \\\n  -X DELETE \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\"\n"
+            curl: "curl https://api.openai.com/v1/models/ft:gpt-3.5-turbo:acemeco:suffix:abc123 \\\n  -X DELETE \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\"\n"
             python: 'from openai import OpenAI
 
               client = OpenAI()
 
 
-              client.files.delete("file-abc123")
+              client.models.delete("ft:gpt-3.5-turbo:acemeco:suffix:abc123")
 
               '
-            node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const file = await openai.files.del(\"file-abc123\");\n\n  console.log(file);\n}\n\nmain();"
-          response: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"file\",\n  \"deleted\": true\n}\n"
-    get:
-      operationId: retrieveFile
-      tags:
-      - Files
-      summary: OpenAI Returns information about a specific file.
-      parameters:
-      - in: path
-        name: file_id
-        required: true
-        schema:
-          type: string
-        description: The ID of the file to use for this request.
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/OpenAIFile'
-      x-oaiMeta:
-        name: Retrieve file
-        group: files
-        returns: The [File](/docs/api-reference/files/object) object matching the specified ID.
-        examples:
-          request:
-            curl: "curl https://api.openai.com/v1/files/file-abc123 \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\"\n"
-            python: 'from openai import OpenAI
-
-              client = OpenAI()
-
-
-              client.files.retrieve("file-abc123")
-
-              '
-            node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const file = await openai.files.retrieve(\"file-abc123\");\n\n  console.log(file);\n}\n\nmain();"
-          response: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"file\",\n  \"bytes\": 120000,\n  \"created_at\": 1677610602,\n  \"filename\": \"mydata.jsonl\",\n  \"purpose\": \"fine-tune\",\n}\n"
-  /files/{file_id}/content:
-    get:
-      operationId: downloadFile
-      tags:
-      - Files
-      summary: OpenAI Returns the contents of the specified file.
-      parameters:
-      - in: path
-        name: file_id
-        required: true
-        schema:
-          type: string
-        description: The ID of the file to use for this request.
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: string
-      x-oaiMeta:
-        name: Retrieve file content
-        group: files
-        returns: The file content.
-        examples:
-          request:
-            curl: "curl https://api.openai.com/v1/files/file-abc123/content \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\" > file.jsonl\n"
-            python: 'from openai import OpenAI
-
-              client = OpenAI()
-
-
-              content = client.files.retrieve_content("file-abc123")
-
-              '
-            node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const file = await openai.files.retrieveContent(\"file-abc123\");\n\n  console.log(file);\n}\n\nmain();\n"
+            node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const model = await openai.models.del(\"ft:gpt-3.5-turbo:acemeco:suffix:abc123\");\n\n  console.log(model);\n}\nmain();"
+          response: "{\n  \"id\": \"ft:gpt-3.5-turbo:acemeco:suffix:abc123\",\n  \"object\": \"model\",\n  \"deleted\": true\n}\n"
 components:
   schemas:
-    FileExpirationAfter:
-      type: object
-      title: File expiration policy
-      description: The expiration policy for a file. By default, files with `purpose=batch` expire after 30 days and all other files are persisted until they are manually deleted.
-      properties:
-        anchor:
-          description: 'Anchor timestamp after which the expiration policy applies. Supported anchors: `created_at`.'
-          type: string
-          enum:
-          - created_at
-          x-stainless-const: true
-        seconds:
-          description: The number of seconds after the anchor time that the file will expire. Must be between 3600 (1 hour) and 2592000 (30 days).
-          type: integer
-          format: int64
-          minimum: 3600
-          maximum: 2592000
-      required:
-      - anchor
-      - seconds
-    DeleteFileResponse:
+    DeleteModelResponse:
       type: object
       properties:
         id:
           type: string
-        object:
-          type: string
-          enum:
-          - file
         deleted:
           type: boolean
+        object:
+          type: string
       required:
       - id
       - object
       - deleted
-    CreateFileRequest:
-      type: object
-      additionalProperties: false
-      properties:
-        file:
-          description: 'The File object (not file name) to be uploaded.
-
-            '
-          type: string
-          format: binary
-        purpose:
-          description: 'The intended purpose of the uploaded file. One of:
-
-            - `assistants`: Used in the Assistants API
-
-            - `batch`: Used in the Batch API
-
-            - `fine-tune`: Used for fine-tuning
-
-            - `vision`: Images used for vision fine-tuning
-
-            - `user_data`: Flexible file type for any purpose
-
-            - `evals`: Used for eval data sets
-
-            '
-          type: string
-          enum:
-          - assistants
-          - batch
-          - fine-tune
-          - vision
-          - user_data
-          - evals
-        expires_after:
-          $ref: '#/components/schemas/FileExpirationAfter'
-      required:
-      - file
-      - purpose
-    OpenAIFile:
-      title: OpenAIFile
-      description: The `File` object represents a document that has been uploaded to OpenAI.
-      properties:
-        id:
-          type: string
-          description: The file identifier, which can be referenced in the API endpoints.
-        bytes:
-          type: integer
-          description: The size of the file, in bytes.
-        created_at:
-          type: integer
-          description: The Unix timestamp (in seconds) for when the file was created.
-        filename:
-          type: string
-          description: The name of the file.
-        object:
-          type: string
-          description: The object type, which is always `file`.
-          enum:
-          - file
-        purpose:
-          type: string
-          description: The intended purpose of the file. Supported values are `fine-tune`, `fine-tune-results`, `assistants`, and `assistants_output`.
-          enum:
-          - fine-tune
-          - fine-tune-results
-          - assistants
-          - assistants_output
-        status:
-          type: string
-          deprecated: true
-          description: Deprecated. The current status of the file, which can be either `uploaded`, `processed`, or `error`.
-          enum:
-          - uploaded
-          - processed
-          - error
-        status_details:
-          type: string
-          deprecated: true
-          description: Deprecated. For details on why a fine-tuning training file failed validation, see the `error` field on `fine_tuning.job`.
-      required:
-      - id
-      - object
-      - bytes
-      - created_at
-      - filename
-      - purpose
-      - status
-      x-oaiMeta:
-        name: The file object
-        example: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"file\",\n  \"bytes\": 120000,\n  \"created_at\": 1677610602,\n  \"filename\": \"salesOverview.pdf\",\n  \"purpose\": \"assistants\",\n}\n"
-    ListFilesResponse:
+    ListModelsResponse:
       type: object
       properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OpenAIFile'
         object:
           type: string
           enum:
           - list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Model'
       required:
       - object
       - data
+    Model:
+      title: Model
+      description: Describes an OpenAI model offering that can be used with the API.
+      properties:
+        id:
+          type: string
+          description: The model identifier, which can be referenced in the API endpoints.
+        created:
+          type: integer
+          description: The Unix timestamp (in seconds) when the model was created.
+        object:
+          type: string
+          description: The object type, which is always "model".
+          enum:
+          - model
+        owned_by:
+          type: string
+          description: The organization that owns the model.
+      required:
+      - id
+      - object
+      - created
+      - owned_by
+      x-oaiMeta:
+        name: The model object
+        example: "{\n  \"id\": \"VAR_model_id\",\n  \"object\": \"model\",\n  \"created\": 1686935002,\n  \"owned_by\": \"openai\"\n}\n"
   securitySchemes:
     ApiKeyAuth:
       type: http

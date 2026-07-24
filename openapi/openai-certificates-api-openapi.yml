@@ -1,0 +1,1213 @@
+openapi: 3.0.0
+info:
+  title: OpenAI Assistants Certificates API
+  description: The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.
+  version: 2.0.0
+  termsOfService: https://openai.com/policies/terms-of-use
+  contact:
+    name: OpenAI Support
+    url: https://help.openai.com/
+  license:
+    name: MIT
+    url: https://github.com/openai/openai-openapi/blob/master/LICENSE
+servers:
+- url: https://api.openai.com/v1
+security:
+- ApiKeyAuth: []
+tags:
+- name: Certificates
+paths:
+  /organization/certificates:
+    get:
+      security:
+      - AdminApiKeyAuth: []
+      summary: List uploaded certificates for this organization.
+      operationId: listOrganizationCertificates
+      tags:
+      - Certificates
+      parameters:
+      - name: limit
+        in: query
+        description: 'A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+
+          '
+        required: false
+        schema:
+          type: integer
+          default: 20
+      - name: after
+        in: query
+        description: 'A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+
+          '
+        required: false
+        schema:
+          type: string
+      - name: order
+        in: query
+        description: 'Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.
+
+          '
+        schema:
+          type: string
+          default: desc
+          enum:
+          - asc
+          - desc
+      responses:
+        '200':
+          description: Certificates listed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListCertificatesResponse'
+      x-oaiMeta:
+        name: List organization certificates
+        group: administration
+        examples:
+          request:
+            curl: 'curl https://api.openai.com/v1/organization/certificates \
+
+              -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
+
+              '
+            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const certificateListResponse of client.admin.organization.certificates.list()) {\n  console.log(certificateListResponse.id);\n}"
+            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\npage = client.admin.organization.certificates.list()\npage = page.data[0]\nprint(page.id)"
+            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tpage, err := client.Admin.Organization.Certificates.List(context.TODO(), openai.AdminOrganizationCertificateListParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", page)\n}\n"
+            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.certificates.CertificateListPage;\nimport com.openai.models.admin.organization.certificates.CertificateListParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        CertificateListPage page = client.admin().organization().certificates().list();\n    }\n}"
+            ruby: 'require "openai"
+
+
+              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
+
+
+              page = openai.admin.organization.certificates.list
+
+
+              puts(page)'
+          response: "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": \"organization.certificate\",\n      \"id\": \"cert_abc\",\n      \"name\": \"My Example Certificate\",\n      \"active\": true,\n      \"created_at\": 1234567,\n      \"certificate_details\": {\n        \"valid_at\": 12345667,\n        \"expires_at\": 12345678\n      }\n    },\n  ],\n  \"first_id\": \"cert_abc\",\n  \"last_id\": \"cert_abc\",\n  \"has_more\": false\n}\n"
+    post:
+      security:
+      - AdminApiKeyAuth: []
+      summary: 'Upload a certificate to the organization. This does **not** automatically activate the certificate.
+
+
+        Organizations can upload up to 50 certificates.
+
+        '
+      operationId: uploadCertificate
+      tags:
+      - Certificates
+      requestBody:
+        description: The certificate upload payload.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UploadCertificateRequest'
+      responses:
+        '200':
+          description: Certificate uploaded successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Certificate'
+      x-oaiMeta:
+        name: Upload certificate
+        group: administration
+        examples:
+          request:
+            curl: "curl -X POST https://api.openai.com/v1/organization/certificates \\\n-H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"name\": \"My Example Certificate\",\n  \"certificate\": \"-----BEGIN CERTIFICATE-----\\\\nMIIDeT...\\\\n-----END CERTIFICATE-----\"\n}'\n"
+            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst certificate = await client.admin.organization.certificates.create({\n  certificate: 'certificate',\n});\n\nconsole.log(certificate.id);"
+            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\ncertificate = client.admin.organization.certificates.create(\n    certificate=\"certificate\",\n)\nprint(certificate.id)"
+            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tcertificate, err := client.Admin.Organization.Certificates.New(context.TODO(), openai.AdminOrganizationCertificateNewParams{\n\t\tCertificate: \"certificate\",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", certificate.ID)\n}\n"
+            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.certificates.Certificate;\nimport com.openai.models.admin.organization.certificates.CertificateCreateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        CertificateCreateParams params = CertificateCreateParams.builder()\n            .certificate(\"certificate\")\n            .build();\n        Certificate certificate = client.admin().organization().certificates().create(params);\n    }\n}"
+            ruby: 'require "openai"
+
+
+              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
+
+
+              certificate = openai.admin.organization.certificates.create(certificate: "certificate")
+
+
+              puts(certificate)'
+          response: "{\n  \"object\": \"certificate\",\n  \"id\": \"cert_abc\",\n  \"name\": \"My Example Certificate\",\n  \"created_at\": 1234567,\n  \"certificate_details\": {\n    \"valid_at\": 12345667,\n    \"expires_at\": 12345678\n  }\n}\n"
+  /organization/certificates/activate:
+    post:
+      security:
+      - AdminApiKeyAuth: []
+      summary: 'Activate certificates at the organization level.
+
+
+        You can atomically and idempotently activate up to 10 certificates at a time.
+
+        '
+      operationId: activateOrganizationCertificates
+      tags:
+      - Certificates
+      requestBody:
+        description: The certificate activation payload.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ToggleCertificatesRequest'
+      responses:
+        '200':
+          description: Certificates activated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationCertificateActivationResponse'
+      x-oaiMeta:
+        name: Activate certificates for organization
+        group: administration
+        examples:
+          request:
+            curl: "curl https://api.openai.com/v1/organization/certificates/activate \\\n-H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"certificate_ids\": [\"cert_abc\", \"cert_def\"]\n}'\n"
+            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const certificateActivateResponse of client.admin.organization.certificates.activate({\n  certificate_ids: ['cert_abc'],\n})) {\n  console.log(certificateActivateResponse.id);\n}"
+            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\npage = client.admin.organization.certificates.activate(\n    certificate_ids=[\"cert_abc\"],\n)\npage = page.data[0]\nprint(page.id)"
+            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tpage, err := client.Admin.Organization.Certificates.Activate(context.TODO(), openai.AdminOrganizationCertificateActivateParams{\n\t\tCertificateIDs: []string{\"cert_abc\"},\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", page)\n}\n"
+            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.certificates.CertificateActivatePage;\nimport com.openai.models.admin.organization.certificates.CertificateActivateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        CertificateActivateParams params = CertificateActivateParams.builder()\n            .addCertificateId(\"cert_abc\")\n            .build();\n        CertificateActivatePage page = client.admin().organization().certificates().activate(params);\n    }\n}"
+            ruby: 'require "openai"
+
+
+              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
+
+
+              page = openai.admin.organization.certificates.activate(certificate_ids: ["cert_abc"])
+
+
+              puts(page)'
+          response: "{\n  \"object\": \"organization.certificate.activation\",\n  \"data\": [\n    {\n      \"object\": \"organization.certificate\",\n      \"id\": \"cert_abc\",\n      \"name\": \"My Example Certificate\",\n      \"active\": true,\n      \"created_at\": 1234567,\n      \"certificate_details\": {\n        \"valid_at\": 12345667,\n        \"expires_at\": 12345678\n      }\n    },\n    {\n      \"object\": \"organization.certificate\",\n      \"id\": \"cert_def\",\n      \"name\": \"My Example Certificate 2\",\n      \"active\": true,\n      \"created_at\": 1234567,\n      \"certificate_details\": {\n        \"valid_at\": 12345667,\n        \"expires_at\": 12345678\n      }\n    },\n  ],\n}\n"
+  /organization/certificates/deactivate:
+    post:
+      security:
+      - AdminApiKeyAuth: []
+      summary: 'Deactivate certificates at the organization level.
+
+
+        You can atomically and idempotently deactivate up to 10 certificates at a time.
+
+        '
+      operationId: deactivateOrganizationCertificates
+      tags:
+      - Certificates
+      requestBody:
+        description: The certificate deactivation payload.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ToggleCertificatesRequest'
+      responses:
+        '200':
+          description: Certificates deactivated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationCertificateDeactivationResponse'
+      x-oaiMeta:
+        name: Deactivate certificates for organization
+        group: administration
+        examples:
+          request:
+            curl: "curl https://api.openai.com/v1/organization/certificates/deactivate \\\n-H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"certificate_ids\": [\"cert_abc\", \"cert_def\"]\n}'\n"
+            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const certificateDeactivateResponse of client.admin.organization.certificates.deactivate(\n  { certificate_ids: ['cert_abc'] },\n)) {\n  console.log(certificateDeactivateResponse.id);\n}"
+            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\npage = client.admin.organization.certificates.deactivate(\n    certificate_ids=[\"cert_abc\"],\n)\npage = page.data[0]\nprint(page.id)"
+            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tpage, err := client.Admin.Organization.Certificates.Deactivate(context.TODO(), openai.AdminOrganizationCertificateDeactivateParams{\n\t\tCertificateIDs: []string{\"cert_abc\"},\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", page)\n}\n"
+            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.certificates.CertificateDeactivatePage;\nimport com.openai.models.admin.organization.certificates.CertificateDeactivateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        CertificateDeactivateParams params = CertificateDeactivateParams.builder()\n            .addCertificateId(\"cert_abc\")\n            .build();\n        CertificateDeactivatePage page = client.admin().organization().certificates().deactivate(params);\n    }\n}"
+            ruby: 'require "openai"
+
+
+              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
+
+
+              page = openai.admin.organization.certificates.deactivate(certificate_ids: ["cert_abc"])
+
+
+              puts(page)'
+          response: "{\n  \"object\": \"organization.certificate.deactivation\",\n  \"data\": [\n    {\n      \"object\": \"organization.certificate\",\n      \"id\": \"cert_abc\",\n      \"name\": \"My Example Certificate\",\n      \"active\": false,\n      \"created_at\": 1234567,\n      \"certificate_details\": {\n        \"valid_at\": 12345667,\n        \"expires_at\": 12345678\n      }\n    },\n    {\n      \"object\": \"organization.certificate\",\n      \"id\": \"cert_def\",\n      \"name\": \"My Example Certificate 2\",\n      \"active\": false,\n      \"created_at\": 1234567,\n      \"certificate_details\": {\n        \"valid_at\": 12345667,\n        \"expires_at\": 12345678\n      }\n    },\n  ],\n}\n"
+  /organization/certificates/{certificate_id}:
+    get:
+      security:
+      - AdminApiKeyAuth: []
+      summary: 'Get a certificate that has been uploaded to the organization.
+
+
+        You can get a certificate regardless of whether it is active or not.
+
+        '
+      operationId: getCertificate
+      tags:
+      - Certificates
+      parameters:
+      - name: certificate_id
+        in: path
+        description: Unique ID of the certificate to retrieve.
+        required: true
+        schema:
+          type: string
+      - name: include
+        in: query
+        description: A list of additional fields to include in the response. Currently the only supported value is `content` to fetch the PEM content of the certificate.
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - content
+      responses:
+        '200':
+          description: Certificate retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Certificate'
+      x-oaiMeta:
+        name: Get certificate
+        group: administration
+        examples:
+          request:
+            curl: 'curl "https://api.openai.com/v1/organization/certificates/cert_abc?include[]=content" \
+
+              -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
+
+              '
+            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst certificate = await client.admin.organization.certificates.retrieve('certificate_id');\n\nconsole.log(certificate.id);"
+            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\ncertificate = client.admin.organization.certificates.retrieve(\n    certificate_id=\"certificate_id\",\n)\nprint(certificate.id)"
+            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tcertificate, err := client.Admin.Organization.Certificates.Get(\n\t\tcontext.TODO(),\n\t\t\"certificate_id\",\n\t\topenai.AdminOrganizationCertificateGetParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", certificate.ID)\n}\n"
+            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.certificates.Certificate;\nimport com.openai.models.admin.organization.certificates.CertificateRetrieveParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        Certificate certificate = client.admin().organization().certificates().retrieve(\"certificate_id\");\n    }\n}"
+            ruby: 'require "openai"
+
+
+              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
+
+
+              certificate = openai.admin.organization.certificates.retrieve("certificate_id")
+
+
+              puts(certificate)'
+          response: "{\n  \"object\": \"certificate\",\n  \"id\": \"cert_abc\",\n  \"name\": \"My Example Certificate\",\n  \"created_at\": 1234567,\n  \"certificate_details\": {\n    \"valid_at\": 1234567,\n    \"expires_at\": 12345678,\n    \"content\": \"-----BEGIN CERTIFICATE-----MIIDeT...-----END CERTIFICATE-----\"\n  }\n}\n"
+    post:
+      security:
+      - AdminApiKeyAuth: []
+      summary: 'Modify a certificate. Note that only the name can be modified.
+
+        '
+      operationId: modifyCertificate
+      tags:
+      - Certificates
+      parameters:
+      - name: certificate_id
+        in: path
+        description: Unique ID of the certificate to modify.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The certificate modification payload.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModifyCertificateRequest'
+      responses:
+        '200':
+          description: Certificate modified successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Certificate'
+      x-oaiMeta:
+        name: Modify certificate
+        group: administration
+        examples:
+          request:
+            curl: "curl -X POST https://api.openai.com/v1/organization/certificates/cert_abc \\\n-H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"name\": \"Renamed Certificate\"\n}'\n"
+            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst certificate = await client.admin.organization.certificates.update('certificate_id');\n\nconsole.log(certificate.id);"
+            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\ncertificate = client.admin.organization.certificates.update(\n    certificate_id=\"certificate_id\",\n)\nprint(certificate.id)"
+            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tcertificate, err := client.Admin.Organization.Certificates.Update(\n\t\tcontext.TODO(),\n\t\t\"certificate_id\",\n\t\topenai.AdminOrganizationCertificateUpdateParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", certificate.ID)\n}\n"
+            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.certificates.Certificate;\nimport com.openai.models.admin.organization.certificates.CertificateUpdateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        Certificate certificate = client.admin().organization().certificates().update(\"certificate_id\");\n    }\n}"
+            ruby: 'require "openai"
+
+
+              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
+
+
+              certificate = openai.admin.organization.certificates.update("certificate_id")
+
+
+              puts(certificate)'
+          response: "{\n  \"object\": \"certificate\",\n  \"id\": \"cert_abc\",\n  \"name\": \"Renamed Certificate\",\n  \"created_at\": 1234567,\n  \"certificate_details\": {\n    \"valid_at\": 12345667,\n    \"expires_at\": 12345678\n  }\n}\n"
+    delete:
+      security:
+      - AdminApiKeyAuth: []
+      summary: 'Delete a certificate from the organization.
+
+
+        The certificate must be inactive for the organization and all projects.
+
+        '
+      operationId: deleteCertificate
+      tags:
+      - Certificates
+      parameters:
+      - name: certificate_id
+        in: path
+        description: Unique ID of the certificate to delete.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Certificate deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteCertificateResponse'
+      x-oaiMeta:
+        name: Delete certificate
+        group: administration
+        examples:
+          request:
+            curl: 'curl -X DELETE https://api.openai.com/v1/organization/certificates/cert_abc \
+
+              -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
+
+              '
+            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst certificate = await client.admin.organization.certificates.delete('certificate_id');\n\nconsole.log(certificate.id);"
+            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\ncertificate = client.admin.organization.certificates.delete(\n    \"certificate_id\",\n)\nprint(certificate.id)"
+            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tcertificate, err := client.Admin.Organization.Certificates.Delete(context.TODO(), \"certificate_id\")\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", certificate.ID)\n}\n"
+            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.certificates.CertificateDeleteParams;\nimport com.openai.models.admin.organization.certificates.CertificateDeleteResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        CertificateDeleteResponse certificate = client.admin().organization().certificates().delete(\"certificate_id\");\n    }\n}"
+            ruby: 'require "openai"
+
+
+              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
+
+
+              certificate = openai.admin.organization.certificates.delete("certificate_id")
+
+
+              puts(certificate)'
+          response: "{\n  \"object\": \"certificate.deleted\",\n  \"id\": \"cert_abc\"\n}\n"
+  /organization/projects/{project_id}/certificates:
+    get:
+      security:
+      - AdminApiKeyAuth: []
+      summary: List certificates for this project.
+      operationId: listProjectCertificates
+      tags:
+      - Certificates
+      parameters:
+      - name: project_id
+        in: path
+        description: The ID of the project.
+        required: true
+        schema:
+          type: string
+      - name: limit
+        in: query
+        description: 'A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.
+
+          '
+        required: false
+        schema:
+          type: integer
+          default: 20
+      - name: after
+        in: query
+        description: 'A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.
+
+          '
+        required: false
+        schema:
+          type: string
+      - name: order
+        in: query
+        description: 'Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.
+
+          '
+        schema:
+          type: string
+          default: desc
+          enum:
+          - asc
+          - desc
+      responses:
+        '200':
+          description: Certificates listed successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListProjectCertificatesResponse'
+      x-oaiMeta:
+        name: List project certificates
+        group: administration
+        examples:
+          request:
+            curl: 'curl https://api.openai.com/v1/organization/projects/proj_abc/certificates \
+
+              -H "Authorization: Bearer $OPENAI_ADMIN_KEY"
+
+              '
+            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const certificateListResponse of client.admin.organization.projects.certificates.list(\n  'project_id',\n)) {\n  console.log(certificateListResponse.id);\n}"
+            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\npage = client.admin.organization.projects.certificates.list(\n    project_id=\"project_id\",\n)\npage = page.data[0]\nprint(page.id)"
+            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tpage, err := client.Admin.Organization.Projects.Certificates.List(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\topenai.AdminOrganizationProjectCertificateListParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", page)\n}\n"
+            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.certificates.CertificateListPage;\nimport com.openai.models.admin.organization.projects.certificates.CertificateListParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        CertificateListPage page = client.admin().organization().projects().certificates().list(\"project_id\");\n    }\n}"
+            ruby: 'require "openai"
+
+
+              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
+
+
+              page = openai.admin.organization.projects.certificates.list("project_id")
+
+
+              puts(page)'
+          response: "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": \"organization.project.certificate\",\n      \"id\": \"cert_abc\",\n      \"name\": \"My Example Certificate\",\n      \"active\": true,\n      \"created_at\": 1234567,\n      \"certificate_details\": {\n        \"valid_at\": 12345667,\n        \"expires_at\": 12345678\n      }\n    },\n  ],\n  \"first_id\": \"cert_abc\",\n  \"last_id\": \"cert_abc\",\n  \"has_more\": false\n}\n"
+  /organization/projects/{project_id}/certificates/activate:
+    post:
+      security:
+      - AdminApiKeyAuth: []
+      summary: 'Activate certificates at the project level.
+
+
+        You can atomically and idempotently activate up to 10 certificates at a time.
+
+        '
+      operationId: activateProjectCertificates
+      tags:
+      - Certificates
+      parameters:
+      - name: project_id
+        in: path
+        description: The ID of the project.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The certificate activation payload.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ToggleCertificatesRequest'
+      responses:
+        '200':
+          description: Certificates activated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationProjectCertificateActivationResponse'
+      x-oaiMeta:
+        name: Activate certificates for project
+        group: administration
+        examples:
+          request:
+            curl: "curl https://api.openai.com/v1/organization/projects/proj_abc/certificates/activate \\\n-H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"certificate_ids\": [\"cert_abc\", \"cert_def\"]\n}'\n"
+            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const certificateActivateResponse of client.admin.organization.projects.certificates.activate(\n  'project_id',\n  { certificate_ids: ['cert_abc'] },\n)) {\n  console.log(certificateActivateResponse.id);\n}"
+            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\npage = client.admin.organization.projects.certificates.activate(\n    project_id=\"project_id\",\n    certificate_ids=[\"cert_abc\"],\n)\npage = page.data[0]\nprint(page.id)"
+            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tpage, err := client.Admin.Organization.Projects.Certificates.Activate(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\topenai.AdminOrganizationProjectCertificateActivateParams{\n\t\t\tCertificateIDs: []string{\"cert_abc\"},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", page)\n}\n"
+            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.certificates.CertificateActivatePage;\nimport com.openai.models.admin.organization.projects.certificates.CertificateActivateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        CertificateActivateParams params = CertificateActivateParams.builder()\n            .projectId(\"project_id\")\n            .addCertificateId(\"cert_abc\")\n            .build();\n        CertificateActivatePage page = client.admin().organization().projects().certificates().activate(params);\n    }\n}"
+            ruby: 'require "openai"
+
+
+              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
+
+
+              page = openai.admin.organization.projects.certificates.activate("project_id", certificate_ids: ["cert_abc"])
+
+
+              puts(page)'
+          response: "{\n  \"object\": \"organization.project.certificate.activation\",\n  \"data\": [\n    {\n      \"object\": \"organization.project.certificate\",\n      \"id\": \"cert_abc\",\n      \"name\": \"My Example Certificate\",\n      \"active\": true,\n      \"created_at\": 1234567,\n      \"certificate_details\": {\n        \"valid_at\": 12345667,\n        \"expires_at\": 12345678\n      }\n    },\n    {\n      \"object\": \"organization.project.certificate\",\n      \"id\": \"cert_def\",\n      \"name\": \"My Example Certificate 2\",\n      \"active\": true,\n      \"created_at\": 1234567,\n      \"certificate_details\": {\n        \"valid_at\": 12345667,\n        \"expires_at\": 12345678\n      }\n    },\n  ],\n}\n"
+  /organization/projects/{project_id}/certificates/deactivate:
+    post:
+      security:
+      - AdminApiKeyAuth: []
+      summary: "Deactivate certificates at the project level. You can atomically and \nidempotently deactivate up to 10 certificates at a time.\n"
+      operationId: deactivateProjectCertificates
+      tags:
+      - Certificates
+      parameters:
+      - name: project_id
+        in: path
+        description: The ID of the project.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The certificate deactivation payload.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ToggleCertificatesRequest'
+      responses:
+        '200':
+          description: Certificates deactivated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationProjectCertificateDeactivationResponse'
+      x-oaiMeta:
+        name: Deactivate certificates for project
+        group: administration
+        examples:
+          request:
+            curl: "curl https://api.openai.com/v1/organization/projects/proj_abc/certificates/deactivate \\\n-H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"certificate_ids\": [\"cert_abc\", \"cert_def\"]\n}'\n"
+            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const certificateDeactivateResponse of client.admin.organization.projects.certificates.deactivate(\n  'project_id',\n  { certificate_ids: ['cert_abc'] },\n)) {\n  console.log(certificateDeactivateResponse.id);\n}"
+            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\npage = client.admin.organization.projects.certificates.deactivate(\n    project_id=\"project_id\",\n    certificate_ids=[\"cert_abc\"],\n)\npage = page.data[0]\nprint(page.id)"
+            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tpage, err := client.Admin.Organization.Projects.Certificates.Deactivate(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\topenai.AdminOrganizationProjectCertificateDeactivateParams{\n\t\t\tCertificateIDs: []string{\"cert_abc\"},\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", page)\n}\n"
+            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.certificates.CertificateDeactivatePage;\nimport com.openai.models.admin.organization.projects.certificates.CertificateDeactivateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        CertificateDeactivateParams params = CertificateDeactivateParams.builder()\n            .projectId(\"project_id\")\n            .addCertificateId(\"cert_abc\")\n            .build();\n        CertificateDeactivatePage page = client.admin().organization().projects().certificates().deactivate(params);\n    }\n}"
+            ruby: 'require "openai"
+
+
+              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
+
+
+              page = openai.admin.organization.projects.certificates.deactivate("project_id", certificate_ids: ["cert_abc"])
+
+
+              puts(page)'
+          response: "{\n  \"object\": \"organization.project.certificate.deactivation\",\n  \"data\": [\n    {\n      \"object\": \"organization.project.certificate\",\n      \"id\": \"cert_abc\",\n      \"name\": \"My Example Certificate\",\n      \"active\": false,\n      \"created_at\": 1234567,\n      \"certificate_details\": {\n        \"valid_at\": 12345667,\n        \"expires_at\": 12345678\n      }\n    },\n    {\n      \"object\": \"organization.project.certificate\",\n      \"id\": \"cert_def\",\n      \"name\": \"My Example Certificate 2\",\n      \"active\": false,\n      \"created_at\": 1234567,\n      \"certificate_details\": {\n        \"valid_at\": 12345667,\n        \"expires_at\": 12345678\n      }\n    },\n  ],\n}\n"
+components:
+  schemas:
+    OrganizationProjectCertificateDeactivationResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.certificate.deactivation
+          description: The project certificate deactivation result type.
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationProjectCertificate'
+      required:
+      - object
+      - data
+    OrganizationProjectCertificate:
+      type: object
+      description: Represents an individual certificate configured at the project level.
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.certificate
+          description: The object type, which is always `organization.project.certificate`.
+          x-stainless-const: true
+        id:
+          type: string
+          description: The identifier, which can be referenced in API endpoints
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The name of the certificate.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) of when the certificate was uploaded.
+        certificate_details:
+          type: object
+          properties:
+            valid_at:
+              type: integer
+              format: unixtime
+              description: The Unix timestamp (in seconds) of when the certificate becomes valid.
+            expires_at:
+              type: integer
+              format: unixtime
+              description: The Unix timestamp (in seconds) of when the certificate expires.
+        active:
+          type: boolean
+          description: Whether the certificate is currently active at the project level.
+      required:
+      - object
+      - id
+      - name
+      - created_at
+      - certificate_details
+      - active
+    OrganizationProjectCertificateActivationResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.certificate.activation
+          description: The project certificate activation result type.
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationProjectCertificate'
+      required:
+      - object
+      - data
+    ListCertificatesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationCertificate'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: cert_abc
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: cert_abc
+        has_more:
+          type: boolean
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+      required:
+      - object
+      - data
+      - has_more
+      - first_id
+      - last_id
+    OrganizationCertificateDeactivationResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.certificate.deactivation
+          description: The organization certificate deactivation result type.
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationCertificate'
+      required:
+      - object
+      - data
+    ListProjectCertificatesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationProjectCertificate'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: cert_abc
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: cert_abc
+        has_more:
+          type: boolean
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+      required:
+      - object
+      - data
+      - has_more
+      - first_id
+      - last_id
+    ModifyCertificateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The updated name for the certificate
+    Certificate:
+      type: object
+      description: Represents an individual `certificate` uploaded to the organization.
+      properties:
+        object:
+          type: string
+          enum:
+          - certificate
+          - organization.certificate
+          - organization.project.certificate
+          description: 'The object type.
+
+
+            - If creating, updating, or getting a specific certificate, the object type is `certificate`.
+
+            - If listing, activating, or deactivating certificates for the organization, the object type is `organization.certificate`.
+
+            - If listing, activating, or deactivating certificates for a project, the object type is `organization.project.certificate`.
+
+            '
+          x-stainless-const: true
+        id:
+          type: string
+          description: The identifier, which can be referenced in API endpoints
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The name of the certificate.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) of when the certificate was uploaded.
+        certificate_details:
+          type: object
+          properties:
+            valid_at:
+              type: integer
+              format: unixtime
+              description: The Unix timestamp (in seconds) of when the certificate becomes valid.
+            expires_at:
+              type: integer
+              format: unixtime
+              description: The Unix timestamp (in seconds) of when the certificate expires.
+            content:
+              type: string
+              description: The content of the certificate in PEM format.
+        active:
+          type: boolean
+          description: Whether the certificate is currently active at the specified scope. Not returned when getting details for a specific certificate.
+      required:
+      - object
+      - id
+      - name
+      - created_at
+      - certificate_details
+      x-oaiMeta:
+        name: The certificate object
+        example: "{\n  \"object\": \"certificate\",\n  \"id\": \"cert_abc\",\n  \"name\": \"My Certificate\",\n  \"created_at\": 1234567,\n  \"certificate_details\": {\n    \"valid_at\": 1234567,\n    \"expires_at\": 12345678,\n    \"content\": \"-----BEGIN CERTIFICATE----- MIIGAjCCA...6znFlOW+ -----END CERTIFICATE-----\"\n  }\n}\n"
+    UploadCertificateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: An optional name for the certificate
+        certificate:
+          type: string
+          description: The certificate content in PEM format
+      required:
+      - certificate
+    DeleteCertificateResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          description: The object type, must be `certificate.deleted`.
+          enum:
+          - certificate.deleted
+          x-stainless-const: true
+        id:
+          type: string
+          description: The ID of the certificate that was deleted.
+      required:
+      - object
+      - id
+    ToggleCertificatesRequest:
+      type: object
+      properties:
+        certificate_ids:
+          type: array
+          items:
+            type: string
+            example: cert_abc
+          minItems: 1
+          maxItems: 10
+      required:
+      - certificate_ids
+    OrganizationCertificate:
+      type: object
+      description: Represents an individual certificate configured at the organization level.
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.certificate
+          description: The object type, which is always `organization.certificate`.
+          x-stainless-const: true
+        id:
+          type: string
+          description: The identifier, which can be referenced in API endpoints
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The name of the certificate.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) of when the certificate was uploaded.
+        certificate_details:
+          type: object
+          properties:
+            valid_at:
+              type: integer
+              format: unixtime
+              description: The Unix timestamp (in seconds) of when the certificate becomes valid.
+            expires_at:
+              type: integer
+              format: unixtime
+              description: The Unix timestamp (in seconds) of when the certificate expires.
+        active:
+          type: boolean
+          description: Whether the certificate is currently active at the organization level.
+      required:
+      - object
+      - id
+      - name
+      - created_at
+      - certificate_details
+      - active
+    OrganizationCertificateActivationResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.certificate.activation
+          description: The organization certificate activation result type.
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationCertificate'
+      required:
+      - object
+      - data
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+x-oaiMeta:
+  groups:
+  - id: audio
+    title: Audio
+    description: 'Learn how to turn audio into text or text into audio.
+
+
+      Related guide: [Speech to text](/docs/guides/speech-to-text)
+
+      '
+    sections:
+    - type: endpoint
+      key: createSpeech
+      path: createSpeech
+    - type: endpoint
+      key: createTranscription
+      path: createTranscription
+    - type: endpoint
+      key: createTranslation
+      path: createTranslation
+  - id: chat
+    title: Chat
+    description: 'Given a list of messages comprising a conversation, the model will return a response.
+
+
+      Related guide: [Chat Completions](/docs/guides/text-generation)
+
+      '
+    sections:
+    - type: endpoint
+      key: createChatCompletion
+      path: create
+    - type: object
+      key: CreateChatCompletionResponse
+      path: object
+    - type: object
+      key: CreateChatCompletionStreamResponse
+      path: streaming
+  - id: embeddings
+    title: Embeddings
+    description: 'Get a vector representation of a given input that can be easily consumed by machine learning models and algorithms.
+
+
+      Related guide: [Embeddings](/docs/guides/embeddings)
+
+      '
+    sections:
+    - type: endpoint
+      key: createEmbedding
+      path: create
+    - type: object
+      key: Embedding
+      path: object
+  - id: fine-tuning
+    title: Fine-tuning
+    description: 'Manage fine-tuning jobs to tailor a model to your specific training data.
+
+
+      Related guide: [Fine-tune models](/docs/guides/fine-tuning)
+
+      '
+    sections:
+    - type: endpoint
+      key: createFineTuningJob
+      path: create
+    - type: endpoint
+      key: listPaginatedFineTuningJobs
+      path: list
+    - type: endpoint
+      key: listFineTuningEvents
+      path: list-events
+    - type: endpoint
+      key: retrieveFineTuningJob
+      path: retrieve
+    - type: endpoint
+      key: cancelFineTuningJob
+      path: cancel
+    - type: object
+      key: FineTuningJob
+      path: object
+    - type: object
+      key: FineTuningJobEvent
+      path: event-object
+  - id: files
+    title: Files
+    description: 'Files are used to upload documents that can be used with features like [Assistants](/docs/api-reference/assistants) and [Fine-tuning](/docs/api-reference/fine-tuning).
+
+      '
+    sections:
+    - type: endpoint
+      key: createFile
+      path: create
+    - type: endpoint
+      key: listFiles
+      path: list
+    - type: endpoint
+      key: retrieveFile
+      path: retrieve
+    - type: endpoint
+      key: deleteFile
+      path: delete
+    - type: endpoint
+      key: downloadFile
+      path: retrieve-contents
+    - type: object
+      key: OpenAIFile
+      path: object
+  - id: images
+    title: Images
+    description: 'Given a prompt and/or an input image, the model will generate a new image.
+
+
+      Related guide: [Image generation](/docs/guides/images)
+
+      '
+    sections:
+    - type: endpoint
+      key: createImage
+      path: create
+    - type: endpoint
+      key: createImageEdit
+      path: createEdit
+    - type: endpoint
+      key: createImageVariation
+      path: createVariation
+    - type: object
+      key: Image
+      path: object
+  - id: models
+    title: Models
+    description: 'List and describe the various models available in the API. You can refer to the [Models](/docs/models) documentation to understand what models are available and the differences between them.
+
+      '
+    sections:
+    - type: endpoint
+      key: listModels
+      path: list
+    - type: endpoint
+      key: retrieveModel
+      path: retrieve
+    - type: endpoint
+      key: deleteModel
+      path: delete
+    - type: object
+      key: Model
+      path: object
+  - id: moderations
+    title: Moderations
+    description: 'Given a input text, outputs if the model classifies it as violating OpenAI''s content policy.
+
+
+      Related guide: [Moderations](/docs/guides/moderation)
+
+      '
+    sections:
+    - type: endpoint
+      key: createModeration
+      path: create
+    - type: object
+      key: CreateModerationResponse
+      path: object
+  - id: assistants
+    title: Assistants
+    beta: true
+    description: 'Build assistants that can call models and use tools to perform tasks.
+
+
+      [Get started with the Assistants API](/docs/assistants)
+
+      '
+    sections:
+    - type: endpoint
+      key: createAssistant
+      path: createAssistant
+    - type: endpoint
+      key: createAssistantFile
+      path: createAssistantFile
+    - type: endpoint
+      key: listAssistants
+      path: listAssistants
+    - type: endpoint
+      key: listAssistantFiles
+      path: listAssistantFiles
+    - type: endpoint
+      key: getAssistant
+      path: getAssistant
+    - type: endpoint
+      key: getAssistantFile
+      path: getAssistantFile
+    - type: endpoint
+      key: modifyAssistant
+      path: modifyAssistant
+    - type: endpoint
+      key: deleteAssistant
+      path: deleteAssistant
+    - type: endpoint
+      key: deleteAssistantFile
+      path: deleteAssistantFile
+    - type: object
+      key: AssistantObject
+      path: object
+    - type: object
+      key: AssistantFileObject
+      path: file-object
+  - id: threads
+    title: Threads
+    beta: true
+    description: 'Create threads that assistants can interact with.
+
+
+      Related guide: [Assistants](/docs/assistants/overview)
+
+      '
+    sections:
+    - type: endpoint
+      key: createThread
+      path: createThread
+    - type: endpoint
+      key: getThread
+      path: getThread
+    - type: endpoint
+      key: modifyThread
+      path: modifyThread
+    - type: endpoint
+      key: deleteThread
+      path: deleteThread
+    - type: object
+      key: ThreadObject
+      path: object
+  - id: messages
+    title: Messages
+    beta: true
+    description: 'Create messages within threads
+
+
+      Related guide: [Assistants](/docs/assistants/overview)
+
+      '
+    sections:
+    - type: endpoint
+      key: createMessage
+      path: createMessage
+    - type: endpoint
+      key: listMessages
+      path: listMessages
+    - type: endpoint
+      key: listMessageFiles
+      path: listMessageFiles
+    - type: endpoint
+      key: getMessage
+      path: getMessage
+    - type: endpoint
+      key: getMessageFile
+      path: getMessageFile
+    - type: endpoint
+      key: modifyMessage
+      path: modifyMessage
+    - type: object
+      key: MessageObject
+      path: object
+    - type: object
+      key: MessageFileObject
+      path: file-object
+  - id: runs
+    title: Runs
+    beta: true
+    description: 'Represents an execution run on a thread.
+
+
+      Related guide: [Assistants](/docs/assistants/overview)
+
+      '
+    sections:
+    - type: endpoint
+      key: createRun
+      path: createRun
+    - type: endpoint
+      key: createThreadAndRun
+      path: createThreadAndRun
+    - type: endpoint
+      key: listRuns
+      path: listRuns
+    - type: endpoint
+      key: listRunSteps
+      path: listRunSteps
+    - type: endpoint
+      key: getRun
+      path: getRun
+    - type: endpoint
+      key: getRunStep
+      path: getRunStep
+    - type: endpoint
+      key: modifyRun
+      path: modifyRun
+    - type: endpoint
+      key: submitToolOuputsToRun
+      path: submitToolOutputs
+    - type: endpoint
+      key: cancelRun
+      path: cancelRun
+    - type: object
+      key: RunObject
+      path: object
+    - type: object
+      key: RunStepObject
+      path: step-object
+  - id: completions
+    title: Completions
+    legacy: true
+    description: 'Given a prompt, the model will return one or more predicted completions along with the probabilities of alternative tokens at each position. Most developer should use our [Chat Completions API](/docs/guides/text-generation/text-generation-models) to leverage our best and newest models. Most models that support the legacy Completions endpoint [will be shut off on January 4th, 2024](/docs/deprecations/2023-07-06-gpt-and-embeddings).
+
+      '
+    sections:
+    - type: endpoint
+      key: createCompletion
+      path: create
+    - type: object
+      key: CreateCompletionResponse
+      path: object
