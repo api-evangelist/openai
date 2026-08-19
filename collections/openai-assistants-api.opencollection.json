@@ -1,0 +1,767 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "OpenAI Assistants API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Assistants",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "OpenAI Returns a list of assistants.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/assistants",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.\n"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+              },
+              {
+                "name": "before",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.\n"
+              }
+            ]
+          },
+          "docs": "OpenAI Returns a list of assistants."
+        },
+        {
+          "info": {
+            "name": "OpenAI Create an assistant with a model and instructions.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/assistants",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "OpenAI Create an assistant with a model and instructions."
+        },
+        {
+          "info": {
+            "name": "OpenAI Retrieves an assistant.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/assistants/:assistant_id",
+            "params": [
+              {
+                "name": "assistant_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the assistant to retrieve."
+              }
+            ]
+          },
+          "docs": "OpenAI Retrieves an assistant."
+        },
+        {
+          "info": {
+            "name": "OpenAI Modifies an assistant.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/assistants/:assistant_id",
+            "params": [
+              {
+                "name": "assistant_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the assistant to modify."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "OpenAI Modifies an assistant."
+        },
+        {
+          "info": {
+            "name": "OpenAI Delete an assistant.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.openai.com/v1/assistants/:assistant_id",
+            "params": [
+              {
+                "name": "assistant_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the assistant to delete."
+              }
+            ]
+          },
+          "docs": "OpenAI Delete an assistant."
+        },
+        {
+          "info": {
+            "name": "OpenAI Returns a list of assistant files.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/assistants/:assistant_id/files",
+            "params": [
+              {
+                "name": "assistant_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the assistant the file belongs to."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.\n"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+              },
+              {
+                "name": "before",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.\n"
+              }
+            ]
+          },
+          "docs": "OpenAI Returns a list of assistant files."
+        },
+        {
+          "info": {
+            "name": "OpenAI Create an assistant file by attaching a [File](/docs/api-reference/files) to an [assistant](/docs/api-reference/assistants).",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/assistants/:assistant_id/files",
+            "params": [
+              {
+                "name": "assistant_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the assistant for which to create a File.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "OpenAI Create an assistant file by attaching a [File](/docs/api-reference/files) to an [assistant](/docs/api-reference/assistants)."
+        },
+        {
+          "info": {
+            "name": "OpenAI Retrieves an AssistantFile.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/assistants/:assistant_id/files/:file_id",
+            "params": [
+              {
+                "name": "assistant_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the assistant who the file belongs to."
+              },
+              {
+                "name": "file_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the file we're getting."
+              }
+            ]
+          },
+          "docs": "OpenAI Retrieves an AssistantFile."
+        },
+        {
+          "info": {
+            "name": "OpenAI Delete an assistant file.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.openai.com/v1/assistants/:assistant_id/files/:file_id",
+            "params": [
+              {
+                "name": "assistant_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the assistant that the file belongs to."
+              },
+              {
+                "name": "file_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the file to delete."
+              }
+            ]
+          },
+          "docs": "OpenAI Delete an assistant file."
+        },
+        {
+          "info": {
+            "name": "Create a thread.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/threads",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a thread."
+        },
+        {
+          "info": {
+            "name": "Create a thread and run it in one request.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/threads/runs",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a thread and run it in one request."
+        },
+        {
+          "info": {
+            "name": "Retrieves a thread.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/threads/:thread_id",
+            "params": [
+              {
+                "name": "thread_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the thread to retrieve."
+              }
+            ]
+          },
+          "docs": "Retrieves a thread."
+        },
+        {
+          "info": {
+            "name": "Modifies a thread.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/threads/:thread_id",
+            "params": [
+              {
+                "name": "thread_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the thread to modify. Only the `metadata` can be modified."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Modifies a thread."
+        },
+        {
+          "info": {
+            "name": "Delete a thread.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.openai.com/v1/threads/:thread_id",
+            "params": [
+              {
+                "name": "thread_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the thread to delete."
+              }
+            ]
+          },
+          "docs": "Delete a thread."
+        },
+        {
+          "info": {
+            "name": "Returns a list of messages for a given thread.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/threads/:thread_id/messages",
+            "params": [
+              {
+                "name": "thread_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the [thread](/docs/api-reference/threads) the messages belong to."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.\n"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+              },
+              {
+                "name": "before",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.\n"
+              },
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "query",
+                "description": "Filter messages by the run ID that generated them.\n"
+              }
+            ]
+          },
+          "docs": "Returns a list of messages for a given thread."
+        },
+        {
+          "info": {
+            "name": "Create a message.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/threads/:thread_id/messages",
+            "params": [
+              {
+                "name": "thread_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the [thread](/docs/api-reference/threads) to create a message for."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a message."
+        },
+        {
+          "info": {
+            "name": "Retrieve a message.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/threads/:thread_id/messages/:message_id",
+            "params": [
+              {
+                "name": "thread_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the [thread](/docs/api-reference/threads) to which this message belongs."
+              },
+              {
+                "name": "message_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the message to retrieve."
+              }
+            ]
+          },
+          "docs": "Retrieve a message."
+        },
+        {
+          "info": {
+            "name": "Modifies a message.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/threads/:thread_id/messages/:message_id",
+            "params": [
+              {
+                "name": "thread_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the thread to which this message belongs."
+              },
+              {
+                "name": "message_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the message to modify."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Modifies a message."
+        },
+        {
+          "info": {
+            "name": "Deletes a message.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.openai.com/v1/threads/:thread_id/messages/:message_id",
+            "params": [
+              {
+                "name": "thread_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the thread to which this message belongs."
+              },
+              {
+                "name": "message_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the message to delete."
+              }
+            ]
+          },
+          "docs": "Deletes a message."
+        },
+        {
+          "info": {
+            "name": "Returns a list of runs belonging to a thread.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/threads/:thread_id/runs",
+            "params": [
+              {
+                "name": "thread_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the thread the run belongs to."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.\n"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+              },
+              {
+                "name": "before",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.\n"
+              }
+            ]
+          },
+          "docs": "Returns a list of runs belonging to a thread."
+        },
+        {
+          "info": {
+            "name": "Create a run.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/threads/:thread_id/runs",
+            "params": [
+              {
+                "name": "thread_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the thread to run."
+              },
+              {
+                "name": "include[]",
+                "value": "",
+                "type": "query",
+                "description": "A list of additional fields to include in the response. Currently the only supported value is `step_details.tool_calls[*].file_search.results[*].content` to fetch the file search result content.\n\nSee the [file search tool documentation](/docs/assistants/tools/file-search#customizing-file-search-settings) for more information.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a run."
+        },
+        {
+          "info": {
+            "name": "Retrieves a run.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/threads/:thread_id/runs/:run_id",
+            "params": [
+              {
+                "name": "thread_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the [thread](/docs/api-reference/threads) that was run."
+              },
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the run to retrieve."
+              }
+            ]
+          },
+          "docs": "Retrieves a run."
+        },
+        {
+          "info": {
+            "name": "Modifies a run.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/threads/:thread_id/runs/:run_id",
+            "params": [
+              {
+                "name": "thread_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the [thread](/docs/api-reference/threads) that was run."
+              },
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the run to modify."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Modifies a run."
+        },
+        {
+          "info": {
+            "name": "Cancels a run that is `in_progress`.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/threads/:thread_id/runs/:run_id/cancel",
+            "params": [
+              {
+                "name": "thread_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the thread to which this run belongs."
+              },
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the run to cancel."
+              }
+            ]
+          },
+          "docs": "Cancels a run that is `in_progress`."
+        },
+        {
+          "info": {
+            "name": "Returns a list of run steps belonging to a run.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/threads/:thread_id/runs/:run_id/steps",
+            "params": [
+              {
+                "name": "thread_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the thread the run and run steps belong to."
+              },
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the run the run steps belong to."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.\n"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+              },
+              {
+                "name": "before",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.\n"
+              },
+              {
+                "name": "include[]",
+                "value": "",
+                "type": "query",
+                "description": "A list of additional fields to include in the response. Currently the only supported value is `step_details.tool_calls[*].file_search.results[*].content` to fetch the file search result content.\n\nSee the [file search tool documentation](/docs/assistants/tools/file-search#customizing-file-search-settings) for more information.\n"
+              }
+            ]
+          },
+          "docs": "Returns a list of run steps belonging to a run."
+        },
+        {
+          "info": {
+            "name": "Retrieves a run step.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/threads/:thread_id/runs/:run_id/steps/:step_id",
+            "params": [
+              {
+                "name": "thread_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the thread to which the run and run step belongs."
+              },
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the run to which the run step belongs."
+              },
+              {
+                "name": "step_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the run step to retrieve."
+              },
+              {
+                "name": "include[]",
+                "value": "",
+                "type": "query",
+                "description": "A list of additional fields to include in the response. Currently the only supported value is `step_details.tool_calls[*].file_search.results[*].content` to fetch the file search result content.\n\nSee the [file search tool documentation](/docs/assistants/tools/file-search#customizing-file-search-settings) for more information.\n"
+              }
+            ]
+          },
+          "docs": "Retrieves a run step."
+        },
+        {
+          "info": {
+            "name": "When a run has the `status: \"requires_action\"` and `required_action.type` is `submit_tool_outputs`, this endpoint can be used to submit the outputs from the tool calls once they're all completed. All outputs must be submitted in a single request.\n",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/threads/:thread_id/runs/:run_id/submit_tool_outputs",
+            "params": [
+              {
+                "name": "thread_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the [thread](/docs/api-reference/threads) to which this run belongs."
+              },
+              {
+                "name": "run_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the run that requires the tool output submission."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "When a run has the `status: \"requires_action\"` and `required_action.type` is `submit_tool_outputs`, this endpoint can be used to submit the outputs from the tool calls once they're all completed. All outputs must be submitted in a single request.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,1436 @@
+{
+  "item": [
+    {
+      "id": "84223331-0860-419e-9f4b-7d2cf0ee6c6c",
+      "name": "Fine Tuning",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "cdbbe760-5bc1-4a5e-91ea-f3820203f0f5",
+          "name": "OpenAI Creates a fine-tuning job which begins the process of creating a new model from a given dataset.\n\nResponse includes details of the enqueued job including job status and the name of the fine-tuned models once complete.\n\n[Learn more about fine-tuning](/docs/guides/fine-tuning)",
+          "request": {
+            "name": "OpenAI Creates a fine-tuning job which begins the process of creating a new model from a given dataset.\n\nResponse includes details of the enqueued job including job status and the name of the fine-tuned models once complete.\n\n[Learn more about fine-tuning](/docs/guides/fine-tuning)",
+            "description": {},
+            "url": {
+              "path": [
+                "fine_tuning",
+                "jobs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"<string>\",\n  \"training_file\": \"<string>\",\n  \"hyperparameters\": {\n    \"batch_size\": \"<string>\",\n    \"learning_rate_multiplier\": \"<string>\",\n    \"n_epochs\": \"<string>\"\n  },\n  \"suffix\": null,\n  \"validation_file\": \"<string>\",\n  \"integrations\": [\n    {\n      \"type\": \"<string>\",\n      \"wandb\": {\n        \"project\": \"<string>\",\n        \"name\": \"<string>\",\n        \"entity\": \"<string>\",\n        \"tags\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      }\n    },\n    {\n      \"type\": \"<string>\",\n      \"wandb\": {\n        \"project\": \"<string>\",\n        \"name\": \"<string>\",\n        \"entity\": \"<string>\",\n        \"tags\": [\n          \"<string>\",\n          \"<string>\"\n        ]\n      }\n    }\n  ],\n  \"seed\": \"<integer>\",\n  \"method\": {\n    \"type\": \"<string>\",\n    \"supervised\": {\n      \"hyperparameters\": {\n        \"batch_size\": \"<string>\",\n        \"learning_rate_multiplier\": \"<string>\",\n        \"n_epochs\": \"<string>\"\n      }\n    },\n    \"dpo\": {\n      \"hyperparameters\": {\n        \"beta\": \"<string>\",\n        \"batch_size\": \"<string>\",\n        \"learning_rate_multiplier\": \"<string>\",\n        \"n_epochs\": \"<string>\"\n      }\n    },\n    \"reinforcement\": {\n      \"grader\": {\n        \"type\": \"<string>\",\n        \"name\": \"<string>\",\n        \"input\": \"<string>\",\n        \"reference\": \"<string>\",\n        \"operation\": \"<string>\"\n      },\n      \"hyperparameters\": {\n        \"batch_size\": \"<string>\",\n        \"learning_rate_multiplier\": \"<string>\",\n        \"n_epochs\": \"<string>\",\n        \"reasoning_effort\": \"default\",\n        \"compute_multiplier\": \"<string>\",\n        \"eval_interval\": \"<string>\",\n        \"eval_samples\": \"<string>\"\n      }\n    }\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "3031a980-c735-469a-9de5-4a7c882537a8",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fine_tuning",
+                    "jobs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"training_file\": \"file-abc123\",\n  \"hyperparameters\": {\n    \"batch_size\": \"<string>\",\n    \"learning_rate_multiplier\": \"<string>\",\n    \"n_epochs\": \"<string>\"\n  },\n  \"suffix\": null,\n  \"validation_file\": \"file-abc123\",\n  \"integrations\": [\n    {\n      \"type\": \"<string>\",\n      \"wandb\": {\n        \"project\": \"my-wandb-project\",\n        \"name\": \"<string>\",\n        \"entity\": \"<string>\",\n        \"tags\": [\n          \"custom-tag\",\n          \"custom-tag\"\n        ]\n      }\n    },\n    {\n      \"type\": \"<string>\",\n      \"wandb\": {\n        \"project\": \"my-wandb-project\",\n        \"name\": \"<string>\",\n        \"entity\": \"<string>\",\n        \"tags\": [\n          \"custom-tag\",\n          \"custom-tag\"\n        ]\n      }\n    }\n  ],\n  \"seed\": 42,\n  \"method\": {\n    \"type\": \"<string>\",\n    \"supervised\": {\n      \"hyperparameters\": {\n        \"batch_size\": \"<string>\",\n        \"learning_rate_multiplier\": \"<string>\",\n        \"n_epochs\": \"<string>\"\n      }\n    },\n    \"dpo\": {\n      \"hyperparameters\": {\n        \"beta\": \"<string>\",\n        \"batch_size\": \"<string>\",\n        \"learning_rate_multiplier\": \"<string>\",\n        \"n_epochs\": \"<string>\"\n      }\n    },\n    \"reinforcement\": {\n      \"grader\": {\n        \"type\": \"<string>\",\n        \"name\": \"<string>\",\n        \"input\": \"<string>\",\n        \"reference\": \"<string>\",\n        \"operation\": \"<string>\"\n      },\n      \"hyperparameters\": {\n        \"batch_size\": \"<string>\",\n        \"learning_rate_multiplier\": \"<string>\",\n        \"n_epochs\": \"<string>\",\n        \"reasoning_effort\": \"default\",\n        \"compute_multiplier\": \"<string>\",\n        \"eval_interval\": \"<string>\",\n        \"eval_samples\": \"<string>\"\n      }\n    }\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"created_at\": 4212,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\"\n  },\n  \"finished_at\": 393,\n  \"fine_tuned_model\": \"string\",\n  \"hyperparameters\": {\n    \"n_epochs\": \"auto\"\n  },\n  \"id\": \"string\",\n  \"model\": \"string\",\n  \"object\": \"fine_tuning.job\",\n  \"organization_id\": \"string\",\n  \"result_files\": [\n    \"file-abc123\",\n    \"file-abc123\"\n  ],\n  \"status\": \"failed\",\n  \"trained_tokens\": 6970,\n  \"training_file\": \"string\",\n  \"validation_file\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8291e354-3b92-44a9-94b8-1fbb7d69adeb",
+          "name": "OpenAI List your organization's fine-tuning jobs",
+          "request": {
+            "name": "OpenAI List your organization's fine-tuning jobs",
+            "description": {},
+            "url": {
+              "path": [
+                "fine_tuning",
+                "jobs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "Identifier for the last job from the previous pagination request."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of fine-tuning jobs to retrieve."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "cfdd62a6-20f4-4dcd-a1fe-76803cc600da",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fine_tuning",
+                    "jobs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"created_at\": 228,\n      \"error\": {\n        \"code\": \"string\",\n        \"message\": \"string\",\n        \"param\": \"string\"\n      },\n      \"finished_at\": 7574,\n      \"fine_tuned_model\": \"string\",\n      \"hyperparameters\": {\n        \"n_epochs\": \"auto\"\n      },\n      \"id\": \"string\",\n      \"model\": \"string\",\n      \"object\": \"fine_tuning.job\",\n      \"organization_id\": \"string\",\n      \"result_files\": [\n        \"file-abc123\",\n        \"file-abc123\"\n      ],\n      \"status\": \"succeeded\",\n      \"trained_tokens\": 3605,\n      \"training_file\": \"string\",\n      \"validation_file\": \"string\"\n    },\n    {\n      \"created_at\": 9304,\n      \"error\": {\n        \"code\": \"string\",\n        \"message\": \"string\",\n        \"param\": \"string\"\n      },\n      \"finished_at\": 8612,\n      \"fine_tuned_model\": \"string\",\n      \"hyperparameters\": {\n        \"n_epochs\": \"auto\"\n      },\n      \"id\": \"string\",\n      \"model\": \"string\",\n      \"object\": \"fine_tuning.job\",\n      \"organization_id\": \"string\",\n      \"result_files\": [\n        \"file-abc123\",\n        \"file-abc123\"\n      ],\n      \"status\": \"validating_files\",\n      \"trained_tokens\": 2618,\n      \"training_file\": \"string\",\n      \"validation_file\": \"string\"\n    }\n  ],\n  \"has_more\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "94194085-fd1c-4845-9e97-179d1e2f353a",
+          "name": "OpenAI Get info about a fine-tuning job.\n\n[Learn more about fine-tuning](/docs/guides/fine-tuning)",
+          "request": {
+            "name": "OpenAI Get info about a fine-tuning job.\n\n[Learn more about fine-tuning](/docs/guides/fine-tuning)",
+            "description": {},
+            "url": {
+              "path": [
+                "fine_tuning",
+                "jobs",
+                ":fine_tuning_job_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "fine_tuning_job_id",
+                  "description": "(Required) The ID of the fine-tuning job.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "bb7f5e7d-634f-4bdd-bd33-a2d7b0e71594",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fine_tuning",
+                    "jobs",
+                    ":fine_tuning_job_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "fine_tuning_job_id",
+                      "description": "(Required) The ID of the fine-tuning job.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"created_at\": 386,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\"\n  },\n  \"finished_at\": 9574,\n  \"fine_tuned_model\": \"string\",\n  \"hyperparameters\": {\n    \"n_epochs\": \"auto\"\n  },\n  \"id\": \"string\",\n  \"model\": \"string\",\n  \"object\": \"fine_tuning.job\",\n  \"organization_id\": \"string\",\n  \"result_files\": [\n    \"file-abc123\",\n    \"file-abc123\"\n  ],\n  \"status\": \"failed\",\n  \"trained_tokens\": 6842,\n  \"training_file\": \"string\",\n  \"validation_file\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cebad9a9-ebc4-4252-ad0a-a8487d25cda8",
+          "name": "OpenAI Get status updates for a fine-tuning job.",
+          "request": {
+            "name": "OpenAI Get status updates for a fine-tuning job.",
+            "description": {},
+            "url": {
+              "path": [
+                "fine_tuning",
+                "jobs",
+                ":fine_tuning_job_id",
+                "events"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "Identifier for the last event from the previous pagination request."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of events to retrieve."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "fine_tuning_job_id",
+                  "description": "(Required) The ID of the fine-tuning job to get events for.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e55ce6dd-6c85-437b-8d95-fae2ac7c006a",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fine_tuning",
+                    "jobs",
+                    ":fine_tuning_job_id",
+                    "events"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "fine_tuning_job_id",
+                      "description": "(Required) The ID of the fine-tuning job to get events for.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"object\": \"fine_tuning.job.event\",\n      \"created_at\": 4907,\n      \"level\": \"warn\",\n      \"message\": \"string\",\n      \"type\": \"message\",\n      \"data\": {}\n    },\n    {\n      \"id\": \"string\",\n      \"object\": \"fine_tuning.job.event\",\n      \"created_at\": 3831,\n      \"level\": \"error\",\n      \"message\": \"string\",\n      \"type\": \"metrics\",\n      \"data\": {}\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "207c0667-1ad6-4f80-a73a-34476189ec55",
+          "name": "OpenAI Immediately cancel a fine-tune job.",
+          "request": {
+            "name": "OpenAI Immediately cancel a fine-tune job.",
+            "description": {},
+            "url": {
+              "path": [
+                "fine_tuning",
+                "jobs",
+                ":fine_tuning_job_id",
+                "cancel"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "fine_tuning_job_id",
+                  "description": "(Required) The ID of the fine-tuning job to cancel.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9840ebad-c966-413b-8e65-b5531034af15",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fine_tuning",
+                    "jobs",
+                    ":fine_tuning_job_id",
+                    "cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "fine_tuning_job_id",
+                      "description": "(Required) The ID of the fine-tuning job to cancel.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"created_at\": 386,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\"\n  },\n  \"finished_at\": 9574,\n  \"fine_tuned_model\": \"string\",\n  \"hyperparameters\": {\n    \"n_epochs\": \"auto\"\n  },\n  \"id\": \"string\",\n  \"model\": \"string\",\n  \"object\": \"fine_tuning.job\",\n  \"organization_id\": \"string\",\n  \"result_files\": [\n    \"file-abc123\",\n    \"file-abc123\"\n  ],\n  \"status\": \"failed\",\n  \"trained_tokens\": 6842,\n  \"training_file\": \"string\",\n  \"validation_file\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c4d2ecdb-f917-4e74-837f-19012eafa5ed",
+          "name": "Run a grader.\n",
+          "request": {
+            "name": "Run a grader.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "fine_tuning",
+                "alpha",
+                "graders",
+                "run"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"grader\": {\n    \"type\": \"<string>\",\n    \"name\": \"<string>\",\n    \"input\": \"<string>\",\n    \"reference\": \"<string>\",\n    \"operation\": \"<string>\"\n  },\n  \"model_sample\": \"<string>\",\n  \"item\": \"<object>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "181f26ac-f3af-4238-bc78-a7c74e334357",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fine_tuning",
+                    "alpha",
+                    "graders",
+                    "run"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"grader\": {\n    \"type\": \"<string>\",\n    \"name\": \"<string>\",\n    \"input\": \"<string>\",\n    \"reference\": \"<string>\",\n    \"operation\": \"<string>\"\n  },\n  \"model_sample\": \"<string>\",\n  \"item\": \"<object>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"reward\": 1521.4115221490422,\n  \"metadata\": {\n    \"name\": \"string\",\n    \"type\": \"string\",\n    \"errors\": {\n      \"formula_parse_error\": true,\n      \"sample_parse_error\": true,\n      \"truncated_observation_error\": true,\n      \"unresponsive_reward_error\": true,\n      \"invalid_variable_error\": true,\n      \"other_error\": true,\n      \"python_grader_server_error\": false,\n      \"python_grader_server_error_type\": \"string\",\n      \"python_grader_runtime_error\": false,\n      \"python_grader_runtime_error_details\": \"string\",\n      \"model_grader_server_error\": false,\n      \"model_grader_refusal_error\": false,\n      \"model_grader_parse_error\": true,\n      \"model_grader_server_error_details\": \"string\"\n    },\n    \"execution_time\": 9044.239849994648,\n    \"scores\": {\n      \"key_0\": {},\n      \"key_1\": {}\n    },\n    \"token_usage\": 5255,\n    \"sampled_model_name\": \"string\"\n  },\n  \"sub_rewards\": {\n    \"key_0\": {},\n    \"key_1\": {},\n    \"key_2\": {},\n    \"key_3\": {},\n    \"key_4\": {}\n  },\n  \"model_grader_token_usage_per_model\": {\n    \"key_0\": {}\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a020f800-cd58-4444-8198-7e0e1fa07566",
+          "name": "Validate a grader.\n",
+          "request": {
+            "name": "Validate a grader.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "fine_tuning",
+                "alpha",
+                "graders",
+                "validate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"grader\": {\n    \"type\": \"<string>\",\n    \"name\": \"<string>\",\n    \"input\": \"<string>\",\n    \"reference\": \"<string>\",\n    \"operation\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "cc39b412-c40b-4759-b458-2f03e313a9a1",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fine_tuning",
+                    "alpha",
+                    "graders",
+                    "validate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"grader\": {\n    \"type\": \"<string>\",\n    \"name\": \"<string>\",\n    \"input\": \"<string>\",\n    \"reference\": \"<string>\",\n    \"operation\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"grader\": {\n    \"type\": \"<string>\",\n    \"name\": \"<string>\",\n    \"input\": \"<string>\",\n    \"reference\": \"<string>\",\n    \"operation\": \"<string>\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0606b986-9c22-4aaa-994e-b60f5559f768",
+          "name": "**NOTE:** This endpoint requires an [admin API key](../admin-api-keys).\n\nOrganization owners can use this endpoint to view all permissions for a fine-tuned model checkpoint.\n",
+          "request": {
+            "name": "**NOTE:** This endpoint requires an [admin API key](../admin-api-keys).\n\nOrganization owners can use this endpoint to view all permissions for a fine-tuned model checkpoint.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "fine_tuning",
+                "checkpoints",
+                ":fine_tuned_model_checkpoint",
+                "permissions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "project_id",
+                  "value": "<string>",
+                  "description": "The ID of the project to get permissions for."
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "Identifier for the last permission ID from the previous pagination request."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of permissions to retrieve."
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "descending",
+                  "description": "The order in which to retrieve permissions."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "fine_tuned_model_checkpoint",
+                  "description": "(Required) The ID of the fine-tuned model checkpoint to get permissions for.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "eb72516d-fe47-4ebb-aa0a-e9b3dc3df728",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fine_tuning",
+                    "checkpoints",
+                    ":fine_tuned_model_checkpoint",
+                    "permissions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "project_id",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    },
+                    {
+                      "key": "order",
+                      "value": "descending"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "fine_tuned_model_checkpoint",
+                      "description": "(Required) The ID of the fine-tuned model checkpoint to get permissions for.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"created_at\": 6517,\n      \"id\": \"string\",\n      \"object\": \"checkpoint.permission\",\n      \"project_id\": \"string\"\n    },\n    {\n      \"created_at\": 6635,\n      \"id\": \"string\",\n      \"object\": \"checkpoint.permission\",\n      \"project_id\": \"string\"\n    }\n  ],\n  \"has_more\": false,\n  \"first_id\": \"string\",\n  \"last_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7e2d8651-5e13-4398-9a8f-9ea11ea34abb",
+          "name": "**NOTE:** Calling this endpoint requires an [admin API key](../admin-api-keys).\n\nThis enables organization owners to share fine-tuned models with other projects in their organization.\n",
+          "request": {
+            "name": "**NOTE:** Calling this endpoint requires an [admin API key](../admin-api-keys).\n\nThis enables organization owners to share fine-tuned models with other projects in their organization.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "fine_tuning",
+                "checkpoints",
+                ":fine_tuned_model_checkpoint",
+                "permissions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "fine_tuned_model_checkpoint",
+                  "description": "(Required) The ID of the fine-tuned model checkpoint to create a permission for.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"project_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "6c603f09-5ae9-4f3f-939a-49f53c8cd71a",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fine_tuning",
+                    "checkpoints",
+                    ":fine_tuned_model_checkpoint",
+                    "permissions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "fine_tuned_model_checkpoint",
+                      "description": "(Required) The ID of the fine-tuned model checkpoint to create a permission for.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"project_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"created_at\": 255,\n      \"id\": \"string\",\n      \"object\": \"checkpoint.permission\",\n      \"project_id\": \"string\"\n    },\n    {\n      \"created_at\": 2127,\n      \"id\": \"string\",\n      \"object\": \"checkpoint.permission\",\n      \"project_id\": \"string\"\n    }\n  ],\n  \"has_more\": false,\n  \"first_id\": \"string\",\n  \"last_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6da1e025-23c0-4272-8eb5-30d7cf6bfa3b",
+          "name": "**NOTE:** This endpoint requires an [admin API key](../admin-api-keys).\n\nOrganization owners can use this endpoint to delete a permission for a fine-tuned model checkpoint.\n",
+          "request": {
+            "name": "**NOTE:** This endpoint requires an [admin API key](../admin-api-keys).\n\nOrganization owners can use this endpoint to delete a permission for a fine-tuned model checkpoint.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "fine_tuning",
+                "checkpoints",
+                ":fine_tuned_model_checkpoint",
+                "permissions",
+                ":permission_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "fine_tuned_model_checkpoint",
+                  "description": "(Required) The ID of the fine-tuned model checkpoint to delete a permission for.\n"
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "permission_id",
+                  "description": "(Required) The ID of the fine-tuned model checkpoint permission to delete.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "86df4108-dc0d-4b42-bbce-c3d4ac9e68e7",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fine_tuning",
+                    "checkpoints",
+                    ":fine_tuned_model_checkpoint",
+                    "permissions",
+                    ":permission_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "fine_tuned_model_checkpoint",
+                      "description": "(Required) The ID of the fine-tuned model checkpoint to delete a permission for.\n"
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "permission_id",
+                      "description": "(Required) The ID of the fine-tuned model checkpoint permission to delete.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"checkpoint.permission\",\n  \"deleted\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "cad48f75-ff37-4408-a188-a3ef20c4c88f",
+          "name": "List checkpoints for a fine-tuning job.\n",
+          "request": {
+            "name": "List checkpoints for a fine-tuning job.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "fine_tuning",
+                "jobs",
+                ":fine_tuning_job_id",
+                "checkpoints"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "Identifier for the last checkpoint ID from the previous pagination request."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Number of checkpoints to retrieve."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "fine_tuning_job_id",
+                  "description": "(Required) The ID of the fine-tuning job to get checkpoints for.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c617c2cc-5df4-4c39-ae59-05b8c06c8dbb",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fine_tuning",
+                    "jobs",
+                    ":fine_tuning_job_id",
+                    "checkpoints"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "10"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "fine_tuning_job_id",
+                      "description": "(Required) The ID of the fine-tuning job to get checkpoints for.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"created_at\": 5569,\n      \"fine_tuning_job_id\": \"string\",\n      \"fine_tuned_model_checkpoint\": \"string\",\n      \"id\": \"string\",\n      \"metrics\": {\n        \"step\": 6930.568960921612,\n        \"train_loss\": 6737.7032208495775,\n        \"train_mean_token_accuracy\": 7714.311425360669,\n        \"valid_loss\": 6155.240494243124,\n        \"valid_mean_token_accuracy\": 6990.299466359692,\n        \"full_valid_loss\": 7370.428513911008,\n        \"full_valid_mean_token_accuracy\": 4949.902951047276\n      },\n      \"object\": \"fine_tuning.job.checkpoint\",\n      \"step_number\": 9384\n    },\n    {\n      \"created_at\": 200,\n      \"fine_tuning_job_id\": \"string\",\n      \"fine_tuned_model_checkpoint\": \"string\",\n      \"id\": \"string\",\n      \"metrics\": {\n        \"step\": 7176.560802712219,\n        \"train_loss\": 436.69814391933625,\n        \"train_mean_token_accuracy\": 3922.2136040164546,\n        \"valid_loss\": 2025.3639931551636,\n        \"valid_mean_token_accuracy\": 4761.905603478051,\n        \"full_valid_loss\": 1925.3269745115565,\n        \"full_valid_mean_token_accuracy\": 4201.220752064419\n      },\n      \"object\": \"fine_tuning.job.checkpoint\",\n      \"step_number\": 287\n    }\n  ],\n  \"has_more\": true,\n  \"first_id\": \"string\",\n  \"last_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d6371ef8-04ba-426f-9b2f-9f9866e29fe2",
+          "name": "Pause a fine-tune job.\n",
+          "request": {
+            "name": "Pause a fine-tune job.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "fine_tuning",
+                "jobs",
+                ":fine_tuning_job_id",
+                "pause"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "fine_tuning_job_id",
+                  "description": "(Required) The ID of the fine-tuning job to pause.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6839ac5f-9452-45a3-aaf0-185afc15d803",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fine_tuning",
+                    "jobs",
+                    ":fine_tuning_job_id",
+                    "pause"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "fine_tuning_job_id",
+                      "description": "(Required) The ID of the fine-tuning job to pause.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"created_at\": 6839,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\"\n  },\n  \"finished_at\": 5489,\n  \"fine_tuned_model\": \"string\",\n  \"hyperparameters\": {\n    \"batch_size\": \"auto\",\n    \"learning_rate_multiplier\": \"auto\",\n    \"n_epochs\": \"auto\"\n  },\n  \"id\": \"string\",\n  \"model\": \"string\",\n  \"object\": \"fine_tuning.job\",\n  \"organization_id\": \"string\",\n  \"result_files\": [\n    \"file-abc123\",\n    \"file-abc123\"\n  ],\n  \"status\": \"running\",\n  \"trained_tokens\": 7582,\n  \"training_file\": \"string\",\n  \"validation_file\": \"string\",\n  \"seed\": 6236,\n  \"integrations\": [\n    {\n      \"type\": \"wandb\",\n      \"wandb\": {\n        \"project\": \"my-wandb-project\",\n        \"name\": \"string\",\n        \"entity\": \"string\",\n        \"tags\": [\n          \"custom-tag\",\n          \"custom-tag\"\n        ]\n      }\n    },\n    {\n      \"type\": \"wandb\",\n      \"wandb\": {\n        \"project\": \"my-wandb-project\",\n        \"name\": \"string\",\n        \"entity\": \"string\",\n        \"tags\": [\n          \"custom-tag\",\n          \"custom-tag\"\n        ]\n      }\n    }\n  ],\n  \"estimated_finish\": 9465,\n  \"method\": {\n    \"type\": \"<string>\",\n    \"supervised\": {\n      \"hyperparameters\": {\n        \"batch_size\": \"<string>\",\n        \"learning_rate_multiplier\": \"<string>\",\n        \"n_epochs\": \"<string>\"\n      }\n    },\n    \"dpo\": {\n      \"hyperparameters\": {\n        \"beta\": \"<string>\",\n        \"batch_size\": \"<string>\",\n        \"learning_rate_multiplier\": \"<string>\",\n        \"n_epochs\": \"<string>\"\n      }\n    },\n    \"reinforcement\": {\n      \"grader\": {\n        \"type\": \"<string>\",\n        \"name\": \"<string>\",\n        \"input\": \"<string>\",\n        \"reference\": \"<string>\",\n        \"operation\": \"<string>\"\n      },\n      \"hyperparameters\": {\n        \"batch_size\": \"<string>\",\n        \"learning_rate_multiplier\": \"<string>\",\n        \"n_epochs\": \"<string>\",\n        \"reasoning_effort\": \"default\",\n        \"compute_multiplier\": \"<string>\",\n        \"eval_interval\": \"<string>\",\n        \"eval_samples\": \"<string>\"\n      }\n    }\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a069f627-93d2-494a-ac70-d91a9128f71e",
+          "name": "Resume a fine-tune job.\n",
+          "request": {
+            "name": "Resume a fine-tune job.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "fine_tuning",
+                "jobs",
+                ":fine_tuning_job_id",
+                "resume"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "fine_tuning_job_id",
+                  "description": "(Required) The ID of the fine-tuning job to resume.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "57fd8600-c6fe-4fab-8137-733a75d4a1d7",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "fine_tuning",
+                    "jobs",
+                    ":fine_tuning_job_id",
+                    "resume"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "fine_tuning_job_id",
+                      "description": "(Required) The ID of the fine-tuning job to resume.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"created_at\": 6899,\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\",\n    \"param\": \"string\"\n  },\n  \"finished_at\": 231,\n  \"fine_tuned_model\": \"string\",\n  \"hyperparameters\": {\n    \"batch_size\": \"auto\",\n    \"learning_rate_multiplier\": \"auto\",\n    \"n_epochs\": \"auto\"\n  },\n  \"id\": \"string\",\n  \"model\": \"string\",\n  \"object\": \"fine_tuning.job\",\n  \"organization_id\": \"string\",\n  \"result_files\": [\n    \"file-abc123\",\n    \"file-abc123\"\n  ],\n  \"status\": \"cancelled\",\n  \"trained_tokens\": 3000,\n  \"training_file\": \"string\",\n  \"validation_file\": \"string\",\n  \"seed\": 7111,\n  \"integrations\": [\n    {\n      \"type\": \"wandb\",\n      \"wandb\": {\n        \"project\": \"my-wandb-project\",\n        \"name\": \"string\",\n        \"entity\": \"string\",\n        \"tags\": [\n          \"custom-tag\",\n          \"custom-tag\"\n        ]\n      }\n    },\n    {\n      \"type\": \"wandb\",\n      \"wandb\": {\n        \"project\": \"my-wandb-project\",\n        \"name\": \"string\",\n        \"entity\": \"string\",\n        \"tags\": [\n          \"custom-tag\",\n          \"custom-tag\"\n        ]\n      }\n    }\n  ],\n  \"estimated_finish\": 4439,\n  \"method\": {\n    \"type\": \"<string>\",\n    \"supervised\": {\n      \"hyperparameters\": {\n        \"batch_size\": \"<string>\",\n        \"learning_rate_multiplier\": \"<string>\",\n        \"n_epochs\": \"<string>\"\n      }\n    },\n    \"dpo\": {\n      \"hyperparameters\": {\n        \"beta\": \"<string>\",\n        \"batch_size\": \"<string>\",\n        \"learning_rate_multiplier\": \"<string>\",\n        \"n_epochs\": \"<string>\"\n      }\n    },\n    \"reinforcement\": {\n      \"grader\": {\n        \"type\": \"<string>\",\n        \"name\": \"<string>\",\n        \"input\": \"<string>\",\n        \"reference\": \"<string>\",\n        \"operation\": \"<string>\"\n      },\n      \"hyperparameters\": {\n        \"batch_size\": \"<string>\",\n        \"learning_rate_multiplier\": \"<string>\",\n        \"n_epochs\": \"<string>\",\n        \"reasoning_effort\": \"default\",\n        \"compute_multiplier\": \"<string>\",\n        \"eval_interval\": \"<string>\",\n        \"eval_samples\": \"<string>\"\n      }\n    }\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.openai.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "1912750f-e40b-49cb-9adc-814259b9a936",
+    "name": "OpenAI Assistants Fine Tuning API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.\n\nContact Support:\n Name: OpenAI Support",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,1135 @@
+{
+  "item": [
+    {
+      "id": "a3267746-4c94-4be2-9545-10dee1fb128f",
+      "name": "Certificates",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d1d2c202-081d-41e5-9efd-1df977fe1e9f",
+          "name": "List uploaded certificates for this organization.",
+          "request": {
+            "name": "List uploaded certificates for this organization.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "certificates"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "desc",
+                  "description": "Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.\n"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "4b8b13fc-be92-424a-86ca-a386cfabe905",
+              "name": "Certificates listed successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "certificates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": \"organization.certificate\",\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"created_at\": 6770,\n      \"certificate_details\": {\n        \"valid_at\": 9710,\n        \"expires_at\": 8099\n      },\n      \"active\": false\n    },\n    {\n      \"object\": \"organization.certificate\",\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"created_at\": 9477,\n      \"certificate_details\": {\n        \"valid_at\": 8649,\n        \"expires_at\": 7152\n      },\n      \"active\": true\n    }\n  ],\n  \"has_more\": false,\n  \"first_id\": \"string\",\n  \"last_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5266725e-69bf-4120-860b-acf70ea9b851",
+          "name": "Upload a certificate to the organization. This does **not** automatically activate the certificate.\n\nOrganizations can upload up to 50 certificates.\n",
+          "request": {
+            "name": "Upload a certificate to the organization. This does **not** automatically activate the certificate.\n\nOrganizations can upload up to 50 certificates.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "certificates"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"certificate\": \"<string>\",\n  \"name\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "af000fb3-e6c4-4eaa-9324-25273fa8500c",
+              "name": "Certificate uploaded successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "certificates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"certificate\": \"<string>\",\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"certificate\",\n  \"id\": \"string\",\n  \"name\": \"string\",\n  \"created_at\": 5169,\n  \"certificate_details\": {\n    \"valid_at\": 323,\n    \"expires_at\": 2330,\n    \"content\": \"string\"\n  },\n  \"active\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0816cc48-8626-45f5-bff5-ac69ab5e08a2",
+          "name": "Activate certificates at the organization level.\n\nYou can atomically and idempotently activate up to 10 certificates at a time.\n",
+          "request": {
+            "name": "Activate certificates at the organization level.\n\nYou can atomically and idempotently activate up to 10 certificates at a time.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "certificates",
+                "activate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"certificate_ids\": [\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "345f63cd-f4a8-41e1-aeca-243afdf24a59",
+              "name": "Certificates activated successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "certificates",
+                    "activate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"certificate_ids\": [\n    \"cert_abc\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"organization.certificate.activation\",\n  \"data\": [\n    {\n      \"object\": \"organization.certificate\",\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"created_at\": 2666,\n      \"certificate_details\": {\n        \"valid_at\": 850,\n        \"expires_at\": 2874\n      },\n      \"active\": false\n    },\n    {\n      \"object\": \"organization.certificate\",\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"created_at\": 6189,\n      \"certificate_details\": {\n        \"valid_at\": 7931,\n        \"expires_at\": 6244\n      },\n      \"active\": false\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "230144f7-849c-4998-9f25-40d5152f86ff",
+          "name": "Deactivate certificates at the organization level.\n\nYou can atomically and idempotently deactivate up to 10 certificates at a time.\n",
+          "request": {
+            "name": "Deactivate certificates at the organization level.\n\nYou can atomically and idempotently deactivate up to 10 certificates at a time.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "certificates",
+                "deactivate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"certificate_ids\": [\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "92f3c86e-363e-4c31-9154-822b123f498e",
+              "name": "Certificates deactivated successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "certificates",
+                    "deactivate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"certificate_ids\": [\n    \"cert_abc\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"organization.certificate.deactivation\",\n  \"data\": [\n    {\n      \"object\": \"organization.certificate\",\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"created_at\": 8751,\n      \"certificate_details\": {\n        \"valid_at\": 7226,\n        \"expires_at\": 2266\n      },\n      \"active\": true\n    },\n    {\n      \"object\": \"organization.certificate\",\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"created_at\": 3030,\n      \"certificate_details\": {\n        \"valid_at\": 5599,\n        \"expires_at\": 5492\n      },\n      \"active\": true\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a9d3e677-8829-4c29-bf48-f2cbcf08cb3e",
+          "name": "Get a certificate that has been uploaded to the organization.\n\nYou can get a certificate regardless of whether it is active or not.\n",
+          "request": {
+            "name": "Get a certificate that has been uploaded to the organization.\n\nYou can get a certificate regardless of whether it is active or not.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "certificates",
+                ":certificate_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "include",
+                  "value": "<string>",
+                  "description": "A list of additional fields to include in the response. Currently the only supported value is `content` to fetch the PEM content of the certificate."
+                },
+                {
+                  "disabled": false,
+                  "key": "include",
+                  "value": "<string>",
+                  "description": "A list of additional fields to include in the response. Currently the only supported value is `content` to fetch the PEM content of the certificate."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "certificate_id",
+                  "description": "(Required) Unique ID of the certificate to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "f2f52ebd-ad60-4106-93bc-a209b0e0d54c",
+              "name": "Certificate retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "certificates",
+                    ":certificate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "include",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "certificate_id",
+                      "description": "(Required) Unique ID of the certificate to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"certificate\",\n  \"id\": \"string\",\n  \"name\": \"string\",\n  \"created_at\": 5169,\n  \"certificate_details\": {\n    \"valid_at\": 323,\n    \"expires_at\": 2330,\n    \"content\": \"string\"\n  },\n  \"active\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "831607fe-a3c2-4ec8-921c-abec1b7ae88a",
+          "name": "Modify a certificate. Note that only the name can be modified.\n",
+          "request": {
+            "name": "Modify a certificate. Note that only the name can be modified.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "certificates",
+                ":certificate_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "certificate_id",
+                  "description": "(Required) Unique ID of the certificate to modify."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "0ebfa2ba-588f-4e05-9b26-5e98b62c41cd",
+              "name": "Certificate modified successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "certificates",
+                    ":certificate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "certificate_id",
+                      "description": "(Required) Unique ID of the certificate to modify."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"certificate\",\n  \"id\": \"string\",\n  \"name\": \"string\",\n  \"created_at\": 5169,\n  \"certificate_details\": {\n    \"valid_at\": 323,\n    \"expires_at\": 2330,\n    \"content\": \"string\"\n  },\n  \"active\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8274ac6c-ed9e-46d6-b76b-496b99dfcd80",
+          "name": "Delete a certificate from the organization.\n\nThe certificate must be inactive for the organization and all projects.\n",
+          "request": {
+            "name": "Delete a certificate from the organization.\n\nThe certificate must be inactive for the organization and all projects.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "certificates",
+                ":certificate_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "certificate_id",
+                  "description": "(Required) Unique ID of the certificate to delete."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE"
+          },
+          "response": [
+            {
+              "id": "eab1a0d7-e6c8-46f7-8770-3fe53d27e36a",
+              "name": "Certificate deleted successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "certificates",
+                    ":certificate_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "certificate_id",
+                      "description": "(Required) Unique ID of the certificate to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"certificate.deleted\",\n  \"id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "118b1619-afcc-44e9-ba26-fb760650e3c4",
+          "name": "List certificates for this project.",
+          "request": {
+            "name": "List certificates for this project.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "projects",
+                ":project_id",
+                "certificates"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "desc",
+                  "description": "Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "project_id",
+                  "description": "(Required) The ID of the project."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "891bf436-0b60-4924-914f-15cea979f434",
+              "name": "Certificates listed successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "projects",
+                    ":project_id",
+                    "certificates"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "project_id",
+                      "description": "(Required) The ID of the project."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": \"organization.project.certificate\",\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"created_at\": 5841,\n      \"certificate_details\": {\n        \"valid_at\": 8786,\n        \"expires_at\": 1056\n      },\n      \"active\": false\n    },\n    {\n      \"object\": \"organization.project.certificate\",\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"created_at\": 737,\n      \"certificate_details\": {\n        \"valid_at\": 4750,\n        \"expires_at\": 3706\n      },\n      \"active\": true\n    }\n  ],\n  \"has_more\": false,\n  \"first_id\": \"string\",\n  \"last_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "ba6b2f33-478d-446b-8f91-7a5153bd8dc9",
+          "name": "Activate certificates at the project level.\n\nYou can atomically and idempotently activate up to 10 certificates at a time.\n",
+          "request": {
+            "name": "Activate certificates at the project level.\n\nYou can atomically and idempotently activate up to 10 certificates at a time.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "projects",
+                ":project_id",
+                "certificates",
+                "activate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "project_id",
+                  "description": "(Required) The ID of the project."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"certificate_ids\": [\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9495aebb-81dd-448e-93f1-9bc644ce70d6",
+              "name": "Certificates activated successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "projects",
+                    ":project_id",
+                    "certificates",
+                    "activate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "project_id",
+                      "description": "(Required) The ID of the project."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"certificate_ids\": [\n    \"cert_abc\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"organization.project.certificate.activation\",\n  \"data\": [\n    {\n      \"object\": \"organization.project.certificate\",\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"created_at\": 8787,\n      \"certificate_details\": {\n        \"valid_at\": 8539,\n        \"expires_at\": 5589\n      },\n      \"active\": true\n    },\n    {\n      \"object\": \"organization.project.certificate\",\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"created_at\": 8479,\n      \"certificate_details\": {\n        \"valid_at\": 8595,\n        \"expires_at\": 812\n      },\n      \"active\": false\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "925fd558-d4f4-413d-a0a4-e2c1726f1e8f",
+          "name": "Deactivate certificates at the project level. You can atomically and \nidempotently deactivate up to 10 certificates at a time.\n",
+          "request": {
+            "name": "Deactivate certificates at the project level. You can atomically and \nidempotently deactivate up to 10 certificates at a time.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "projects",
+                ":project_id",
+                "certificates",
+                "deactivate"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "project_id",
+                  "description": "(Required) The ID of the project."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"certificate_ids\": [\n    \"<string>\"\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "53e63e47-d1c4-4c26-af69-c4c80abf147c",
+              "name": "Certificates deactivated successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "projects",
+                    ":project_id",
+                    "certificates",
+                    "deactivate"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "project_id",
+                      "description": "(Required) The ID of the project."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"certificate_ids\": [\n    \"cert_abc\"\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"organization.project.certificate.deactivation\",\n  \"data\": [\n    {\n      \"object\": \"organization.project.certificate\",\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"created_at\": 323,\n      \"certificate_details\": {\n        \"valid_at\": 6560,\n        \"expires_at\": 3499\n      },\n      \"active\": true\n    },\n    {\n      \"object\": \"organization.project.certificate\",\n      \"id\": \"string\",\n      \"name\": \"string\",\n      \"created_at\": 198,\n      \"certificate_details\": {\n        \"valid_at\": 2500,\n        \"expires_at\": 6077\n      },\n      \"active\": true\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.openai.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "b80f7002-5d4d-4269-9936-c8276e42c43f",
+    "name": "OpenAI Assistants Certificates API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.\n\nContact Support:\n Name: OpenAI Support",
+      "type": "text/plain"
+    }
+  }
+}

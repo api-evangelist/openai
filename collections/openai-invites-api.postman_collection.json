@@ -1,0 +1,424 @@
+{
+  "item": [
+    {
+      "id": "bc61b59d-a9fa-4a4b-a9cb-60267c35db43",
+      "name": "Invites",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "e5941f8d-e6ef-4fdc-83de-011ff2a2ea37",
+          "name": "Returns a list of invites in the organization.",
+          "request": {
+            "name": "Returns a list of invites in the organization.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "invites"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "8a347d87-29e6-4a24-91a5-0acd3a7603fa",
+              "name": "Invites listed successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "invites"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": \"organization.invite\",\n      \"id\": \"string\",\n      \"email\": \"string\",\n      \"role\": \"reader\",\n      \"status\": \"expired\",\n      \"created_at\": 3982,\n      \"projects\": [\n        {\n          \"id\": \"string\",\n          \"role\": \"owner\"\n        },\n        {\n          \"id\": \"string\",\n          \"role\": \"member\"\n        }\n      ],\n      \"expires_at\": 1237,\n      \"accepted_at\": 5869\n    },\n    {\n      \"object\": \"organization.invite\",\n      \"id\": \"string\",\n      \"email\": \"string\",\n      \"role\": \"owner\",\n      \"status\": \"expired\",\n      \"created_at\": 4631,\n      \"projects\": [\n        {\n          \"id\": \"string\",\n          \"role\": \"member\"\n        },\n        {\n          \"id\": \"string\",\n          \"role\": \"member\"\n        }\n      ],\n      \"expires_at\": 9920,\n      \"accepted_at\": 5734\n    }\n  ],\n  \"has_more\": true,\n  \"first_id\": \"string\",\n  \"last_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e19a5d78-d2d9-4609-8aeb-332e91fa72fd",
+          "name": "Create an invite for a user to the organization. The invite must be accepted by the user before they have access to the organization.",
+          "request": {
+            "name": "Create an invite for a user to the organization. The invite must be accepted by the user before they have access to the organization.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "invites"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"<string>\",\n  \"role\": \"<string>\",\n  \"projects\": [\n    {\n      \"id\": \"<string>\",\n      \"role\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"role\": \"<string>\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f299ee76-19b2-4af7-942d-ea69cda73e7a",
+              "name": "User invited successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "invites"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"email\": \"<string>\",\n  \"role\": \"<string>\",\n  \"projects\": [\n    {\n      \"id\": \"<string>\",\n      \"role\": \"<string>\"\n    },\n    {\n      \"id\": \"<string>\",\n      \"role\": \"<string>\"\n    }\n  ]\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"organization.invite\",\n  \"id\": \"string\",\n  \"email\": \"string\",\n  \"role\": \"reader\",\n  \"status\": \"expired\",\n  \"created_at\": 2273,\n  \"projects\": [\n    {\n      \"id\": \"string\",\n      \"role\": \"owner\"\n    },\n    {\n      \"id\": \"string\",\n      \"role\": \"owner\"\n    }\n  ],\n  \"expires_at\": 9964,\n  \"accepted_at\": 8562\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b218e845-8160-4bd1-9f75-607095397ff4",
+          "name": "Retrieves an invite.",
+          "request": {
+            "name": "Retrieves an invite.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "invites",
+                ":invite_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "invite_id",
+                  "description": "(Required) The ID of the invite to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "b6d49eba-3635-4355-8699-d85895ae7d33",
+              "name": "Invite retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "invites",
+                    ":invite_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "invite_id",
+                      "description": "(Required) The ID of the invite to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"organization.invite\",\n  \"id\": \"string\",\n  \"email\": \"string\",\n  \"role\": \"reader\",\n  \"status\": \"expired\",\n  \"created_at\": 2273,\n  \"projects\": [\n    {\n      \"id\": \"string\",\n      \"role\": \"owner\"\n    },\n    {\n      \"id\": \"string\",\n      \"role\": \"owner\"\n    }\n  ],\n  \"expires_at\": 9964,\n  \"accepted_at\": 8562\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8286e0df-f46b-47f8-91e5-2d052ba1969b",
+          "name": "Delete an invite. If the invite has already been accepted, it cannot be deleted.",
+          "request": {
+            "name": "Delete an invite. If the invite has already been accepted, it cannot be deleted.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "invites",
+                ":invite_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "invite_id",
+                  "description": "(Required) The ID of the invite to delete."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE"
+          },
+          "response": [
+            {
+              "id": "83d98d3b-c03a-47c1-980b-f6220294bce8",
+              "name": "Invite deleted successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "invites",
+                    ":invite_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "invite_id",
+                      "description": "(Required) The ID of the invite to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"organization.invite.deleted\",\n  \"id\": \"string\",\n  \"deleted\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.openai.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "c856cff8-2a85-4cdb-9340-f6ccedd94cb4",
+    "name": "OpenAI Assistants Invites API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.\n\nContact Support:\n Name: OpenAI Support",
+      "type": "text/plain"
+    }
+  }
+}

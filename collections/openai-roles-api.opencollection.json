@@ -1,0 +1,226 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "OpenAI Assistants Roles API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Roles",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Lists the roles configured for the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/organization/roles",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "A limit on the number of roles to return. Defaults to 1000."
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "Cursor for pagination. Provide the value from the previous response's `next` field to continue listing roles."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order for the returned roles."
+              }
+            ]
+          },
+          "docs": "Lists the roles configured for the organization."
+        },
+        {
+          "info": {
+            "name": "Creates a custom role for the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/organization/roles",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a custom role for the organization."
+        },
+        {
+          "info": {
+            "name": "Updates an existing organization role.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/organization/roles/:role_id",
+            "params": [
+              {
+                "name": "role_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the role to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an existing organization role."
+        },
+        {
+          "info": {
+            "name": "Deletes a custom role from the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.openai.com/v1/organization/roles/:role_id",
+            "params": [
+              {
+                "name": "role_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the role to delete."
+              }
+            ]
+          },
+          "docs": "Deletes a custom role from the organization."
+        },
+        {
+          "info": {
+            "name": "Lists the roles configured for a project.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/projects/:project_id/roles",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the project to inspect."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "A limit on the number of roles to return. Defaults to 1000."
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "Cursor for pagination. Provide the value from the previous response's `next` field to continue listing roles."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order for the returned roles."
+              }
+            ]
+          },
+          "docs": "Lists the roles configured for a project."
+        },
+        {
+          "info": {
+            "name": "Creates a custom role for a project.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/projects/:project_id/roles",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the project to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Creates a custom role for a project."
+        },
+        {
+          "info": {
+            "name": "Updates an existing project role.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/projects/:project_id/roles/:role_id",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the project to update."
+              },
+              {
+                "name": "role_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the role to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Updates an existing project role."
+        },
+        {
+          "info": {
+            "name": "Deletes a custom role from a project.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.openai.com/v1/projects/:project_id/roles/:role_id",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the project to update."
+              },
+              {
+                "name": "role_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the role to delete."
+              }
+            ]
+          },
+          "docs": "Deletes a custom role from a project."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

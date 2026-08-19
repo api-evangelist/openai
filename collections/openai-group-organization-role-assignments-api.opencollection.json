@@ -1,0 +1,109 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "OpenAI Assistants Group organization role assignments API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Group organization role assignments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Lists the organization roles assigned to a group within the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/organization/groups/:group_id/roles",
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the group whose organization role assignments you want to list."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "A limit on the number of organization role assignments to return."
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "Cursor for pagination. Provide the value from the previous response's `next` field to continue listing organization roles."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order for the returned organization roles."
+              }
+            ]
+          },
+          "docs": "Lists the organization roles assigned to a group within the organization."
+        },
+        {
+          "info": {
+            "name": "Assigns an organization role to a group within the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/organization/groups/:group_id/roles",
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the group that should receive the organization role."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Assigns an organization role to a group within the organization."
+        },
+        {
+          "info": {
+            "name": "Unassigns an organization role from a group within the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.openai.com/v1/organization/groups/:group_id/roles/:role_id",
+            "params": [
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the group to modify."
+              },
+              {
+                "name": "role_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the organization role to remove from the group."
+              }
+            ]
+          },
+          "docs": "Unassigns an organization role from a group within the organization."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

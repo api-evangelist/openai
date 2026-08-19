@@ -1,0 +1,180 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "OpenAI Assistants Chat API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Chat",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List stored Chat Completions. Only Chat Completions that have been stored\nwith the `store` parameter set to `true` will be returned.\n",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/chat/completions",
+            "params": [
+              {
+                "name": "model",
+                "value": "",
+                "type": "query",
+                "description": "The model used to generate the Chat Completions."
+              },
+              {
+                "name": "metadata",
+                "value": "",
+                "type": "query",
+                "description": "A list of metadata keys to filter the Chat Completions by. Example:\n\n`metadata[key1]=value1&metadata[key2]=value2`\n"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "Identifier for the last chat completion from the previous pagination request."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of Chat Completions to retrieve."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order for Chat Completions by timestamp. Use `asc` for ascending order or `desc` for descending order. Defaults to `asc`."
+              }
+            ]
+          },
+          "docs": "List stored Chat Completions. Only Chat Completions that have been stored\nwith the `store` parameter set to `true` will be returned.\n"
+        },
+        {
+          "info": {
+            "name": "OpenAI Creates a model response for the given chat conversation.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/chat/completions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "OpenAI Creates a model response for the given chat conversation."
+        },
+        {
+          "info": {
+            "name": "Get a stored chat completion. Only Chat Completions that have been created\nwith the `store` parameter set to `true` will be returned.\n",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/chat/completions/:completion_id",
+            "params": [
+              {
+                "name": "completion_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the chat completion to retrieve."
+              }
+            ]
+          },
+          "docs": "Get a stored chat completion. Only Chat Completions that have been created\nwith the `store` parameter set to `true` will be returned.\n"
+        },
+        {
+          "info": {
+            "name": "Modify a stored chat completion. Only Chat Completions that have been\ncreated with the `store` parameter set to `true` can be modified. Currently,\nthe only supported modification is to update the `metadata` field.\n",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/chat/completions/:completion_id",
+            "params": [
+              {
+                "name": "completion_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the chat completion to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Modify a stored chat completion. Only Chat Completions that have been\ncreated with the `store` parameter set to `true` can be modified. Currently,\nthe only supported modification is to update the `metadata` field.\n"
+        },
+        {
+          "info": {
+            "name": "Delete a stored chat completion. Only Chat Completions that have been\ncreated with the `store` parameter set to `true` can be deleted.\n",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.openai.com/v1/chat/completions/:completion_id",
+            "params": [
+              {
+                "name": "completion_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the chat completion to delete."
+              }
+            ]
+          },
+          "docs": "Delete a stored chat completion. Only Chat Completions that have been\ncreated with the `store` parameter set to `true` can be deleted.\n"
+        },
+        {
+          "info": {
+            "name": "Get the messages in a stored chat completion. Only Chat Completions that\nhave been created with the `store` parameter set to `true` will be\nreturned.\n",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/chat/completions/:completion_id/messages",
+            "params": [
+              {
+                "name": "completion_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the chat completion to retrieve messages from."
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "Identifier for the last message from the previous pagination request."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of messages to retrieve."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order for messages by timestamp. Use `asc` for ascending order or `desc` for descending order. Defaults to `asc`."
+              }
+            ]
+          },
+          "docs": "Get the messages in a stored chat completion. Only Chat Completions that\nhave been created with the `store` parameter set to `true` will be\nreturned.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

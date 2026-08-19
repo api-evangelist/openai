@@ -1,0 +1,137 @@
+{
+  "item": [
+    {
+      "id": "e0b8b1a6-9daf-4897-a8a9-0acfa5eb58ec",
+      "name": "Completions",
+      "description": {
+        "content": "Given a prompt, the model will return one or more predicted completions, and can also return the probabilities of alternative tokens at each position.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "72d834d4-6a34-496e-b68b-77664ef97844",
+          "name": "OpenAI Creates a completion for the provided prompt and parameters.",
+          "request": {
+            "name": "OpenAI Creates a completion for the provided prompt and parameters.",
+            "description": {},
+            "url": {
+              "path": [
+                "completions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"model\": \"<string>\",\n  \"prompt\": \"\",\n  \"best_of\": 1,\n  \"echo\": false,\n  \"frequency_penalty\": 0,\n  \"logit_bias\": null,\n  \"logprobs\": null,\n  \"max_tokens\": 16,\n  \"n\": 1,\n  \"presence_penalty\": 0,\n  \"seed\": \"<long>\",\n  \"stop\": \"<|endoftext|>\",\n  \"stream\": false,\n  \"stream_options\": null,\n  \"suffix\": null,\n  \"temperature\": 1,\n  \"top_p\": 1,\n  \"user\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c73b25db-c703-40b9-b222-96e100175499",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "completions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"model\": \"<string>\",\n  \"prompt\": \"This is a test.\",\n  \"best_of\": 1,\n  \"echo\": false,\n  \"frequency_penalty\": 0,\n  \"logit_bias\": null,\n  \"logprobs\": null,\n  \"max_tokens\": 16,\n  \"n\": 1,\n  \"presence_penalty\": 0,\n  \"seed\": \"<long>\",\n  \"stop\": \"\\n\",\n  \"stream\": false,\n  \"stream_options\": null,\n  \"suffix\": \"test.\",\n  \"temperature\": 1,\n  \"top_p\": 1,\n  \"user\": \"user-1234\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"text_completion\",\n  \"created\": 1023,\n  \"model\": \"string\",\n  \"choices\": [\n    {\n      \"finish_reason\": \"length\",\n      \"index\": 8352,\n      \"logprobs\": {\n        \"text_offset\": [\n          457,\n          3556\n        ],\n        \"token_logprobs\": [\n          6759.92450992552,\n          2584.80761968932\n        ],\n        \"tokens\": [\n          \"string\",\n          \"string\"\n        ],\n        \"top_logprobs\": [\n          {\n            \"key_0\": 1940.8001365208127\n          },\n          {\n            \"key_0\": 6052.282235845381,\n            \"key_1\": 3470.81418551491\n          }\n        ]\n      },\n      \"text\": \"string\"\n    },\n    {\n      \"finish_reason\": \"stop\",\n      \"index\": 5978,\n      \"logprobs\": {\n        \"text_offset\": [\n          9028,\n          4134\n        ],\n        \"token_logprobs\": [\n          7177.226050523435,\n          1505.6255303002708\n        ],\n        \"tokens\": [\n          \"string\",\n          \"string\"\n        ],\n        \"top_logprobs\": [\n          {\n            \"key_0\": 7242.857757845377,\n            \"key_1\": 3986.2297750858033\n          },\n          {\n            \"key_0\": 5595.532330877327,\n            \"key_1\": 5985.451068535976,\n            \"key_2\": 464.75739823694573,\n            \"key_3\": 8489.277176593378\n          }\n        ]\n      },\n      \"text\": \"string\"\n    }\n  ],\n  \"system_fingerprint\": \"string\",\n  \"usage\": {\n    \"prompt_tokens\": 0,\n    \"completion_tokens\": 0,\n    \"total_tokens\": 0,\n    \"completion_tokens_details\": {\n      \"accepted_prediction_tokens\": 0,\n      \"audio_tokens\": 0,\n      \"reasoning_tokens\": 0,\n      \"rejected_prediction_tokens\": 0\n    },\n    \"prompt_tokens_details\": {\n      \"audio_tokens\": 0,\n      \"cached_tokens\": 0\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.openai.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "57670c3e-aba3-4532-8b4c-a55dd9693422",
+    "name": "OpenAI Assistants Completions API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.\n\nContact Support:\n Name: OpenAI Support",
+      "type": "text/plain"
+    }
+  }
+}

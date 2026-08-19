@@ -1,0 +1,109 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "OpenAI Assistants User organization role assignments API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "User organization role assignments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Lists the organization roles assigned to a user within the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/organization/users/:user_id/roles",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the user to inspect."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "A limit on the number of organization role assignments to return."
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "Cursor for pagination. Provide the value from the previous response's `next` field to continue listing organization roles."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order for the returned organization roles."
+              }
+            ]
+          },
+          "docs": "Lists the organization roles assigned to a user within the organization."
+        },
+        {
+          "info": {
+            "name": "Assigns an organization role to a user within the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/organization/users/:user_id/roles",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the user that should receive the organization role."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Assigns an organization role to a user within the organization."
+        },
+        {
+          "info": {
+            "name": "Unassigns an organization role from a user within the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.openai.com/v1/organization/users/:user_id/roles/:role_id",
+            "params": [
+              {
+                "name": "user_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the user to modify."
+              },
+              {
+                "name": "role_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the organization role to remove from the user."
+              }
+            ]
+          },
+          "docs": "Unassigns an organization role from a user within the organization."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

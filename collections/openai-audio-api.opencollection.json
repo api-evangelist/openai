@@ -1,0 +1,185 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "OpenAI Assistants Audio API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Audio",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "OpenAI Generates audio from the input text.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/audio/speech",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "OpenAI Generates audio from the input text."
+        },
+        {
+          "info": {
+            "name": "OpenAI Transcribes audio into the input language.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/audio/transcriptions",
+            "body": {
+              "type": "multipart-form",
+              "data": []
+            }
+          },
+          "docs": "OpenAI Transcribes audio into the input language."
+        },
+        {
+          "info": {
+            "name": "OpenAI Translates audio into English.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/audio/translations",
+            "body": {
+              "type": "multipart-form",
+              "data": []
+            }
+          },
+          "docs": "OpenAI Translates audio into English."
+        },
+        {
+          "info": {
+            "name": "Returns a list of voice consent recordings.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/audio/voice_consents",
+            "params": [
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+              }
+            ]
+          },
+          "docs": "List consent recordings available to your organization for creating custom voices.\n\nSee the [custom voices guide](/docs/guides/text-to-speech#custom-voices). Custom voices are limited to eligible customers.\n"
+        },
+        {
+          "info": {
+            "name": "Upload a voice consent recording.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/audio/voice_consents",
+            "body": {
+              "type": "multipart-form",
+              "data": []
+            }
+          },
+          "docs": "Upload a consent recording that authorizes creation of a custom voice.\n\nSee the [custom voices guide](/docs/guides/text-to-speech#custom-voices) for requirements and best practices. Custom voices are limited to eligible customers.\n"
+        },
+        {
+          "info": {
+            "name": "Retrieves a voice consent recording.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/audio/voice_consents/:consent_id",
+            "params": [
+              {
+                "name": "consent_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the consent recording to retrieve."
+              }
+            ]
+          },
+          "docs": "Retrieve consent recording metadata used for creating custom voices.\n\nSee the [custom voices guide](/docs/guides/text-to-speech#custom-voices). Custom voices are limited to eligible customers.\n"
+        },
+        {
+          "info": {
+            "name": "Updates a voice consent recording (metadata only).",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/audio/voice_consents/:consent_id",
+            "params": [
+              {
+                "name": "consent_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the consent recording to update."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update consent recording metadata used for creating custom voices. This endpoint updates metadata only and does not replace the underlying audio.\n\nSee the [custom voices guide](/docs/guides/text-to-speech#custom-voices). Custom voices are limited to eligible customers.\n"
+        },
+        {
+          "info": {
+            "name": "Deletes a voice consent recording.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.openai.com/v1/audio/voice_consents/:consent_id",
+            "params": [
+              {
+                "name": "consent_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the consent recording to delete."
+              }
+            ]
+          },
+          "docs": "Delete a consent recording that was uploaded for creating custom voices.\n\nSee the [custom voices guide](/docs/guides/text-to-speech#custom-voices). Custom voices are limited to eligible customers.\n"
+        },
+        {
+          "info": {
+            "name": "Creates a custom voice.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/audio/voices",
+            "body": {
+              "type": "multipart-form",
+              "data": []
+            }
+          },
+          "docs": "Create a custom voice you can use for audio output (for example, in Text-to-Speech and the Realtime API). This requires an audio sample and a previously uploaded consent recording.\n\nSee the [custom voices guide](/docs/guides/text-to-speech#custom-voices) for requirements and best practices. Custom voices are limited to eligible customers.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

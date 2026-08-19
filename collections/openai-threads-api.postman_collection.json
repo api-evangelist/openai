@@ -1,0 +1,2342 @@
+{
+  "item": [
+    {
+      "id": "cab4232d-0bbc-40b0-ae5c-fb3429105748",
+      "name": "Threads",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "25070598-02df-4f31-a81b-8f4c6eaac9ef",
+          "name": "OpenAI Returns a list of message files.",
+          "request": {
+            "name": "OpenAI Returns a list of message files.",
+            "description": {},
+            "url": {
+              "path": [
+                "threads",
+                ":thread_id",
+                "messages",
+                ":message_id",
+                "files"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "desc",
+                  "description": "Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "before",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) The ID of the thread that the message and files belong to."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "message_id",
+                  "description": "(Required) The ID of the message that the files belongs to."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c2c1ad46-1980-4158-97f5-a32b6336e2cb",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "threads",
+                    ":thread_id",
+                    "messages",
+                    ":message_id",
+                    "files"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) The ID of the thread that the message and files belong to."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "message_id",
+                      "description": "(Required) The ID of the message that the files belongs to."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"object\": \"thread.message.file\",\n      \"created_at\": 2590,\n      \"message_id\": \"string\"\n    },\n    {\n      \"id\": \"string\",\n      \"object\": \"thread.message.file\",\n      \"created_at\": 4417,\n      \"message_id\": \"string\"\n    }\n  ],\n  \"first_id\": \"file-abc123\",\n  \"last_id\": \"file-abc456\",\n  \"has_more\": false,\n  \"items\": 9114.99991241614\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "af7452c4-8ac0-4342-a090-5174fbd3fe10",
+          "name": "OpenAI Retrieves a message file.",
+          "request": {
+            "name": "OpenAI Retrieves a message file.",
+            "description": {},
+            "url": {
+              "path": [
+                "threads",
+                ":thread_id",
+                "messages",
+                ":message_id",
+                "files",
+                ":file_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) The ID of the thread to which the message and File belong."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "message_id",
+                  "description": "(Required) The ID of the message the file belongs to."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "file_id",
+                  "description": "(Required) The ID of the file being retrieved."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "910feb1e-a997-4c13-8400-2e4a17c69ef1",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "threads",
+                    ":thread_id",
+                    "messages",
+                    ":message_id",
+                    "files",
+                    ":file_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) The ID of the thread to which the message and File belong."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "message_id",
+                      "description": "(Required) The ID of the message the file belongs to."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "file_id",
+                      "description": "(Required) The ID of the file being retrieved."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"thread.message.file\",\n  \"created_at\": 1178,\n  \"message_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "02bb191a-4f70-487a-a0d8-623d75a7eb94",
+          "name": "OpenAI Create a thread.",
+          "request": {
+            "name": "OpenAI Create a thread.",
+            "description": {},
+            "url": {
+              "path": [
+                "threads"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "3c5651ef-a996-4f51-8370-550a80ecdea6",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "threads"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"thread\",\n  \"created_at\": 6683,\n  \"metadata\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9065bbaf-58bd-459b-aa56-f19d50f3413e",
+          "name": "OpenAI Retrieves a thread.",
+          "request": {
+            "name": "OpenAI Retrieves a thread.",
+            "description": {},
+            "url": {
+              "path": [
+                "threads",
+                ":thread_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) The ID of the thread to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "fa1c4af6-4771-4d61-b461-fd81aae58f52",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "threads",
+                    ":thread_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) The ID of the thread to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"thread\",\n  \"created_at\": 6683,\n  \"metadata\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3151b99a-126d-4df9-9b88-f8c663bb305d",
+          "name": "OpenAI Modifies a thread.",
+          "request": {
+            "name": "OpenAI Modifies a thread.",
+            "description": {},
+            "url": {
+              "path": [
+                "threads",
+                ":thread_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) The ID of the thread to modify. Only the `metadata` can be modified."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "d3ec923c-1637-4b2a-977c-5aac5771750d",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "threads",
+                    ":thread_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) The ID of the thread to modify. Only the `metadata` can be modified."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"thread\",\n  \"created_at\": 6683,\n  \"metadata\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "541fe234-a9fc-4b88-8538-23fcaadef64a",
+          "name": "OpenAI Delete a thread.",
+          "request": {
+            "name": "OpenAI Delete a thread.",
+            "description": {},
+            "url": {
+              "path": [
+                "threads",
+                ":thread_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) The ID of the thread to delete."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2c5dc2b8-4e85-4475-9eb6-825153d0fe84",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "threads",
+                    ":thread_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) The ID of the thread to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"thread.deleted\",\n  \"deleted\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9cf4b59c-6ac1-4a75-b6c9-4633b43fb422",
+          "name": "OpenAI Returns a list of messages for a given thread.",
+          "request": {
+            "name": "OpenAI Returns a list of messages for a given thread.",
+            "description": {},
+            "url": {
+              "path": [
+                "threads",
+                ":thread_id",
+                "messages"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "desc",
+                  "description": "Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "before",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) The ID of the [thread](/docs/api-reference/threads) the messages belong to."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "050a109f-3906-4ae5-9e76-989f8e67d60b",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "threads",
+                    ":thread_id",
+                    "messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) The ID of the [thread](/docs/api-reference/threads) the messages belong to."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"object\": \"thread.message\",\n      \"created_at\": 8580,\n      \"thread_id\": \"string\",\n      \"role\": \"assistant\",\n      \"content\": [\n        {\n          \"value\": \"reference #/components/schemas/MessageContentImageFileObject not found in the OpenAPI spec\"\n        },\n        {\n          \"value\": \"reference #/components/schemas/MessageContentImageFileObject not found in the OpenAPI spec\"\n        }\n      ],\n      \"assistant_id\": \"string\",\n      \"run_id\": \"string\",\n      \"metadata\": {}\n    },\n    {\n      \"id\": \"string\",\n      \"object\": \"thread.message\",\n      \"created_at\": 7312,\n      \"thread_id\": \"string\",\n      \"role\": \"user\",\n      \"content\": [\n        {\n          \"value\": \"reference #/components/schemas/MessageContentImageFileObject not found in the OpenAPI spec\"\n        },\n        {\n          \"value\": \"reference #/components/schemas/MessageContentImageFileObject not found in the OpenAPI spec\"\n        }\n      ],\n      \"assistant_id\": \"string\",\n      \"run_id\": \"string\",\n      \"metadata\": {}\n    }\n  ],\n  \"first_id\": \"msg_abc123\",\n  \"last_id\": \"msg_abc123\",\n  \"has_more\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a954b222-45ab-4692-9a98-a23e65f566d2",
+          "name": "OpenAI Create a message.",
+          "request": {
+            "name": "OpenAI Create a message.",
+            "description": {},
+            "url": {
+              "path": [
+                "threads",
+                ":thread_id",
+                "messages"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) The ID of the [thread](/docs/api-reference/threads) to create a message for."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "23789a0b-03db-4be6-9ed7-50d17a135fc1",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "threads",
+                    ":thread_id",
+                    "messages"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) The ID of the [thread](/docs/api-reference/threads) to create a message for."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"thread.message\",\n  \"created_at\": 1613,\n  \"thread_id\": \"string\",\n  \"role\": \"assistant\",\n  \"content\": [\n    {\n      \"value\": \"reference #/components/schemas/MessageContentImageFileObject not found in the OpenAPI spec\"\n    },\n    {\n      \"value\": \"reference #/components/schemas/MessageContentImageFileObject not found in the OpenAPI spec\"\n    }\n  ],\n  \"assistant_id\": \"string\",\n  \"run_id\": \"string\",\n  \"file_ids\": [],\n  \"metadata\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "46a6765d-505c-47c5-96b4-f468edf9ae47",
+          "name": "OpenAI Retrieve a message.",
+          "request": {
+            "name": "OpenAI Retrieve a message.",
+            "description": {},
+            "url": {
+              "path": [
+                "threads",
+                ":thread_id",
+                "messages",
+                ":message_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) The ID of the [thread](/docs/api-reference/threads) to which this message belongs."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "message_id",
+                  "description": "(Required) The ID of the message to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3469f5c0-73c2-459b-bc8d-8f8b57257d6d",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "threads",
+                    ":thread_id",
+                    "messages",
+                    ":message_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) The ID of the [thread](/docs/api-reference/threads) to which this message belongs."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "message_id",
+                      "description": "(Required) The ID of the message to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"thread.message\",\n  \"created_at\": 1613,\n  \"thread_id\": \"string\",\n  \"role\": \"assistant\",\n  \"content\": [\n    {\n      \"value\": \"reference #/components/schemas/MessageContentImageFileObject not found in the OpenAPI spec\"\n    },\n    {\n      \"value\": \"reference #/components/schemas/MessageContentImageFileObject not found in the OpenAPI spec\"\n    }\n  ],\n  \"assistant_id\": \"string\",\n  \"run_id\": \"string\",\n  \"file_ids\": [],\n  \"metadata\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0ec5f7a8-af82-4dde-b455-561def7cccc5",
+          "name": "OpenAI Modifies a message.",
+          "request": {
+            "name": "OpenAI Modifies a message.",
+            "description": {},
+            "url": {
+              "path": [
+                "threads",
+                ":thread_id",
+                "messages",
+                ":message_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) The ID of the thread to which this message belongs."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "message_id",
+                  "description": "(Required) The ID of the message to modify."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "38f7ab0f-5734-4a04-9142-79c76e67eefb",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "threads",
+                    ":thread_id",
+                    "messages",
+                    ":message_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) The ID of the thread to which this message belongs."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "message_id",
+                      "description": "(Required) The ID of the message to modify."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"thread.message\",\n  \"created_at\": 1613,\n  \"thread_id\": \"string\",\n  \"role\": \"assistant\",\n  \"content\": [\n    {\n      \"value\": \"reference #/components/schemas/MessageContentImageFileObject not found in the OpenAPI spec\"\n    },\n    {\n      \"value\": \"reference #/components/schemas/MessageContentImageFileObject not found in the OpenAPI spec\"\n    }\n  ],\n  \"assistant_id\": \"string\",\n  \"run_id\": \"string\",\n  \"file_ids\": [],\n  \"metadata\": {}\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "63434fe9-5781-4d52-87eb-7adaed999686",
+          "name": "OpenAI Create a thread and run it in one request.",
+          "request": {
+            "name": "OpenAI Create a thread and run it in one request.",
+            "description": {},
+            "url": {
+              "path": [
+                "threads",
+                "runs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "00ebb1d6-392a-4707-bf63-7bdcd167c472",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "threads",
+                    "runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"thread.run\",\n  \"created_at\": 8237,\n  \"thread_id\": \"string\",\n  \"assistant_id\": \"string\",\n  \"status\": \"queued\",\n  \"required_action\": {\n    \"type\": \"submit_tool_outputs\",\n    \"submit_tool_outputs\": {\n      \"tool_calls\": [\n        {\n          \"value\": \"reference #/components/schemas/RunToolCallObject not found in the OpenAPI spec\"\n        },\n        {\n          \"value\": \"reference #/components/schemas/RunToolCallObject not found in the OpenAPI spec\"\n        }\n      ]\n    }\n  },\n  \"last_error\": {\n    \"code\": \"rate_limit_exceeded\",\n    \"message\": \"string\"\n  },\n  \"expires_at\": 5154,\n  \"started_at\": 5583,\n  \"cancelled_at\": 8676,\n  \"failed_at\": 3860,\n  \"completed_at\": 8736,\n  \"model\": \"string\",\n  \"instructions\": \"string\",\n  \"tools\": [],\n  \"file_ids\": [],\n  \"metadata\": {},\n  \"usage\": {\n    \"value\": \"reference #/components/schemas/RunCompletionUsage not found in the OpenAPI spec\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "234ff47e-35fc-4809-ada9-3ab34883e9a7",
+          "name": "OpenAI Returns a list of runs belonging to a thread.",
+          "request": {
+            "name": "OpenAI Returns a list of runs belonging to a thread.",
+            "description": {},
+            "url": {
+              "path": [
+                "threads",
+                ":thread_id",
+                "runs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "desc",
+                  "description": "Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "before",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) The ID of the thread the run belongs to."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1f4b9de0-eb67-4f62-9e48-8e61370d4edc",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "threads",
+                    ":thread_id",
+                    "runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) The ID of the thread the run belongs to."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"object\": \"thread.run\",\n      \"created_at\": 2015,\n      \"thread_id\": \"string\",\n      \"assistant_id\": \"string\",\n      \"status\": \"expired\",\n      \"required_action\": {\n        \"type\": \"submit_tool_outputs\",\n        \"submit_tool_outputs\": {\n          \"tool_calls\": [\n            {\n              \"value\": \"reference #/components/schemas/RunToolCallObject not found in the OpenAPI spec\"\n            },\n            {\n              \"value\": \"reference #/components/schemas/RunToolCallObject not found in the OpenAPI spec\"\n            }\n          ]\n        }\n      },\n      \"last_error\": {\n        \"code\": \"rate_limit_exceeded\",\n        \"message\": \"string\"\n      },\n      \"expires_at\": 9968,\n      \"started_at\": 7767,\n      \"cancelled_at\": 2162,\n      \"failed_at\": 4671,\n      \"completed_at\": 2409,\n      \"model\": \"string\",\n      \"instructions\": \"string\",\n      \"metadata\": {},\n      \"usage\": {\n        \"value\": \"reference #/components/schemas/RunCompletionUsage not found in the OpenAPI spec\"\n      }\n    },\n    {\n      \"id\": \"string\",\n      \"object\": \"thread.run\",\n      \"created_at\": 872,\n      \"thread_id\": \"string\",\n      \"assistant_id\": \"string\",\n      \"status\": \"requires_action\",\n      \"required_action\": {\n        \"type\": \"submit_tool_outputs\",\n        \"submit_tool_outputs\": {\n          \"tool_calls\": [\n            {\n              \"value\": \"reference #/components/schemas/RunToolCallObject not found in the OpenAPI spec\"\n            },\n            {\n              \"value\": \"reference #/components/schemas/RunToolCallObject not found in the OpenAPI spec\"\n            }\n          ]\n        }\n      },\n      \"last_error\": {\n        \"code\": \"rate_limit_exceeded\",\n        \"message\": \"string\"\n      },\n      \"expires_at\": 4555,\n      \"started_at\": 2282,\n      \"cancelled_at\": 2480,\n      \"failed_at\": 7900,\n      \"completed_at\": 2242,\n      \"model\": \"string\",\n      \"instructions\": \"string\",\n      \"metadata\": {},\n      \"usage\": {\n        \"value\": \"reference #/components/schemas/RunCompletionUsage not found in the OpenAPI spec\"\n      }\n    }\n  ],\n  \"first_id\": \"run_abc123\",\n  \"last_id\": \"run_abc456\",\n  \"has_more\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e4c83e2e-f317-42c5-a169-d10acab56db9",
+          "name": "OpenAI Create a run.",
+          "request": {
+            "name": "OpenAI Create a run.",
+            "description": {},
+            "url": {
+              "path": [
+                "threads",
+                ":thread_id",
+                "runs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) The ID of the thread to run."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "671ce807-c7f4-4ae3-89c8-f0651786b9a4",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "threads",
+                    ":thread_id",
+                    "runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) The ID of the thread to run."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"thread.run\",\n  \"created_at\": 4078,\n  \"thread_id\": \"string\",\n  \"assistant_id\": \"string\",\n  \"status\": \"failed\",\n  \"required_action\": {\n    \"type\": \"submit_tool_outputs\",\n    \"submit_tool_outputs\": {\n      \"tool_calls\": [\n        {\n          \"value\": \"reference #/components/schemas/RunToolCallObject not found in the OpenAPI spec\"\n        },\n        {\n          \"value\": \"reference #/components/schemas/RunToolCallObject not found in the OpenAPI spec\"\n        }\n      ]\n    }\n  },\n  \"last_error\": {\n    \"code\": \"server_error\",\n    \"message\": \"string\"\n  },\n  \"expires_at\": 8231,\n  \"started_at\": 6261,\n  \"cancelled_at\": 5451,\n  \"failed_at\": 375,\n  \"completed_at\": 4554,\n  \"model\": \"string\",\n  \"instructions\": \"string\",\n  \"tools\": [],\n  \"file_ids\": [],\n  \"metadata\": {},\n  \"usage\": {\n    \"value\": \"reference #/components/schemas/RunCompletionUsage not found in the OpenAPI spec\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3450547d-a911-4a3a-8c7c-c32d1d72df7b",
+          "name": "OpenAI Retrieves a run.",
+          "request": {
+            "name": "OpenAI Retrieves a run.",
+            "description": {},
+            "url": {
+              "path": [
+                "threads",
+                ":thread_id",
+                "runs",
+                ":run_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) The ID of the [thread](/docs/api-reference/threads) that was run."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "run_id",
+                  "description": "(Required) The ID of the run to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "5e9dc23b-3146-4cb2-9f21-4043395154db",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "threads",
+                    ":thread_id",
+                    "runs",
+                    ":run_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) The ID of the [thread](/docs/api-reference/threads) that was run."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) The ID of the run to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"thread.run\",\n  \"created_at\": 4078,\n  \"thread_id\": \"string\",\n  \"assistant_id\": \"string\",\n  \"status\": \"failed\",\n  \"required_action\": {\n    \"type\": \"submit_tool_outputs\",\n    \"submit_tool_outputs\": {\n      \"tool_calls\": [\n        {\n          \"value\": \"reference #/components/schemas/RunToolCallObject not found in the OpenAPI spec\"\n        },\n        {\n          \"value\": \"reference #/components/schemas/RunToolCallObject not found in the OpenAPI spec\"\n        }\n      ]\n    }\n  },\n  \"last_error\": {\n    \"code\": \"server_error\",\n    \"message\": \"string\"\n  },\n  \"expires_at\": 8231,\n  \"started_at\": 6261,\n  \"cancelled_at\": 5451,\n  \"failed_at\": 375,\n  \"completed_at\": 4554,\n  \"model\": \"string\",\n  \"instructions\": \"string\",\n  \"tools\": [],\n  \"file_ids\": [],\n  \"metadata\": {},\n  \"usage\": {\n    \"value\": \"reference #/components/schemas/RunCompletionUsage not found in the OpenAPI spec\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "01d1e56d-a651-421a-81c0-f1b638b49fb7",
+          "name": "OpenAI Modifies a run.",
+          "request": {
+            "name": "OpenAI Modifies a run.",
+            "description": {},
+            "url": {
+              "path": [
+                "threads",
+                ":thread_id",
+                "runs",
+                ":run_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) The ID of the [thread](/docs/api-reference/threads) that was run."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "run_id",
+                  "description": "(Required) The ID of the run to modify."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "8ee88e67-73eb-48dd-9958-6b6cdf1469c3",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "threads",
+                    ":thread_id",
+                    "runs",
+                    ":run_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) The ID of the [thread](/docs/api-reference/threads) that was run."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) The ID of the run to modify."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"thread.run\",\n  \"created_at\": 4078,\n  \"thread_id\": \"string\",\n  \"assistant_id\": \"string\",\n  \"status\": \"failed\",\n  \"required_action\": {\n    \"type\": \"submit_tool_outputs\",\n    \"submit_tool_outputs\": {\n      \"tool_calls\": [\n        {\n          \"value\": \"reference #/components/schemas/RunToolCallObject not found in the OpenAPI spec\"\n        },\n        {\n          \"value\": \"reference #/components/schemas/RunToolCallObject not found in the OpenAPI spec\"\n        }\n      ]\n    }\n  },\n  \"last_error\": {\n    \"code\": \"server_error\",\n    \"message\": \"string\"\n  },\n  \"expires_at\": 8231,\n  \"started_at\": 6261,\n  \"cancelled_at\": 5451,\n  \"failed_at\": 375,\n  \"completed_at\": 4554,\n  \"model\": \"string\",\n  \"instructions\": \"string\",\n  \"tools\": [],\n  \"file_ids\": [],\n  \"metadata\": {},\n  \"usage\": {\n    \"value\": \"reference #/components/schemas/RunCompletionUsage not found in the OpenAPI spec\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8f566ab9-dca9-49a8-91d2-f74954805d2c",
+          "name": "OpenAI When a run has the `status: \"requires_action\"` and `required_action.type` is `submit_tool_outputs`, this endpoint can be used to submit the outputs from the tool calls once they're all completed. All outputs must be submitted in a single request.",
+          "request": {
+            "name": "OpenAI When a run has the `status: \"requires_action\"` and `required_action.type` is `submit_tool_outputs`, this endpoint can be used to submit the outputs from the tool calls once they're all completed. All outputs must be submitted in a single request.",
+            "description": {},
+            "url": {
+              "path": [
+                "threads",
+                ":thread_id",
+                "runs",
+                ":run_id",
+                "submit_tool_outputs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) The ID of the [thread](/docs/api-reference/threads) to which this run belongs."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "run_id",
+                  "description": "(Required) The ID of the run that requires the tool output submission."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "c1eaf881-c1b9-489a-b0ec-3f3ba3697602",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "threads",
+                    ":thread_id",
+                    "runs",
+                    ":run_id",
+                    "submit_tool_outputs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) The ID of the [thread](/docs/api-reference/threads) to which this run belongs."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) The ID of the run that requires the tool output submission."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"thread.run\",\n  \"created_at\": 4078,\n  \"thread_id\": \"string\",\n  \"assistant_id\": \"string\",\n  \"status\": \"failed\",\n  \"required_action\": {\n    \"type\": \"submit_tool_outputs\",\n    \"submit_tool_outputs\": {\n      \"tool_calls\": [\n        {\n          \"value\": \"reference #/components/schemas/RunToolCallObject not found in the OpenAPI spec\"\n        },\n        {\n          \"value\": \"reference #/components/schemas/RunToolCallObject not found in the OpenAPI spec\"\n        }\n      ]\n    }\n  },\n  \"last_error\": {\n    \"code\": \"server_error\",\n    \"message\": \"string\"\n  },\n  \"expires_at\": 8231,\n  \"started_at\": 6261,\n  \"cancelled_at\": 5451,\n  \"failed_at\": 375,\n  \"completed_at\": 4554,\n  \"model\": \"string\",\n  \"instructions\": \"string\",\n  \"tools\": [],\n  \"file_ids\": [],\n  \"metadata\": {},\n  \"usage\": {\n    \"value\": \"reference #/components/schemas/RunCompletionUsage not found in the OpenAPI spec\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a5285afb-b077-4f49-b6d8-51cc44737110",
+          "name": "OpenAI Cancels a run that is `in_progress`.",
+          "request": {
+            "name": "OpenAI Cancels a run that is `in_progress`.",
+            "description": {},
+            "url": {
+              "path": [
+                "threads",
+                ":thread_id",
+                "runs",
+                ":run_id",
+                "cancel"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) The ID of the thread to which this run belongs."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "run_id",
+                  "description": "(Required) The ID of the run to cancel."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "daaa19ca-35c3-490c-bb99-979eecfc3886",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "threads",
+                    ":thread_id",
+                    "runs",
+                    ":run_id",
+                    "cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) The ID of the thread to which this run belongs."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) The ID of the run to cancel."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"thread.run\",\n  \"created_at\": 4078,\n  \"thread_id\": \"string\",\n  \"assistant_id\": \"string\",\n  \"status\": \"failed\",\n  \"required_action\": {\n    \"type\": \"submit_tool_outputs\",\n    \"submit_tool_outputs\": {\n      \"tool_calls\": [\n        {\n          \"value\": \"reference #/components/schemas/RunToolCallObject not found in the OpenAPI spec\"\n        },\n        {\n          \"value\": \"reference #/components/schemas/RunToolCallObject not found in the OpenAPI spec\"\n        }\n      ]\n    }\n  },\n  \"last_error\": {\n    \"code\": \"server_error\",\n    \"message\": \"string\"\n  },\n  \"expires_at\": 8231,\n  \"started_at\": 6261,\n  \"cancelled_at\": 5451,\n  \"failed_at\": 375,\n  \"completed_at\": 4554,\n  \"model\": \"string\",\n  \"instructions\": \"string\",\n  \"tools\": [],\n  \"file_ids\": [],\n  \"metadata\": {},\n  \"usage\": {\n    \"value\": \"reference #/components/schemas/RunCompletionUsage not found in the OpenAPI spec\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3ea7db97-d219-4345-a446-5cdb946f89db",
+          "name": "OpenAI Returns a list of run steps belonging to a run.",
+          "request": {
+            "name": "OpenAI Returns a list of run steps belonging to a run.",
+            "description": {},
+            "url": {
+              "path": [
+                "threads",
+                ":thread_id",
+                "runs",
+                ":run_id",
+                "steps"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "desc",
+                  "description": "Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "before",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.\n"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) The ID of the thread the run and run steps belong to."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "run_id",
+                  "description": "(Required) The ID of the run the run steps belong to."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6b11d654-316a-47b5-a4eb-38d852c9557f",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "threads",
+                    ":thread_id",
+                    "runs",
+                    ":run_id",
+                    "steps"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) The ID of the thread the run and run steps belong to."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) The ID of the run the run steps belong to."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"object\": \"thread.run.step\",\n      \"created_at\": 6498,\n      \"assistant_id\": \"string\",\n      \"thread_id\": \"string\",\n      \"run_id\": \"string\",\n      \"type\": \"tool_calls\",\n      \"status\": \"failed\",\n      \"step_details\": {\n        \"value\": \"reference #/components/schemas/RunStepDetailsMessageCreationObject not found in the OpenAPI spec\"\n      },\n      \"last_error\": {\n        \"code\": \"server_error\",\n        \"message\": \"string\"\n      },\n      \"expired_at\": 6324,\n      \"cancelled_at\": 6926,\n      \"failed_at\": 8363,\n      \"completed_at\": 3466,\n      \"metadata\": {},\n      \"usage\": {\n        \"value\": \"reference #/components/schemas/RunStepCompletionUsage not found in the OpenAPI spec\"\n      }\n    },\n    {\n      \"id\": \"string\",\n      \"object\": \"thread.run.step\",\n      \"created_at\": 3906,\n      \"assistant_id\": \"string\",\n      \"thread_id\": \"string\",\n      \"run_id\": \"string\",\n      \"type\": \"tool_calls\",\n      \"status\": \"expired\",\n      \"step_details\": {\n        \"value\": \"reference #/components/schemas/RunStepDetailsMessageCreationObject not found in the OpenAPI spec\"\n      },\n      \"last_error\": {\n        \"code\": \"server_error\",\n        \"message\": \"string\"\n      },\n      \"expired_at\": 2812,\n      \"cancelled_at\": 1498,\n      \"failed_at\": 2151,\n      \"completed_at\": 5335,\n      \"metadata\": {},\n      \"usage\": {\n        \"value\": \"reference #/components/schemas/RunStepCompletionUsage not found in the OpenAPI spec\"\n      }\n    }\n  ],\n  \"first_id\": \"step_abc123\",\n  \"last_id\": \"step_abc456\",\n  \"has_more\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c50790fc-5a7a-4080-8285-30973754e4ac",
+          "name": "OpenAI Retrieves a run step.",
+          "request": {
+            "name": "OpenAI Retrieves a run step.",
+            "description": {},
+            "url": {
+              "path": [
+                "threads",
+                ":thread_id",
+                "runs",
+                ":run_id",
+                "steps",
+                ":step_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) The ID of the thread to which the run and run step belongs."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "run_id",
+                  "description": "(Required) The ID of the run to which the run step belongs."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "step_id",
+                  "description": "(Required) The ID of the run step to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "282c4897-6006-472f-a696-144c595df16d",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "threads",
+                    ":thread_id",
+                    "runs",
+                    ":run_id",
+                    "steps",
+                    ":step_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) The ID of the thread to which the run and run step belongs."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) The ID of the run to which the run step belongs."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "step_id",
+                      "description": "(Required) The ID of the run step to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"thread.run.step\",\n  \"created_at\": 2303,\n  \"assistant_id\": \"string\",\n  \"thread_id\": \"string\",\n  \"run_id\": \"string\",\n  \"type\": \"message_creation\",\n  \"status\": \"completed\",\n  \"step_details\": {\n    \"value\": \"reference #/components/schemas/RunStepDetailsMessageCreationObject not found in the OpenAPI spec\"\n  },\n  \"last_error\": {\n    \"code\": \"server_error\",\n    \"message\": \"string\"\n  },\n  \"expired_at\": 7521,\n  \"cancelled_at\": 8975,\n  \"failed_at\": 3186,\n  \"completed_at\": 2853,\n  \"metadata\": {},\n  \"usage\": {\n    \"value\": \"reference #/components/schemas/RunStepCompletionUsage not found in the OpenAPI spec\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.openai.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "ff5c0a8c-1a7e-46ad-8315-2d81ff0fb319",
+    "name": "OpenAI Assistants Threads API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.\n\nContact Support:\n Name: OpenAI Support",
+      "type": "text/plain"
+    }
+  }
+}

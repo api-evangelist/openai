@@ -1,0 +1,1598 @@
+{
+  "item": [
+    {
+      "id": "f97d6513-dce0-4483-b0e2-197b6350d1af",
+      "name": "Evals",
+      "description": {
+        "content": "Manage and run evals in the OpenAI platform.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "1fecf9ba-e1a5-40cb-803e-c9e5a144785d",
+          "name": "List evaluations for a project.\n",
+          "request": {
+            "name": "List evaluations for a project.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "evals"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "Identifier for the last eval from the previous pagination request."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of evals to retrieve."
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "asc",
+                  "description": "Sort order for evals by timestamp. Use `asc` for ascending order or `desc` for descending order."
+                },
+                {
+                  "disabled": false,
+                  "key": "order_by",
+                  "value": "created_at",
+                  "description": "Evals can be ordered by creation time or last updated time. Use\n`created_at` for creation time or `updated_at` for last updated time.\n"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3b211089-9f20-4b96-8be2-42070807f706",
+              "name": "A list of evals",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "evals"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc"
+                    },
+                    {
+                      "key": "order_by",
+                      "value": "created_at"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"data_source_config\": {\n        \"type\": \"custom\",\n        \"schema\": {\n          \"key_0\": 7036.874263911576,\n          \"key_1\": true\n        }\n      },\n      \"object\": \"eval\",\n      \"testing_criteria\": \"eval\",\n      \"name\": \"Chatbot effectiveness Evaluation\",\n      \"created_at\": 984,\n      \"metadata\": {\n        \"key_0\": \"string\"\n      }\n    },\n    {\n      \"id\": \"string\",\n      \"data_source_config\": {\n        \"type\": \"custom\",\n        \"schema\": {\n          \"key_0\": 9601,\n          \"key_1\": \"string\",\n          \"key_2\": false\n        }\n      },\n      \"object\": \"eval\",\n      \"testing_criteria\": \"eval\",\n      \"name\": \"Chatbot effectiveness Evaluation\",\n      \"created_at\": 7527,\n      \"metadata\": {\n        \"key_0\": \"string\"\n      }\n    }\n  ],\n  \"first_id\": \"string\",\n  \"last_id\": \"string\",\n  \"has_more\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "083db84f-95a3-475b-8deb-aaf91cef95a8",
+          "name": "Create the structure of an evaluation that can be used to test a model's performance.\nAn evaluation is a set of testing criteria and the config for a data source, which dictates the schema of the data used in the evaluation. After creating an evaluation, you can run it on different models and model parameters. We support several types of graders and datasources.\nFor more information, see the [Evals guide](/docs/guides/evals).\n",
+          "request": {
+            "name": "Create the structure of an evaluation that can be used to test a model's performance.\nAn evaluation is a set of testing criteria and the config for a data source, which dictates the schema of the data used in the evaluation. After creating an evaluation, you can run it on different models and model parameters. We support several types of graders and datasources.\nFor more information, see the [Evals guide](/docs/guides/evals).\n",
+            "description": {},
+            "url": {
+              "path": [
+                "evals"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data_source_config\": {\n    \"item_schema\": {\n      \"key_0\": \"string\",\n      \"key_1\": 8273.379724781207\n    },\n    \"type\": \"custom\",\n    \"include_sample_schema\": false\n  },\n  \"testing_criteria\": [\n    {\n      \"type\": \"<string>\",\n      \"model\": \"<string>\",\n      \"input\": [\n        {\n          \"role\": \"<string>\",\n          \"content\": \"<string>\"\n        },\n        {\n          \"role\": \"<string>\",\n          \"content\": \"<string>\"\n        }\n      ],\n      \"passing_labels\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"labels\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"name\": \"<string>\"\n    },\n    {\n      \"type\": \"<string>\",\n      \"model\": \"<string>\",\n      \"input\": [\n        {\n          \"role\": \"<string>\",\n          \"content\": \"<string>\"\n        },\n        {\n          \"role\": \"<string>\",\n          \"content\": \"<string>\"\n        }\n      ],\n      \"passing_labels\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"labels\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"name\": \"<string>\"\n    }\n  ],\n  \"name\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "022da1a5-d78e-417c-8f0d-a7c6ce79a073",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "evals"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data_source_config\": {\n    \"item_schema\": {\n      \"key_0\": \"string\"\n    },\n    \"type\": \"custom\",\n    \"include_sample_schema\": false\n  },\n  \"testing_criteria\": [\n    {\n      \"type\": \"<string>\",\n      \"model\": \"<string>\",\n      \"input\": [\n        {\n          \"role\": \"<string>\",\n          \"content\": \"<string>\"\n        },\n        {\n          \"role\": \"<string>\",\n          \"content\": \"<string>\"\n        }\n      ],\n      \"passing_labels\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"labels\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"name\": \"<string>\"\n    },\n    {\n      \"type\": \"<string>\",\n      \"model\": \"<string>\",\n      \"input\": [\n        {\n          \"role\": \"<string>\",\n          \"content\": \"<string>\"\n        },\n        {\n          \"role\": \"<string>\",\n          \"content\": \"<string>\"\n        }\n      ],\n      \"passing_labels\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"labels\": [\n        \"<string>\",\n        \"<string>\"\n      ],\n      \"name\": \"<string>\"\n    }\n  ],\n  \"name\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"data_source_config\": {\n    \"type\": \"custom\",\n    \"schema\": {\n      \"key_0\": 5717,\n      \"key_1\": \"string\"\n    }\n  },\n  \"object\": \"eval\",\n  \"testing_criteria\": \"eval\",\n  \"name\": \"Chatbot effectiveness Evaluation\",\n  \"created_at\": 3077,\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "c12d6180-b3b8-4a35-9c0e-24d5ac042d4c",
+          "name": "Get an evaluation by ID.\n",
+          "request": {
+            "name": "Get an evaluation by ID.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "evals",
+                ":eval_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "eval_id",
+                  "description": "(Required) The ID of the evaluation to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "d5844f4c-1966-4b70-ba45-3d120d8a9ac5",
+              "name": "The evaluation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "evals",
+                    ":eval_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "eval_id",
+                      "description": "(Required) The ID of the evaluation to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"data_source_config\": {\n    \"type\": \"custom\",\n    \"schema\": {\n      \"key_0\": 1887.4390100372862\n    }\n  },\n  \"object\": \"eval\",\n  \"testing_criteria\": \"eval\",\n  \"name\": \"Chatbot effectiveness Evaluation\",\n  \"created_at\": 1409,\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "91e0a373-a54f-40f6-b7cb-58ee1be192a2",
+          "name": "Update certain properties of an evaluation.\n",
+          "request": {
+            "name": "Update certain properties of an evaluation.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "evals",
+                ":eval_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "eval_id",
+                  "description": "(Required) The ID of the evaluation to update."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "e32473ff-7fd3-4fb7-9d57-ea34f6414f78",
+              "name": "The updated evaluation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "evals",
+                    ":eval_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "eval_id",
+                      "description": "(Required) The ID of the evaluation to update."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"data_source_config\": {\n    \"type\": \"custom\",\n    \"schema\": {\n      \"key_0\": 1887.4390100372862\n    }\n  },\n  \"object\": \"eval\",\n  \"testing_criteria\": \"eval\",\n  \"name\": \"Chatbot effectiveness Evaluation\",\n  \"created_at\": 1409,\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6ae29bff-1621-46d7-ba07-6c4441f3fe29",
+          "name": "Delete an evaluation.\n",
+          "request": {
+            "name": "Delete an evaluation.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "evals",
+                ":eval_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "eval_id",
+                  "description": "(Required) The ID of the evaluation to delete."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1b04b907-9665-4295-9a9d-8490d305ac6d",
+              "name": "Successfully deleted the evaluation.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "evals",
+                    ":eval_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "eval_id",
+                      "description": "(Required) The ID of the evaluation to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"eval.deleted\",\n  \"deleted\": true,\n  \"eval_id\": \"eval_abc123\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "a356d925-2a4b-4557-8330-77b1b20f22e4",
+              "name": "Evaluation not found.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "evals",
+                    ":eval_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "eval_id",
+                      "description": "(Required) The ID of the evaluation to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"message\": \"string\",\n  \"param\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9af3b67e-f395-4871-9c47-a3d788a43607",
+          "name": "Get a list of runs for an evaluation.\n",
+          "request": {
+            "name": "Get a list of runs for an evaluation.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "evals",
+                ":eval_id",
+                "runs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "Identifier for the last run from the previous pagination request."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of runs to retrieve."
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "asc",
+                  "description": "Sort order for runs by timestamp. Use `asc` for ascending order or `desc` for descending order. Defaults to `asc`."
+                },
+                {
+                  "disabled": false,
+                  "key": "status",
+                  "value": "<string>",
+                  "description": "Filter runs by status. One of `queued` | `in_progress` | `failed` | `completed` | `canceled`."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "eval_id",
+                  "description": "(Required) The ID of the evaluation to retrieve runs for."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "3bd6dc4e-fadf-46cf-b18d-7702512de092",
+              "name": "A list of runs for the evaluation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "evals",
+                    ":eval_id",
+                    "runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "eval_id",
+                      "description": "(Required) The ID of the evaluation to retrieve runs for."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": \"eval.run\",\n      \"id\": \"string\",\n      \"eval_id\": \"string\",\n      \"status\": \"string\",\n      \"model\": \"string\",\n      \"name\": \"string\",\n      \"created_at\": 5810,\n      \"report_url\": \"https://IWFFzRUsXt.bcLo0,L1quSShsVPKBNk1+jFa82xpACDcVf3YNeKuC4VuXuRuiIHjutAaydd+7z\",\n      \"result_counts\": {\n        \"total\": 7423,\n        \"errored\": 8358,\n        \"failed\": 578,\n        \"passed\": 9616\n      },\n      \"per_model_usage\": [\n        {\n          \"model_name\": \"string\",\n          \"invocation_count\": 4208,\n          \"prompt_tokens\": 4460,\n          \"completion_tokens\": 9209,\n          \"total_tokens\": 1066,\n          \"cached_tokens\": 4599\n        },\n        {\n          \"model_name\": \"string\",\n          \"invocation_count\": 5222,\n          \"prompt_tokens\": 790,\n          \"completion_tokens\": 1002,\n          \"total_tokens\": 3274,\n          \"cached_tokens\": 1894\n        }\n      ],\n      \"per_testing_criteria_results\": [\n        {\n          \"testing_criteria\": \"string\",\n          \"passed\": 3005,\n          \"failed\": 778\n        },\n        {\n          \"testing_criteria\": \"string\",\n          \"passed\": 85,\n          \"failed\": 4722\n        }\n      ],\n      \"data_source\": {\n        \"type\": \"jsonl\",\n        \"source\": {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"content\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      },\n      \"metadata\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\"\n      },\n      \"error\": {\n        \"code\": \"string\",\n        \"message\": \"string\"\n      }\n    },\n    {\n      \"object\": \"eval.run\",\n      \"id\": \"string\",\n      \"eval_id\": \"string\",\n      \"status\": \"string\",\n      \"model\": \"string\",\n      \"name\": \"string\",\n      \"created_at\": 71,\n      \"report_url\": \"https://sQxuffLaGPWJDcUAXhUAKpDIXm.qaGDPseGCPtk0WPSi3DjEmQ2KSHv8B9JJV6+VzWJJgB.GV0QXs8L\",\n      \"result_counts\": {\n        \"total\": 9852,\n        \"errored\": 2329,\n        \"failed\": 6092,\n        \"passed\": 4607\n      },\n      \"per_model_usage\": [\n        {\n          \"model_name\": \"string\",\n          \"invocation_count\": 2942,\n          \"prompt_tokens\": 3050,\n          \"completion_tokens\": 244,\n          \"total_tokens\": 4006,\n          \"cached_tokens\": 7856\n        },\n        {\n          \"model_name\": \"string\",\n          \"invocation_count\": 7175,\n          \"prompt_tokens\": 3766,\n          \"completion_tokens\": 3458,\n          \"total_tokens\": 3851,\n          \"cached_tokens\": 5036\n        }\n      ],\n      \"per_testing_criteria_results\": [\n        {\n          \"testing_criteria\": \"string\",\n          \"passed\": 9531,\n          \"failed\": 1328\n        },\n        {\n          \"testing_criteria\": \"string\",\n          \"passed\": 7591,\n          \"failed\": 8854\n        }\n      ],\n      \"data_source\": {\n        \"type\": \"jsonl\",\n        \"source\": {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"content\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      },\n      \"metadata\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\",\n        \"key_2\": \"<string>\"\n      },\n      \"error\": {\n        \"code\": \"string\",\n        \"message\": \"string\"\n      }\n    }\n  ],\n  \"first_id\": \"string\",\n  \"last_id\": \"string\",\n  \"has_more\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "26e1523f-a504-4a6e-9b12-5c3b62ddf282",
+          "name": "Kicks off a new run for a given evaluation, specifying the data source, and what model configuration to use to test. The datasource will be validated against the schema specified in the config of the evaluation.\n",
+          "request": {
+            "name": "Kicks off a new run for a given evaluation, specifying the data source, and what model configuration to use to test. The datasource will be validated against the schema specified in the config of the evaluation.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "evals",
+                ":eval_id",
+                "runs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "eval_id",
+                  "description": "(Required) The ID of the evaluation to create a run for."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"data_source\": {\n    \"type\": \"jsonl\",\n    \"source\": {\n      \"type\": \"file_content\",\n      \"content\": [\n        {\n          \"item\": {\n            \"key_0\": 539,\n            \"key_1\": \"string\"\n          },\n          \"sample\": {\n            \"key_0\": \"string\",\n            \"key_1\": \"string\",\n            \"key_2\": false\n          }\n        },\n        {\n          \"item\": {\n            \"key_0\": 5786.2465784294845\n          },\n          \"sample\": {\n            \"key_0\": 6541.350581066825,\n            \"key_1\": false,\n            \"key_2\": 4411\n          }\n        }\n      ]\n    }\n  },\n  \"name\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "ac0b454e-8f76-48b5-a917-3d536734a915",
+              "name": "Successfully created a run for the evaluation",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "evals",
+                    ":eval_id",
+                    "runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "eval_id",
+                      "description": "(Required) The ID of the evaluation to create a run for."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data_source\": {\n    \"type\": \"jsonl\",\n    \"source\": {\n      \"type\": \"file_content\",\n      \"content\": [\n        {\n          \"item\": {\n            \"key_0\": \"string\",\n            \"key_1\": 3407.568417855881\n          },\n          \"sample\": {\n            \"key_0\": 1200,\n            \"key_1\": \"string\",\n            \"key_2\": 7383.376321788718,\n            \"key_3\": 9427.501991885025\n          }\n        },\n        {\n          \"item\": {\n            \"key_0\": false\n          },\n          \"sample\": {\n            \"key_0\": 5745.827632081208,\n            \"key_1\": 4826\n          }\n        }\n      ]\n    }\n  },\n  \"name\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Created",
+              "code": 201,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"eval.run\",\n  \"id\": \"string\",\n  \"eval_id\": \"string\",\n  \"status\": \"string\",\n  \"model\": \"string\",\n  \"name\": \"string\",\n  \"created_at\": 5484,\n  \"report_url\": \"https://eJablBrAJyBJp.smfJlfFm,lTHbSl8OeYGXuUT-2r2vCDoWE.I2aQ,t6-qbaknU5-UjuYuovN\",\n  \"result_counts\": {\n    \"total\": 4009,\n    \"errored\": 1339,\n    \"failed\": 2264,\n    \"passed\": 7363\n  },\n  \"per_model_usage\": [\n    {\n      \"model_name\": \"string\",\n      \"invocation_count\": 7655,\n      \"prompt_tokens\": 1323,\n      \"completion_tokens\": 2832,\n      \"total_tokens\": 6394,\n      \"cached_tokens\": 2172\n    },\n    {\n      \"model_name\": \"string\",\n      \"invocation_count\": 2373,\n      \"prompt_tokens\": 9605,\n      \"completion_tokens\": 436,\n      \"total_tokens\": 9321,\n      \"cached_tokens\": 3723\n    }\n  ],\n  \"per_testing_criteria_results\": [\n    {\n      \"testing_criteria\": \"string\",\n      \"passed\": 3392,\n      \"failed\": 4812\n    },\n    {\n      \"testing_criteria\": \"string\",\n      \"passed\": 3613,\n      \"failed\": 6304\n    }\n  ],\n  \"data_source\": {\n    \"type\": \"jsonl\",\n    \"source\": {\n      \"type\": \"file_content\",\n      \"content\": [\n        {\n          \"item\": {\n            \"key_0\": 6162.584393508349,\n            \"key_1\": 6136.88088395764\n          },\n          \"sample\": {\n            \"key_0\": \"string\"\n          }\n        },\n        {\n          \"item\": {\n            \"key_0\": 7218.462163138114,\n            \"key_1\": \"string\"\n          },\n          \"sample\": {\n            \"key_0\": 2341,\n            \"key_1\": true\n          }\n        }\n      ]\n    }\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "22b3ba23-a9e1-4df7-9973-7f5d63f5d088",
+              "name": "Bad request (for example, missing eval object)",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "evals",
+                    ":eval_id",
+                    "runs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "eval_id",
+                      "description": "(Required) The ID of the evaluation to create a run for."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"data_source\": {\n    \"type\": \"jsonl\",\n    \"source\": {\n      \"type\": \"file_content\",\n      \"content\": [\n        {\n          \"item\": {\n            \"key_0\": \"string\",\n            \"key_1\": 3407.568417855881\n          },\n          \"sample\": {\n            \"key_0\": 1200,\n            \"key_1\": \"string\",\n            \"key_2\": 7383.376321788718,\n            \"key_3\": 9427.501991885025\n          }\n        },\n        {\n          \"item\": {\n            \"key_0\": false\n          },\n          \"sample\": {\n            \"key_0\": 5745.827632081208,\n            \"key_1\": 4826\n          }\n        }\n      ]\n    }\n  },\n  \"name\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"message\": \"string\",\n  \"param\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "78c025e2-49d5-4139-9da0-10bb0db17766",
+          "name": "Get an evaluation run by ID.\n",
+          "request": {
+            "name": "Get an evaluation run by ID.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "evals",
+                ":eval_id",
+                "runs",
+                ":run_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "eval_id",
+                  "description": "(Required) The ID of the evaluation to retrieve runs for."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "run_id",
+                  "description": "(Required) The ID of the run to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "74fef608-4032-4776-bec2-c91bfb25f10e",
+              "name": "The evaluation run",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "evals",
+                    ":eval_id",
+                    "runs",
+                    ":run_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "eval_id",
+                      "description": "(Required) The ID of the evaluation to retrieve runs for."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) The ID of the run to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"eval.run\",\n  \"id\": \"string\",\n  \"eval_id\": \"string\",\n  \"status\": \"string\",\n  \"model\": \"string\",\n  \"name\": \"string\",\n  \"created_at\": 5484,\n  \"report_url\": \"https://eJablBrAJyBJp.smfJlfFm,lTHbSl8OeYGXuUT-2r2vCDoWE.I2aQ,t6-qbaknU5-UjuYuovN\",\n  \"result_counts\": {\n    \"total\": 4009,\n    \"errored\": 1339,\n    \"failed\": 2264,\n    \"passed\": 7363\n  },\n  \"per_model_usage\": [\n    {\n      \"model_name\": \"string\",\n      \"invocation_count\": 7655,\n      \"prompt_tokens\": 1323,\n      \"completion_tokens\": 2832,\n      \"total_tokens\": 6394,\n      \"cached_tokens\": 2172\n    },\n    {\n      \"model_name\": \"string\",\n      \"invocation_count\": 2373,\n      \"prompt_tokens\": 9605,\n      \"completion_tokens\": 436,\n      \"total_tokens\": 9321,\n      \"cached_tokens\": 3723\n    }\n  ],\n  \"per_testing_criteria_results\": [\n    {\n      \"testing_criteria\": \"string\",\n      \"passed\": 3392,\n      \"failed\": 4812\n    },\n    {\n      \"testing_criteria\": \"string\",\n      \"passed\": 3613,\n      \"failed\": 6304\n    }\n  ],\n  \"data_source\": {\n    \"type\": \"jsonl\",\n    \"source\": {\n      \"type\": \"file_content\",\n      \"content\": [\n        {\n          \"item\": {\n            \"key_0\": 6162.584393508349,\n            \"key_1\": 6136.88088395764\n          },\n          \"sample\": {\n            \"key_0\": \"string\"\n          }\n        },\n        {\n          \"item\": {\n            \"key_0\": 7218.462163138114,\n            \"key_1\": \"string\"\n          },\n          \"sample\": {\n            \"key_0\": 2341,\n            \"key_1\": true\n          }\n        }\n      ]\n    }\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "dc62f795-e3d5-4f65-82f1-e1add04b3472",
+          "name": "Cancel an ongoing evaluation run.\n",
+          "request": {
+            "name": "Cancel an ongoing evaluation run.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "evals",
+                ":eval_id",
+                "runs",
+                ":run_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "eval_id",
+                  "description": "(Required) The ID of the evaluation whose run you want to cancel."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "run_id",
+                  "description": "(Required) The ID of the run to cancel."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "b421b838-98c0-472d-850c-5aa69b2915ad",
+              "name": "The canceled eval run object",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "evals",
+                    ":eval_id",
+                    "runs",
+                    ":run_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "eval_id",
+                      "description": "(Required) The ID of the evaluation whose run you want to cancel."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) The ID of the run to cancel."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"eval.run\",\n  \"id\": \"string\",\n  \"eval_id\": \"string\",\n  \"status\": \"string\",\n  \"model\": \"string\",\n  \"name\": \"string\",\n  \"created_at\": 5484,\n  \"report_url\": \"https://eJablBrAJyBJp.smfJlfFm,lTHbSl8OeYGXuUT-2r2vCDoWE.I2aQ,t6-qbaknU5-UjuYuovN\",\n  \"result_counts\": {\n    \"total\": 4009,\n    \"errored\": 1339,\n    \"failed\": 2264,\n    \"passed\": 7363\n  },\n  \"per_model_usage\": [\n    {\n      \"model_name\": \"string\",\n      \"invocation_count\": 7655,\n      \"prompt_tokens\": 1323,\n      \"completion_tokens\": 2832,\n      \"total_tokens\": 6394,\n      \"cached_tokens\": 2172\n    },\n    {\n      \"model_name\": \"string\",\n      \"invocation_count\": 2373,\n      \"prompt_tokens\": 9605,\n      \"completion_tokens\": 436,\n      \"total_tokens\": 9321,\n      \"cached_tokens\": 3723\n    }\n  ],\n  \"per_testing_criteria_results\": [\n    {\n      \"testing_criteria\": \"string\",\n      \"passed\": 3392,\n      \"failed\": 4812\n    },\n    {\n      \"testing_criteria\": \"string\",\n      \"passed\": 3613,\n      \"failed\": 6304\n    }\n  ],\n  \"data_source\": {\n    \"type\": \"jsonl\",\n    \"source\": {\n      \"type\": \"file_content\",\n      \"content\": [\n        {\n          \"item\": {\n            \"key_0\": 6162.584393508349,\n            \"key_1\": 6136.88088395764\n          },\n          \"sample\": {\n            \"key_0\": \"string\"\n          }\n        },\n        {\n          \"item\": {\n            \"key_0\": 7218.462163138114,\n            \"key_1\": \"string\"\n          },\n          \"sample\": {\n            \"key_0\": 2341,\n            \"key_1\": true\n          }\n        }\n      ]\n    }\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"error\": {\n    \"code\": \"string\",\n    \"message\": \"string\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "31da8244-2f5f-4344-8027-a773384a1036",
+          "name": "Delete an eval run.\n",
+          "request": {
+            "name": "Delete an eval run.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "evals",
+                ":eval_id",
+                "runs",
+                ":run_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "eval_id",
+                  "description": "(Required) The ID of the evaluation to delete the run from."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "run_id",
+                  "description": "(Required) The ID of the run to delete."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "f7efa552-5df4-47ea-8f3a-aba40eb36ad3",
+              "name": "Successfully deleted the eval run",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "evals",
+                    ":eval_id",
+                    "runs",
+                    ":run_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "eval_id",
+                      "description": "(Required) The ID of the evaluation to delete the run from."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) The ID of the run to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"eval.run.deleted\",\n  \"deleted\": true,\n  \"run_id\": \"evalrun_677469f564d48190807532a852da3afb\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "1abb7195-5160-4b83-a00b-6cb7361142b2",
+              "name": "Run not found",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "evals",
+                    ":eval_id",
+                    "runs",
+                    ":run_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "eval_id",
+                      "description": "(Required) The ID of the evaluation to delete the run from."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) The ID of the run to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Not Found",
+              "code": 404,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"type\": \"string\",\n  \"message\": \"string\",\n  \"param\": \"string\",\n  \"code\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d9609b3c-067e-467a-bc8f-c5d4f05e7b03",
+          "name": "Get a list of output items for an evaluation run.\n",
+          "request": {
+            "name": "Get a list of output items for an evaluation run.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "evals",
+                ":eval_id",
+                "runs",
+                ":run_id",
+                "output_items"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "Identifier for the last output item from the previous pagination request."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "Number of output items to retrieve."
+                },
+                {
+                  "disabled": false,
+                  "key": "status",
+                  "value": "<string>",
+                  "description": "Filter output items by status. Use `failed` to filter by failed output\nitems or `pass` to filter by passed output items.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "asc",
+                  "description": "Sort order for output items by timestamp. Use `asc` for ascending order or `desc` for descending order. Defaults to `asc`."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "eval_id",
+                  "description": "(Required) The ID of the evaluation to retrieve runs for."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "run_id",
+                  "description": "(Required) The ID of the run to retrieve output items for."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c4ee0e52-0bc5-4293-9938-5deb959875b1",
+              "name": "A list of output items for the evaluation run",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "evals",
+                    ":eval_id",
+                    "runs",
+                    ":run_id",
+                    "output_items"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "status",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "eval_id",
+                      "description": "(Required) The ID of the evaluation to retrieve runs for."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) The ID of the run to retrieve output items for."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": \"eval.run.output_item\",\n      \"id\": \"string\",\n      \"run_id\": \"string\",\n      \"eval_id\": \"string\",\n      \"created_at\": 4281,\n      \"status\": \"string\",\n      \"datasource_item_id\": 4798,\n      \"datasource_item\": {\n        \"key_0\": 7518.219575559909,\n        \"key_1\": 3873,\n        \"key_2\": \"string\",\n        \"key_3\": 2108,\n        \"key_4\": 6338\n      },\n      \"results\": [\n        {\n          \"name\": \"string\",\n          \"score\": 3812.997138180153,\n          \"passed\": false,\n          \"type\": \"string\",\n          \"sample\": {\n            \"key_0\": true,\n            \"key_1\": 763.3797754690896,\n            \"key_2\": 1314\n          }\n        },\n        {\n          \"name\": \"string\",\n          \"score\": 4645.898467382721,\n          \"passed\": false,\n          \"type\": \"string\",\n          \"sample\": {\n            \"key_0\": 4155.2999525821015\n          }\n        }\n      ],\n      \"sample\": {\n        \"input\": [\n          {\n            \"role\": \"string\",\n            \"content\": \"string\"\n          },\n          {\n            \"role\": \"string\",\n            \"content\": \"string\"\n          }\n        ],\n        \"output\": [\n          {\n            \"role\": \"string\",\n            \"content\": \"string\"\n          },\n          {\n            \"role\": \"string\",\n            \"content\": \"string\"\n          }\n        ],\n        \"finish_reason\": \"string\",\n        \"model\": \"string\",\n        \"usage\": {\n          \"total_tokens\": 2586,\n          \"completion_tokens\": 5221,\n          \"prompt_tokens\": 4270,\n          \"cached_tokens\": 7749\n        },\n        \"error\": {\n          \"code\": \"string\",\n          \"message\": \"string\"\n        },\n        \"temperature\": 8888.21726515121,\n        \"max_completion_tokens\": 2239,\n        \"top_p\": 1828.3554980222061,\n        \"seed\": 1679\n      }\n    },\n    {\n      \"object\": \"eval.run.output_item\",\n      \"id\": \"string\",\n      \"run_id\": \"string\",\n      \"eval_id\": \"string\",\n      \"created_at\": 1466,\n      \"status\": \"string\",\n      \"datasource_item_id\": 1924,\n      \"datasource_item\": {\n        \"key_0\": 3630,\n        \"key_1\": 6791.850587855649,\n        \"key_2\": true,\n        \"key_3\": 7847,\n        \"key_4\": 2891.6531024401484\n      },\n      \"results\": [\n        {\n          \"name\": \"string\",\n          \"score\": 6392.782072093407,\n          \"passed\": true,\n          \"type\": \"string\",\n          \"sample\": {\n            \"key_0\": 5420\n          }\n        },\n        {\n          \"name\": \"string\",\n          \"score\": 7655.830435486784,\n          \"passed\": true,\n          \"type\": \"string\",\n          \"sample\": {\n            \"key_0\": false,\n            \"key_1\": \"string\",\n            \"key_2\": 2561\n          }\n        }\n      ],\n      \"sample\": {\n        \"input\": [\n          {\n            \"role\": \"string\",\n            \"content\": \"string\"\n          },\n          {\n            \"role\": \"string\",\n            \"content\": \"string\"\n          }\n        ],\n        \"output\": [\n          {\n            \"role\": \"string\",\n            \"content\": \"string\"\n          },\n          {\n            \"role\": \"string\",\n            \"content\": \"string\"\n          }\n        ],\n        \"finish_reason\": \"string\",\n        \"model\": \"string\",\n        \"usage\": {\n          \"total_tokens\": 9292,\n          \"completion_tokens\": 3511,\n          \"prompt_tokens\": 9556,\n          \"cached_tokens\": 8239\n        },\n        \"error\": {\n          \"code\": \"string\",\n          \"message\": \"string\"\n        },\n        \"temperature\": 1116.4675720327054,\n        \"max_completion_tokens\": 6826,\n        \"top_p\": 3754.8282312396673,\n        \"seed\": 3478\n      }\n    }\n  ],\n  \"first_id\": \"string\",\n  \"last_id\": \"string\",\n  \"has_more\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d66665a1-d345-43d1-95f3-0754096bef1f",
+          "name": "Get an evaluation run output item by ID.\n",
+          "request": {
+            "name": "Get an evaluation run output item by ID.\n",
+            "description": {},
+            "url": {
+              "path": [
+                "evals",
+                ":eval_id",
+                "runs",
+                ":run_id",
+                "output_items",
+                ":output_item_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "eval_id",
+                  "description": "(Required) The ID of the evaluation to retrieve runs for."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "run_id",
+                  "description": "(Required) The ID of the run to retrieve."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "output_item_id",
+                  "description": "(Required) The ID of the output item to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e9e4001c-c629-4382-908e-83d811ab09d6",
+              "name": "The evaluation run output item",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "evals",
+                    ":eval_id",
+                    "runs",
+                    ":run_id",
+                    "output_items",
+                    ":output_item_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "eval_id",
+                      "description": "(Required) The ID of the evaluation to retrieve runs for."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "run_id",
+                      "description": "(Required) The ID of the run to retrieve."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "output_item_id",
+                      "description": "(Required) The ID of the output item to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"eval.run.output_item\",\n  \"id\": \"string\",\n  \"run_id\": \"string\",\n  \"eval_id\": \"string\",\n  \"created_at\": 2080,\n  \"status\": \"string\",\n  \"datasource_item_id\": 1859,\n  \"datasource_item\": {\n    \"key_0\": 8939.32206101154,\n    \"key_1\": 9767\n  },\n  \"results\": [\n    {\n      \"name\": \"string\",\n      \"score\": 7505.756318531007,\n      \"passed\": true,\n      \"type\": \"string\",\n      \"sample\": {\n        \"key_0\": \"string\",\n        \"key_1\": 2053,\n        \"key_2\": \"string\",\n        \"key_3\": \"string\"\n      }\n    },\n    {\n      \"name\": \"string\",\n      \"score\": 2911.039334611457,\n      \"passed\": false,\n      \"type\": \"string\",\n      \"sample\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\",\n        \"key_2\": 5190.781763958292\n      }\n    }\n  ],\n  \"sample\": {\n    \"input\": [\n      {\n        \"role\": \"string\",\n        \"content\": \"string\"\n      },\n      {\n        \"role\": \"string\",\n        \"content\": \"string\"\n      }\n    ],\n    \"output\": [\n      {\n        \"role\": \"string\",\n        \"content\": \"string\"\n      },\n      {\n        \"role\": \"string\",\n        \"content\": \"string\"\n      }\n    ],\n    \"finish_reason\": \"string\",\n    \"model\": \"string\",\n    \"usage\": {\n      \"total_tokens\": 4935,\n      \"completion_tokens\": 3183,\n      \"prompt_tokens\": 6192,\n      \"cached_tokens\": 6297\n    },\n    \"error\": {\n      \"code\": \"string\",\n      \"message\": \"string\"\n    },\n    \"temperature\": 4095.1617794957206,\n    \"max_completion_tokens\": 3141,\n    \"top_p\": 3853.226386475125,\n    \"seed\": 3008\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.openai.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "19814efd-02f8-49bd-9956-d1b502f77312",
+    "name": "OpenAI Assistants Evals API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.\n\nContact Support:\n Name: OpenAI Support",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,182 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "OpenAI Assistants Chatkit API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Chatkit",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Cancel an active ChatKit session and return its most recent metadata.\n\nCancelling prevents new requests from using the issued client secret.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/chatkit/sessions/:session_id/cancel",
+            "params": [
+              {
+                "name": "session_id",
+                "value": "",
+                "type": "path",
+                "description": "Unique identifier for the ChatKit session to cancel."
+              }
+            ]
+          },
+          "docs": "Cancel an active ChatKit session and return its most recent metadata.\n\nCancelling prevents new requests from using the issued client secret."
+        },
+        {
+          "info": {
+            "name": "Create a ChatKit session.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/chatkit/sessions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a ChatKit session."
+        },
+        {
+          "info": {
+            "name": "List items that belong to a ChatKit thread.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/chatkit/threads/:thread_id/items",
+            "params": [
+              {
+                "name": "thread_id",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the ChatKit thread whose items are requested."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of thread items to return. Defaults to 20."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order for results by creation time. Defaults to `desc`."
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "List items created after this thread item ID. Defaults to null for the first page."
+              },
+              {
+                "name": "before",
+                "value": "",
+                "type": "query",
+                "description": "List items created before this thread item ID. Defaults to null for the newest results."
+              }
+            ]
+          },
+          "docs": "List items that belong to a ChatKit thread."
+        },
+        {
+          "info": {
+            "name": "Retrieve a ChatKit thread by its identifier.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/chatkit/threads/:thread_id",
+            "params": [
+              {
+                "name": "thread_id",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the ChatKit thread to retrieve."
+              }
+            ]
+          },
+          "docs": "Retrieve a ChatKit thread by its identifier."
+        },
+        {
+          "info": {
+            "name": "Delete a ChatKit thread along with its items and stored attachments.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.openai.com/v1/chatkit/threads/:thread_id",
+            "params": [
+              {
+                "name": "thread_id",
+                "value": "",
+                "type": "path",
+                "description": "Identifier of the ChatKit thread to delete."
+              }
+            ]
+          },
+          "docs": "Delete a ChatKit thread along with its items and stored attachments."
+        },
+        {
+          "info": {
+            "name": "List ChatKit threads with optional pagination and user filters.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/chatkit/threads",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of thread items to return. Defaults to 20."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order for results by creation time. Defaults to `desc`."
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "List items created after this thread item ID. Defaults to null for the first page."
+              },
+              {
+                "name": "before",
+                "value": "",
+                "type": "query",
+                "description": "List items created before this thread item ID. Defaults to null for the newest results."
+              },
+              {
+                "name": "user",
+                "value": "",
+                "type": "query",
+                "description": "Filter threads that belong to this user identifier. Defaults to null to return all users."
+              }
+            ]
+          },
+          "docs": "List ChatKit threads with optional pagination and user filters."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

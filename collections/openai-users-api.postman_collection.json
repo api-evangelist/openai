@@ -1,0 +1,462 @@
+{
+  "item": [
+    {
+      "id": "7c047232-2118-4df7-a1cd-f32cd9d55743",
+      "name": "Users",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "a48345f9-f660-492d-b244-eabf924264f7",
+          "name": "Lists all of the users in the organization.",
+          "request": {
+            "name": "Lists all of the users in the organization.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "users"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "emails",
+                  "value": "<string>",
+                  "description": "Filter by the email address of users."
+                },
+                {
+                  "disabled": false,
+                  "key": "emails",
+                  "value": "<string>",
+                  "description": "Filter by the email address of users."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "edaf52ae-fc91-41e6-815d-99aa4aadda92",
+              "name": "Users listed successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "users"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "emails",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "emails",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": \"organization.user\",\n      \"id\": \"string\",\n      \"added_at\": 930,\n      \"name\": \"string\",\n      \"email\": \"string\",\n      \"role\": \"string\",\n      \"is_default\": false,\n      \"created\": 5233,\n      \"user\": {\n        \"object\": \"user\",\n        \"id\": \"string\",\n        \"email\": \"string\",\n        \"name\": \"string\",\n        \"picture\": \"string\",\n        \"enabled\": true,\n        \"banned\": true,\n        \"banned_at\": 9334\n      },\n      \"is_service_account\": false,\n      \"is_scale_tier_authorized_purchaser\": true,\n      \"is_scim_managed\": false,\n      \"api_key_last_used_at\": 8801,\n      \"technical_level\": \"string\",\n      \"developer_persona\": \"string\",\n      \"projects\": {\n        \"object\": \"list\",\n        \"data\": [\n          {\n            \"id\": \"string\",\n            \"name\": \"string\",\n            \"role\": \"string\"\n          },\n          {\n            \"id\": \"string\",\n            \"name\": \"string\",\n            \"role\": \"string\"\n          }\n        ]\n      }\n    },\n    {\n      \"object\": \"organization.user\",\n      \"id\": \"string\",\n      \"added_at\": 4404,\n      \"name\": \"string\",\n      \"email\": \"string\",\n      \"role\": \"string\",\n      \"is_default\": false,\n      \"created\": 805,\n      \"user\": {\n        \"object\": \"user\",\n        \"id\": \"string\",\n        \"email\": \"string\",\n        \"name\": \"string\",\n        \"picture\": \"string\",\n        \"enabled\": false,\n        \"banned\": true,\n        \"banned_at\": 1071\n      },\n      \"is_service_account\": true,\n      \"is_scale_tier_authorized_purchaser\": true,\n      \"is_scim_managed\": true,\n      \"api_key_last_used_at\": 4792,\n      \"technical_level\": \"string\",\n      \"developer_persona\": \"string\",\n      \"projects\": {\n        \"object\": \"list\",\n        \"data\": [\n          {\n            \"id\": \"string\",\n            \"name\": \"string\",\n            \"role\": \"string\"\n          },\n          {\n            \"id\": \"string\",\n            \"name\": \"string\",\n            \"role\": \"string\"\n          }\n        ]\n      }\n    }\n  ],\n  \"has_more\": true,\n  \"first_id\": \"string\",\n  \"last_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3933fd4c-c63d-4346-906c-8d1a082f7f2b",
+          "name": "Retrieves a user by their identifier.",
+          "request": {
+            "name": "Retrieves a user by their identifier.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "users",
+                ":user_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "user_id",
+                  "description": "(Required) The ID of the user."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "3f880701-b066-43eb-ab50-9b389f5982b3",
+              "name": "User retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "users",
+                    ":user_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user_id",
+                      "description": "(Required) The ID of the user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"organization.user\",\n  \"id\": \"string\",\n  \"added_at\": 8807,\n  \"name\": \"string\",\n  \"email\": \"string\",\n  \"role\": \"string\",\n  \"is_default\": true,\n  \"created\": 1552,\n  \"user\": {\n    \"object\": \"user\",\n    \"id\": \"string\",\n    \"email\": \"string\",\n    \"name\": \"string\",\n    \"picture\": \"string\",\n    \"enabled\": true,\n    \"banned\": true,\n    \"banned_at\": 4814\n  },\n  \"is_service_account\": false,\n  \"is_scale_tier_authorized_purchaser\": false,\n  \"is_scim_managed\": true,\n  \"api_key_last_used_at\": 8522,\n  \"technical_level\": \"string\",\n  \"developer_persona\": \"string\",\n  \"projects\": {\n    \"object\": \"list\",\n    \"data\": [\n      {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"role\": \"string\"\n      },\n      {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"role\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b2f29316-0674-4acd-aad1-c40efe8668e8",
+          "name": "Modifies a user's role in the organization.",
+          "request": {
+            "name": "Modifies a user's role in the organization.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "users",
+                ":user_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "user_id",
+                  "description": "(Required) The ID of the user."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"role\": \"<string>\",\n  \"role_id\": \"<string>\",\n  \"technical_level\": \"<string>\",\n  \"developer_persona\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "fdf0cc7e-778d-44a8-a4d2-339f7ed853dd",
+              "name": "User role updated successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "users",
+                    ":user_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user_id",
+                      "description": "(Required) The ID of the user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"role\": \"<string>\",\n  \"role_id\": \"<string>\",\n  \"technical_level\": \"<string>\",\n  \"developer_persona\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"organization.user\",\n  \"id\": \"string\",\n  \"added_at\": 8807,\n  \"name\": \"string\",\n  \"email\": \"string\",\n  \"role\": \"string\",\n  \"is_default\": true,\n  \"created\": 1552,\n  \"user\": {\n    \"object\": \"user\",\n    \"id\": \"string\",\n    \"email\": \"string\",\n    \"name\": \"string\",\n    \"picture\": \"string\",\n    \"enabled\": true,\n    \"banned\": true,\n    \"banned_at\": 4814\n  },\n  \"is_service_account\": false,\n  \"is_scale_tier_authorized_purchaser\": false,\n  \"is_scim_managed\": true,\n  \"api_key_last_used_at\": 8522,\n  \"technical_level\": \"string\",\n  \"developer_persona\": \"string\",\n  \"projects\": {\n    \"object\": \"list\",\n    \"data\": [\n      {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"role\": \"string\"\n      },\n      {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"role\": \"string\"\n      }\n    ]\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1915e2a4-74d6-40bc-ba62-8f4081c41217",
+          "name": "Deletes a user from the organization.",
+          "request": {
+            "name": "Deletes a user from the organization.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "users",
+                ":user_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "user_id",
+                  "description": "(Required) The ID of the user."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE"
+          },
+          "response": [
+            {
+              "id": "51c1b3a2-790e-443d-a6f1-86e2ca952b71",
+              "name": "User deleted successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "users",
+                    ":user_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "user_id",
+                      "description": "(Required) The ID of the user."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"organization.user.deleted\",\n  \"id\": \"string\",\n  \"deleted\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.openai.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "0c540ebf-8813-464f-9a35-dabf22a81396",
+    "name": "OpenAI Assistants Users API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.\n\nContact Support:\n Name: OpenAI Support",
+      "type": "text/plain"
+    }
+  }
+}

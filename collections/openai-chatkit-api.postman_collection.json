@@ -1,0 +1,694 @@
+{
+  "item": [
+    {
+      "id": "07535192-0125-4174-bbf3-60d498de950f",
+      "name": "Chatkit",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "85316cc2-fbfd-4f35-afd5-62eddf767fce",
+          "name": "Cancel an active ChatKit session and return its most recent metadata.\n\nCancelling prevents new requests from using the issued client secret.",
+          "request": {
+            "name": "Cancel an active ChatKit session and return its most recent metadata.\n\nCancelling prevents new requests from using the issued client secret.",
+            "description": {},
+            "url": {
+              "path": [
+                "chatkit",
+                "sessions",
+                ":session_id",
+                "cancel"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "session_id",
+                  "description": "(Required) Unique identifier for the ChatKit session to cancel."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "264d279b-864d-49d0-b105-88b9c4137199",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "chatkit",
+                    "sessions",
+                    ":session_id",
+                    "cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "session_id",
+                      "description": "(Required) Unique identifier for the ChatKit session to cancel."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"chatkit.session\",\n  \"expires_at\": 7376,\n  \"client_secret\": \"string\",\n  \"workflow\": {\n    \"id\": \"string\",\n    \"version\": \"string\",\n    \"state_variables\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\",\n      \"key_2\": \"string\"\n    },\n    \"tracing\": {\n      \"enabled\": true\n    }\n  },\n  \"user\": \"string\",\n  \"rate_limits\": {\n    \"max_requests_per_1_minute\": 4578\n  },\n  \"max_requests_per_1_minute\": 3786,\n  \"status\": \"expired\",\n  \"chatkit_configuration\": {\n    \"automatic_thread_titling\": {\n      \"enabled\": false\n    },\n    \"file_upload\": {\n      \"enabled\": true,\n      \"max_file_size\": 5124,\n      \"max_files\": 5143\n    },\n    \"history\": {\n      \"enabled\": true,\n      \"recent_threads\": 3647\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "057ac674-48c3-46c5-994c-5f10f3d576f3",
+          "name": "Create a ChatKit session.",
+          "request": {
+            "name": "Create a ChatKit session.",
+            "description": {},
+            "url": {
+              "path": [
+                "chatkit",
+                "sessions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"workflow\": {\n    \"id\": \"<string>\",\n    \"version\": \"<string>\",\n    \"state_variables\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\"\n    },\n    \"tracing\": {\n      \"enabled\": \"<boolean>\"\n    }\n  },\n  \"user\": \"<string>\",\n  \"expires_after\": {\n    \"anchor\": \"created_at\",\n    \"seconds\": \"<long>\"\n  },\n  \"rate_limits\": {\n    \"max_requests_per_1_minute\": \"<integer>\"\n  },\n  \"chatkit_configuration\": {\n    \"automatic_thread_titling\": {\n      \"enabled\": \"<boolean>\"\n    },\n    \"file_upload\": {\n      \"enabled\": \"<boolean>\",\n      \"max_file_size\": \"<integer>\",\n      \"max_files\": \"<integer>\"\n    },\n    \"history\": {\n      \"enabled\": \"<boolean>\",\n      \"recent_threads\": \"<integer>\"\n    }\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "f17bb31a-e933-4b31-80ab-494739936003",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "chatkit",
+                    "sessions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"workflow\": {\n    \"id\": \"<string>\",\n    \"version\": \"<string>\",\n    \"state_variables\": {\n      \"key_0\": \"<string>\",\n      \"key_1\": \"<string>\",\n      \"key_2\": \"<string>\",\n      \"key_3\": \"<string>\",\n      \"key_4\": \"<string>\",\n      \"key_5\": \"<string>\",\n      \"key_6\": \"<string>\",\n      \"key_7\": \"<string>\",\n      \"key_8\": \"<string>\",\n      \"key_9\": \"<string>\",\n      \"key_10\": \"<string>\",\n      \"key_11\": \"<string>\",\n      \"key_12\": \"<string>\",\n      \"key_13\": \"<string>\",\n      \"key_14\": \"<string>\",\n      \"key_15\": \"<string>\",\n      \"key_16\": \"<string>\",\n      \"key_17\": \"<string>\",\n      \"key_18\": \"<string>\",\n      \"key_19\": \"<string>\",\n      \"key_20\": \"<string>\",\n      \"key_21\": \"<string>\",\n      \"key_22\": \"<string>\",\n      \"key_23\": \"<string>\",\n      \"key_24\": \"<string>\",\n      \"key_25\": \"<string>\",\n      \"key_26\": \"<string>\",\n      \"key_27\": \"<string>\",\n      \"key_28\": \"<string>\",\n      \"key_29\": \"<string>\",\n      \"key_30\": \"<string>\",\n      \"key_31\": \"<string>\",\n      \"key_32\": \"<string>\",\n      \"key_33\": \"<string>\",\n      \"key_34\": \"<string>\",\n      \"key_35\": \"<string>\",\n      \"key_36\": \"<string>\",\n      \"key_37\": \"<string>\",\n      \"key_38\": \"<string>\",\n      \"key_39\": \"<string>\",\n      \"key_40\": \"<string>\",\n      \"key_41\": \"<string>\",\n      \"key_42\": \"<string>\",\n      \"key_43\": \"<string>\",\n      \"key_44\": \"<string>\",\n      \"key_45\": \"<string>\",\n      \"key_46\": \"<string>\"\n    },\n    \"tracing\": {\n      \"enabled\": \"<boolean>\"\n    }\n  },\n  \"user\": \"<string>\",\n  \"expires_after\": {\n    \"anchor\": \"created_at\",\n    \"seconds\": \"<long>\"\n  },\n  \"rate_limits\": {\n    \"max_requests_per_1_minute\": \"<integer>\"\n  },\n  \"chatkit_configuration\": {\n    \"automatic_thread_titling\": {\n      \"enabled\": \"<boolean>\"\n    },\n    \"file_upload\": {\n      \"enabled\": \"<boolean>\",\n      \"max_file_size\": \"<integer>\",\n      \"max_files\": \"<integer>\"\n    },\n    \"history\": {\n      \"enabled\": \"<boolean>\",\n      \"recent_threads\": \"<integer>\"\n    }\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"chatkit.session\",\n  \"expires_at\": 7376,\n  \"client_secret\": \"string\",\n  \"workflow\": {\n    \"id\": \"string\",\n    \"version\": \"string\",\n    \"state_variables\": {\n      \"key_0\": \"string\",\n      \"key_1\": \"string\",\n      \"key_2\": \"string\"\n    },\n    \"tracing\": {\n      \"enabled\": true\n    }\n  },\n  \"user\": \"string\",\n  \"rate_limits\": {\n    \"max_requests_per_1_minute\": 4578\n  },\n  \"max_requests_per_1_minute\": 3786,\n  \"status\": \"expired\",\n  \"chatkit_configuration\": {\n    \"automatic_thread_titling\": {\n      \"enabled\": false\n    },\n    \"file_upload\": {\n      \"enabled\": true,\n      \"max_file_size\": 5124,\n      \"max_files\": 5143\n    },\n    \"history\": {\n      \"enabled\": true,\n      \"recent_threads\": 3647\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "4ed6b5f8-49d0-4745-b01b-4641d356c492",
+          "name": "List items that belong to a ChatKit thread.",
+          "request": {
+            "name": "List items that belong to a ChatKit thread.",
+            "description": {},
+            "url": {
+              "path": [
+                "chatkit",
+                "threads",
+                ":thread_id",
+                "items"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Maximum number of thread items to return. Defaults to 20."
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "<string>",
+                  "description": "Sort order for results by creation time. Defaults to `desc`."
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "List items created after this thread item ID. Defaults to null for the first page."
+                },
+                {
+                  "disabled": false,
+                  "key": "before",
+                  "value": "<string>",
+                  "description": "List items created before this thread item ID. Defaults to null for the newest results."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) Identifier of the ChatKit thread whose items are requested."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "4ff39ab4-819e-462c-8227-7d54cc2114df",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "chatkit",
+                    "threads",
+                    ":thread_id",
+                    "items"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) Identifier of the ChatKit thread whose items are requested."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"object\": \"chatkit.thread_item\",\n      \"created_at\": 2913,\n      \"thread_id\": \"string\",\n      \"type\": \"chatkit.user_message\",\n      \"content\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"text\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"text\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"attachments\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"id\": \"string\",\n          \"name\": \"string\",\n          \"mime_type\": \"string\",\n          \"preview_url\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"id\": \"string\",\n          \"name\": \"string\",\n          \"mime_type\": \"string\",\n          \"preview_url\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"inference_options\": {\n        \"tool_choice\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"model\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        }\n      }\n    },\n    {\n      \"id\": \"string\",\n      \"object\": \"chatkit.thread_item\",\n      \"created_at\": 8129,\n      \"thread_id\": \"string\",\n      \"type\": \"chatkit.user_message\",\n      \"content\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"text\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"text\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"attachments\": [\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"id\": \"string\",\n          \"name\": \"string\",\n          \"mime_type\": \"string\",\n          \"preview_url\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        },\n        {\n          \"type\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"id\": \"string\",\n          \"name\": \"string\",\n          \"mime_type\": \"string\",\n          \"preview_url\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      ],\n      \"inference_options\": {\n        \"tool_choice\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        },\n        \"model\": {\n          \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n        }\n      }\n    }\n  ],\n  \"first_id\": \"string\",\n  \"last_id\": \"string\",\n  \"has_more\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a7efec4f-da16-4933-8f86-d9f5f816ec64",
+          "name": "Retrieve a ChatKit thread by its identifier.",
+          "request": {
+            "name": "Retrieve a ChatKit thread by its identifier.",
+            "description": {},
+            "url": {
+              "path": [
+                "chatkit",
+                "threads",
+                ":thread_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) Identifier of the ChatKit thread to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "20edff38-ee83-4eb9-b892-fb2c158059b5",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "chatkit",
+                    "threads",
+                    ":thread_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) Identifier of the ChatKit thread to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"chatkit.thread\",\n  \"created_at\": 4671,\n  \"title\": \"string\",\n  \"status\": {\n    \"type\": \"active\"\n  },\n  \"user\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "40dd953a-1dec-4e9c-92c8-e14f5b3d8adb",
+          "name": "Delete a ChatKit thread along with its items and stored attachments.",
+          "request": {
+            "name": "Delete a ChatKit thread along with its items and stored attachments.",
+            "description": {},
+            "url": {
+              "path": [
+                "chatkit",
+                "threads",
+                ":thread_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "thread_id",
+                  "description": "(Required) Identifier of the ChatKit thread to delete."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "78cb86d7-e9a3-4556-8677-1016df1ad6d4",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "chatkit",
+                    "threads",
+                    ":thread_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "thread_id",
+                      "description": "(Required) Identifier of the ChatKit thread to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"chatkit.thread.deleted\",\n  \"deleted\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "78527c08-a1e8-4539-8fd4-f0b507df489f",
+          "name": "List ChatKit threads with optional pagination and user filters.",
+          "request": {
+            "name": "List ChatKit threads with optional pagination and user filters.",
+            "description": {},
+            "url": {
+              "path": [
+                "chatkit",
+                "threads"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Maximum number of thread items to return. Defaults to 20."
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "<string>",
+                  "description": "Sort order for results by creation time. Defaults to `desc`."
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "List items created after this thread item ID. Defaults to null for the first page."
+                },
+                {
+                  "disabled": false,
+                  "key": "before",
+                  "value": "<string>",
+                  "description": "List items created before this thread item ID. Defaults to null for the newest results."
+                },
+                {
+                  "disabled": false,
+                  "key": "user",
+                  "value": "<string>",
+                  "description": "Filter threads that belong to this user identifier. Defaults to null to return all users."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9c08b9b9-d169-4d5e-93bb-38570f88eda1",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "chatkit",
+                    "threads"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "user",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"object\": \"chatkit.thread\",\n      \"created_at\": 9550,\n      \"title\": \"string\",\n      \"status\": {\n        \"type\": \"active\"\n      },\n      \"user\": \"string\"\n    },\n    {\n      \"id\": \"string\",\n      \"object\": \"chatkit.thread\",\n      \"created_at\": 8231,\n      \"title\": \"string\",\n      \"status\": {\n        \"type\": \"active\"\n      },\n      \"user\": \"string\"\n    }\n  ],\n  \"first_id\": \"string\",\n  \"last_id\": \"string\",\n  \"has_more\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.openai.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "7bc91293-d91f-4dff-9a02-e95cff1181ff",
+    "name": "OpenAI Assistants Chatkit API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.\n\nContact Support:\n Name: OpenAI Support",
+      "type": "text/plain"
+    }
+  }
+}

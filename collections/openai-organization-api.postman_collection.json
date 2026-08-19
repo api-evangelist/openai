@@ -1,0 +1,443 @@
+{
+  "item": [
+    {
+      "id": "a83ecdc9-dc20-420c-8101-87168b463b2a",
+      "name": "Organization",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "47fd8d1b-aa79-498b-99bf-b9e723eb4aaa",
+          "name": "List organization API keys",
+          "request": {
+            "name": "List organization API keys",
+            "description": {
+              "content": "Retrieve a paginated list of organization admin API keys.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "organization",
+                "admin_api_keys"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "asc"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "dfa9e2e4-4e07-4d02-9421-29d84ab7ae91",
+              "name": "A list of organization API keys.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "admin_api_keys"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "order",
+                      "value": "asc"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": \"organization.admin_api_key\",\n      \"redacted_value\": \"sk-admin...def\",\n      \"created_at\": 1711471533,\n      \"id\": \"key_abc\",\n      \"owner\": {\n        \"type\": \"user\",\n        \"object\": \"organization.user\",\n        \"id\": \"sa_456\",\n        \"name\": \"My Service Account\",\n        \"created_at\": 1711471533,\n        \"role\": \"owner\"\n      },\n      \"name\": \"string\",\n      \"last_used_at\": 1711471534\n    },\n    {\n      \"object\": \"organization.admin_api_key\",\n      \"redacted_value\": \"sk-admin...def\",\n      \"created_at\": 1711471533,\n      \"id\": \"key_abc\",\n      \"owner\": {\n        \"type\": \"user\",\n        \"object\": \"organization.user\",\n        \"id\": \"sa_456\",\n        \"name\": \"My Service Account\",\n        \"created_at\": 1711471533,\n        \"role\": \"owner\"\n      },\n      \"name\": \"string\",\n      \"last_used_at\": 1711471534\n    }\n  ],\n  \"has_more\": false,\n  \"first_id\": \"string\",\n  \"last_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "d3061ebc-cd9c-412f-a8ac-e8c0ea817708",
+          "name": "Create an organization admin API key",
+          "request": {
+            "name": "Create an organization admin API key",
+            "description": {
+              "content": "Create a new admin-level API key for the organization.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "organization",
+                "admin_api_keys"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "9da97d29-b1e5-4861-b528-e4d8460da158",
+              "name": "The newly created admin API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "admin_api_keys"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"New Admin Key\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"created_at\": 1711471533,\n  \"id\": \"key_abc\",\n  \"object\": \"organization.admin_api_key\",\n  \"owner\": {\n    \"type\": \"user\",\n    \"object\": \"organization.user\",\n    \"id\": \"sa_456\",\n    \"name\": \"My Service Account\",\n    \"created_at\": 1711471533,\n    \"role\": \"owner\"\n  },\n  \"redacted_value\": \"sk-admin...def\",\n  \"value\": \"sk-admin-1234abcd\",\n  \"name\": \"string\",\n  \"last_used_at\": 1711471534\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bfcb73f7-6306-4080-8a6a-300b4e0fc049",
+          "name": "Retrieve a single organization API key",
+          "request": {
+            "name": "Retrieve a single organization API key",
+            "description": {
+              "content": "Get details for a specific organization API key by its ID.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "organization",
+                "admin_api_keys",
+                ":key_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "key_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "e55e0339-655e-4420-b605-9dc8f8d875d3",
+              "name": "Details of the requested API key.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "admin_api_keys",
+                    ":key_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "key_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"organization.admin_api_key\",\n  \"redacted_value\": \"sk-admin...def\",\n  \"created_at\": 1711471533,\n  \"id\": \"key_abc\",\n  \"owner\": {\n    \"type\": \"user\",\n    \"object\": \"organization.user\",\n    \"id\": \"sa_456\",\n    \"name\": \"My Service Account\",\n    \"created_at\": 1711471533,\n    \"role\": \"owner\"\n  },\n  \"name\": \"string\",\n  \"last_used_at\": 1711471534\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5fc72a1a-6e3d-4d77-bb17-2666106b76cc",
+          "name": "Delete an organization admin API key",
+          "request": {
+            "name": "Delete an organization admin API key",
+            "description": {
+              "content": "Delete the specified admin API key.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "organization",
+                "admin_api_keys",
+                ":key_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "key_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE"
+          },
+          "response": [
+            {
+              "id": "2669e560-eb59-4782-baa4-69bfbe72cb3c",
+              "name": "Confirmation that the API key was deleted.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "admin_api_keys",
+                    ":key_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "key_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"key_abc\",\n  \"object\": \"organization.admin_api_key.deleted\",\n  \"deleted\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.openai.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "ce90a777-21c2-41f6-8eb1-12f32fef2a1b",
+    "name": "OpenAI Assistants Organization API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.\n\nContact Support:\n Name: OpenAI Support",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,1911 @@
+{
+  "item": [
+    {
+      "id": "d2d13dd3-bb3d-40c7-bf67-9e49bf509595",
+      "name": "Vector stores",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "cdb62ff5-a0ea-4b68-8489-aed8ff442884",
+          "name": "Returns a list of vector stores.",
+          "request": {
+            "name": "Returns a list of vector stores.",
+            "description": {},
+            "url": {
+              "path": [
+                "vector_stores"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "desc",
+                  "description": "Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "before",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.\n"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e15e8fde-d3a1-434c-b601-97d73b3f3b95",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vector_stores"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"object\": \"vector_store\",\n      \"usage_bytes\": 2870,\n      \"created_at\": 3098,\n      \"status\": \"expired\",\n      \"last_active_at\": 6315,\n      \"name\": \"string\",\n      \"file_counts\": {\n        \"in_progress\": 1618,\n        \"completed\": 1119,\n        \"failed\": 7310,\n        \"cancelled\": 1797,\n        \"total\": 6438\n      },\n      \"metadata\": {\n        \"key_0\": \"string\"\n      },\n      \"expires_after\": {\n        \"anchor\": \"last_active_at\",\n        \"days\": 307\n      },\n      \"expires_at\": 1716\n    },\n    {\n      \"id\": \"string\",\n      \"object\": \"vector_store\",\n      \"usage_bytes\": 738,\n      \"created_at\": 6684,\n      \"status\": \"in_progress\",\n      \"last_active_at\": 3716,\n      \"name\": \"string\",\n      \"file_counts\": {\n        \"in_progress\": 1560,\n        \"completed\": 7872,\n        \"failed\": 228,\n        \"cancelled\": 7883,\n        \"total\": 3170\n      },\n      \"metadata\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\"\n      },\n      \"expires_after\": {\n        \"anchor\": \"last_active_at\",\n        \"days\": 302\n      },\n      \"expires_at\": 1862\n    }\n  ],\n  \"first_id\": \"vs_abc123\",\n  \"last_id\": \"vs_abc456\",\n  \"has_more\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "01077106-a7ad-4f29-b1a1-3f13f83331aa",
+          "name": "Create a vector store.",
+          "request": {
+            "name": "Create a vector store.",
+            "description": {},
+            "url": {
+              "path": [
+                "vector_stores"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"file_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"name\": \"<string>\",\n  \"description\": \"<string>\",\n  \"expires_after\": {\n    \"anchor\": \"<string>\",\n    \"days\": \"<integer>\"\n  },\n  \"chunking_strategy\": {\n    \"type\": \"<string>\"\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "be13b076-4ef8-4ccc-bffc-7002bc472b5a",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vector_stores"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"file_ids\": [\n    \"<string>\",\n    \"<string>\"\n  ],\n  \"name\": \"<string>\",\n  \"description\": \"<string>\",\n  \"expires_after\": {\n    \"anchor\": \"<string>\",\n    \"days\": \"<integer>\"\n  },\n  \"chunking_strategy\": {\n    \"type\": \"<string>\"\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"vector_store\",\n  \"usage_bytes\": 7911,\n  \"created_at\": 5792,\n  \"status\": \"in_progress\",\n  \"last_active_at\": 6369,\n  \"name\": \"string\",\n  \"file_counts\": {\n    \"in_progress\": 9198,\n    \"completed\": 9411,\n    \"failed\": 9602,\n    \"cancelled\": 7709,\n    \"total\": 1788\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"expires_after\": {\n    \"anchor\": \"<string>\",\n    \"days\": \"<integer>\"\n  },\n  \"expires_at\": 7660\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "13499ca9-645f-4167-9740-0a924a94e82e",
+          "name": "Retrieves a vector store.",
+          "request": {
+            "name": "Retrieves a vector store.",
+            "description": {},
+            "url": {
+              "path": [
+                "vector_stores",
+                ":vector_store_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vector_store_id",
+                  "description": "(Required) The ID of the vector store to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "e3b5c150-c22c-420d-a73e-634af9cdb120",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vector_stores",
+                    ":vector_store_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vector_store_id",
+                      "description": "(Required) The ID of the vector store to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"vector_store\",\n  \"usage_bytes\": 7911,\n  \"created_at\": 5792,\n  \"status\": \"in_progress\",\n  \"last_active_at\": 6369,\n  \"name\": \"string\",\n  \"file_counts\": {\n    \"in_progress\": 9198,\n    \"completed\": 9411,\n    \"failed\": 9602,\n    \"cancelled\": 7709,\n    \"total\": 1788\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"expires_after\": {\n    \"anchor\": \"<string>\",\n    \"days\": \"<integer>\"\n  },\n  \"expires_at\": 7660\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "8fe94fb9-3009-471e-9767-90a4f7ef8aae",
+          "name": "Modifies a vector store.",
+          "request": {
+            "name": "Modifies a vector store.",
+            "description": {},
+            "url": {
+              "path": [
+                "vector_stores",
+                ":vector_store_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vector_store_id",
+                  "description": "(Required) The ID of the vector store to modify."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"<string>\",\n  \"expires_after\": {\n    \"anchor\": \"<string>\",\n    \"days\": \"<integer>\"\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "fb7bd7ae-a706-4172-aaf6-348b029d7b0f",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vector_stores",
+                    ":vector_store_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vector_store_id",
+                      "description": "(Required) The ID of the vector store to modify."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"name\": \"<string>\",\n  \"expires_after\": {\n    \"anchor\": \"<string>\",\n    \"days\": \"<integer>\"\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\",\n    \"key_3\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"vector_store\",\n  \"usage_bytes\": 7911,\n  \"created_at\": 5792,\n  \"status\": \"in_progress\",\n  \"last_active_at\": 6369,\n  \"name\": \"string\",\n  \"file_counts\": {\n    \"in_progress\": 9198,\n    \"completed\": 9411,\n    \"failed\": 9602,\n    \"cancelled\": 7709,\n    \"total\": 1788\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  },\n  \"expires_after\": {\n    \"anchor\": \"<string>\",\n    \"days\": \"<integer>\"\n  },\n  \"expires_at\": 7660\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "21df0a66-81ab-4fd3-8b04-0b21441abd30",
+          "name": "Delete a vector store.",
+          "request": {
+            "name": "Delete a vector store.",
+            "description": {},
+            "url": {
+              "path": [
+                "vector_stores",
+                ":vector_store_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vector_store_id",
+                  "description": "(Required) The ID of the vector store to delete."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "1aab9304-3685-4f32-99f8-5563c82001dc",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vector_stores",
+                    ":vector_store_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vector_store_id",
+                      "description": "(Required) The ID of the vector store to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"vector_store.deleted\",\n  \"deleted\": true\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "e6b20082-cef7-44b7-bde1-f5c764c6a5ee",
+          "name": "Create a vector store file batch.",
+          "request": {
+            "name": "Create a vector store file batch.",
+            "description": {
+              "content": "The maximum number of files in a single batch request is 2000.\nVector store file attach requests are rate limited per vector store (300 requests per minute across both this endpoint and `/vector_stores/{vector_store_id}/files`).\nFor ingesting multiple files into the same vector store, this batch endpoint is recommended.\n",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "vector_stores",
+                ":vector_store_id",
+                "file_batches"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vector_store_id",
+                  "description": "(Required) The ID of the vector store for which to create a File Batch.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "1adbf51e-6779-4e8d-9af1-69086cbfab32",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vector_stores",
+                    ":vector_store_id",
+                    "file_batches"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vector_store_id",
+                      "description": "(Required) The ID of the vector store for which to create a File Batch.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"vector_store.files_batch\",\n  \"created_at\": 9486,\n  \"vector_store_id\": \"string\",\n  \"status\": \"cancelled\",\n  \"file_counts\": {\n    \"in_progress\": 9725,\n    \"completed\": 833,\n    \"cancelled\": 9754,\n    \"failed\": 3536,\n    \"total\": 499\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6565da90-89a1-40ba-9a50-e605efde7b9d",
+          "name": "Retrieves a vector store file batch.",
+          "request": {
+            "name": "Retrieves a vector store file batch.",
+            "description": {},
+            "url": {
+              "path": [
+                "vector_stores",
+                ":vector_store_id",
+                "file_batches",
+                ":batch_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vector_store_id",
+                  "description": "(Required) The ID of the vector store that the file batch belongs to."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "batch_id",
+                  "description": "(Required) The ID of the file batch being retrieved."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "8ca28063-4c4a-4bdc-9ef9-d55fecc3738a",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vector_stores",
+                    ":vector_store_id",
+                    "file_batches",
+                    ":batch_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vector_store_id",
+                      "description": "(Required) The ID of the vector store that the file batch belongs to."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "batch_id",
+                      "description": "(Required) The ID of the file batch being retrieved."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"vector_store.files_batch\",\n  \"created_at\": 9486,\n  \"vector_store_id\": \"string\",\n  \"status\": \"cancelled\",\n  \"file_counts\": {\n    \"in_progress\": 9725,\n    \"completed\": 833,\n    \"cancelled\": 9754,\n    \"failed\": 3536,\n    \"total\": 499\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f7672f67-c0c4-4d86-be66-a2c298e285e6",
+          "name": "Cancel a vector store file batch. This attempts to cancel the processing of files in this batch as soon as possible.",
+          "request": {
+            "name": "Cancel a vector store file batch. This attempts to cancel the processing of files in this batch as soon as possible.",
+            "description": {},
+            "url": {
+              "path": [
+                "vector_stores",
+                ":vector_store_id",
+                "file_batches",
+                ":batch_id",
+                "cancel"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vector_store_id",
+                  "description": "(Required) The ID of the vector store that the file batch belongs to."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "batch_id",
+                  "description": "(Required) The ID of the file batch to cancel."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9c99f349-78e2-477b-8697-e022f0eb421a",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vector_stores",
+                    ":vector_store_id",
+                    "file_batches",
+                    ":batch_id",
+                    "cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vector_store_id",
+                      "description": "(Required) The ID of the vector store that the file batch belongs to."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "batch_id",
+                      "description": "(Required) The ID of the file batch to cancel."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"vector_store.files_batch\",\n  \"created_at\": 9486,\n  \"vector_store_id\": \"string\",\n  \"status\": \"cancelled\",\n  \"file_counts\": {\n    \"in_progress\": 9725,\n    \"completed\": 833,\n    \"cancelled\": 9754,\n    \"failed\": 3536,\n    \"total\": 499\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1bf18a67-a0ef-4612-ad84-3b211b0e36ed",
+          "name": "Returns a list of vector store files in a batch.",
+          "request": {
+            "name": "Returns a list of vector store files in a batch.",
+            "description": {},
+            "url": {
+              "path": [
+                "vector_stores",
+                ":vector_store_id",
+                "file_batches",
+                ":batch_id",
+                "files"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "desc",
+                  "description": "Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "before",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>",
+                  "description": "Filter by file status. One of `in_progress`, `completed`, `failed`, `cancelled`."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vector_store_id",
+                  "description": "(Required) The ID of the vector store that the files belong to."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "batch_id",
+                  "description": "(Required) The ID of the file batch that the files belong to."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "93f2bbab-4120-4a1d-8c04-17e91aaf2ae6",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vector_stores",
+                    ":vector_store_id",
+                    "file_batches",
+                    ":batch_id",
+                    "files"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vector_store_id",
+                      "description": "(Required) The ID of the vector store that the files belong to."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "batch_id",
+                      "description": "(Required) The ID of the file batch that the files belong to."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"object\": \"vector_store.file\",\n      \"usage_bytes\": 3064,\n      \"created_at\": 1965,\n      \"vector_store_id\": \"string\",\n      \"status\": \"completed\",\n      \"last_error\": {\n        \"code\": \"server_error\",\n        \"message\": \"string\"\n      },\n      \"chunking_strategy\": {\n        \"type\": \"static\",\n        \"static\": {\n          \"max_chunk_size_tokens\": 2750,\n          \"chunk_overlap_tokens\": 6357\n        }\n      },\n      \"attributes\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\",\n        \"key_2\": \"string\",\n        \"key_3\": \"string\",\n        \"key_4\": \"string\",\n        \"key_5\": \"string\",\n        \"key_6\": \"string\",\n        \"key_7\": \"string\",\n        \"key_8\": \"string\",\n        \"key_9\": \"string\",\n        \"key_10\": \"string\",\n        \"key_11\": \"string\"\n      }\n    },\n    {\n      \"id\": \"string\",\n      \"object\": \"vector_store.file\",\n      \"usage_bytes\": 1589,\n      \"created_at\": 1819,\n      \"vector_store_id\": \"string\",\n      \"status\": \"failed\",\n      \"last_error\": {\n        \"code\": \"server_error\",\n        \"message\": \"string\"\n      },\n      \"chunking_strategy\": {\n        \"type\": \"static\",\n        \"static\": {\n          \"max_chunk_size_tokens\": 3002,\n          \"chunk_overlap_tokens\": 4631\n        }\n      },\n      \"attributes\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\"\n      }\n    }\n  ],\n  \"first_id\": \"file-abc123\",\n  \"last_id\": \"file-abc456\",\n  \"has_more\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "f14916b4-ec60-41d3-849a-cb868e1cc21f",
+          "name": "Returns a list of vector store files.",
+          "request": {
+            "name": "Returns a list of vector store files.",
+            "description": {},
+            "url": {
+              "path": [
+                "vector_stores",
+                ":vector_store_id",
+                "files"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "order",
+                  "value": "desc",
+                  "description": "Sort order by the `created_at` timestamp of the objects. `asc` for ascending order and `desc` for descending order.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "before",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "filter",
+                  "value": "<string>",
+                  "description": "Filter by file status. One of `in_progress`, `completed`, `failed`, `cancelled`."
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vector_store_id",
+                  "description": "(Required) The ID of the vector store that the files belong to."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "eb6322ef-14d2-428d-956a-0f0c0b4c92a6",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vector_stores",
+                    ":vector_store_id",
+                    "files"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "order",
+                      "value": "desc"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "filter",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vector_store_id",
+                      "description": "(Required) The ID of the vector store that the files belong to."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"object\": \"vector_store.file\",\n      \"usage_bytes\": 1750,\n      \"created_at\": 6667,\n      \"vector_store_id\": \"string\",\n      \"status\": \"in_progress\",\n      \"last_error\": {\n        \"code\": \"invalid_file\",\n        \"message\": \"string\"\n      },\n      \"chunking_strategy\": {\n        \"type\": \"static\",\n        \"static\": {\n          \"max_chunk_size_tokens\": 2577,\n          \"chunk_overlap_tokens\": 7394\n        }\n      },\n      \"attributes\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\",\n        \"key_2\": \"string\",\n        \"key_3\": \"string\",\n        \"key_4\": \"string\",\n        \"key_5\": \"string\",\n        \"key_6\": \"string\",\n        \"key_7\": \"string\",\n        \"key_8\": \"string\",\n        \"key_9\": \"string\",\n        \"key_10\": \"string\",\n        \"key_11\": \"string\"\n      }\n    },\n    {\n      \"id\": \"string\",\n      \"object\": \"vector_store.file\",\n      \"usage_bytes\": 6982,\n      \"created_at\": 5161,\n      \"vector_store_id\": \"string\",\n      \"status\": \"failed\",\n      \"last_error\": {\n        \"code\": \"invalid_file\",\n        \"message\": \"string\"\n      },\n      \"chunking_strategy\": {\n        \"type\": \"static\",\n        \"static\": {\n          \"max_chunk_size_tokens\": 892,\n          \"chunk_overlap_tokens\": 6865\n        }\n      },\n      \"attributes\": {\n        \"key_0\": \"string\",\n        \"key_1\": \"string\",\n        \"key_2\": \"string\",\n        \"key_3\": \"string\",\n        \"key_4\": \"string\",\n        \"key_5\": \"string\",\n        \"key_6\": \"string\",\n        \"key_7\": \"string\",\n        \"key_8\": \"string\",\n        \"key_9\": \"string\",\n        \"key_10\": \"string\",\n        \"key_11\": \"string\",\n        \"key_12\": \"string\",\n        \"key_13\": \"string\",\n        \"key_14\": \"string\"\n      }\n    }\n  ],\n  \"first_id\": \"file-abc123\",\n  \"last_id\": \"file-abc456\",\n  \"has_more\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "7a186e7d-f8a3-4e33-8445-1905b4ff7ae1",
+          "name": "Create a vector store file by attaching a [File](/docs/api-reference/files) to a [vector store](/docs/api-reference/vector-stores/object).",
+          "request": {
+            "name": "Create a vector store file by attaching a [File](/docs/api-reference/files) to a [vector store](/docs/api-reference/vector-stores/object).",
+            "description": {
+              "content": "This endpoint is subject to a per-vector-store write rate limit of 300 requests per minute, shared with `/vector_stores/{vector_store_id}/file_batches`.\nFor uploading multiple files to the same vector store, use the file batches endpoint to reduce request volume.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "vector_stores",
+                ":vector_store_id",
+                "files"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vector_store_id",
+                  "description": "(Required) The ID of the vector store for which to create a File.\n"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"file_id\": \"<string>\",\n  \"chunking_strategy\": {\n    \"type\": \"<string>\"\n  },\n  \"attributes\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\",\n    \"key_3\": \"<string>\",\n    \"key_4\": \"<string>\",\n    \"key_5\": \"<string>\",\n    \"key_6\": \"<string>\",\n    \"key_7\": \"<string>\",\n    \"key_8\": \"<string>\",\n    \"key_9\": \"<string>\",\n    \"key_10\": \"<string>\",\n    \"key_11\": \"<string>\",\n    \"key_12\": \"<string>\",\n    \"key_13\": \"<string>\",\n    \"key_14\": \"<string>\",\n    \"key_15\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "31f5f8ec-a357-4d39-857d-87fdb402f3cc",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vector_stores",
+                    ":vector_store_id",
+                    "files"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vector_store_id",
+                      "description": "(Required) The ID of the vector store for which to create a File.\n"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"file_id\": \"<string>\",\n  \"chunking_strategy\": {\n    \"type\": \"<string>\"\n  },\n  \"attributes\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\",\n    \"key_3\": \"<string>\",\n    \"key_4\": \"<string>\",\n    \"key_5\": \"<string>\",\n    \"key_6\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"vector_store.file\",\n  \"usage_bytes\": 7457,\n  \"created_at\": 9563,\n  \"vector_store_id\": \"string\",\n  \"status\": \"in_progress\",\n  \"last_error\": {\n    \"code\": \"invalid_file\",\n    \"message\": \"string\"\n  },\n  \"chunking_strategy\": {\n    \"type\": \"static\",\n    \"static\": {\n      \"max_chunk_size_tokens\": 3786,\n      \"chunk_overlap_tokens\": 9767\n    }\n  },\n  \"attributes\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\",\n    \"key_3\": \"<string>\",\n    \"key_4\": \"<string>\",\n    \"key_5\": \"<string>\",\n    \"key_6\": \"<string>\",\n    \"key_7\": \"<string>\",\n    \"key_8\": \"<string>\",\n    \"key_9\": \"<string>\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5ea65cde-a578-4675-ab82-27132cd113a9",
+          "name": "Retrieves a vector store file.",
+          "request": {
+            "name": "Retrieves a vector store file.",
+            "description": {},
+            "url": {
+              "path": [
+                "vector_stores",
+                ":vector_store_id",
+                "files",
+                ":file_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vector_store_id",
+                  "description": "(Required) The ID of the vector store that the file belongs to."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "file_id",
+                  "description": "(Required) The ID of the file being retrieved."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "34b3f5db-65c9-4d28-a68c-30dba098c9f6",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vector_stores",
+                    ":vector_store_id",
+                    "files",
+                    ":file_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vector_store_id",
+                      "description": "(Required) The ID of the vector store that the file belongs to."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "file_id",
+                      "description": "(Required) The ID of the file being retrieved."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"vector_store.file\",\n  \"usage_bytes\": 7457,\n  \"created_at\": 9563,\n  \"vector_store_id\": \"string\",\n  \"status\": \"in_progress\",\n  \"last_error\": {\n    \"code\": \"invalid_file\",\n    \"message\": \"string\"\n  },\n  \"chunking_strategy\": {\n    \"type\": \"static\",\n    \"static\": {\n      \"max_chunk_size_tokens\": 3786,\n      \"chunk_overlap_tokens\": 9767\n    }\n  },\n  \"attributes\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\",\n    \"key_3\": \"<string>\",\n    \"key_4\": \"<string>\",\n    \"key_5\": \"<string>\",\n    \"key_6\": \"<string>\",\n    \"key_7\": \"<string>\",\n    \"key_8\": \"<string>\",\n    \"key_9\": \"<string>\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "0f4f40e2-dde0-46f3-ae06-e09709cab0f0",
+          "name": "Delete a vector store file. This will remove the file from the vector store but the file itself will not be deleted. To delete the file, use the [delete file](/docs/api-reference/files/delete) endpoint.",
+          "request": {
+            "name": "Delete a vector store file. This will remove the file from the vector store but the file itself will not be deleted. To delete the file, use the [delete file](/docs/api-reference/files/delete) endpoint.",
+            "description": {},
+            "url": {
+              "path": [
+                "vector_stores",
+                ":vector_store_id",
+                "files",
+                ":file_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vector_store_id",
+                  "description": "(Required) The ID of the vector store that the file belongs to."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "file_id",
+                  "description": "(Required) The ID of the file to delete."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "26abd4b9-ae59-45ab-9e09-d899426f483c",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vector_stores",
+                    ":vector_store_id",
+                    "files",
+                    ":file_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vector_store_id",
+                      "description": "(Required) The ID of the vector store that the file belongs to."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "file_id",
+                      "description": "(Required) The ID of the file to delete."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"vector_store.file.deleted\",\n  \"deleted\": false\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "1cb744e4-7a55-42d9-83a8-35adff430756",
+          "name": "Update attributes on a vector store file.",
+          "request": {
+            "name": "Update attributes on a vector store file.",
+            "description": {},
+            "url": {
+              "path": [
+                "vector_stores",
+                ":vector_store_id",
+                "files",
+                ":file_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vector_store_id",
+                  "description": "(Required) The ID of the vector store the file belongs to."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "file_id",
+                  "description": "(Required) The ID of the file to update attributes."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"attributes\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "b8ce5497-365c-4efe-86d7-f3f859123902",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vector_stores",
+                    ":vector_store_id",
+                    "files",
+                    ":file_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vector_store_id",
+                      "description": "(Required) The ID of the vector store the file belongs to."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "file_id",
+                      "description": "(Required) The ID of the file to update attributes."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"attributes\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\",\n    \"key_3\": \"<string>\",\n    \"key_4\": \"<string>\",\n    \"key_5\": \"<string>\",\n    \"key_6\": \"<string>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"vector_store.file\",\n  \"usage_bytes\": 7457,\n  \"created_at\": 9563,\n  \"vector_store_id\": \"string\",\n  \"status\": \"in_progress\",\n  \"last_error\": {\n    \"code\": \"invalid_file\",\n    \"message\": \"string\"\n  },\n  \"chunking_strategy\": {\n    \"type\": \"static\",\n    \"static\": {\n      \"max_chunk_size_tokens\": 3786,\n      \"chunk_overlap_tokens\": 9767\n    }\n  },\n  \"attributes\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\",\n    \"key_3\": \"<string>\",\n    \"key_4\": \"<string>\",\n    \"key_5\": \"<string>\",\n    \"key_6\": \"<string>\",\n    \"key_7\": \"<string>\",\n    \"key_8\": \"<string>\",\n    \"key_9\": \"<string>\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "324d687a-bf38-4eef-a5fa-1707f9a8afa9",
+          "name": "Retrieve the parsed contents of a vector store file.",
+          "request": {
+            "name": "Retrieve the parsed contents of a vector store file.",
+            "description": {},
+            "url": {
+              "path": [
+                "vector_stores",
+                ":vector_store_id",
+                "files",
+                ":file_id",
+                "content"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vector_store_id",
+                  "description": "(Required) The ID of the vector store."
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "file_id",
+                  "description": "(Required) The ID of the file within the vector store."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6ad2311f-0bd8-4ed7-b14c-78e1064078ac",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vector_stores",
+                    ":vector_store_id",
+                    "files",
+                    ":file_id",
+                    "content"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vector_store_id",
+                      "description": "(Required) The ID of the vector store."
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "file_id",
+                      "description": "(Required) The ID of the file within the vector store."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"vector_store.file_content.page\",\n  \"data\": [\n    {\n      \"type\": \"string\",\n      \"text\": \"string\"\n    },\n    {\n      \"type\": \"string\",\n      \"text\": \"string\"\n    }\n  ],\n  \"has_more\": true,\n  \"next_page\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "fc46cf25-b995-41a7-998b-4ef0b62a031f",
+          "name": "Search a vector store for relevant chunks based on a query and file attributes filter.",
+          "request": {
+            "name": "Search a vector store for relevant chunks based on a query and file attributes filter.",
+            "description": {},
+            "url": {
+              "path": [
+                "vector_stores",
+                ":vector_store_id",
+                "search"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "vector_store_id",
+                  "description": "(Required) The ID of the vector store to search."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"query\": \"<string>\",\n  \"rewrite_query\": false,\n  \"max_num_results\": 10,\n  \"filters\": {\n    \"type\": \"eq\",\n    \"key\": \"<string>\",\n    \"value\": \"<string>\"\n  },\n  \"ranking_options\": {\n    \"ranker\": \"auto\",\n    \"score_threshold\": 0\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "86ac04a5-5b60-42c5-86bd-2f684f64aa3f",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "vector_stores",
+                    ":vector_store_id",
+                    "search"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "vector_store_id",
+                      "description": "(Required) The ID of the vector store to search."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"query\": \"<string>\",\n  \"rewrite_query\": false,\n  \"max_num_results\": 10,\n  \"filters\": {\n    \"type\": \"eq\",\n    \"key\": \"<string>\",\n    \"value\": \"<string>\"\n  },\n  \"ranking_options\": {\n    \"ranker\": \"auto\",\n    \"score_threshold\": 0\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"vector_store.search_results.page\",\n  \"search_query\": [\n    \"string\",\n    \"string\"\n  ],\n  \"data\": [\n    {\n      \"file_id\": \"string\",\n      \"filename\": \"string\",\n      \"score\": 0.2885914869367525,\n      \"attributes\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\",\n        \"key_2\": \"<string>\",\n        \"key_3\": \"<string>\"\n      },\n      \"content\": [\n        {\n          \"type\": \"text\",\n          \"text\": \"string\"\n        },\n        {\n          \"type\": \"text\",\n          \"text\": \"string\"\n        }\n      ]\n    },\n    {\n      \"file_id\": \"string\",\n      \"filename\": \"string\",\n      \"score\": 0.02777019200830888,\n      \"attributes\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\",\n        \"key_2\": \"<string>\",\n        \"key_3\": \"<string>\",\n        \"key_4\": \"<string>\",\n        \"key_5\": \"<string>\"\n      },\n      \"content\": [\n        {\n          \"type\": \"text\",\n          \"text\": \"string\"\n        },\n        {\n          \"type\": \"text\",\n          \"text\": \"string\"\n        }\n      ]\n    }\n  ],\n  \"has_more\": true,\n  \"next_page\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.openai.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "a8747aab-667c-421c-91ff-8d1933bd33dc",
+    "name": "OpenAI Assistants Vector stores API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.\n\nContact Support:\n Name: OpenAI Support",
+      "type": "text/plain"
+    }
+  }
+}

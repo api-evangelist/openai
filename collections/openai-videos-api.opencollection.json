@@ -1,0 +1,220 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "OpenAI Assistants Videos API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Videos",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List recently generated videos for the current project.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/videos",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of items to retrieve"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order of results by timestamp. Use `asc` for ascending order or `desc` for descending order."
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "Identifier for the last item from the previous pagination request"
+              }
+            ]
+          },
+          "docs": "List recently generated videos for the current project."
+        },
+        {
+          "info": {
+            "name": "Create a new video generation job from a prompt and optional reference assets.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/videos",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new video generation job from a prompt and optional reference assets."
+        },
+        {
+          "info": {
+            "name": "Create a character from an uploaded video.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/videos/characters",
+            "body": {
+              "type": "multipart-form",
+              "data": []
+            }
+          },
+          "docs": "Create a character from an uploaded video."
+        },
+        {
+          "info": {
+            "name": "Fetch a character.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/videos/characters/:character_id",
+            "params": [
+              {
+                "name": "character_id",
+                "value": "",
+                "type": "path",
+                "description": "The identifier of the character to retrieve."
+              }
+            ]
+          },
+          "docs": "Fetch a character."
+        },
+        {
+          "info": {
+            "name": "Create a new video generation job by editing a source video or existing generated video.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/videos/edits",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new video generation job by editing a source video or existing generated video."
+        },
+        {
+          "info": {
+            "name": "Create an extension of a completed video.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/videos/extensions",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create an extension of a completed video."
+        },
+        {
+          "info": {
+            "name": "Fetch the latest metadata for a generated video.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/videos/:video_id",
+            "params": [
+              {
+                "name": "video_id",
+                "value": "",
+                "type": "path",
+                "description": "The identifier of the video to retrieve."
+              }
+            ]
+          },
+          "docs": "Fetch the latest metadata for a generated video."
+        },
+        {
+          "info": {
+            "name": "Permanently delete a completed or failed video and its stored assets.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.openai.com/v1/videos/:video_id",
+            "params": [
+              {
+                "name": "video_id",
+                "value": "",
+                "type": "path",
+                "description": "The identifier of the video to delete."
+              }
+            ]
+          },
+          "docs": "Permanently delete a completed or failed video and its stored assets."
+        },
+        {
+          "info": {
+            "name": "Download the generated video bytes or a derived preview asset.\n\nStreams the rendered video content for the specified video job.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/videos/:video_id/content",
+            "params": [
+              {
+                "name": "video_id",
+                "value": "",
+                "type": "path",
+                "description": "The identifier of the video whose media to download."
+              },
+              {
+                "name": "variant",
+                "value": "",
+                "type": "query",
+                "description": "Which downloadable asset to return. Defaults to the MP4 video."
+              }
+            ]
+          },
+          "docs": "Download the generated video bytes or a derived preview asset.\n\nStreams the rendered video content for the specified video job."
+        },
+        {
+          "info": {
+            "name": "Create a remix of a completed video using a refreshed prompt.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/videos/:video_id/remix",
+            "params": [
+              {
+                "name": "video_id",
+                "value": "",
+                "type": "path",
+                "description": "The identifier of the completed video to remix."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a remix of a completed video using a refreshed prompt."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

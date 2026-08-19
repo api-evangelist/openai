@@ -1,0 +1,289 @@
+{
+  "item": [
+    {
+      "id": "7d8e51e4-e0bd-4dc9-9acc-dd3cf22b9bce",
+      "name": "Audit Logs",
+      "description": {
+        "content": "List user actions and configuration changes within this organization.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "bcdb22a5-625e-4301-b0ff-8019a43ad0fb",
+          "name": "List user actions and configuration changes within this organization.",
+          "request": {
+            "name": "List user actions and configuration changes within this organization.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "audit_logs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "gt",
+                  "value": "<integer>",
+                  "description": "Return only events whose `effective_at` (Unix seconds) is in this range."
+                },
+                {
+                  "disabled": false,
+                  "key": "gte",
+                  "value": "<integer>",
+                  "description": "Return only events whose `effective_at` (Unix seconds) is in this range."
+                },
+                {
+                  "disabled": false,
+                  "key": "lt",
+                  "value": "<integer>",
+                  "description": "Return only events whose `effective_at` (Unix seconds) is in this range."
+                },
+                {
+                  "disabled": false,
+                  "key": "lte",
+                  "value": "<integer>",
+                  "description": "Return only events whose `effective_at` (Unix seconds) is in this range."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids[]",
+                  "value": "<string>",
+                  "description": "Return only events for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids[]",
+                  "value": "<string>",
+                  "description": "Return only events for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "event_types[]",
+                  "value": "<string>",
+                  "description": "Return only events with a `type` in one of these values. For example, `project.created`. For all options, see the documentation for the [audit log object](/docs/api-reference/audit-logs/object)."
+                },
+                {
+                  "disabled": false,
+                  "key": "event_types[]",
+                  "value": "<string>",
+                  "description": "Return only events with a `type` in one of these values. For example, `project.created`. For all options, see the documentation for the [audit log object](/docs/api-reference/audit-logs/object)."
+                },
+                {
+                  "disabled": false,
+                  "key": "actor_ids[]",
+                  "value": "<string>",
+                  "description": "Return only events performed by these actors. Can be a user ID, a service account ID, or an api key tracking ID."
+                },
+                {
+                  "disabled": false,
+                  "key": "actor_ids[]",
+                  "value": "<string>",
+                  "description": "Return only events performed by these actors. Can be a user ID, a service account ID, or an api key tracking ID."
+                },
+                {
+                  "disabled": false,
+                  "key": "actor_emails[]",
+                  "value": "<string>",
+                  "description": "Return only events performed by users with these emails."
+                },
+                {
+                  "disabled": false,
+                  "key": "actor_emails[]",
+                  "value": "<string>",
+                  "description": "Return only events performed by users with these emails."
+                },
+                {
+                  "disabled": false,
+                  "key": "resource_ids[]",
+                  "value": "<string>",
+                  "description": "Return only events performed on these targets. For example, a project ID updated."
+                },
+                {
+                  "disabled": false,
+                  "key": "resource_ids[]",
+                  "value": "<string>",
+                  "description": "Return only events performed on these targets. For example, a project ID updated."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "before",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.\n"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "fd9e1f01-0be0-4eaf-afb4-da37cf926641",
+              "name": "Audit logs listed successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "audit_logs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "gt",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "gte",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "lt",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "lte",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "project_ids[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "project_ids[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "event_types[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "event_types[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "actor_ids[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "actor_ids[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "actor_emails[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "actor_emails[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "resource_ids[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "resource_ids[]",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    },
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "before",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"type\": \"<string>\",\n      \"effective_at\": 6239,\n      \"project\": {\n        \"id\": \"string\",\n        \"name\": \"string\"\n      },\n      \"actor\": {\n        \"type\": \"api_key\",\n        \"session\": {\n          \"user\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"ip_address\": \"string\"\n        },\n        \"api_key\": {\n          \"id\": \"string\",\n          \"type\": \"service_account\",\n          \"user\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"service_account\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      },\n      \"api_key.created\": {\n        \"id\": \"string\",\n        \"data\": {\n          \"scopes\": [\n            \"string\",\n            \"string\"\n          ]\n        }\n      },\n      \"api_key.updated\": {\n        \"id\": \"string\",\n        \"changes_requested\": {\n          \"scopes\": [\n            \"string\",\n            \"string\"\n          ]\n        }\n      },\n      \"api_key.deleted\": {\n        \"id\": \"string\"\n      },\n      \"checkpoint.permission.created\": {\n        \"id\": \"string\",\n        \"data\": {\n          \"project_id\": \"string\",\n          \"fine_tuned_model_checkpoint\": \"string\"\n        }\n      },\n      \"checkpoint.permission.deleted\": {\n        \"id\": \"string\"\n      },\n      \"external_key.registered\": {\n        \"id\": \"string\",\n        \"data\": {}\n      },\n      \"external_key.removed\": {\n        \"id\": \"string\"\n      },\n      \"group.created\": {\n        \"id\": \"string\",\n        \"data\": {\n          \"group_name\": \"string\"\n        }\n      },\n      \"group.updated\": {\n        \"id\": \"string\",\n        \"changes_requested\": {\n          \"group_name\": \"string\"\n        }\n      },\n      \"group.deleted\": {\n        \"id\": \"string\"\n      },\n      \"scim.enabled\": {\n        \"id\": \"string\"\n      },\n      \"scim.disabled\": {\n        \"id\": \"string\"\n      },\n      \"invite.sent\": {\n        \"id\": \"string\",\n        \"data\": {\n          \"email\": \"string\",\n          \"role\": \"string\"\n        }\n      },\n      \"invite.accepted\": {\n        \"id\": \"string\"\n      },\n      \"invite.deleted\": {\n        \"id\": \"string\"\n      },\n      \"ip_allowlist.created\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"allowed_ips\": [\n          \"string\",\n          \"string\"\n        ]\n      },\n      \"ip_allowlist.updated\": {\n        \"id\": \"string\",\n        \"allowed_ips\": [\n          \"string\",\n          \"string\"\n        ]\n      },\n      \"ip_allowlist.deleted\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"allowed_ips\": [\n          \"string\",\n          \"string\"\n        ]\n      },\n      \"ip_allowlist.config.activated\": {\n        \"configs\": [\n          {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          },\n          {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          }\n        ]\n      },\n      \"ip_allowlist.config.deactivated\": {\n        \"configs\": [\n          {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          },\n          {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          }\n        ]\n      },\n      \"login.succeeded\": {},\n      \"login.failed\": {\n        \"error_code\": \"string\",\n        \"error_message\": \"string\"\n      },\n      \"logout.succeeded\": {},\n      \"logout.failed\": {\n        \"error_code\": \"string\",\n        \"error_message\": \"string\"\n      },\n      \"organization.updated\": {\n        \"id\": \"string\",\n        \"changes_requested\": {\n          \"title\": \"string\",\n          \"description\": \"string\",\n          \"name\": \"string\",\n          \"threads_ui_visibility\": \"string\",\n          \"usage_dashboard_visibility\": \"string\",\n          \"api_call_logging\": \"string\",\n          \"api_call_logging_project_ids\": \"string\"\n        }\n      },\n      \"project.created\": {\n        \"id\": \"string\",\n        \"data\": {\n          \"name\": \"string\",\n          \"title\": \"string\"\n        }\n      },\n      \"project.updated\": {\n        \"id\": \"string\",\n        \"changes_requested\": {\n          \"title\": \"string\"\n        }\n      },\n      \"project.archived\": {\n        \"id\": \"string\"\n      },\n      \"project.deleted\": {\n        \"id\": \"string\"\n      },\n      \"rate_limit.updated\": {\n        \"id\": \"string\",\n        \"changes_requested\": {\n          \"max_requests_per_1_minute\": 919,\n          \"max_tokens_per_1_minute\": 8138,\n          \"max_images_per_1_minute\": 9403,\n          \"max_audio_megabytes_per_1_minute\": 713,\n          \"max_requests_per_1_day\": 8982,\n          \"batch_1_day_max_input_tokens\": 6304\n        }\n      },\n      \"rate_limit.deleted\": {\n        \"id\": \"string\"\n      },\n      \"role.created\": {\n        \"id\": \"string\",\n        \"role_name\": \"string\",\n        \"permissions\": [\n          \"string\",\n          \"string\"\n        ],\n        \"resource_type\": \"string\",\n        \"resource_id\": \"string\"\n      },\n      \"role.updated\": {\n        \"id\": \"string\",\n        \"changes_requested\": {\n          \"role_name\": \"string\",\n          \"resource_id\": \"string\",\n          \"resource_type\": \"string\",\n          \"permissions_added\": [\n            \"string\",\n            \"string\"\n          ],\n          \"permissions_removed\": [\n            \"string\",\n            \"string\"\n          ],\n          \"description\": \"string\",\n          \"metadata\": {}\n        }\n      },\n      \"role.deleted\": {\n        \"id\": \"string\"\n      },\n      \"role.assignment.created\": {\n        \"id\": \"string\",\n        \"principal_id\": \"string\",\n        \"principal_type\": \"string\",\n        \"resource_id\": \"string\",\n        \"resource_type\": \"string\"\n      },\n      \"role.assignment.deleted\": {\n        \"id\": \"string\",\n        \"principal_id\": \"string\",\n        \"principal_type\": \"string\",\n        \"resource_id\": \"string\",\n        \"resource_type\": \"string\"\n      },\n      \"service_account.created\": {\n        \"id\": \"string\",\n        \"data\": {\n          \"role\": \"string\"\n        }\n      },\n      \"service_account.updated\": {\n        \"id\": \"string\",\n        \"changes_requested\": {\n          \"role\": \"string\"\n        }\n      },\n      \"service_account.deleted\": {\n        \"id\": \"string\"\n      },\n      \"user.added\": {\n        \"id\": \"string\",\n        \"data\": {\n          \"role\": \"string\"\n        }\n      },\n      \"user.updated\": {\n        \"id\": \"string\",\n        \"changes_requested\": {\n          \"role\": \"string\"\n        }\n      },\n      \"user.deleted\": {\n        \"id\": \"string\"\n      },\n      \"certificate.created\": {\n        \"id\": \"string\",\n        \"name\": \"string\"\n      },\n      \"certificate.updated\": {\n        \"id\": \"string\",\n        \"name\": \"string\"\n      },\n      \"certificate.deleted\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"certificate\": \"string\"\n      },\n      \"certificates.activated\": {\n        \"certificates\": [\n          {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          },\n          {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          }\n        ]\n      },\n      \"certificates.deactivated\": {\n        \"certificates\": [\n          {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          },\n          {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          }\n        ]\n      }\n    },\n    {\n      \"id\": \"string\",\n      \"type\": \"<string>\",\n      \"effective_at\": 2595,\n      \"project\": {\n        \"id\": \"string\",\n        \"name\": \"string\"\n      },\n      \"actor\": {\n        \"type\": \"session\",\n        \"session\": {\n          \"user\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"ip_address\": \"string\"\n        },\n        \"api_key\": {\n          \"id\": \"string\",\n          \"type\": \"user\",\n          \"user\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          },\n          \"service_account\": {\n            \"value\": \"<Error: Too many levels of nesting to fake this schema>\"\n          }\n        }\n      },\n      \"api_key.created\": {\n        \"id\": \"string\",\n        \"data\": {\n          \"scopes\": [\n            \"string\",\n            \"string\"\n          ]\n        }\n      },\n      \"api_key.updated\": {\n        \"id\": \"string\",\n        \"changes_requested\": {\n          \"scopes\": [\n            \"string\",\n            \"string\"\n          ]\n        }\n      },\n      \"api_key.deleted\": {\n        \"id\": \"string\"\n      },\n      \"checkpoint.permission.created\": {\n        \"id\": \"string\",\n        \"data\": {\n          \"project_id\": \"string\",\n          \"fine_tuned_model_checkpoint\": \"string\"\n        }\n      },\n      \"checkpoint.permission.deleted\": {\n        \"id\": \"string\"\n      },\n      \"external_key.registered\": {\n        \"id\": \"string\",\n        \"data\": {}\n      },\n      \"external_key.removed\": {\n        \"id\": \"string\"\n      },\n      \"group.created\": {\n        \"id\": \"string\",\n        \"data\": {\n          \"group_name\": \"string\"\n        }\n      },\n      \"group.updated\": {\n        \"id\": \"string\",\n        \"changes_requested\": {\n          \"group_name\": \"string\"\n        }\n      },\n      \"group.deleted\": {\n        \"id\": \"string\"\n      },\n      \"scim.enabled\": {\n        \"id\": \"string\"\n      },\n      \"scim.disabled\": {\n        \"id\": \"string\"\n      },\n      \"invite.sent\": {\n        \"id\": \"string\",\n        \"data\": {\n          \"email\": \"string\",\n          \"role\": \"string\"\n        }\n      },\n      \"invite.accepted\": {\n        \"id\": \"string\"\n      },\n      \"invite.deleted\": {\n        \"id\": \"string\"\n      },\n      \"ip_allowlist.created\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"allowed_ips\": [\n          \"string\",\n          \"string\"\n        ]\n      },\n      \"ip_allowlist.updated\": {\n        \"id\": \"string\",\n        \"allowed_ips\": [\n          \"string\",\n          \"string\"\n        ]\n      },\n      \"ip_allowlist.deleted\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"allowed_ips\": [\n          \"string\",\n          \"string\"\n        ]\n      },\n      \"ip_allowlist.config.activated\": {\n        \"configs\": [\n          {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          },\n          {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          }\n        ]\n      },\n      \"ip_allowlist.config.deactivated\": {\n        \"configs\": [\n          {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          },\n          {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          }\n        ]\n      },\n      \"login.succeeded\": {},\n      \"login.failed\": {\n        \"error_code\": \"string\",\n        \"error_message\": \"string\"\n      },\n      \"logout.succeeded\": {},\n      \"logout.failed\": {\n        \"error_code\": \"string\",\n        \"error_message\": \"string\"\n      },\n      \"organization.updated\": {\n        \"id\": \"string\",\n        \"changes_requested\": {\n          \"title\": \"string\",\n          \"description\": \"string\",\n          \"name\": \"string\",\n          \"threads_ui_visibility\": \"string\",\n          \"usage_dashboard_visibility\": \"string\",\n          \"api_call_logging\": \"string\",\n          \"api_call_logging_project_ids\": \"string\"\n        }\n      },\n      \"project.created\": {\n        \"id\": \"string\",\n        \"data\": {\n          \"name\": \"string\",\n          \"title\": \"string\"\n        }\n      },\n      \"project.updated\": {\n        \"id\": \"string\",\n        \"changes_requested\": {\n          \"title\": \"string\"\n        }\n      },\n      \"project.archived\": {\n        \"id\": \"string\"\n      },\n      \"project.deleted\": {\n        \"id\": \"string\"\n      },\n      \"rate_limit.updated\": {\n        \"id\": \"string\",\n        \"changes_requested\": {\n          \"max_requests_per_1_minute\": 6577,\n          \"max_tokens_per_1_minute\": 7062,\n          \"max_images_per_1_minute\": 8855,\n          \"max_audio_megabytes_per_1_minute\": 6333,\n          \"max_requests_per_1_day\": 1636,\n          \"batch_1_day_max_input_tokens\": 1061\n        }\n      },\n      \"rate_limit.deleted\": {\n        \"id\": \"string\"\n      },\n      \"role.created\": {\n        \"id\": \"string\",\n        \"role_name\": \"string\",\n        \"permissions\": [\n          \"string\",\n          \"string\"\n        ],\n        \"resource_type\": \"string\",\n        \"resource_id\": \"string\"\n      },\n      \"role.updated\": {\n        \"id\": \"string\",\n        \"changes_requested\": {\n          \"role_name\": \"string\",\n          \"resource_id\": \"string\",\n          \"resource_type\": \"string\",\n          \"permissions_added\": [\n            \"string\",\n            \"string\"\n          ],\n          \"permissions_removed\": [\n            \"string\",\n            \"string\"\n          ],\n          \"description\": \"string\",\n          \"metadata\": {}\n        }\n      },\n      \"role.deleted\": {\n        \"id\": \"string\"\n      },\n      \"role.assignment.created\": {\n        \"id\": \"string\",\n        \"principal_id\": \"string\",\n        \"principal_type\": \"string\",\n        \"resource_id\": \"string\",\n        \"resource_type\": \"string\"\n      },\n      \"role.assignment.deleted\": {\n        \"id\": \"string\",\n        \"principal_id\": \"string\",\n        \"principal_type\": \"string\",\n        \"resource_id\": \"string\",\n        \"resource_type\": \"string\"\n      },\n      \"service_account.created\": {\n        \"id\": \"string\",\n        \"data\": {\n          \"role\": \"string\"\n        }\n      },\n      \"service_account.updated\": {\n        \"id\": \"string\",\n        \"changes_requested\": {\n          \"role\": \"string\"\n        }\n      },\n      \"service_account.deleted\": {\n        \"id\": \"string\"\n      },\n      \"user.added\": {\n        \"id\": \"string\",\n        \"data\": {\n          \"role\": \"string\"\n        }\n      },\n      \"user.updated\": {\n        \"id\": \"string\",\n        \"changes_requested\": {\n          \"role\": \"string\"\n        }\n      },\n      \"user.deleted\": {\n        \"id\": \"string\"\n      },\n      \"certificate.created\": {\n        \"id\": \"string\",\n        \"name\": \"string\"\n      },\n      \"certificate.updated\": {\n        \"id\": \"string\",\n        \"name\": \"string\"\n      },\n      \"certificate.deleted\": {\n        \"id\": \"string\",\n        \"name\": \"string\",\n        \"certificate\": \"string\"\n      },\n      \"certificates.activated\": {\n        \"certificates\": [\n          {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          },\n          {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          }\n        ]\n      },\n      \"certificates.deactivated\": {\n        \"certificates\": [\n          {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          },\n          {\n            \"id\": \"string\",\n            \"name\": \"string\"\n          }\n        ]\n      }\n    }\n  ],\n  \"has_more\": true,\n  \"first_id\": \"string\",\n  \"last_id\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.openai.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "0eb1ec78-9e83-411c-b62e-35db226ac195",
+    "name": "OpenAI Assistants Audit Logs API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.\n\nContact Support:\n Name: OpenAI Support",
+      "type": "text/plain"
+    }
+  }
+}

@@ -1,0 +1,73 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "OpenAI Assistants Models API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Models",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "OpenAI Lists the currently available models, and provides basic information about each one such as the owner and availability.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/models"
+          },
+          "docs": "OpenAI Lists the currently available models, and provides basic information about each one such as the owner and availability."
+        },
+        {
+          "info": {
+            "name": "OpenAI Retrieves a model instance, providing basic information about the model such as the owner and permissioning.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/models/:model",
+            "params": [
+              {
+                "name": "model",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the model to use for this request"
+              }
+            ]
+          },
+          "docs": "OpenAI Retrieves a model instance, providing basic information about the model such as the owner and permissioning."
+        },
+        {
+          "info": {
+            "name": "OpenAI Delete a fine-tuned model. You must have the Owner role in your organization to delete a model.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.openai.com/v1/models/:model",
+            "params": [
+              {
+                "name": "model",
+                "value": "",
+                "type": "path",
+                "description": "The model to delete"
+              }
+            ]
+          },
+          "docs": "OpenAI Delete a fine-tuned model. You must have the Owner role in your organization to delete a model."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

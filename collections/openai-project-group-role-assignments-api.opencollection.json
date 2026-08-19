@@ -1,0 +1,127 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "OpenAI Assistants Project group role assignments API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Project group role assignments",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Lists the project roles assigned to a group within a project.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/projects/:project_id/groups/:group_id/roles",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the project to inspect."
+              },
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the group to inspect."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "A limit on the number of project role assignments to return."
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "Cursor for pagination. Provide the value from the previous response's `next` field to continue listing project roles."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order for the returned project roles."
+              }
+            ]
+          },
+          "docs": "Lists the project roles assigned to a group within a project."
+        },
+        {
+          "info": {
+            "name": "Assigns a project role to a group within a project.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/projects/:project_id/groups/:group_id/roles",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the project to update."
+              },
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the group that should receive the project role."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Assigns a project role to a group within a project."
+        },
+        {
+          "info": {
+            "name": "Unassigns a project role from a group within a project.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.openai.com/v1/projects/:project_id/groups/:group_id/roles/:role_id",
+            "params": [
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the project to modify."
+              },
+              {
+                "name": "group_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the group whose project role assignment should be removed."
+              },
+              {
+                "name": "role_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the project role to remove from the group."
+              }
+            ]
+          },
+          "docs": "Unassigns a project role from a group within a project."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

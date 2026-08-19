@@ -1,0 +1,323 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "OpenAI Assistants Fine Tuning API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Fine Tuning",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "OpenAI List your organization's fine-tuning jobs",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/fine_tuning/jobs",
+            "params": [
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "Identifier for the last job from the previous pagination request."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of fine-tuning jobs to retrieve."
+              }
+            ]
+          },
+          "docs": "OpenAI List your organization's fine-tuning jobs"
+        },
+        {
+          "info": {
+            "name": "OpenAI Creates a fine-tuning job which begins the process of creating a new model from a given dataset.\n\nResponse includes details of the enqueued job including job status and the name of the fine-tuned models once complete.\n\n[Learn more about fine-tuning](/docs/guides/fine-tuning)",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/fine_tuning/jobs",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "OpenAI Creates a fine-tuning job which begins the process of creating a new model from a given dataset.\n\nResponse includes details of the enqueued job including job status and the name of the fine-tuned models once complete.\n\n[Learn more about fine-tuning](/docs/guides/fine-tuning)"
+        },
+        {
+          "info": {
+            "name": "OpenAI Get info about a fine-tuning job.\n\n[Learn more about fine-tuning](/docs/guides/fine-tuning)",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/fine_tuning/jobs/:fine_tuning_job_id",
+            "params": [
+              {
+                "name": "fine_tuning_job_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the fine-tuning job.\n"
+              }
+            ]
+          },
+          "docs": "OpenAI Get info about a fine-tuning job.\n\n[Learn more about fine-tuning](/docs/guides/fine-tuning)"
+        },
+        {
+          "info": {
+            "name": "OpenAI Get status updates for a fine-tuning job.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/fine_tuning/jobs/:fine_tuning_job_id/events",
+            "params": [
+              {
+                "name": "fine_tuning_job_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the fine-tuning job to get events for.\n"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "Identifier for the last event from the previous pagination request."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of events to retrieve."
+              }
+            ]
+          },
+          "docs": "OpenAI Get status updates for a fine-tuning job."
+        },
+        {
+          "info": {
+            "name": "OpenAI Immediately cancel a fine-tune job.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/fine_tuning/jobs/:fine_tuning_job_id/cancel",
+            "params": [
+              {
+                "name": "fine_tuning_job_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the fine-tuning job to cancel.\n"
+              }
+            ]
+          },
+          "docs": "OpenAI Immediately cancel a fine-tune job."
+        },
+        {
+          "info": {
+            "name": "Run a grader.\n",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/fine_tuning/alpha/graders/run",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Run a grader.\n"
+        },
+        {
+          "info": {
+            "name": "Validate a grader.\n",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/fine_tuning/alpha/graders/validate",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Validate a grader.\n"
+        },
+        {
+          "info": {
+            "name": "**NOTE:** This endpoint requires an [admin API key](../admin-api-keys).\n\nOrganization owners can use this endpoint to view all permissions for a fine-tuned model checkpoint.\n",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/fine_tuning/checkpoints/:fine_tuned_model_checkpoint/permissions",
+            "params": [
+              {
+                "name": "fine_tuned_model_checkpoint",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the fine-tuned model checkpoint to get permissions for.\n"
+              },
+              {
+                "name": "project_id",
+                "value": "",
+                "type": "query",
+                "description": "The ID of the project to get permissions for."
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "Identifier for the last permission ID from the previous pagination request."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of permissions to retrieve."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "The order in which to retrieve permissions."
+              }
+            ]
+          },
+          "docs": "**NOTE:** This endpoint requires an [admin API key](../admin-api-keys).\n\nOrganization owners can use this endpoint to view all permissions for a fine-tuned model checkpoint.\n"
+        },
+        {
+          "info": {
+            "name": "**NOTE:** Calling this endpoint requires an [admin API key](../admin-api-keys).\n\nThis enables organization owners to share fine-tuned models with other projects in their organization.\n",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/fine_tuning/checkpoints/:fine_tuned_model_checkpoint/permissions",
+            "params": [
+              {
+                "name": "fine_tuned_model_checkpoint",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the fine-tuned model checkpoint to create a permission for.\n"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "**NOTE:** Calling this endpoint requires an [admin API key](../admin-api-keys).\n\nThis enables organization owners to share fine-tuned models with other projects in their organization.\n"
+        },
+        {
+          "info": {
+            "name": "**NOTE:** This endpoint requires an [admin API key](../admin-api-keys).\n\nOrganization owners can use this endpoint to delete a permission for a fine-tuned model checkpoint.\n",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.openai.com/v1/fine_tuning/checkpoints/:fine_tuned_model_checkpoint/permissions/:permission_id",
+            "params": [
+              {
+                "name": "fine_tuned_model_checkpoint",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the fine-tuned model checkpoint to delete a permission for.\n"
+              },
+              {
+                "name": "permission_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the fine-tuned model checkpoint permission to delete.\n"
+              }
+            ]
+          },
+          "docs": "**NOTE:** This endpoint requires an [admin API key](../admin-api-keys).\n\nOrganization owners can use this endpoint to delete a permission for a fine-tuned model checkpoint.\n"
+        },
+        {
+          "info": {
+            "name": "List checkpoints for a fine-tuning job.\n",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/fine_tuning/jobs/:fine_tuning_job_id/checkpoints",
+            "params": [
+              {
+                "name": "fine_tuning_job_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the fine-tuning job to get checkpoints for.\n"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "Identifier for the last checkpoint ID from the previous pagination request."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of checkpoints to retrieve."
+              }
+            ]
+          },
+          "docs": "List checkpoints for a fine-tuning job.\n"
+        },
+        {
+          "info": {
+            "name": "Pause a fine-tune job.\n",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/fine_tuning/jobs/:fine_tuning_job_id/pause",
+            "params": [
+              {
+                "name": "fine_tuning_job_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the fine-tuning job to pause.\n"
+              }
+            ]
+          },
+          "docs": "Pause a fine-tune job.\n"
+        },
+        {
+          "info": {
+            "name": "Resume a fine-tune job.\n",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/fine_tuning/jobs/:fine_tuning_job_id/resume",
+            "params": [
+              {
+                "name": "fine_tuning_job_id",
+                "value": "",
+                "type": "path",
+                "description": "The ID of the fine-tuning job to resume.\n"
+              }
+            ]
+          },
+          "docs": "Resume a fine-tune job.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

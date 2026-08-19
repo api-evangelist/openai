@@ -1,0 +1,91 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "OpenAI Assistants Audit Logs API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Audit Logs",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List user actions and configuration changes within this organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/organization/audit_logs",
+            "params": [
+              {
+                "name": "effective_at",
+                "value": "",
+                "type": "query",
+                "description": "Return only events whose `effective_at` (Unix seconds) is in this range."
+              },
+              {
+                "name": "project_ids[]",
+                "value": "",
+                "type": "query",
+                "description": "Return only events for these projects."
+              },
+              {
+                "name": "event_types[]",
+                "value": "",
+                "type": "query",
+                "description": "Return only events with a `type` in one of these values. For example, `project.created`. For all options, see the documentation for the [audit log object](/docs/api-reference/audit-logs/object)."
+              },
+              {
+                "name": "actor_ids[]",
+                "value": "",
+                "type": "query",
+                "description": "Return only events performed by these actors. Can be a user ID, a service account ID, or an api key tracking ID."
+              },
+              {
+                "name": "actor_emails[]",
+                "value": "",
+                "type": "query",
+                "description": "Return only events performed by users with these emails."
+              },
+              {
+                "name": "resource_ids[]",
+                "value": "",
+                "type": "query",
+                "description": "Return only events performed on these targets. For example, a project ID updated."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+              },
+              {
+                "name": "before",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. `before` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, starting with obj_foo, your subsequent call can include before=obj_foo in order to fetch the previous page of the list.\n"
+              }
+            ]
+          },
+          "docs": "List user actions and configuration changes within this organization."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

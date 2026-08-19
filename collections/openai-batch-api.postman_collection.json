@@ -1,0 +1,422 @@
+{
+  "item": [
+    {
+      "id": "a4102906-57b5-4ca8-b658-9b0d23923d59",
+      "name": "Batch",
+      "description": {
+        "content": "Create large batches of API requests to run asynchronously.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "ad4746a2-6fdd-42e0-867a-9ec2e1148414",
+          "name": "Creates and executes a batch from an uploaded file of requests",
+          "request": {
+            "name": "Creates and executes a batch from an uploaded file of requests",
+            "description": {},
+            "url": {
+              "path": [
+                "batches"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"input_file_id\": \"<string>\",\n  \"endpoint\": \"<string>\",\n  \"completion_window\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\",\n    \"key_2\": \"<string>\"\n  },\n  \"output_expires_after\": {\n    \"anchor\": \"<string>\",\n    \"seconds\": \"<long>\"\n  }\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "6984a529-6026-471b-8556-12c12d37cf22",
+              "name": "Batch created successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "batches"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"input_file_id\": \"<string>\",\n  \"endpoint\": \"<string>\",\n  \"completion_window\": \"<string>\",\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  },\n  \"output_expires_after\": {\n    \"anchor\": \"<string>\",\n    \"seconds\": \"<long>\"\n  }\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"batch\",\n  \"endpoint\": \"string\",\n  \"input_file_id\": \"string\",\n  \"completion_window\": \"string\",\n  \"status\": \"cancelled\",\n  \"created_at\": 2395,\n  \"model\": \"string\",\n  \"errors\": {\n    \"object\": \"string\",\n    \"data\": [\n      {\n        \"code\": \"string\",\n        \"message\": \"string\",\n        \"param\": \"string\",\n        \"line\": 4192\n      },\n      {\n        \"code\": \"string\",\n        \"message\": \"string\",\n        \"param\": \"string\",\n        \"line\": 208\n      }\n    ]\n  },\n  \"output_file_id\": \"string\",\n  \"error_file_id\": \"string\",\n  \"in_progress_at\": 8148,\n  \"expires_at\": 8596,\n  \"finalizing_at\": 6458,\n  \"completed_at\": 1196,\n  \"failed_at\": 3389,\n  \"expired_at\": 813,\n  \"cancelling_at\": 8285,\n  \"cancelled_at\": 1320,\n  \"request_counts\": {\n    \"total\": 5662,\n    \"completed\": 8074,\n    \"failed\": 6498\n  },\n  \"usage\": {\n    \"input_tokens\": 475,\n    \"input_tokens_details\": {\n      \"cached_tokens\": 6360\n    },\n    \"output_tokens\": 5066,\n    \"output_tokens_details\": {\n      \"reasoning_tokens\": 8061\n    },\n    \"total_tokens\": 2627\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\",\n    \"key_1\": \"<string>\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "26e406d1-c802-490e-a729-d6b7d8929501",
+          "name": "List your organization's batches.",
+          "request": {
+            "name": "List your organization's batches.",
+            "description": {},
+            "url": {
+              "path": [
+                "batches"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "after",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. `after` is an object ID that defines your place in the list. For instance, if you make a list request and receive 100 objects, ending with obj_foo, your subsequent call can include after=obj_foo in order to fetch the next page of the list.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "20",
+                  "description": "A limit on the number of objects to be returned. Limit can range between 1 and 100, and the default is 20.\n"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "a97ee70a-7b3b-48af-97e4-333cb98d9487",
+              "name": "Batch listed successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "batches"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "20"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"string\",\n      \"object\": \"batch\",\n      \"endpoint\": \"string\",\n      \"input_file_id\": \"string\",\n      \"completion_window\": \"string\",\n      \"status\": \"cancelled\",\n      \"created_at\": 6773,\n      \"model\": \"string\",\n      \"errors\": {\n        \"object\": \"string\",\n        \"data\": [\n          {\n            \"code\": \"string\",\n            \"message\": \"string\",\n            \"param\": \"string\",\n            \"line\": 8491\n          },\n          {\n            \"code\": \"string\",\n            \"message\": \"string\",\n            \"param\": \"string\",\n            \"line\": 7294\n          }\n        ]\n      },\n      \"output_file_id\": \"string\",\n      \"error_file_id\": \"string\",\n      \"in_progress_at\": 3685,\n      \"expires_at\": 8102,\n      \"finalizing_at\": 2364,\n      \"completed_at\": 9206,\n      \"failed_at\": 4390,\n      \"expired_at\": 4799,\n      \"cancelling_at\": 3077,\n      \"cancelled_at\": 1889,\n      \"request_counts\": {\n        \"total\": 549,\n        \"completed\": 9593,\n        \"failed\": 148\n      },\n      \"usage\": {\n        \"input_tokens\": 1921,\n        \"input_tokens_details\": {\n          \"cached_tokens\": 2470\n        },\n        \"output_tokens\": 9801,\n        \"output_tokens_details\": {\n          \"reasoning_tokens\": 4653\n        },\n        \"total_tokens\": 1406\n      },\n      \"metadata\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\"\n      }\n    },\n    {\n      \"id\": \"string\",\n      \"object\": \"batch\",\n      \"endpoint\": \"string\",\n      \"input_file_id\": \"string\",\n      \"completion_window\": \"string\",\n      \"status\": \"finalizing\",\n      \"created_at\": 8673,\n      \"model\": \"string\",\n      \"errors\": {\n        \"object\": \"string\",\n        \"data\": [\n          {\n            \"code\": \"string\",\n            \"message\": \"string\",\n            \"param\": \"string\",\n            \"line\": 8094\n          },\n          {\n            \"code\": \"string\",\n            \"message\": \"string\",\n            \"param\": \"string\",\n            \"line\": 7791\n          }\n        ]\n      },\n      \"output_file_id\": \"string\",\n      \"error_file_id\": \"string\",\n      \"in_progress_at\": 5255,\n      \"expires_at\": 1705,\n      \"finalizing_at\": 5391,\n      \"completed_at\": 9140,\n      \"failed_at\": 5749,\n      \"expired_at\": 1799,\n      \"cancelling_at\": 4487,\n      \"cancelled_at\": 6777,\n      \"request_counts\": {\n        \"total\": 7285,\n        \"completed\": 1896,\n        \"failed\": 1734\n      },\n      \"usage\": {\n        \"input_tokens\": 5703,\n        \"input_tokens_details\": {\n          \"cached_tokens\": 3675\n        },\n        \"output_tokens\": 2299,\n        \"output_tokens_details\": {\n          \"reasoning_tokens\": 6933\n        },\n        \"total_tokens\": 1981\n      },\n      \"metadata\": {\n        \"key_0\": \"<string>\",\n        \"key_1\": \"<string>\"\n      }\n    }\n  ],\n  \"has_more\": false,\n  \"first_id\": \"batch_abc123\",\n  \"last_id\": \"batch_abc456\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2be1ceb3-952e-4713-a5d5-2cf3f4cda09e",
+          "name": "Retrieves a batch.",
+          "request": {
+            "name": "Retrieves a batch.",
+            "description": {},
+            "url": {
+              "path": [
+                "batches",
+                ":batch_id"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "batch_id",
+                  "description": "(Required) The ID of the batch to retrieve."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "2a131e59-22ab-4a2e-927e-180a1944b5d6",
+              "name": "Batch retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "batches",
+                    ":batch_id"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "batch_id",
+                      "description": "(Required) The ID of the batch to retrieve."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"batch\",\n  \"endpoint\": \"string\",\n  \"input_file_id\": \"string\",\n  \"completion_window\": \"string\",\n  \"status\": \"cancelled\",\n  \"created_at\": 844,\n  \"model\": \"string\",\n  \"errors\": {\n    \"object\": \"string\",\n    \"data\": [\n      {\n        \"code\": \"string\",\n        \"message\": \"string\",\n        \"param\": \"string\",\n        \"line\": 88\n      },\n      {\n        \"code\": \"string\",\n        \"message\": \"string\",\n        \"param\": \"string\",\n        \"line\": 6371\n      }\n    ]\n  },\n  \"output_file_id\": \"string\",\n  \"error_file_id\": \"string\",\n  \"in_progress_at\": 945,\n  \"expires_at\": 8633,\n  \"finalizing_at\": 9978,\n  \"completed_at\": 4716,\n  \"failed_at\": 6991,\n  \"expired_at\": 9188,\n  \"cancelling_at\": 1235,\n  \"cancelled_at\": 9041,\n  \"request_counts\": {\n    \"total\": 967,\n    \"completed\": 9968,\n    \"failed\": 9711\n  },\n  \"usage\": {\n    \"input_tokens\": 2884,\n    \"input_tokens_details\": {\n      \"cached_tokens\": 2724\n    },\n    \"output_tokens\": 927,\n    \"output_tokens_details\": {\n      \"reasoning_tokens\": 1792\n    },\n    \"total_tokens\": 1551\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "6fb6da1c-02f8-4fe7-8230-b14cc7ef1311",
+          "name": "Cancels an in-progress batch. The batch will be in status `cancelling` for up to 10 minutes, before changing to `cancelled`, where it will have partial results (if any) available in the output file.",
+          "request": {
+            "name": "Cancels an in-progress batch. The batch will be in status `cancelling` for up to 10 minutes, before changing to `cancelled`, where it will have partial results (if any) available in the output file.",
+            "description": {},
+            "url": {
+              "path": [
+                "batches",
+                ":batch_id",
+                "cancel"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "batch_id",
+                  "description": "(Required) The ID of the batch to cancel."
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "0b6b067c-a6cc-4440-885b-cfedc5a72159",
+              "name": "Batch is cancelling. Returns the cancelling batch's details.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "batches",
+                    ":batch_id",
+                    "cancel"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "batch_id",
+                      "description": "(Required) The ID of the batch to cancel."
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"object\": \"batch\",\n  \"endpoint\": \"string\",\n  \"input_file_id\": \"string\",\n  \"completion_window\": \"string\",\n  \"status\": \"cancelled\",\n  \"created_at\": 844,\n  \"model\": \"string\",\n  \"errors\": {\n    \"object\": \"string\",\n    \"data\": [\n      {\n        \"code\": \"string\",\n        \"message\": \"string\",\n        \"param\": \"string\",\n        \"line\": 88\n      },\n      {\n        \"code\": \"string\",\n        \"message\": \"string\",\n        \"param\": \"string\",\n        \"line\": 6371\n      }\n    ]\n  },\n  \"output_file_id\": \"string\",\n  \"error_file_id\": \"string\",\n  \"in_progress_at\": 945,\n  \"expires_at\": 8633,\n  \"finalizing_at\": 9978,\n  \"completed_at\": 4716,\n  \"failed_at\": 6991,\n  \"expired_at\": 9188,\n  \"cancelling_at\": 1235,\n  \"cancelled_at\": 9041,\n  \"request_counts\": {\n    \"total\": 967,\n    \"completed\": 9968,\n    \"failed\": 9711\n  },\n  \"usage\": {\n    \"input_tokens\": 2884,\n    \"input_tokens_details\": {\n      \"cached_tokens\": 2724\n    },\n    \"output_tokens\": 927,\n    \"output_tokens_details\": {\n      \"reasoning_tokens\": 1792\n    },\n    \"total_tokens\": 1551\n  },\n  \"metadata\": {\n    \"key_0\": \"<string>\"\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.openai.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "0b7a2d41-68d7-459c-b602-d645331df9c3",
+    "name": "OpenAI Assistants Batch API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.\n\nContact Support:\n Name: OpenAI Support",
+      "type": "text/plain"
+    }
+  }
+}

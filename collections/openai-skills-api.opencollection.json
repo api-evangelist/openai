@@ -1,0 +1,285 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "OpenAI Assistants Skills API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Skills",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List all skills for the current project.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/skills",
+            "params": [
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of items to retrieve"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order of results by timestamp. Use `asc` for ascending order or `desc` for descending order."
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "Identifier for the last item from the previous pagination request"
+              }
+            ]
+          },
+          "docs": "List all skills for the current project."
+        },
+        {
+          "info": {
+            "name": "Create a new skill.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/skills",
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new skill."
+        },
+        {
+          "info": {
+            "name": "Get a skill by its ID.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/skills/:skill_id",
+            "params": [
+              {
+                "name": "skill_id",
+                "value": "",
+                "type": "path",
+                "description": "The identifier of the skill to retrieve."
+              }
+            ]
+          },
+          "docs": "Get a skill by its ID."
+        },
+        {
+          "info": {
+            "name": "Update the default version pointer for a skill.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/skills/:skill_id",
+            "params": [
+              {
+                "name": "skill_id",
+                "value": "",
+                "type": "path",
+                "description": "The identifier of the skill."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Update the default version pointer for a skill."
+        },
+        {
+          "info": {
+            "name": "Delete a skill by its ID.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.openai.com/v1/skills/:skill_id",
+            "params": [
+              {
+                "name": "skill_id",
+                "value": "",
+                "type": "path",
+                "description": "The identifier of the skill to delete."
+              }
+            ]
+          },
+          "docs": "Delete a skill by its ID."
+        },
+        {
+          "info": {
+            "name": "Download a skill zip bundle by its ID.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/skills/:skill_id/content",
+            "params": [
+              {
+                "name": "skill_id",
+                "value": "",
+                "type": "path",
+                "description": "The identifier of the skill to download."
+              }
+            ]
+          },
+          "docs": "Download a skill zip bundle by its ID."
+        },
+        {
+          "info": {
+            "name": "List skill versions for a skill.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/skills/:skill_id/versions",
+            "params": [
+              {
+                "name": "skill_id",
+                "value": "",
+                "type": "path",
+                "description": "The identifier of the skill."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Number of versions to retrieve."
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query",
+                "description": "Sort order of results by version number."
+              },
+              {
+                "name": "after",
+                "value": "",
+                "type": "query",
+                "description": "The skill version ID to start after."
+              }
+            ]
+          },
+          "docs": "List skill versions for a skill."
+        },
+        {
+          "info": {
+            "name": "Create a new immutable skill version.",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.openai.com/v1/skills/:skill_id/versions",
+            "params": [
+              {
+                "name": "skill_id",
+                "value": "",
+                "type": "path",
+                "description": "The identifier of the skill to version."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            }
+          },
+          "docs": "Create a new immutable skill version."
+        },
+        {
+          "info": {
+            "name": "Get a specific skill version.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/skills/:skill_id/versions/:version",
+            "params": [
+              {
+                "name": "skill_id",
+                "value": "",
+                "type": "path",
+                "description": "The identifier of the skill."
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "path",
+                "description": "The version number to retrieve."
+              }
+            ]
+          },
+          "docs": "Get a specific skill version."
+        },
+        {
+          "info": {
+            "name": "Delete a skill version.",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.openai.com/v1/skills/:skill_id/versions/:version",
+            "params": [
+              {
+                "name": "skill_id",
+                "value": "",
+                "type": "path",
+                "description": "The identifier of the skill."
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "path",
+                "description": "The skill version number."
+              }
+            ]
+          },
+          "docs": "Delete a skill version."
+        },
+        {
+          "info": {
+            "name": "Download a skill version zip bundle.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/skills/:skill_id/versions/:version/content",
+            "params": [
+              {
+                "name": "skill_id",
+                "value": "",
+                "type": "path",
+                "description": "The identifier of the skill."
+              },
+              {
+                "name": "version",
+                "value": "",
+                "type": "path",
+                "description": "The skill version number."
+              }
+            ]
+          },
+          "docs": "Download a skill version zip bundle."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

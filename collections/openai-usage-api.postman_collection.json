@@ -1,0 +1,1999 @@
+{
+  "item": [
+    {
+      "id": "25656d9b-97a1-4b63-b604-9cf682c44217",
+      "name": "Usage",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "79dd37f9-9691-4df9-91fb-cfccce449cb1",
+          "name": "Get costs details for the organization.",
+          "request": {
+            "name": "Get costs details for the organization.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "costs"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start_time",
+                  "value": "<integer>",
+                  "description": "(Required) Start time (Unix seconds) of the query time range, inclusive."
+                },
+                {
+                  "disabled": false,
+                  "key": "end_time",
+                  "value": "<integer>",
+                  "description": "End time (Unix seconds) of the query time range, exclusive."
+                },
+                {
+                  "disabled": false,
+                  "key": "bucket_width",
+                  "value": "1d",
+                  "description": "Width of each time bucket in response. Currently only `1d` is supported, default to `1d`."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids",
+                  "value": "<string>",
+                  "description": "Return only costs for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids",
+                  "value": "<string>",
+                  "description": "Return only costs for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "api_key_ids",
+                  "value": "<string>",
+                  "description": "Return only costs for these API keys."
+                },
+                {
+                  "disabled": false,
+                  "key": "api_key_ids",
+                  "value": "<string>",
+                  "description": "Return only costs for these API keys."
+                },
+                {
+                  "disabled": false,
+                  "key": "group_by",
+                  "value": "<string>",
+                  "description": "Group the costs by the specified fields. Support fields include `project_id`, `line_item`, `api_key_id` and any combination of them."
+                },
+                {
+                  "disabled": false,
+                  "key": "group_by",
+                  "value": "<string>",
+                  "description": "Group the costs by the specified fields. Support fields include `project_id`, `line_item`, `api_key_id` and any combination of them."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "7",
+                  "description": "A limit on the number of buckets to be returned. Limit can range between 1 and 180, and the default is 7.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. Corresponding to the `next_page` field from the previous response."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "52f5f916-556f-4a40-a871-eb25aae4bdb8",
+              "name": "Costs data retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "costs"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_time",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "end_time",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "bucket_width",
+                      "value": "1d"
+                    },
+                    {
+                      "key": "project_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "project_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "api_key_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "api_key_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "group_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "group_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "7"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"page\",\n  \"data\": [\n    {\n      \"object\": \"bucket\",\n      \"start_time\": 6801,\n      \"end_time\": 276,\n      \"results\": [\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 8058,\n          \"output_tokens\": 2928,\n          \"num_model_requests\": 5308,\n          \"input_cached_tokens\": 3023,\n          \"input_audio_tokens\": 5351,\n          \"output_audio_tokens\": 2428,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": false,\n          \"service_tier\": \"string\"\n        },\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 4859,\n          \"output_tokens\": 1020,\n          \"num_model_requests\": 3925,\n          \"input_cached_tokens\": 9305,\n          \"input_audio_tokens\": 9228,\n          \"output_audio_tokens\": 692,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": false,\n          \"service_tier\": \"string\"\n        }\n      ]\n    },\n    {\n      \"object\": \"bucket\",\n      \"start_time\": 8906,\n      \"end_time\": 2627,\n      \"results\": [\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 8519,\n          \"output_tokens\": 3865,\n          \"num_model_requests\": 1339,\n          \"input_cached_tokens\": 2180,\n          \"input_audio_tokens\": 800,\n          \"output_audio_tokens\": 8805,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": false,\n          \"service_tier\": \"string\"\n        },\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 6901,\n          \"output_tokens\": 8610,\n          \"num_model_requests\": 9254,\n          \"input_cached_tokens\": 4332,\n          \"input_audio_tokens\": 8677,\n          \"output_audio_tokens\": 1962,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": true,\n          \"service_tier\": \"string\"\n        }\n      ]\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "de1b3fb1-6873-4abf-9a66-529c8b9a7bce",
+          "name": "Get audio speeches usage details for the organization.",
+          "request": {
+            "name": "Get audio speeches usage details for the organization.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "usage",
+                "audio_speeches"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start_time",
+                  "value": "<integer>",
+                  "description": "(Required) Start time (Unix seconds) of the query time range, inclusive."
+                },
+                {
+                  "disabled": false,
+                  "key": "end_time",
+                  "value": "<integer>",
+                  "description": "End time (Unix seconds) of the query time range, exclusive."
+                },
+                {
+                  "disabled": false,
+                  "key": "bucket_width",
+                  "value": "1d",
+                  "description": "Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "user_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these users."
+                },
+                {
+                  "disabled": false,
+                  "key": "user_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these users."
+                },
+                {
+                  "disabled": false,
+                  "key": "api_key_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these API keys."
+                },
+                {
+                  "disabled": false,
+                  "key": "api_key_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these API keys."
+                },
+                {
+                  "disabled": false,
+                  "key": "models",
+                  "value": "<string>",
+                  "description": "Return only usage for these models."
+                },
+                {
+                  "disabled": false,
+                  "key": "models",
+                  "value": "<string>",
+                  "description": "Return only usage for these models."
+                },
+                {
+                  "disabled": false,
+                  "key": "group_by",
+                  "value": "<string>",
+                  "description": "Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them."
+                },
+                {
+                  "disabled": false,
+                  "key": "group_by",
+                  "value": "<string>",
+                  "description": "Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Specifies the number of buckets to return.\n- `bucket_width=1d`: default: 7, max: 31\n- `bucket_width=1h`: default: 24, max: 168\n- `bucket_width=1m`: default: 60, max: 1440\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. Corresponding to the `next_page` field from the previous response."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "72917a74-693e-438f-a2d3-2041339566da",
+              "name": "Usage data retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "usage",
+                    "audio_speeches"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_time",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "end_time",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "bucket_width",
+                      "value": "1d"
+                    },
+                    {
+                      "key": "project_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "project_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "user_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "user_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "api_key_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "api_key_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "models",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "models",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "group_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "group_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"page\",\n  \"data\": [\n    {\n      \"object\": \"bucket\",\n      \"start_time\": 7037,\n      \"end_time\": 6439,\n      \"results\": [\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 5063,\n          \"output_tokens\": 9817,\n          \"num_model_requests\": 4357,\n          \"input_cached_tokens\": 203,\n          \"input_audio_tokens\": 1262,\n          \"output_audio_tokens\": 3,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": false,\n          \"service_tier\": \"string\"\n        },\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 9133,\n          \"output_tokens\": 3988,\n          \"num_model_requests\": 1000,\n          \"input_cached_tokens\": 9456,\n          \"input_audio_tokens\": 2916,\n          \"output_audio_tokens\": 4061,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": false,\n          \"service_tier\": \"string\"\n        }\n      ]\n    },\n    {\n      \"object\": \"bucket\",\n      \"start_time\": 6092,\n      \"end_time\": 7561,\n      \"results\": [\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 8582,\n          \"output_tokens\": 7569,\n          \"num_model_requests\": 3016,\n          \"input_cached_tokens\": 8541,\n          \"input_audio_tokens\": 8203,\n          \"output_audio_tokens\": 398,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": true,\n          \"service_tier\": \"string\"\n        },\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 9232,\n          \"output_tokens\": 745,\n          \"num_model_requests\": 1551,\n          \"input_cached_tokens\": 1722,\n          \"input_audio_tokens\": 1986,\n          \"output_audio_tokens\": 2267,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": true,\n          \"service_tier\": \"string\"\n        }\n      ]\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9c77d1b0-4e1f-4aa9-a146-d3acd7afe2d8",
+          "name": "Get audio transcriptions usage details for the organization.",
+          "request": {
+            "name": "Get audio transcriptions usage details for the organization.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "usage",
+                "audio_transcriptions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start_time",
+                  "value": "<integer>",
+                  "description": "(Required) Start time (Unix seconds) of the query time range, inclusive."
+                },
+                {
+                  "disabled": false,
+                  "key": "end_time",
+                  "value": "<integer>",
+                  "description": "End time (Unix seconds) of the query time range, exclusive."
+                },
+                {
+                  "disabled": false,
+                  "key": "bucket_width",
+                  "value": "1d",
+                  "description": "Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "user_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these users."
+                },
+                {
+                  "disabled": false,
+                  "key": "user_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these users."
+                },
+                {
+                  "disabled": false,
+                  "key": "api_key_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these API keys."
+                },
+                {
+                  "disabled": false,
+                  "key": "api_key_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these API keys."
+                },
+                {
+                  "disabled": false,
+                  "key": "models",
+                  "value": "<string>",
+                  "description": "Return only usage for these models."
+                },
+                {
+                  "disabled": false,
+                  "key": "models",
+                  "value": "<string>",
+                  "description": "Return only usage for these models."
+                },
+                {
+                  "disabled": false,
+                  "key": "group_by",
+                  "value": "<string>",
+                  "description": "Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them."
+                },
+                {
+                  "disabled": false,
+                  "key": "group_by",
+                  "value": "<string>",
+                  "description": "Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Specifies the number of buckets to return.\n- `bucket_width=1d`: default: 7, max: 31\n- `bucket_width=1h`: default: 24, max: 168\n- `bucket_width=1m`: default: 60, max: 1440\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. Corresponding to the `next_page` field from the previous response."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "a249d9b6-f7ae-4b91-9aed-66070df97193",
+              "name": "Usage data retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "usage",
+                    "audio_transcriptions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_time",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "end_time",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "bucket_width",
+                      "value": "1d"
+                    },
+                    {
+                      "key": "project_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "project_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "user_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "user_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "api_key_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "api_key_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "models",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "models",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "group_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "group_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"page\",\n  \"data\": [\n    {\n      \"object\": \"bucket\",\n      \"start_time\": 7037,\n      \"end_time\": 6439,\n      \"results\": [\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 5063,\n          \"output_tokens\": 9817,\n          \"num_model_requests\": 4357,\n          \"input_cached_tokens\": 203,\n          \"input_audio_tokens\": 1262,\n          \"output_audio_tokens\": 3,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": false,\n          \"service_tier\": \"string\"\n        },\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 9133,\n          \"output_tokens\": 3988,\n          \"num_model_requests\": 1000,\n          \"input_cached_tokens\": 9456,\n          \"input_audio_tokens\": 2916,\n          \"output_audio_tokens\": 4061,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": false,\n          \"service_tier\": \"string\"\n        }\n      ]\n    },\n    {\n      \"object\": \"bucket\",\n      \"start_time\": 6092,\n      \"end_time\": 7561,\n      \"results\": [\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 8582,\n          \"output_tokens\": 7569,\n          \"num_model_requests\": 3016,\n          \"input_cached_tokens\": 8541,\n          \"input_audio_tokens\": 8203,\n          \"output_audio_tokens\": 398,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": true,\n          \"service_tier\": \"string\"\n        },\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 9232,\n          \"output_tokens\": 745,\n          \"num_model_requests\": 1551,\n          \"input_cached_tokens\": 1722,\n          \"input_audio_tokens\": 1986,\n          \"output_audio_tokens\": 2267,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": true,\n          \"service_tier\": \"string\"\n        }\n      ]\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "b68b9fe7-d755-40f1-854f-df9cb2c81bcd",
+          "name": "Get code interpreter sessions usage details for the organization.",
+          "request": {
+            "name": "Get code interpreter sessions usage details for the organization.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "usage",
+                "code_interpreter_sessions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start_time",
+                  "value": "<integer>",
+                  "description": "(Required) Start time (Unix seconds) of the query time range, inclusive."
+                },
+                {
+                  "disabled": false,
+                  "key": "end_time",
+                  "value": "<integer>",
+                  "description": "End time (Unix seconds) of the query time range, exclusive."
+                },
+                {
+                  "disabled": false,
+                  "key": "bucket_width",
+                  "value": "1d",
+                  "description": "Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "group_by",
+                  "value": "<string>",
+                  "description": "Group the usage data by the specified fields. Support fields include `project_id`."
+                },
+                {
+                  "disabled": false,
+                  "key": "group_by",
+                  "value": "<string>",
+                  "description": "Group the usage data by the specified fields. Support fields include `project_id`."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Specifies the number of buckets to return.\n- `bucket_width=1d`: default: 7, max: 31\n- `bucket_width=1h`: default: 24, max: 168\n- `bucket_width=1m`: default: 60, max: 1440\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. Corresponding to the `next_page` field from the previous response."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "c6e0ab18-0ee6-46d0-bf43-ffc93e46f86e",
+              "name": "Usage data retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "usage",
+                    "code_interpreter_sessions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_time",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "end_time",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "bucket_width",
+                      "value": "1d"
+                    },
+                    {
+                      "key": "project_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "project_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "group_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "group_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"page\",\n  \"data\": [\n    {\n      \"object\": \"bucket\",\n      \"start_time\": 7037,\n      \"end_time\": 6439,\n      \"results\": [\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 5063,\n          \"output_tokens\": 9817,\n          \"num_model_requests\": 4357,\n          \"input_cached_tokens\": 203,\n          \"input_audio_tokens\": 1262,\n          \"output_audio_tokens\": 3,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": false,\n          \"service_tier\": \"string\"\n        },\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 9133,\n          \"output_tokens\": 3988,\n          \"num_model_requests\": 1000,\n          \"input_cached_tokens\": 9456,\n          \"input_audio_tokens\": 2916,\n          \"output_audio_tokens\": 4061,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": false,\n          \"service_tier\": \"string\"\n        }\n      ]\n    },\n    {\n      \"object\": \"bucket\",\n      \"start_time\": 6092,\n      \"end_time\": 7561,\n      \"results\": [\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 8582,\n          \"output_tokens\": 7569,\n          \"num_model_requests\": 3016,\n          \"input_cached_tokens\": 8541,\n          \"input_audio_tokens\": 8203,\n          \"output_audio_tokens\": 398,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": true,\n          \"service_tier\": \"string\"\n        },\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 9232,\n          \"output_tokens\": 745,\n          \"num_model_requests\": 1551,\n          \"input_cached_tokens\": 1722,\n          \"input_audio_tokens\": 1986,\n          \"output_audio_tokens\": 2267,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": true,\n          \"service_tier\": \"string\"\n        }\n      ]\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "631d8a91-fb76-46f9-af3d-8b4e090baffd",
+          "name": "Get completions usage details for the organization.",
+          "request": {
+            "name": "Get completions usage details for the organization.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "usage",
+                "completions"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start_time",
+                  "value": "<integer>",
+                  "description": "(Required) Start time (Unix seconds) of the query time range, inclusive."
+                },
+                {
+                  "disabled": false,
+                  "key": "end_time",
+                  "value": "<integer>",
+                  "description": "End time (Unix seconds) of the query time range, exclusive."
+                },
+                {
+                  "disabled": false,
+                  "key": "bucket_width",
+                  "value": "1d",
+                  "description": "Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "user_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these users."
+                },
+                {
+                  "disabled": false,
+                  "key": "user_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these users."
+                },
+                {
+                  "disabled": false,
+                  "key": "api_key_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these API keys."
+                },
+                {
+                  "disabled": false,
+                  "key": "api_key_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these API keys."
+                },
+                {
+                  "disabled": false,
+                  "key": "models",
+                  "value": "<string>",
+                  "description": "Return only usage for these models."
+                },
+                {
+                  "disabled": false,
+                  "key": "models",
+                  "value": "<string>",
+                  "description": "Return only usage for these models."
+                },
+                {
+                  "disabled": false,
+                  "key": "batch",
+                  "value": "<boolean>",
+                  "description": "If `true`, return batch jobs only. If `false`, return non-batch jobs only. By default, return both.\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "group_by",
+                  "value": "<string>",
+                  "description": "Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model`, `batch`, `service_tier` or any combination of them."
+                },
+                {
+                  "disabled": false,
+                  "key": "group_by",
+                  "value": "<string>",
+                  "description": "Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model`, `batch`, `service_tier` or any combination of them."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Specifies the number of buckets to return.\n- `bucket_width=1d`: default: 7, max: 31\n- `bucket_width=1h`: default: 24, max: 168\n- `bucket_width=1m`: default: 60, max: 1440\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. Corresponding to the `next_page` field from the previous response."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "8f5a7b4c-c434-439a-a606-fdcad76d93bf",
+              "name": "Usage data retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "usage",
+                    "completions"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_time",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "end_time",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "bucket_width",
+                      "value": "1d"
+                    },
+                    {
+                      "key": "project_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "project_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "user_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "user_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "api_key_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "api_key_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "models",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "models",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "batch",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "group_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "group_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"page\",\n  \"data\": [\n    {\n      \"object\": \"bucket\",\n      \"start_time\": 7037,\n      \"end_time\": 6439,\n      \"results\": [\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 5063,\n          \"output_tokens\": 9817,\n          \"num_model_requests\": 4357,\n          \"input_cached_tokens\": 203,\n          \"input_audio_tokens\": 1262,\n          \"output_audio_tokens\": 3,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": false,\n          \"service_tier\": \"string\"\n        },\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 9133,\n          \"output_tokens\": 3988,\n          \"num_model_requests\": 1000,\n          \"input_cached_tokens\": 9456,\n          \"input_audio_tokens\": 2916,\n          \"output_audio_tokens\": 4061,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": false,\n          \"service_tier\": \"string\"\n        }\n      ]\n    },\n    {\n      \"object\": \"bucket\",\n      \"start_time\": 6092,\n      \"end_time\": 7561,\n      \"results\": [\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 8582,\n          \"output_tokens\": 7569,\n          \"num_model_requests\": 3016,\n          \"input_cached_tokens\": 8541,\n          \"input_audio_tokens\": 8203,\n          \"output_audio_tokens\": 398,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": true,\n          \"service_tier\": \"string\"\n        },\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 9232,\n          \"output_tokens\": 745,\n          \"num_model_requests\": 1551,\n          \"input_cached_tokens\": 1722,\n          \"input_audio_tokens\": 1986,\n          \"output_audio_tokens\": 2267,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": true,\n          \"service_tier\": \"string\"\n        }\n      ]\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "dc769f57-f752-4e11-a646-3c4bf3fb3210",
+          "name": "Get embeddings usage details for the organization.",
+          "request": {
+            "name": "Get embeddings usage details for the organization.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "usage",
+                "embeddings"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start_time",
+                  "value": "<integer>",
+                  "description": "(Required) Start time (Unix seconds) of the query time range, inclusive."
+                },
+                {
+                  "disabled": false,
+                  "key": "end_time",
+                  "value": "<integer>",
+                  "description": "End time (Unix seconds) of the query time range, exclusive."
+                },
+                {
+                  "disabled": false,
+                  "key": "bucket_width",
+                  "value": "1d",
+                  "description": "Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "user_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these users."
+                },
+                {
+                  "disabled": false,
+                  "key": "user_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these users."
+                },
+                {
+                  "disabled": false,
+                  "key": "api_key_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these API keys."
+                },
+                {
+                  "disabled": false,
+                  "key": "api_key_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these API keys."
+                },
+                {
+                  "disabled": false,
+                  "key": "models",
+                  "value": "<string>",
+                  "description": "Return only usage for these models."
+                },
+                {
+                  "disabled": false,
+                  "key": "models",
+                  "value": "<string>",
+                  "description": "Return only usage for these models."
+                },
+                {
+                  "disabled": false,
+                  "key": "group_by",
+                  "value": "<string>",
+                  "description": "Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them."
+                },
+                {
+                  "disabled": false,
+                  "key": "group_by",
+                  "value": "<string>",
+                  "description": "Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Specifies the number of buckets to return.\n- `bucket_width=1d`: default: 7, max: 31\n- `bucket_width=1h`: default: 24, max: 168\n- `bucket_width=1m`: default: 60, max: 1440\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. Corresponding to the `next_page` field from the previous response."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "acf31ce2-2133-42e0-9c3f-39e0b9c3fa6a",
+              "name": "Usage data retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "usage",
+                    "embeddings"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_time",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "end_time",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "bucket_width",
+                      "value": "1d"
+                    },
+                    {
+                      "key": "project_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "project_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "user_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "user_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "api_key_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "api_key_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "models",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "models",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "group_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "group_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"page\",\n  \"data\": [\n    {\n      \"object\": \"bucket\",\n      \"start_time\": 7037,\n      \"end_time\": 6439,\n      \"results\": [\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 5063,\n          \"output_tokens\": 9817,\n          \"num_model_requests\": 4357,\n          \"input_cached_tokens\": 203,\n          \"input_audio_tokens\": 1262,\n          \"output_audio_tokens\": 3,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": false,\n          \"service_tier\": \"string\"\n        },\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 9133,\n          \"output_tokens\": 3988,\n          \"num_model_requests\": 1000,\n          \"input_cached_tokens\": 9456,\n          \"input_audio_tokens\": 2916,\n          \"output_audio_tokens\": 4061,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": false,\n          \"service_tier\": \"string\"\n        }\n      ]\n    },\n    {\n      \"object\": \"bucket\",\n      \"start_time\": 6092,\n      \"end_time\": 7561,\n      \"results\": [\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 8582,\n          \"output_tokens\": 7569,\n          \"num_model_requests\": 3016,\n          \"input_cached_tokens\": 8541,\n          \"input_audio_tokens\": 8203,\n          \"output_audio_tokens\": 398,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": true,\n          \"service_tier\": \"string\"\n        },\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 9232,\n          \"output_tokens\": 745,\n          \"num_model_requests\": 1551,\n          \"input_cached_tokens\": 1722,\n          \"input_audio_tokens\": 1986,\n          \"output_audio_tokens\": 2267,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": true,\n          \"service_tier\": \"string\"\n        }\n      ]\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "3f8f4828-7b79-4c87-b1e5-2e07379e2267",
+          "name": "Get images usage details for the organization.",
+          "request": {
+            "name": "Get images usage details for the organization.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "usage",
+                "images"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start_time",
+                  "value": "<integer>",
+                  "description": "(Required) Start time (Unix seconds) of the query time range, inclusive."
+                },
+                {
+                  "disabled": false,
+                  "key": "end_time",
+                  "value": "<integer>",
+                  "description": "End time (Unix seconds) of the query time range, exclusive."
+                },
+                {
+                  "disabled": false,
+                  "key": "bucket_width",
+                  "value": "1d",
+                  "description": "Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`."
+                },
+                {
+                  "disabled": false,
+                  "key": "sources",
+                  "value": "<string>",
+                  "description": "Return only usages for these sources. Possible values are `image.generation`, `image.edit`, `image.variation` or any combination of them."
+                },
+                {
+                  "disabled": false,
+                  "key": "sources",
+                  "value": "<string>",
+                  "description": "Return only usages for these sources. Possible values are `image.generation`, `image.edit`, `image.variation` or any combination of them."
+                },
+                {
+                  "disabled": false,
+                  "key": "sizes",
+                  "value": "<string>",
+                  "description": "Return only usages for these image sizes. Possible values are `256x256`, `512x512`, `1024x1024`, `1792x1792`, `1024x1792` or any combination of them."
+                },
+                {
+                  "disabled": false,
+                  "key": "sizes",
+                  "value": "<string>",
+                  "description": "Return only usages for these image sizes. Possible values are `256x256`, `512x512`, `1024x1024`, `1792x1792`, `1024x1792` or any combination of them."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "user_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these users."
+                },
+                {
+                  "disabled": false,
+                  "key": "user_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these users."
+                },
+                {
+                  "disabled": false,
+                  "key": "api_key_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these API keys."
+                },
+                {
+                  "disabled": false,
+                  "key": "api_key_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these API keys."
+                },
+                {
+                  "disabled": false,
+                  "key": "models",
+                  "value": "<string>",
+                  "description": "Return only usage for these models."
+                },
+                {
+                  "disabled": false,
+                  "key": "models",
+                  "value": "<string>",
+                  "description": "Return only usage for these models."
+                },
+                {
+                  "disabled": false,
+                  "key": "group_by",
+                  "value": "<string>",
+                  "description": "Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model`, `size`, `source` or any combination of them."
+                },
+                {
+                  "disabled": false,
+                  "key": "group_by",
+                  "value": "<string>",
+                  "description": "Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model`, `size`, `source` or any combination of them."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Specifies the number of buckets to return.\n- `bucket_width=1d`: default: 7, max: 31\n- `bucket_width=1h`: default: 24, max: 168\n- `bucket_width=1m`: default: 60, max: 1440\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. Corresponding to the `next_page` field from the previous response."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "897b94b3-c4b7-424b-9c91-34dea6e2c5d0",
+              "name": "Usage data retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "usage",
+                    "images"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_time",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "end_time",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "bucket_width",
+                      "value": "1d"
+                    },
+                    {
+                      "key": "sources",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sources",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sizes",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "sizes",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "project_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "project_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "user_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "user_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "api_key_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "api_key_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "models",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "models",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "group_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "group_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"page\",\n  \"data\": [\n    {\n      \"object\": \"bucket\",\n      \"start_time\": 7037,\n      \"end_time\": 6439,\n      \"results\": [\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 5063,\n          \"output_tokens\": 9817,\n          \"num_model_requests\": 4357,\n          \"input_cached_tokens\": 203,\n          \"input_audio_tokens\": 1262,\n          \"output_audio_tokens\": 3,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": false,\n          \"service_tier\": \"string\"\n        },\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 9133,\n          \"output_tokens\": 3988,\n          \"num_model_requests\": 1000,\n          \"input_cached_tokens\": 9456,\n          \"input_audio_tokens\": 2916,\n          \"output_audio_tokens\": 4061,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": false,\n          \"service_tier\": \"string\"\n        }\n      ]\n    },\n    {\n      \"object\": \"bucket\",\n      \"start_time\": 6092,\n      \"end_time\": 7561,\n      \"results\": [\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 8582,\n          \"output_tokens\": 7569,\n          \"num_model_requests\": 3016,\n          \"input_cached_tokens\": 8541,\n          \"input_audio_tokens\": 8203,\n          \"output_audio_tokens\": 398,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": true,\n          \"service_tier\": \"string\"\n        },\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 9232,\n          \"output_tokens\": 745,\n          \"num_model_requests\": 1551,\n          \"input_cached_tokens\": 1722,\n          \"input_audio_tokens\": 1986,\n          \"output_audio_tokens\": 2267,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": true,\n          \"service_tier\": \"string\"\n        }\n      ]\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a654cca1-b8e7-4c86-9ab5-0874930797d5",
+          "name": "Get moderations usage details for the organization.",
+          "request": {
+            "name": "Get moderations usage details for the organization.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "usage",
+                "moderations"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start_time",
+                  "value": "<integer>",
+                  "description": "(Required) Start time (Unix seconds) of the query time range, inclusive."
+                },
+                {
+                  "disabled": false,
+                  "key": "end_time",
+                  "value": "<integer>",
+                  "description": "End time (Unix seconds) of the query time range, exclusive."
+                },
+                {
+                  "disabled": false,
+                  "key": "bucket_width",
+                  "value": "1d",
+                  "description": "Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "user_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these users."
+                },
+                {
+                  "disabled": false,
+                  "key": "user_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these users."
+                },
+                {
+                  "disabled": false,
+                  "key": "api_key_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these API keys."
+                },
+                {
+                  "disabled": false,
+                  "key": "api_key_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these API keys."
+                },
+                {
+                  "disabled": false,
+                  "key": "models",
+                  "value": "<string>",
+                  "description": "Return only usage for these models."
+                },
+                {
+                  "disabled": false,
+                  "key": "models",
+                  "value": "<string>",
+                  "description": "Return only usage for these models."
+                },
+                {
+                  "disabled": false,
+                  "key": "group_by",
+                  "value": "<string>",
+                  "description": "Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them."
+                },
+                {
+                  "disabled": false,
+                  "key": "group_by",
+                  "value": "<string>",
+                  "description": "Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Specifies the number of buckets to return.\n- `bucket_width=1d`: default: 7, max: 31\n- `bucket_width=1h`: default: 24, max: 168\n- `bucket_width=1m`: default: 60, max: 1440\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. Corresponding to the `next_page` field from the previous response."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "a51be7bd-4636-4f88-a12e-e1b0ae03b0c0",
+              "name": "Usage data retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "usage",
+                    "moderations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_time",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "end_time",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "bucket_width",
+                      "value": "1d"
+                    },
+                    {
+                      "key": "project_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "project_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "user_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "user_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "api_key_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "api_key_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "models",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "models",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "group_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "group_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"page\",\n  \"data\": [\n    {\n      \"object\": \"bucket\",\n      \"start_time\": 7037,\n      \"end_time\": 6439,\n      \"results\": [\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 5063,\n          \"output_tokens\": 9817,\n          \"num_model_requests\": 4357,\n          \"input_cached_tokens\": 203,\n          \"input_audio_tokens\": 1262,\n          \"output_audio_tokens\": 3,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": false,\n          \"service_tier\": \"string\"\n        },\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 9133,\n          \"output_tokens\": 3988,\n          \"num_model_requests\": 1000,\n          \"input_cached_tokens\": 9456,\n          \"input_audio_tokens\": 2916,\n          \"output_audio_tokens\": 4061,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": false,\n          \"service_tier\": \"string\"\n        }\n      ]\n    },\n    {\n      \"object\": \"bucket\",\n      \"start_time\": 6092,\n      \"end_time\": 7561,\n      \"results\": [\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 8582,\n          \"output_tokens\": 7569,\n          \"num_model_requests\": 3016,\n          \"input_cached_tokens\": 8541,\n          \"input_audio_tokens\": 8203,\n          \"output_audio_tokens\": 398,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": true,\n          \"service_tier\": \"string\"\n        },\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 9232,\n          \"output_tokens\": 745,\n          \"num_model_requests\": 1551,\n          \"input_cached_tokens\": 1722,\n          \"input_audio_tokens\": 1986,\n          \"output_audio_tokens\": 2267,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": true,\n          \"service_tier\": \"string\"\n        }\n      ]\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2377c45b-00ce-4c24-8eea-0cfecfb44cae",
+          "name": "Get vector stores usage details for the organization.",
+          "request": {
+            "name": "Get vector stores usage details for the organization.",
+            "description": {},
+            "url": {
+              "path": [
+                "organization",
+                "usage",
+                "vector_stores"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "start_time",
+                  "value": "<integer>",
+                  "description": "(Required) Start time (Unix seconds) of the query time range, inclusive."
+                },
+                {
+                  "disabled": false,
+                  "key": "end_time",
+                  "value": "<integer>",
+                  "description": "End time (Unix seconds) of the query time range, exclusive."
+                },
+                {
+                  "disabled": false,
+                  "key": "bucket_width",
+                  "value": "1d",
+                  "description": "Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "project_ids",
+                  "value": "<string>",
+                  "description": "Return only usage for these projects."
+                },
+                {
+                  "disabled": false,
+                  "key": "group_by",
+                  "value": "<string>",
+                  "description": "Group the usage data by the specified fields. Support fields include `project_id`."
+                },
+                {
+                  "disabled": false,
+                  "key": "group_by",
+                  "value": "<string>",
+                  "description": "Group the usage data by the specified fields. Support fields include `project_id`."
+                },
+                {
+                  "disabled": false,
+                  "key": "limit",
+                  "value": "<integer>",
+                  "description": "Specifies the number of buckets to return.\n- `bucket_width=1d`: default: 7, max: 31\n- `bucket_width=1h`: default: 24, max: 168\n- `bucket_width=1m`: default: 60, max: 1440\n"
+                },
+                {
+                  "disabled": false,
+                  "key": "page",
+                  "value": "<string>",
+                  "description": "A cursor for use in pagination. Corresponding to the `next_page` field from the previous response."
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET"
+          },
+          "response": [
+            {
+              "id": "571134ce-0563-4bc3-b12f-0f09c98d905e",
+              "name": "Usage data retrieved successfully.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "organization",
+                    "usage",
+                    "vector_stores"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "start_time",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "end_time",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "bucket_width",
+                      "value": "1d"
+                    },
+                    {
+                      "key": "project_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "project_ids",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "group_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "group_by",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "limit",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "page",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"object\": \"page\",\n  \"data\": [\n    {\n      \"object\": \"bucket\",\n      \"start_time\": 7037,\n      \"end_time\": 6439,\n      \"results\": [\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 5063,\n          \"output_tokens\": 9817,\n          \"num_model_requests\": 4357,\n          \"input_cached_tokens\": 203,\n          \"input_audio_tokens\": 1262,\n          \"output_audio_tokens\": 3,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": false,\n          \"service_tier\": \"string\"\n        },\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 9133,\n          \"output_tokens\": 3988,\n          \"num_model_requests\": 1000,\n          \"input_cached_tokens\": 9456,\n          \"input_audio_tokens\": 2916,\n          \"output_audio_tokens\": 4061,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": false,\n          \"service_tier\": \"string\"\n        }\n      ]\n    },\n    {\n      \"object\": \"bucket\",\n      \"start_time\": 6092,\n      \"end_time\": 7561,\n      \"results\": [\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 8582,\n          \"output_tokens\": 7569,\n          \"num_model_requests\": 3016,\n          \"input_cached_tokens\": 8541,\n          \"input_audio_tokens\": 8203,\n          \"output_audio_tokens\": 398,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": true,\n          \"service_tier\": \"string\"\n        },\n        {\n          \"object\": \"organization.usage.completions.result\",\n          \"input_tokens\": 9232,\n          \"output_tokens\": 745,\n          \"num_model_requests\": 1551,\n          \"input_cached_tokens\": 1722,\n          \"input_audio_tokens\": 1986,\n          \"output_audio_tokens\": 2267,\n          \"project_id\": \"string\",\n          \"user_id\": \"string\",\n          \"api_key_id\": \"string\",\n          \"model\": \"string\",\n          \"batch\": true,\n          \"service_tier\": \"string\"\n        }\n      ]\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": \"string\"\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.openai.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "924191ed-6be7-4431-bae1-d94ef4401766",
+    "name": "OpenAI Assistants Usage API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.\n\nContact Support:\n Name: OpenAI Support",
+      "type": "text/plain"
+    }
+  }
+}

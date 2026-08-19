@@ -1,0 +1,651 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "OpenAI Assistants Usage API",
+    "version": "2.0.0"
+  },
+  "request": {
+    "auth": {
+      "type": "bearer",
+      "token": "{{bearerToken}}"
+    }
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Usage",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get costs details for the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/organization/costs",
+            "params": [
+              {
+                "name": "start_time",
+                "value": "",
+                "type": "query",
+                "description": "Start time (Unix seconds) of the query time range, inclusive."
+              },
+              {
+                "name": "end_time",
+                "value": "",
+                "type": "query",
+                "description": "End time (Unix seconds) of the query time range, exclusive."
+              },
+              {
+                "name": "bucket_width",
+                "value": "",
+                "type": "query",
+                "description": "Width of each time bucket in response. Currently only `1d` is supported, default to `1d`."
+              },
+              {
+                "name": "project_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only costs for these projects."
+              },
+              {
+                "name": "api_key_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only costs for these API keys."
+              },
+              {
+                "name": "group_by",
+                "value": "",
+                "type": "query",
+                "description": "Group the costs by the specified fields. Support fields include `project_id`, `line_item`, `api_key_id` and any combination of them."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "A limit on the number of buckets to be returned. Limit can range between 1 and 180, and the default is 7.\n"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. Corresponding to the `next_page` field from the previous response."
+              }
+            ]
+          },
+          "docs": "Get costs details for the organization."
+        },
+        {
+          "info": {
+            "name": "Get audio speeches usage details for the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/organization/usage/audio_speeches",
+            "params": [
+              {
+                "name": "start_time",
+                "value": "",
+                "type": "query",
+                "description": "Start time (Unix seconds) of the query time range, inclusive."
+              },
+              {
+                "name": "end_time",
+                "value": "",
+                "type": "query",
+                "description": "End time (Unix seconds) of the query time range, exclusive."
+              },
+              {
+                "name": "bucket_width",
+                "value": "",
+                "type": "query",
+                "description": "Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`."
+              },
+              {
+                "name": "project_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these projects."
+              },
+              {
+                "name": "user_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these users."
+              },
+              {
+                "name": "api_key_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these API keys."
+              },
+              {
+                "name": "models",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these models."
+              },
+              {
+                "name": "group_by",
+                "value": "",
+                "type": "query",
+                "description": "Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the number of buckets to return.\n- `bucket_width=1d`: default: 7, max: 31\n- `bucket_width=1h`: default: 24, max: 168\n- `bucket_width=1m`: default: 60, max: 1440\n"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. Corresponding to the `next_page` field from the previous response."
+              }
+            ]
+          },
+          "docs": "Get audio speeches usage details for the organization."
+        },
+        {
+          "info": {
+            "name": "Get audio transcriptions usage details for the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/organization/usage/audio_transcriptions",
+            "params": [
+              {
+                "name": "start_time",
+                "value": "",
+                "type": "query",
+                "description": "Start time (Unix seconds) of the query time range, inclusive."
+              },
+              {
+                "name": "end_time",
+                "value": "",
+                "type": "query",
+                "description": "End time (Unix seconds) of the query time range, exclusive."
+              },
+              {
+                "name": "bucket_width",
+                "value": "",
+                "type": "query",
+                "description": "Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`."
+              },
+              {
+                "name": "project_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these projects."
+              },
+              {
+                "name": "user_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these users."
+              },
+              {
+                "name": "api_key_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these API keys."
+              },
+              {
+                "name": "models",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these models."
+              },
+              {
+                "name": "group_by",
+                "value": "",
+                "type": "query",
+                "description": "Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the number of buckets to return.\n- `bucket_width=1d`: default: 7, max: 31\n- `bucket_width=1h`: default: 24, max: 168\n- `bucket_width=1m`: default: 60, max: 1440\n"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. Corresponding to the `next_page` field from the previous response."
+              }
+            ]
+          },
+          "docs": "Get audio transcriptions usage details for the organization."
+        },
+        {
+          "info": {
+            "name": "Get code interpreter sessions usage details for the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/organization/usage/code_interpreter_sessions",
+            "params": [
+              {
+                "name": "start_time",
+                "value": "",
+                "type": "query",
+                "description": "Start time (Unix seconds) of the query time range, inclusive."
+              },
+              {
+                "name": "end_time",
+                "value": "",
+                "type": "query",
+                "description": "End time (Unix seconds) of the query time range, exclusive."
+              },
+              {
+                "name": "bucket_width",
+                "value": "",
+                "type": "query",
+                "description": "Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`."
+              },
+              {
+                "name": "project_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these projects."
+              },
+              {
+                "name": "group_by",
+                "value": "",
+                "type": "query",
+                "description": "Group the usage data by the specified fields. Support fields include `project_id`."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the number of buckets to return.\n- `bucket_width=1d`: default: 7, max: 31\n- `bucket_width=1h`: default: 24, max: 168\n- `bucket_width=1m`: default: 60, max: 1440\n"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. Corresponding to the `next_page` field from the previous response."
+              }
+            ]
+          },
+          "docs": "Get code interpreter sessions usage details for the organization."
+        },
+        {
+          "info": {
+            "name": "Get completions usage details for the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/organization/usage/completions",
+            "params": [
+              {
+                "name": "start_time",
+                "value": "",
+                "type": "query",
+                "description": "Start time (Unix seconds) of the query time range, inclusive."
+              },
+              {
+                "name": "end_time",
+                "value": "",
+                "type": "query",
+                "description": "End time (Unix seconds) of the query time range, exclusive."
+              },
+              {
+                "name": "bucket_width",
+                "value": "",
+                "type": "query",
+                "description": "Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`."
+              },
+              {
+                "name": "project_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these projects."
+              },
+              {
+                "name": "user_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these users."
+              },
+              {
+                "name": "api_key_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these API keys."
+              },
+              {
+                "name": "models",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these models."
+              },
+              {
+                "name": "batch",
+                "value": "",
+                "type": "query",
+                "description": "If `true`, return batch jobs only. If `false`, return non-batch jobs only. By default, return both.\n"
+              },
+              {
+                "name": "group_by",
+                "value": "",
+                "type": "query",
+                "description": "Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model`, `batch`, `service_tier` or any combination of them."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the number of buckets to return.\n- `bucket_width=1d`: default: 7, max: 31\n- `bucket_width=1h`: default: 24, max: 168\n- `bucket_width=1m`: default: 60, max: 1440\n"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. Corresponding to the `next_page` field from the previous response."
+              }
+            ]
+          },
+          "docs": "Get completions usage details for the organization."
+        },
+        {
+          "info": {
+            "name": "Get embeddings usage details for the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/organization/usage/embeddings",
+            "params": [
+              {
+                "name": "start_time",
+                "value": "",
+                "type": "query",
+                "description": "Start time (Unix seconds) of the query time range, inclusive."
+              },
+              {
+                "name": "end_time",
+                "value": "",
+                "type": "query",
+                "description": "End time (Unix seconds) of the query time range, exclusive."
+              },
+              {
+                "name": "bucket_width",
+                "value": "",
+                "type": "query",
+                "description": "Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`."
+              },
+              {
+                "name": "project_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these projects."
+              },
+              {
+                "name": "user_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these users."
+              },
+              {
+                "name": "api_key_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these API keys."
+              },
+              {
+                "name": "models",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these models."
+              },
+              {
+                "name": "group_by",
+                "value": "",
+                "type": "query",
+                "description": "Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the number of buckets to return.\n- `bucket_width=1d`: default: 7, max: 31\n- `bucket_width=1h`: default: 24, max: 168\n- `bucket_width=1m`: default: 60, max: 1440\n"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. Corresponding to the `next_page` field from the previous response."
+              }
+            ]
+          },
+          "docs": "Get embeddings usage details for the organization."
+        },
+        {
+          "info": {
+            "name": "Get images usage details for the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/organization/usage/images",
+            "params": [
+              {
+                "name": "start_time",
+                "value": "",
+                "type": "query",
+                "description": "Start time (Unix seconds) of the query time range, inclusive."
+              },
+              {
+                "name": "end_time",
+                "value": "",
+                "type": "query",
+                "description": "End time (Unix seconds) of the query time range, exclusive."
+              },
+              {
+                "name": "bucket_width",
+                "value": "",
+                "type": "query",
+                "description": "Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`."
+              },
+              {
+                "name": "sources",
+                "value": "",
+                "type": "query",
+                "description": "Return only usages for these sources. Possible values are `image.generation`, `image.edit`, `image.variation` or any combination of them."
+              },
+              {
+                "name": "sizes",
+                "value": "",
+                "type": "query",
+                "description": "Return only usages for these image sizes. Possible values are `256x256`, `512x512`, `1024x1024`, `1792x1792`, `1024x1792` or any combination of them."
+              },
+              {
+                "name": "project_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these projects."
+              },
+              {
+                "name": "user_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these users."
+              },
+              {
+                "name": "api_key_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these API keys."
+              },
+              {
+                "name": "models",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these models."
+              },
+              {
+                "name": "group_by",
+                "value": "",
+                "type": "query",
+                "description": "Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model`, `size`, `source` or any combination of them."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the number of buckets to return.\n- `bucket_width=1d`: default: 7, max: 31\n- `bucket_width=1h`: default: 24, max: 168\n- `bucket_width=1m`: default: 60, max: 1440\n"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. Corresponding to the `next_page` field from the previous response."
+              }
+            ]
+          },
+          "docs": "Get images usage details for the organization."
+        },
+        {
+          "info": {
+            "name": "Get moderations usage details for the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/organization/usage/moderations",
+            "params": [
+              {
+                "name": "start_time",
+                "value": "",
+                "type": "query",
+                "description": "Start time (Unix seconds) of the query time range, inclusive."
+              },
+              {
+                "name": "end_time",
+                "value": "",
+                "type": "query",
+                "description": "End time (Unix seconds) of the query time range, exclusive."
+              },
+              {
+                "name": "bucket_width",
+                "value": "",
+                "type": "query",
+                "description": "Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`."
+              },
+              {
+                "name": "project_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these projects."
+              },
+              {
+                "name": "user_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these users."
+              },
+              {
+                "name": "api_key_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these API keys."
+              },
+              {
+                "name": "models",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these models."
+              },
+              {
+                "name": "group_by",
+                "value": "",
+                "type": "query",
+                "description": "Group the usage data by the specified fields. Support fields include `project_id`, `user_id`, `api_key_id`, `model` or any combination of them."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the number of buckets to return.\n- `bucket_width=1d`: default: 7, max: 31\n- `bucket_width=1h`: default: 24, max: 168\n- `bucket_width=1m`: default: 60, max: 1440\n"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. Corresponding to the `next_page` field from the previous response."
+              }
+            ]
+          },
+          "docs": "Get moderations usage details for the organization."
+        },
+        {
+          "info": {
+            "name": "Get vector stores usage details for the organization.",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.openai.com/v1/organization/usage/vector_stores",
+            "params": [
+              {
+                "name": "start_time",
+                "value": "",
+                "type": "query",
+                "description": "Start time (Unix seconds) of the query time range, inclusive."
+              },
+              {
+                "name": "end_time",
+                "value": "",
+                "type": "query",
+                "description": "End time (Unix seconds) of the query time range, exclusive."
+              },
+              {
+                "name": "bucket_width",
+                "value": "",
+                "type": "query",
+                "description": "Width of each time bucket in response. Currently `1m`, `1h` and `1d` are supported, default to `1d`."
+              },
+              {
+                "name": "project_ids",
+                "value": "",
+                "type": "query",
+                "description": "Return only usage for these projects."
+              },
+              {
+                "name": "group_by",
+                "value": "",
+                "type": "query",
+                "description": "Group the usage data by the specified fields. Support fields include `project_id`."
+              },
+              {
+                "name": "limit",
+                "value": "",
+                "type": "query",
+                "description": "Specifies the number of buckets to return.\n- `bucket_width=1d`: default: 7, max: 31\n- `bucket_width=1h`: default: 24, max: 168\n- `bucket_width=1m`: default: 60, max: 1440\n"
+              },
+              {
+                "name": "page",
+                "value": "",
+                "type": "query",
+                "description": "A cursor for use in pagination. Corresponding to the `next_page` field from the previous response."
+              }
+            ]
+          },
+          "docs": "Get vector stores usage details for the organization."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

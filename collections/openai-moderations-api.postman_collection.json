@@ -1,0 +1,137 @@
+{
+  "item": [
+    {
+      "id": "0553a742-eeb5-43a7-a7a3-5493192075d8",
+      "name": "Moderations",
+      "description": {
+        "content": "Given text and/or image inputs, classifies if those inputs are potentially harmful.",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "f90bbbfe-0dc5-4475-a492-7c685839551b",
+          "name": "Classifies if text and/or image inputs are potentially harmful. Learn\nmore in the [moderation guide](/docs/guides/moderation).\n",
+          "request": {
+            "name": "Classifies if text and/or image inputs are potentially harmful. Learn\nmore in the [moderation guide](/docs/guides/moderation).\n",
+            "description": {},
+            "url": {
+              "path": [
+                "moderations"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              },
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"input\": \"\",\n  \"model\": \"<string>\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "96d2919a-588d-4889-ab87-31e69d75fb5d",
+              "name": "OK",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "moderations"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "{\n  \"input\": \"I want to kill them.\",\n  \"model\": \"<string>\"\n}",
+                  "options": {
+                    "raw": {
+                      "language": "json"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"id\": \"string\",\n  \"model\": \"string\",\n  \"results\": [\n    {\n      \"flagged\": true,\n      \"categories\": {\n        \"hate\": true,\n        \"hate/threatening\": true,\n        \"harassment\": false,\n        \"harassment/threatening\": false,\n        \"illicit\": false,\n        \"illicit/violent\": true,\n        \"self-harm\": false,\n        \"self-harm/intent\": false,\n        \"self-harm/instructions\": true,\n        \"sexual\": true,\n        \"sexual/minors\": false,\n        \"violence\": true,\n        \"violence/graphic\": false\n      },\n      \"category_scores\": {\n        \"hate\": 4194.927447196947,\n        \"hate/threatening\": 9510.803542599822,\n        \"harassment\": 7302.819412489093,\n        \"harassment/threatening\": 8418.89336233377,\n        \"illicit\": 6436.677701347994,\n        \"illicit/violent\": 1327.0408752173512,\n        \"self-harm\": 4635.668208167732,\n        \"self-harm/intent\": 2474.938864677828,\n        \"self-harm/instructions\": 76.87558217388202,\n        \"sexual\": 5083.2886262405655,\n        \"sexual/minors\": 3059.593032706612,\n        \"violence\": 8569.332084533973,\n        \"violence/graphic\": 7013.2056276608355\n      },\n      \"category_applied_input_types\": {\n        \"hate\": [\n          \"text\",\n          \"text\"\n        ],\n        \"hate/threatening\": [\n          \"text\",\n          \"text\"\n        ],\n        \"harassment\": [\n          \"text\",\n          \"text\"\n        ],\n        \"harassment/threatening\": [\n          \"text\",\n          \"text\"\n        ],\n        \"illicit\": [\n          \"text\",\n          \"text\"\n        ],\n        \"illicit/violent\": [\n          \"text\",\n          \"text\"\n        ],\n        \"self-harm\": [\n          \"image\",\n          \"image\"\n        ],\n        \"self-harm/intent\": [\n          \"text\",\n          \"image\"\n        ],\n        \"self-harm/instructions\": [\n          \"text\",\n          \"image\"\n        ],\n        \"sexual\": [\n          \"image\",\n          \"image\"\n        ],\n        \"sexual/minors\": [\n          \"text\",\n          \"text\"\n        ],\n        \"violence\": [\n          \"text\",\n          \"image\"\n        ],\n        \"violence/graphic\": [\n          \"image\",\n          \"image\"\n        ]\n      }\n    },\n    {\n      \"flagged\": true,\n      \"categories\": {\n        \"hate\": true,\n        \"hate/threatening\": true,\n        \"harassment\": false,\n        \"harassment/threatening\": true,\n        \"illicit\": true,\n        \"illicit/violent\": true,\n        \"self-harm\": false,\n        \"self-harm/intent\": true,\n        \"self-harm/instructions\": false,\n        \"sexual\": false,\n        \"sexual/minors\": true,\n        \"violence\": true,\n        \"violence/graphic\": true\n      },\n      \"category_scores\": {\n        \"hate\": 2493.4030432693867,\n        \"hate/threatening\": 9818.534811259553,\n        \"harassment\": 2628.398239015822,\n        \"harassment/threatening\": 7814.690012245082,\n        \"illicit\": 2484.0319208337337,\n        \"illicit/violent\": 5021.6066114244395,\n        \"self-harm\": 9900.520920649651,\n        \"self-harm/intent\": 6691.9792816312965,\n        \"self-harm/instructions\": 9591.740556651697,\n        \"sexual\": 4111.524698101916,\n        \"sexual/minors\": 7941.79183777475,\n        \"violence\": 343.02643965321454,\n        \"violence/graphic\": 5422.146311506772\n      },\n      \"category_applied_input_types\": {\n        \"hate\": [\n          \"text\",\n          \"text\"\n        ],\n        \"hate/threatening\": [\n          \"text\",\n          \"text\"\n        ],\n        \"harassment\": [\n          \"text\",\n          \"text\"\n        ],\n        \"harassment/threatening\": [\n          \"text\",\n          \"text\"\n        ],\n        \"illicit\": [\n          \"text\",\n          \"text\"\n        ],\n        \"illicit/violent\": [\n          \"text\",\n          \"text\"\n        ],\n        \"self-harm\": [\n          \"image\",\n          \"text\"\n        ],\n        \"self-harm/intent\": [\n          \"text\",\n          \"text\"\n        ],\n        \"self-harm/instructions\": [\n          \"image\",\n          \"text\"\n        ],\n        \"sexual\": [\n          \"text\",\n          \"image\"\n        ],\n        \"sexual/minors\": [\n          \"text\",\n          \"text\"\n        ],\n        \"violence\": [\n          \"text\",\n          \"image\"\n        ],\n        \"violence/graphic\": [\n          \"image\",\n          \"image\"\n        ]\n      }\n    }\n  ]\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.openai.com/v1",
+      "key": "baseUrl"
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{bearerToken}}"
+      }
+    ]
+  },
+  "info": {
+    "_postman_id": "994afbe3-4835-479c-adef-61172725eea2",
+    "name": "OpenAI Assistants Moderations API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.\n\nContact Support:\n Name: OpenAI Support",
+      "type": "text/plain"
+    }
+  }
+}
