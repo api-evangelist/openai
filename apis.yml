@@ -2635,6 +2635,18 @@ name: OpenAI
 tags:
 - Artificial Intelligence
 - Large Language Models
+- Machine Learning
+- Generative AI
+- Foundation Models
+- Embeddings
+- Speech Recognition
+- Text To Speech
+- Image Generation
+- Content Moderation
+- Vector Search
+- Agents
+- Model Context Protocol
+- Developer Tools
 - T1
 tags_raw:
 - AI
@@ -3133,7 +3145,7 @@ common:
   name: Tiers
   type: Tiers
   description: This is the description of the plans for general OpenAI usage.
-- url: https://example.com/rate-limits
+- url: https://developers.openai.com/api/docs/guides/rate-limits
   data:
   - name: GPT-5 Token Limits
     type: Model
@@ -3573,6 +3585,78 @@ common:
   type: AgentSkills
 - type: LlmsText
   url: https://developers.openai.com/llms.txt
+- type: Packages
+  url: packages/openai-packages.yml
+- type: SDKs
+  url: packages/openai-packages.yml
+- type: Python SDK
+  url: https://github.com/openai/openai-python
+- type: JavaScript SDK
+  url: https://github.com/openai/openai-node
+- type: Go SDK
+  url: https://github.com/openai/openai-go
+- type: Java SDK
+  url: https://github.com/openai/openai-java
+- type: Ruby SDK
+  url: https://github.com/openai/openai-ruby
+- type: WellKnown
+  url: well-known/openai-well-known.yml
+- type: SecurityTxt
+  url: well-known/openai-security.txt
+- type: MCPServer
+  url: mcp/openai-mcp.yml
+- type: ToolCrosswalk
+  url: mcp/openai-tool-crosswalk.yml
+- type: LLMsTxt
+  url: llms/openai-llms.txt
+- type: Overlay
+  url: overlays/openai-responses-overlay.yaml
+- type: Overlay
+  url: overlays/openai-chat-overlay.yaml
+- type: Overlay
+  url: overlays/openai-embeddings-overlay.yaml
+- type: Protobuf
+  url: grpc/openai-grpc.yml
+- type: Conformance
+  url: conformance/openai-conformance.yml
+- type: Compliance
+  url: security/openai-trust-center.yml
+- type: ErrorCatalog
+  url: errors/openai-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/openai-lifecycle.yml
+- type: OAuthScopes
+  url: scopes/openai-scopes.yml
+- type: Sandbox
+  url: sandbox/openai-sandbox.yml
+- type: Playground
+  url: https://platform.openai.com/playground
+- type: Console
+  url: https://platform.openai.com/
+- type: Conventions
+  url: conventions/openai-conventions.yml
+- type: ChangeLog
+  url: changelog/openai-changelog.yml
+- type: CLI
+  url: cli/openai-cli.yml
+- type: CLI
+  url: https://learn.chatgpt.com/docs/codex/cli
+- type: Components
+  url: components/openai-components.yml
+- type: DataModel
+  url: data-model/openai-data-model.yml
+- type: Plans
+  url: plans/openai-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/openai-rate-limits.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: AsyncAPI
+  url: asyncapi/openai-realtime-asyncapi.yml
+- type: Examples
+  url: examples/
+- type: APIReference
+  url: https://developers.openai.com/api/reference/
 accessModel:
   pricing: paid
   onboarding: self-serve
@@ -3587,12 +3671,29 @@ accessModel:
   generated: '2026-07-22'
   method: derived
 created: '2024-04-14'
-modified: '2026-05-29'
+modified: '2026-08-27'
 position: Consuming
-description: APIs for accessing OpenAI's artificial intelligence models including
-  GPT, DALL-E, Whisper, and Embeddings.
+description: >-
+  OpenAI publishes a single unversioned REST API at https://api.openai.com/v1
+  covering text and reasoning (Responses, Chat Completions), embeddings, images,
+  audio and speech, video, moderation, file storage, vector stores and file
+  search, containers, batch inference at half price, fine-tuning, evals, ChatKit,
+  agent skills, and a full organization administration plane for projects, users,
+  groups, roles, API keys, certificates, usage and audit logs. The contract is
+  OpenAPI 3.1.0 with 242 operations, published by OpenAI itself under MIT at
+  github.com/openai/openai-openapi. Realtime is a separate WebSocket surface at
+  wss://api.openai.com/v1/realtime. Authentication is a project-scoped bearer API
+  key; OAuth 2.0 / OIDC at auth.openai.com grants user identity only, not API
+  authority. First-party SDKs ship for Python, JavaScript, Go, Java, .NET and
+  Ruby, alongside the Codex CLI and an anonymous documentation MCP server at
+  developers.openai.com/mcp.
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 specificationVersion: '0.23'
 image: https://openai.com/favicon.ico
+x-enrichment:
+  date: '2026-08-27'
+  status: enriched
+  artifacts_added: 69
+  pass: local-v1
