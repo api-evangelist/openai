@@ -1,0 +1,154 @@
+slug: openai
+provider: OpenAI
+generated_by: planning/capability-mapping/scripts/classify_capabilities.py
+model: claude-opus-5
+frame:
+- Banking & Capital Markets
+- Software & Technology
+min_confidence: 0.7
+capability_model:
+  source: https://github.com/vincentmakes/turbo-ea-capabilities
+  license: CC-BY-4.0
+  attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
+    CC BY 4.0
+  notice: NOTICE
+edge_count: 14
+edges:
+- tag: Fine Tuning
+  spec_file: openai-fine-tuning-api-openapi.yml
+  capability_id: BC-610.60
+  capability_id_l1: BC-610
+  capability_name: Artificial Intelligence Management
+  confidence: 0.85
+  evidence: '''Creates a fine-tuning job which begins the process of creating a new model from a given
+    dataset''; schemas FineTuningJob, FineTuningJobEvent, FineTuningCheckpointPermission'
+  reason: Training jobs, checkpoints, graders and job lifecycle control are squarely ML model lifecycle
+    / MLOps operations, which is what Artificial Intelligence Management covers.
+- tag: Group organization role assignments
+  spec_file: openai-group-organization-role-assignments-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.85
+  evidence: '''Assigns an organization role to a group within the organization''; ''Unassigns an organization
+    role from a group'''
+  reason: Role assignment and revocation against organizational groups is authorisation administration
+    — identity and access management.
+- tag: Project group role assignments
+  spec_file: openai-project-group-role-assignments-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.85
+  evidence: POST /projects/{project_id}/groups/{group_id}/roles assign-project-group-role Assigns a project
+    role to a group within a project.
+  reason: Explicit RBAC role assignment to groups scoped to projects — plainly identity and access management.
+- tag: Project user role assignments
+  spec_file: openai-project-user-role-assignments-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.85
+  evidence: POST /projects/{project_id}/users/{user_id}/roles assign-project-user-role Assigns a project
+    role to a user within a project.
+  reason: User-to-role assignment within projects is textbook RBAC / identity and access management.
+- tag: User organization role assignments
+  spec_file: openai-user-organization-role-assignments-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.85
+  evidence: POST /organization/users/{user_id}/roles assign-user-role Assigns an organization role to
+    a user within the organization
+  reason: Assignment and revocation of roles to users — access management / authorisation administration.
+- tag: Group users
+  spec_file: openai-group-users-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.82
+  evidence: '''Lists the users assigned to a group''; ''Adds a user to a group''; ''Removes a user from
+    a group'''
+  reason: Group membership administration for platform users is access-control provisioning, i.e. identity
+    & access management, not HR employee records.
+- tag: Project groups
+  spec_file: openai-project-groups-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.8
+  evidence: POST /organization/projects/{project_id}/groups add-project-group Grants a group access to
+    a project; remove-project-group Revokes a group's access to a project.
+  reason: Granting and revoking group access to projects is access administration, not project portfolio
+    management.
+- tag: Roles
+  spec_file: openai-roles-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.8
+  evidence: POST /organization/roles create-role Creates a custom role for the organization; POST /projects/{project_id}/roles
+    create-project-role
+  reason: Operations manage custom roles at organization and project level — role-based access control
+    administration, i.e. Identity & Access Management.
+- tag: Users
+  spec_file: openai-users-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.8
+  evidence: GET /organization/users list-users Lists all of the users in the organization; POST /organization/users/{user_id}
+    modify-user Modifies a user's role in the organization
+  reason: User account lifecycle and role modification in the organization admin plane — identity and
+    access management, not HR employee records.
+- tag: Groups
+  spec_file: openai-groups-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.75
+  evidence: POST /organization/groups create-group Creates a new group in the organization; DELETE /organization/groups/{group_id}
+  reason: Organization-level group administration used for access control — identity & access management
+    plumbing rather than a business capability of HR. Mapped to IAM with moderate confidence since groups
+    here are principals for role assignment.
+- tag: Organization
+  spec_file: openai-organization-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.75
+  evidence: POST /organization/admin_api_keys admin-api-keys-create Create an organization admin API key
+  reason: Issuance and revocation of admin API keys — credential lifecycle, i.e. identity and access management
+    plumbing.
+- tag: Invites
+  spec_file: openai-invites-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: POST /organization/invites inviteUser Create an invite for a user to the organization. The
+    invite must be accepted by the user before they have access to the organization.
+  reason: User invitation/provisioning to an organization tenant — access administration (joiners) rather
+    than HR onboarding. IAM is the honest reading; some ambiguity vs tenant user lifecycle.
+- tag: Projects
+  spec_file: openai-projects-api-openapi.yml
+  capability_id: BC-620.20
+  capability_id_l1: BC-620
+  capability_name: Identity & Access Management
+  confidence: 0.7
+  evidence: GET /organization/projects/{project_id}/api_keys list-project-api-keys; create-project-service-account
+    Creates a new service account in the project
+  reason: Despite the 'Projects' name, operations administer API keys, service accounts, rate limits and
+    project membership — access administration of a tenant workspace, not BC-900 project management. Rate-limit
+    operations also touch API consumption governance, hence moderate confidence.
+- tag: Usage
+  spec_file: openai-usage-api-openapi.yml
+  capability_id: BC-4250.10
+  capability_id_l1: BC-4250
+  capability_name: Usage Metering
+  confidence: 0.7
+  evidence: GET /organization/costs usage-costs Get costs details for the organization; GET /organization/usage/completions
+    Get completions usage details
+  reason: Aggregated consumption/cost reporting per organisation over time buckets — usage metering for
+    consumption-based billing. Could alternatively be read as API consumption analytics, hence moderate
+    confidence.
