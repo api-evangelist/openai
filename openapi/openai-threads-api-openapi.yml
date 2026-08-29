@@ -1,15 +1,15 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  title: OpenAI Assistants Threads API
-  description: The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.
+  title: Openai Threads API
   version: 2.0.0
-  termsOfService: https://openai.com/policies/terms-of-use
   contact:
     name: OpenAI Support
     url: https://help.openai.com/
   license:
     name: MIT
     url: https://github.com/openai/openai-openapi/blob/master/LICENSE
+  termsOfService: https://openai.com/policies/terms-of-use
+  description: 'Operations tagged Threads across 2 of this provider''s published API definitions: files-openapi-original.yml, threads-openapi-original.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.openai.com/v1
 security:
@@ -88,6 +88,8 @@ paths:
             python: "from openai import OpenAI\nclient = OpenAI()\n\nmessage_files = client.beta.threads.messages.files.list(\n  thread_id=\"thread_abc123\",\n  message_id=\"msg_abc123\"\n)\nprint(message_files)\n"
             node.js: "import OpenAI from \"openai\";\nconst openai = new OpenAI();\n\nasync function main() {\n  const messageFiles = await openai.beta.threads.messages.files.list(\n    \"thread_abc123\",\n    \"msg_abc123\"\n  );\n  console.log(messageFiles);\n}\n\nmain();\n"
           response: "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"file-abc123\",\n      \"object\": \"thread.message.file\",\n      \"created_at\": 1699061776,\n      \"message_id\": \"msg_abc123\"\n    },\n    {\n      \"id\": \"file-abc123\",\n      \"object\": \"thread.message.file\",\n      \"created_at\": 1699061776,\n      \"message_id\": \"msg_abc123\"\n    }\n  ],\n  \"first_id\": \"file-abc123\",\n  \"last_id\": \"file-abc123\",\n  \"has_more\": false\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /threads/{thread_id}/messages/{message_id}/files/{file_id}:
     get:
       operationId: getMessageFile
@@ -134,6 +136,8 @@ paths:
             python: "from openai import OpenAI\nclient = OpenAI()\n\nmessage_files = client.beta.threads.messages.files.retrieve(\n    thread_id=\"thread_abc123\",\n    message_id=\"msg_abc123\",\n    file_id=\"file-abc123\"\n)\nprint(message_files)\n"
             node.js: "import OpenAI from \"openai\";\nconst openai = new OpenAI();\n\nasync function main() {\n  const messageFile = await openai.beta.threads.messages.files.retrieve(\n    \"thread_abc123\",\n    \"msg_abc123\",\n    \"file-abc123\"\n  );\n  console.log(messageFile);\n}\n\nmain();\n"
           response: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"thread.message.file\",\n  \"created_at\": 1699061776,\n  \"message_id\": \"msg_abc123\"\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /threads:
     post:
       operationId: createThread
@@ -179,6 +183,8 @@ paths:
             python: "from openai import OpenAI\nclient = OpenAI()\n\nmessage_thread = client.beta.threads.create(\n  messages=[\n    {\n      \"role\": \"user\",\n      \"content\": \"Hello, what is AI?\",\n      \"file_ids\": [\"file-abc123\"],\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"How does AI work? Explain it in simple terms.\"\n    },\n  ]\n)\n\nprint(message_thread)\n"
             node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const messageThread = await openai.beta.threads.create({\n    messages: [\n      {\n        role: \"user\",\n        content: \"Hello, what is AI?\",\n        file_ids: [\"file-abc123\"],\n      },\n      {\n        role: \"user\",\n        content: \"How does AI work? Explain it in simple terms.\",\n      },\n    ],\n  });\n\n  console.log(messageThread);\n}\n\nmain();"
           response: "{\n  id: 'thread_abc123',\n  object: 'thread',\n  created_at: 1699014083,\n  metadata: {}\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /threads/{thread_id}:
     get:
       operationId: getThread
@@ -294,6 +300,8 @@ paths:
               '
             node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const response = await openai.beta.threads.del(\"thread_abc123\");\n\n  console.log(response);\n}\nmain();"
           response: "{\n  \"id\": \"thread_abc123\",\n  \"object\": \"thread.deleted\",\n  \"deleted\": true\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /threads/{thread_id}/messages:
     get:
       operationId: listMessages
@@ -404,6 +412,8 @@ paths:
             python: "from openai import OpenAI\nclient = OpenAI()\n\nthread_message = client.beta.threads.messages.create(\n  \"thread_abc123\",\n  role=\"user\",\n  content=\"How does AI work? Explain it in simple terms.\",\n)\nprint(thread_message)\n"
             node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const threadMessages = await openai.beta.threads.messages.create(\n    \"thread_abc123\",\n    { role: \"user\", content: \"How does AI work? Explain it in simple terms.\" }\n  );\n\n  console.log(threadMessages);\n}\n\nmain();"
           response: "{\n  \"id\": \"msg_abc123\",\n  \"object\": \"thread.message\",\n  \"created_at\": 1699017614,\n  \"thread_id\": \"thread_abc123\",\n  \"role\": \"user\",\n  \"content\": [\n    {\n      \"type\": \"text\",\n      \"text\": {\n        \"value\": \"How does AI work? Explain it in simple terms.\",\n        \"annotations\": []\n      }\n    }\n  ],\n  \"file_ids\": [],\n  \"assistant_id\": null,\n  \"run_id\": null,\n  \"metadata\": {}\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /threads/{thread_id}/messages/{message_id}:
     get:
       operationId: getMessage
@@ -483,6 +493,8 @@ paths:
             python: "from openai import OpenAI\nclient = OpenAI()\n\nmessage = client.beta.threads.messages.update(\n  message_id=\"msg_abc12\",\n  thread_id=\"thread_abc123\",\n  metadata={\n    \"modified\": \"true\",\n    \"user\": \"abc123\",\n  },\n)\nprint(message)\n"
             node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const message = await openai.beta.threads.messages.update(\n    \"thread_abc123\",\n    \"msg_abc123\",\n    {\n      metadata: {\n        modified: \"true\",\n        user: \"abc123\",\n      },\n    }\n  }'"
           response: "{\n  \"id\": \"msg_abc123\",\n  \"object\": \"thread.message\",\n  \"created_at\": 1699017614,\n  \"thread_id\": \"thread_abc123\",\n  \"role\": \"user\",\n  \"content\": [\n    {\n      \"type\": \"text\",\n      \"text\": {\n        \"value\": \"How does AI work? Explain it in simple terms.\",\n        \"annotations\": []\n      }\n    }\n  ],\n  \"file_ids\": [],\n  \"assistant_id\": null,\n  \"run_id\": null,\n  \"metadata\": {\n    \"modified\": \"true\",\n    \"user\": \"abc123\"\n  }\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /threads/runs:
     post:
       operationId: createThreadAndRun
@@ -513,6 +525,8 @@ paths:
             python: "from openai import OpenAI\nclient = OpenAI()\n\nrun = client.beta.threads.create_and_run(\n  assistant_id=\"asst_abc123\",\n  thread={\n    \"messages\": [\n      {\"role\": \"user\", \"content\": \"Explain deep learning to a 5 year old.\"}\n    ]\n  }\n)\n"
             node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const run = await openai.beta.threads.createAndRun({\n    assistant_id: \"asst_abc123\",\n    thread: {\n      messages: [\n        { role: \"user\", content: \"Explain deep learning to a 5 year old.\" },\n      ],\n    },\n  });\n\n  console.log(run);\n}\n\nmain();\n"
           response: "{\n  \"id\": \"run_abc123\",\n  \"object\": \"thread.run\",\n  \"created_at\": 1699076792,\n  \"assistant_id\": \"asst_abc123\",\n  \"thread_id\": \"thread_abc123\",\n  \"status\": \"queued\",\n  \"started_at\": null,\n  \"expires_at\": 1699077392,\n  \"cancelled_at\": null,\n  \"failed_at\": null,\n  \"completed_at\": null,\n  \"last_error\": null,\n  \"model\": \"gpt-4\",\n  \"instructions\": \"You are a helpful assistant.\",\n  \"tools\": [],\n  \"file_ids\": [],\n  \"metadata\": {},\n  \"usage\": null\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /threads/{thread_id}/runs:
     get:
       operationId: listRuns
@@ -614,6 +628,8 @@ paths:
             python: "from openai import OpenAI\nclient = OpenAI()\n\nrun = client.beta.threads.runs.create(\n  thread_id=\"thread_abc123\",\n  assistant_id=\"asst_abc123\"\n)\nprint(run)\n"
             node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const run = await openai.beta.threads.runs.create(\n    \"thread_abc123\",\n    { assistant_id: \"asst_abc123\" }\n  );\n\n  console.log(run);\n}\n\nmain();\n"
           response: "{\n  \"id\": \"run_abc123\",\n  \"object\": \"thread.run\",\n  \"created_at\": 1699063290,\n  \"assistant_id\": \"asst_abc123\",\n  \"thread_id\": \"thread_abc123\",\n  \"status\": \"queued\",\n  \"started_at\": 1699063290,\n  \"expires_at\": null,\n  \"cancelled_at\": null,\n  \"failed_at\": null,\n  \"completed_at\": 1699063291,\n  \"last_error\": null,\n  \"model\": \"gpt-4\",\n  \"instructions\": null,\n  \"tools\": [\n    {\n      \"type\": \"code_interpreter\"\n    }\n  ],\n  \"file_ids\": [\n    \"file-abc123\",\n    \"file-abc456\"\n  ],\n  \"metadata\": {},\n  \"usage\": null\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /threads/{thread_id}/runs/{run_id}:
     get:
       operationId: getRun
@@ -693,6 +709,8 @@ paths:
             python: "from openai import OpenAI\nclient = OpenAI()\n\nrun = client.beta.threads.runs.update(\n  thread_id=\"thread_abc123\",\n  run_id=\"run_abc123\",\n  metadata={\"user_id\": \"user_abc123\"},\n)\nprint(run)\n"
             node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const run = await openai.beta.threads.runs.update(\n    \"thread_abc123\",\n    \"run_abc123\",\n    {\n      metadata: {\n        user_id: \"user_abc123\",\n      },\n    }\n  );\n\n  console.log(run);\n}\n\nmain();\n"
           response: "{\n  \"id\": \"run_abc123\",\n  \"object\": \"thread.run\",\n  \"created_at\": 1699075072,\n  \"assistant_id\": \"asst_abc123\",\n  \"thread_id\": \"thread_abc123\",\n  \"status\": \"completed\",\n  \"started_at\": 1699075072,\n  \"expires_at\": null,\n  \"cancelled_at\": null,\n  \"failed_at\": null,\n  \"completed_at\": 1699075073,\n  \"last_error\": null,\n  \"model\": \"gpt-3.5-turbo\",\n  \"instructions\": null,\n  \"tools\": [\n    {\n      \"type\": \"code_interpreter\"\n    }\n  ],\n  \"file_ids\": [\n    \"file-abc123\",\n    \"file-abc456\"\n  ],\n  \"metadata\": {\n    \"user_id\": \"user_abc123\"\n  },\n  \"usage\": {\n    \"prompt_tokens\": 123,\n    \"completion_tokens\": 456,\n    \"total_tokens\": 579\n  }\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /threads/{thread_id}/runs/{run_id}/submit_tool_outputs:
     post:
       operationId: submitToolOuputsToRun
@@ -736,6 +754,8 @@ paths:
             python: "from openai import OpenAI\nclient = OpenAI()\n\nrun = client.beta.threads.runs.submit_tool_outputs(\n  thread_id=\"thread_abc123\",\n  run_id=\"run_abc123\",\n  tool_outputs=[\n    {\n      \"tool_call_id\": \"call_abc123\",\n      \"output\": \"28C\"\n    }\n  ]\n)\nprint(run)\n"
             node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const run = await openai.beta.threads.runs.submitToolOutputs(\n    \"thread_abc123\",\n    \"run_abc123\",\n    {\n      tool_outputs: [\n        {\n          tool_call_id: \"call_abc123\",\n          output: \"28C\",\n        },\n      ],\n    }\n  );\n\n  console.log(run);\n}\n\nmain();\n"
           response: "{\n  \"id\": \"run_abc123\",\n  \"object\": \"thread.run\",\n  \"created_at\": 1699075592,\n  \"assistant_id\": \"asst_abc123\",\n  \"thread_id\": \"thread_abc123\",\n  \"status\": \"queued\",\n  \"started_at\": 1699075592,\n  \"expires_at\": 1699076192,\n  \"cancelled_at\": null,\n  \"failed_at\": null,\n  \"completed_at\": null,\n  \"last_error\": null,\n  \"model\": \"gpt-4\",\n  \"instructions\": \"You tell the weather.\",\n  \"tools\": [\n    {\n      \"type\": \"function\",\n      \"function\": {\n        \"name\": \"get_weather\",\n        \"description\": \"Determine weather in my location\",\n        \"parameters\": {\n          \"type\": \"object\",\n          \"properties\": {\n            \"location\": {\n              \"type\": \"string\",\n              \"description\": \"The city and state e.g. San Francisco, CA\"\n            },\n            \"unit\": {\n              \"type\": \"string\",\n              \"enum\": [\n                \"c\",\n                \"f\"\n              ]\n            }\n          },\n          \"required\": [\n            \"location\"\n          ]\n        }\n      }\n    }\n  ],\n  \"file_ids\": [],\n  \"metadata\": {},\n  \"usage\": null\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /threads/{thread_id}/runs/{run_id}/cancel:
     post:
       operationId: cancelRun
@@ -773,6 +793,8 @@ paths:
             python: "from openai import OpenAI\nclient = OpenAI()\n\nrun = client.beta.threads.runs.cancel(\n  thread_id=\"thread_abc123\",\n  run_id=\"run_abc123\"\n)\nprint(run)\n"
             node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const run = await openai.beta.threads.runs.cancel(\n    \"thread_abc123\",\n    \"run_abc123\"\n  );\n\n  console.log(run);\n}\n\nmain();\n"
           response: "{\n  \"id\": \"run_abc123\",\n  \"object\": \"thread.run\",\n  \"created_at\": 1699076126,\n  \"assistant_id\": \"asst_abc123\",\n  \"thread_id\": \"thread_abc123\",\n  \"status\": \"cancelling\",\n  \"started_at\": 1699076126,\n  \"expires_at\": 1699076726,\n  \"cancelled_at\": null,\n  \"failed_at\": null,\n  \"completed_at\": null,\n  \"last_error\": null,\n  \"model\": \"gpt-4\",\n  \"instructions\": \"You summarize books.\",\n  \"tools\": [\n    {\n      \"type\": \"retrieval\"\n    }\n  ],\n  \"file_ids\": [],\n  \"metadata\": {},\n  \"usage\": null\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /threads/{thread_id}/runs/{run_id}/steps:
     get:
       operationId: listRunSteps
@@ -844,6 +866,8 @@ paths:
             python: "from openai import OpenAI\nclient = OpenAI()\n\nrun_steps = client.beta.threads.runs.steps.list(\n    thread_id=\"thread_abc123\",\n    run_id=\"run_abc123\"\n)\nprint(run_steps)\n"
             node.js: "import OpenAI from \"openai\";\nconst openai = new OpenAI();\n\nasync function main() {\n  const runStep = await openai.beta.threads.runs.steps.list(\n    \"thread_abc123\",\n    \"run_abc123\"\n  );\n  console.log(runStep);\n}\n\nmain();\n"
           response: "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"step_abc123\",\n      \"object\": \"thread.run.step\",\n      \"created_at\": 1699063291,\n      \"run_id\": \"run_abc123\",\n      \"assistant_id\": \"asst_abc123\",\n      \"thread_id\": \"thread_abc123\",\n      \"type\": \"message_creation\",\n      \"status\": \"completed\",\n      \"cancelled_at\": null,\n      \"completed_at\": 1699063291,\n      \"expired_at\": null,\n      \"failed_at\": null,\n      \"last_error\": null,\n      \"step_details\": {\n        \"type\": \"message_creation\",\n        \"message_creation\": {\n          \"message_id\": \"msg_abc123\"\n        }\n      },\n      \"usage\": {\n        \"prompt_tokens\": 123,\n        \"completion_tokens\": 456,\n        \"total_tokens\": 579\n      }\n    }\n  ],\n  \"first_id\": \"step_abc123\",\n  \"last_id\": \"step_abc456\",\n  \"has_more\": false\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /threads/{thread_id}/runs/{run_id}/steps/{step_id}:
     get:
       operationId: getRunStep
@@ -887,9 +911,11 @@ paths:
             python: "from openai import OpenAI\nclient = OpenAI()\n\nrun_step = client.beta.threads.runs.steps.retrieve(\n    thread_id=\"thread_abc123\",\n    run_id=\"run_abc123\",\n    step_id=\"step_abc123\"\n)\nprint(run_step)\n"
             node.js: "import OpenAI from \"openai\";\nconst openai = new OpenAI();\n\nasync function main() {\n  const runStep = await openai.beta.threads.runs.steps.retrieve(\n    \"thread_abc123\",\n    \"run_abc123\",\n    \"step_abc123\"\n  );\n  console.log(runStep);\n}\n\nmain();\n"
           response: "{\n  \"id\": \"step_abc123\",\n  \"object\": \"thread.run.step\",\n  \"created_at\": 1699063291,\n  \"run_id\": \"run_abc123\",\n  \"assistant_id\": \"asst_abc123\",\n  \"thread_id\": \"thread_abc123\",\n  \"type\": \"message_creation\",\n  \"status\": \"completed\",\n  \"cancelled_at\": null,\n  \"completed_at\": 1699063291,\n  \"expired_at\": null,\n  \"failed_at\": null,\n  \"last_error\": null,\n  \"step_details\": {\n    \"type\": \"message_creation\",\n    \"message_creation\": {\n      \"message_id\": \"msg_abc123\"\n    }\n  },\n  \"usage\": {\n    \"prompt_tokens\": 123,\n    \"completion_tokens\": 456,\n    \"total_tokens\": 579\n  }\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
 components:
   schemas:
-    ListMessagesResponse:
+    ListMessageFilesResponse:
       properties:
         object:
           type: string
@@ -897,61 +923,51 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/MessageObject'
+            $ref: '#/components/schemas/MessageFileObject'
         first_id:
           type: string
-          example: msg_abc123
+          example: file-abc123
         last_id:
           type: string
-          example: msg_abc123
+          example: file-abc456
         has_more:
           type: boolean
           example: false
       required:
       - object
       - data
+      - items
       - first_id
       - last_id
       - has_more
-    DeleteThreadResponse:
+    MessageFileObject:
       type: object
+      title: Message files
+      description: A list of files attached to a `message`.
       properties:
         id:
+          description: The identifier, which can be referenced in API endpoints.
           type: string
-        deleted:
-          type: boolean
         object:
+          description: The object type, which is always `thread.message.file`.
           type: string
           enum:
-          - thread.deleted
+          - thread.message.file
+        created_at:
+          description: The Unix timestamp (in seconds) for when the message file was created.
+          type: integer
+        message_id:
+          description: The ID of the [message](/docs/api-reference/messages) that the [File](/docs/api-reference/files) is attached to.
+          type: string
       required:
       - id
       - object
-      - deleted
-    ListRunStepsResponse:
-      properties:
-        object:
-          type: string
-          example: list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/RunStepObject'
-        first_id:
-          type: string
-          example: step_abc123
-        last_id:
-          type: string
-          example: step_abc456
-        has_more:
-          type: boolean
-          example: false
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
+      - created_at
+      - message_id
+      x-oaiMeta:
+        name: The message file object
+        beta: true
+        example: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"thread.message.file\",\n  \"created_at\": 1698107661,\n  \"message_id\": \"message_QLoItBbqwyAJEzlTy4y9kOMM\",\n  \"file_id\": \"file-abc123\"\n}\n"
     RunStepObject:
       type: object
       title: Run steps
@@ -1002,9 +1018,10 @@ components:
           - $ref: '#/components/schemas/RunStepDetailsToolCallsObject'
           x-oaiExpandable: true
         last_error:
-          type: object
+          type:
+          - object
+          - 'null'
           description: The last error associated with this run step. Will be `null` if there are no errors.
-          nullable: true
           properties:
             code:
               type: string
@@ -1020,27 +1037,32 @@ components:
           - message
         expired_at:
           description: The Unix timestamp (in seconds) for when the run step expired. A step is considered expired if the parent run is expired.
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
         cancelled_at:
           description: The Unix timestamp (in seconds) for when the run step was cancelled.
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
         failed_at:
           description: The Unix timestamp (in seconds) for when the run step failed.
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
         completed_at:
           description: The Unix timestamp (in seconds) for when the run step completed.
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
         metadata:
           description: 'Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
 
             '
-          type: object
+          type:
+          - object
+          - 'null'
           x-oaiTypeLabel: map
-          nullable: true
         usage:
           $ref: '#/components/schemas/RunStepCompletionUsage'
       required:
@@ -1064,56 +1086,6 @@ components:
         name: The run step object
         beta: true
         example: "{\n  \"id\": \"step_abc123\",\n  \"object\": \"thread.run.step\",\n  \"created_at\": 1699063291,\n  \"run_id\": \"run_abc123\",\n  \"assistant_id\": \"asst_abc123\",\n  \"thread_id\": \"thread_abc123\",\n  \"type\": \"message_creation\",\n  \"status\": \"completed\",\n  \"cancelled_at\": null,\n  \"completed_at\": 1699063291,\n  \"expired_at\": null,\n  \"failed_at\": null,\n  \"last_error\": null,\n  \"step_details\": {\n    \"type\": \"message_creation\",\n    \"message_creation\": {\n      \"message_id\": \"msg_abc123\"\n    }\n  },\n  \"usage\": {\n    \"prompt_tokens\": 123,\n    \"completion_tokens\": 456,\n    \"total_tokens\": 579\n  }\n}\n"
-    ListRunsResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          example: list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/RunObject'
-        first_id:
-          type: string
-          example: run_abc123
-        last_id:
-          type: string
-          example: run_abc456
-        has_more:
-          type: boolean
-          example: false
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
-    ListMessageFilesResponse:
-      properties:
-        object:
-          type: string
-          example: list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/MessageFileObject'
-        first_id:
-          type: string
-          example: file-abc123
-        last_id:
-          type: string
-          example: file-abc456
-        has_more:
-          type: boolean
-          example: false
-      required:
-      - object
-      - data
-      - items
-      - first_id
-      - last_id
-      - has_more
     MessageObject:
       type: object
       title: The message object
@@ -1149,12 +1121,14 @@ components:
             x-oaiExpandable: true
         assistant_id:
           description: If applicable, the ID of the [assistant](/docs/api-reference/assistants) that authored this message.
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         run_id:
           description: If applicable, the ID of the [run](/docs/api-reference/runs) associated with the authoring of this message.
-          type: string
-          nullable: true
+          type:
+          - string
+          - 'null'
         file_ids:
           description: A list of [file](/docs/api-reference/files) IDs that the assistant should use. Useful for tools like retrieval and code_interpreter that can access files. A maximum of 10 files can be attached to a message.
           default: []
@@ -1166,9 +1140,10 @@ components:
           description: 'Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
 
             '
-          type: object
+          type:
+          - object
+          - 'null'
           x-oaiTypeLabel: map
-          nullable: true
       required:
       - id
       - object
@@ -1184,66 +1159,30 @@ components:
         name: The message object
         beta: true
         example: "{\n  \"id\": \"msg_abc123\",\n  \"object\": \"thread.message\",\n  \"created_at\": 1698983503,\n  \"thread_id\": \"thread_abc123\",\n  \"role\": \"assistant\",\n  \"content\": [\n    {\n      \"type\": \"text\",\n      \"text\": {\n        \"value\": \"Hi! How can I help you today?\",\n        \"annotations\": []\n      }\n    }\n  ],\n  \"file_ids\": [],\n  \"assistant_id\": \"asst_abc123\",\n  \"run_id\": \"run_abc123\",\n  \"metadata\": {}\n}\n"
-    ThreadObject:
-      type: object
-      title: Thread
-      description: Represents a thread that contains [messages](/docs/api-reference/messages).
+    ListRunStepsResponse:
       properties:
-        id:
-          description: The identifier, which can be referenced in API endpoints.
-          type: string
         object:
-          description: The object type, which is always `thread`.
           type: string
-          enum:
-          - thread
-        created_at:
-          description: The Unix timestamp (in seconds) for when the thread was created.
-          type: integer
-        metadata:
-          description: 'Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
-
-            '
-          type: object
-          x-oaiTypeLabel: map
-          nullable: true
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RunStepObject'
+        first_id:
+          type: string
+          example: step_abc123
+        last_id:
+          type: string
+          example: step_abc456
+        has_more:
+          type: boolean
+          example: false
       required:
-      - id
       - object
-      - created_at
-      - metadata
-      x-oaiMeta:
-        name: The thread object
-        beta: true
-        example: "{\n  \"id\": \"thread_abc123\",\n  \"object\": \"thread\",\n  \"created_at\": 1698107661,\n  \"metadata\": {}\n}\n"
-    MessageFileObject:
-      type: object
-      title: Message files
-      description: A list of files attached to a `message`.
-      properties:
-        id:
-          description: The identifier, which can be referenced in API endpoints.
-          type: string
-        object:
-          description: The object type, which is always `thread.message.file`.
-          type: string
-          enum:
-          - thread.message.file
-        created_at:
-          description: The Unix timestamp (in seconds) for when the message file was created.
-          type: integer
-        message_id:
-          description: The ID of the [message](/docs/api-reference/messages) that the [File](/docs/api-reference/files) is attached to.
-          type: string
-      required:
-      - id
-      - object
-      - created_at
-      - message_id
-      x-oaiMeta:
-        name: The message file object
-        beta: true
-        example: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"thread.message.file\",\n  \"created_at\": 1698107661,\n  \"message_id\": \"message_QLoItBbqwyAJEzlTy4y9kOMM\",\n  \"file_id\": \"file-abc123\"\n}\n"
+      - data
+      - first_id
+      - last_id
+      - has_more
     RunObject:
       type: object
       title: A run on a thread
@@ -1279,9 +1218,10 @@ components:
           - completed
           - expired
         required_action:
-          type: object
+          type:
+          - object
+          - 'null'
           description: Details on the action required to continue the run. Will be `null` if no action is required.
-          nullable: true
           properties:
             type:
               description: For now, this is always `submit_tool_outputs`.
@@ -1303,9 +1243,10 @@ components:
           - type
           - submit_tool_outputs
         last_error:
-          type: object
+          type:
+          - object
+          - 'null'
           description: The last error associated with this run. Will be `null` if there are no errors.
-          nullable: true
           properties:
             code:
               type: string
@@ -1324,20 +1265,24 @@ components:
           type: integer
         started_at:
           description: The Unix timestamp (in seconds) for when the run was started.
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
         cancelled_at:
           description: The Unix timestamp (in seconds) for when the run was cancelled.
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
         failed_at:
           description: The Unix timestamp (in seconds) for when the run failed.
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
         completed_at:
           description: The Unix timestamp (in seconds) for when the run was completed.
-          type: integer
-          nullable: true
+          type:
+          - integer
+          - 'null'
         model:
           description: The model that the [assistant](/docs/api-reference/assistants) used for this run.
           type: string
@@ -1365,9 +1310,10 @@ components:
           description: 'Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
 
             '
-          type: object
+          type:
+          - object
+          - 'null'
           x-oaiTypeLabel: map
-          nullable: true
         usage:
           $ref: '#/components/schemas/RunCompletionUsage'
       required:
@@ -1394,10 +1340,110 @@ components:
         name: The run object
         beta: true
         example: "{\n  \"id\": \"run_abc123\",\n  \"object\": \"thread.run\",\n  \"created_at\": 1698107661,\n  \"assistant_id\": \"asst_abc123\",\n  \"thread_id\": \"thread_abc123\",\n  \"status\": \"completed\",\n  \"started_at\": 1699073476,\n  \"expires_at\": null,\n  \"cancelled_at\": null,\n  \"failed_at\": null,\n  \"completed_at\": 1699073498,\n  \"last_error\": null,\n  \"model\": \"gpt-4\",\n  \"instructions\": null,\n  \"tools\": [{\"type\": \"retrieval\"}, {\"type\": \"code_interpreter\"}],\n  \"file_ids\": [],\n  \"metadata\": {},\n  \"usage\": {\n    \"prompt_tokens\": 123,\n    \"completion_tokens\": 456,\n    \"total_tokens\": 579\n  }\n}\n"
+    ListMessagesResponse:
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageObject'
+        first_id:
+          type: string
+          example: msg_abc123
+        last_id:
+          type: string
+          example: msg_abc123
+        has_more:
+          type: boolean
+          example: false
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    ListRunsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RunObject'
+        first_id:
+          type: string
+          example: run_abc123
+        last_id:
+          type: string
+          example: run_abc456
+        has_more:
+          type: boolean
+          example: false
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    ThreadObject:
+      type: object
+      title: Thread
+      description: Represents a thread that contains [messages](/docs/api-reference/messages).
+      properties:
+        id:
+          description: The identifier, which can be referenced in API endpoints.
+          type: string
+        object:
+          description: The object type, which is always `thread`.
+          type: string
+          enum:
+          - thread
+        created_at:
+          description: The Unix timestamp (in seconds) for when the thread was created.
+          type: integer
+        metadata:
+          description: 'Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+
+            '
+          type:
+          - object
+          - 'null'
+          x-oaiTypeLabel: map
+      required:
+      - id
+      - object
+      - created_at
+      - metadata
+      x-oaiMeta:
+        name: The thread object
+        beta: true
+        example: "{\n  \"id\": \"thread_abc123\",\n  \"object\": \"thread\",\n  \"created_at\": 1698107661,\n  \"metadata\": {}\n}\n"
+    DeleteThreadResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        deleted:
+          type: boolean
+        object:
+          type: string
+          enum:
+          - thread.deleted
+      required:
+      - id
+      - object
+      - deleted
   securitySchemes:
     ApiKeyAuth:
       type: http
       scheme: bearer
+x-refined-from:
+- files-openapi-original.yml
+- threads-openapi-original.yml
 x-oaiMeta:
   groups:
   - id: audio

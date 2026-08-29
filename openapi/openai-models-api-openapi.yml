@@ -1,15 +1,15 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  title: OpenAI Assistants Models API
-  description: The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.
-  version: 2.0.0
-  termsOfService: https://openai.com/policies/terms-of-use
+  title: Openai Models API
   contact:
     name: OpenAI Support
     url: https://help.openai.com/
   license:
     name: MIT
     url: https://github.com/openai/openai-openapi/blob/master/LICENSE
+  termsOfService: https://openai.com/policies/terms-of-use
+  version: '1.0'
+  description: 'Operations tagged Models across 2 of this provider''s published API definitions: models-openapi-original.yml, openai-openapi-master.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.openai.com/v1
 security:
@@ -48,6 +48,8 @@ paths:
               '
             node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const list = await openai.models.list();\n\n  for await (const model of list) {\n    console.log(model);\n  }\n}\nmain();"
           response: "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"id\": \"model-id-0\",\n      \"object\": \"model\",\n      \"created\": 1686935002,\n      \"owned_by\": \"organization-owner\"\n    },\n    {\n      \"id\": \"model-id-1\",\n      \"object\": \"model\",\n      \"created\": 1686935002,\n      \"owned_by\": \"organization-owner\",\n    },\n    {\n      \"id\": \"model-id-2\",\n      \"object\": \"model\",\n      \"created\": 1686935002,\n      \"owned_by\": \"openai\"\n    },\n  ],\n  \"object\": \"list\"\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /models/{model}:
     get:
       operationId: retrieveModel
@@ -123,35 +125,10 @@ paths:
               '
             node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const model = await openai.models.del(\"ft:gpt-3.5-turbo:acemeco:suffix:abc123\");\n\n  console.log(model);\n}\nmain();"
           response: "{\n  \"id\": \"ft:gpt-3.5-turbo:acemeco:suffix:abc123\",\n  \"object\": \"model\",\n  \"deleted\": true\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
 components:
   schemas:
-    DeleteModelResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        deleted:
-          type: boolean
-        object:
-          type: string
-      required:
-      - id
-      - object
-      - deleted
-    ListModelsResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Model'
-      required:
-      - object
-      - data
     Model:
       title: Model
       description: Describes an OpenAI model offering that can be used with the API.
@@ -178,10 +155,86 @@ components:
       x-oaiMeta:
         name: The model object
         example: "{\n  \"id\": \"VAR_model_id\",\n  \"object\": \"model\",\n  \"created\": 1686935002,\n  \"owned_by\": \"openai\"\n}\n"
+    ListModelsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Model'
+      required:
+      - object
+      - data
+    DeleteModelResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        deleted:
+          type: boolean
+        object:
+          type: string
+      required:
+      - id
+      - object
+      - deleted
+    Model_2:
+      title: Model
+      description: Describes an OpenAI model offering that can be used with the API.
+      properties:
+        id:
+          type: string
+          description: The model identifier, which can be referenced in the API endpoints.
+        created:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) when the model was created.
+        object:
+          type: string
+          description: The object type, which is always "model".
+          enum:
+          - model
+          x-stainless-const: true
+        owned_by:
+          type: string
+          description: The organization that owns the model.
+      required:
+      - id
+      - object
+      - created
+      - owned_by
+      x-oaiMeta:
+        name: The model object
+        example: "{\n  \"id\": \"VAR_chat_model_id\",\n  \"object\": \"model\",\n  \"created\": 1686935002,\n  \"owned_by\": \"openai\"\n}\n"
+    ListModelsResponse_2:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Model_2'
+      required:
+      - object
+      - data
   securitySchemes:
     ApiKeyAuth:
       type: http
       scheme: bearer
+    AdminApiKeyAuth:
+      type: http
+      scheme: bearer
+x-refined-from:
+- models-openapi-original.yml
+- openai-openapi-master.yml
 x-oaiMeta:
   groups:
   - id: audio

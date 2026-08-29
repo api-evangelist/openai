@@ -1,0 +1,1837 @@
+openapi: 3.2.0
+info:
+  title: OpenAI API
+  description: The OpenAI REST API. Please see https://platform.openai.com/docs/api-reference for more details.
+  version: 2.3.0
+  termsOfService: https://openai.com/policies/terms-of-use
+  contact:
+    name: OpenAI Support
+    url: https://help.openai.com/
+  license:
+    name: MIT
+    url: https://github.com/openai/openai-openapi/blob/master/LICENSE
+servers:
+- url: https://api.openai.com/v1
+security:
+- ApiKeyAuth: []
+tags:
+- name: OpenAI API
+paths: {}
+webhooks:
+  batch_cancelled:
+    post:
+      description: 'Sent when a batch has been cancelled.
+
+        '
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookBatchCancelled'
+      responses:
+        '200':
+          description: "Return a 200 status code to acknowledge receipt of the event. Non-200 \nstatus codes will be retried.\n"
+      tags:
+      - OpenAI API
+  batch_completed:
+    post:
+      description: 'Sent when a batch has completed processing.
+
+        '
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookBatchCompleted'
+      responses:
+        '200':
+          description: "Return a 200 status code to acknowledge receipt of the event. Non-200 \nstatus codes will be retried.\n"
+      tags:
+      - OpenAI API
+  batch_expired:
+    post:
+      description: 'Sent when a batch has expired before completion.
+
+        '
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookBatchExpired'
+      responses:
+        '200':
+          description: "Return a 200 status code to acknowledge receipt of the event. Non-200 \nstatus codes will be retried.\n"
+      tags:
+      - OpenAI API
+  batch_failed:
+    post:
+      description: 'Sent when a batch has failed.
+
+        '
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookBatchFailed'
+      responses:
+        '200':
+          description: "Return a 200 status code to acknowledge receipt of the event. Non-200 \nstatus codes will be retried.\n"
+      tags:
+      - OpenAI API
+  eval_run_canceled:
+    post:
+      description: 'Sent when an eval run has been canceled.
+
+        '
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvalRunCanceled'
+      responses:
+        '200':
+          description: "Return a 200 status code to acknowledge receipt of the event. Non-200 \nstatus codes will be retried. \n"
+      tags:
+      - OpenAI API
+  eval_run_failed:
+    post:
+      description: 'Sent when an eval run has failed.
+
+        '
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvalRunFailed'
+      responses:
+        '200':
+          description: "Return a 200 status code to acknowledge receipt of the event. Non-200 \nstatus codes will be retried. \n"
+      tags:
+      - OpenAI API
+  eval_run_succeeded:
+    post:
+      description: 'Sent when an eval run has succeeded.
+
+        '
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookEvalRunSucceeded'
+      responses:
+        '200':
+          description: "Return a 200 status code to acknowledge receipt of the event. Non-200 \nstatus codes will be retried. \n"
+      tags:
+      - OpenAI API
+  fine_tuning_job_cancelled:
+    post:
+      description: 'Sent when a fine-tuning job has been cancelled.
+
+        '
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookFineTuningJobCancelled'
+      responses:
+        '200':
+          description: "Return a 200 status code to acknowledge receipt of the event. Non-200 \nstatus codes will be retried. \n"
+      tags:
+      - OpenAI API
+  fine_tuning_job_failed:
+    post:
+      description: 'Sent when a fine-tuning job has failed.
+
+        '
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookFineTuningJobFailed'
+      responses:
+        '200':
+          description: "Return a 200 status code to acknowledge receipt of the event. Non-200 \nstatus codes will be retried. \n"
+      tags:
+      - OpenAI API
+  fine_tuning_job_succeeded:
+    post:
+      description: 'Sent when a fine-tuning job has succeeded.
+
+        '
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookFineTuningJobSucceeded'
+      responses:
+        '200':
+          description: "Return a 200 status code to acknowledge receipt of the event. Non-200 \nstatus codes will be retried. \n"
+      tags:
+      - OpenAI API
+  realtime_call_incoming:
+    post:
+      description: 'Sent when Realtime API Receives a incoming SIP call.
+
+        '
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookRealtimeCallIncoming'
+      responses:
+        '200':
+          description: 'Return a 200 status code to acknowledge receipt of the event. Non-200
+
+            status codes will be retried.
+
+            '
+      tags:
+      - OpenAI API
+  response_cancelled:
+    post:
+      description: 'Sent when a background response has been cancelled.
+
+        '
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookResponseCancelled'
+      responses:
+        '200':
+          description: "Return a 200 status code to acknowledge receipt of the event. Non-200 \nstatus codes will be retried.\n"
+      tags:
+      - OpenAI API
+  response_completed:
+    post:
+      description: 'Sent when a background response has completed successfully.
+
+        '
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookResponseCompleted'
+      responses:
+        '200':
+          description: "Return a 200 status code to acknowledge receipt of the event. Non-200 \nstatus codes will be retried. \n"
+      tags:
+      - OpenAI API
+  response_failed:
+    post:
+      description: 'Sent when a background response has failed.
+
+        '
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookResponseFailed'
+      responses:
+        '200':
+          description: "Return a 200 status code to acknowledge receipt of the event. Non-200 \nstatus codes will be retried.\n"
+      tags:
+      - OpenAI API
+  response_incomplete:
+    post:
+      description: 'Sent when a background response is incomplete.
+
+        '
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookResponseIncomplete'
+      responses:
+        '200':
+          description: "Return a 200 status code to acknowledge receipt of the event. Non-200 \nstatus codes will be retried.\n"
+      tags:
+      - OpenAI API
+components:
+  schemas:
+    WebhookRealtimeCallIncoming:
+      type: object
+      title: realtime.call.incoming
+      description: 'Sent when Realtime API Receives a incoming SIP call.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the model response was completed.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - call_id
+          - sip_headers
+          properties:
+            call_id:
+              type: string
+              description: 'The unique ID of this call.
+
+                '
+            sip_headers:
+              type: array
+              description: 'Headers from the SIP Invite.
+
+                '
+              items:
+                type: object
+                description: 'A header from the SIP Invite.
+
+                  '
+                required:
+                - name
+                - value
+                properties:
+                  name:
+                    type: string
+                    description: 'Name of the SIP Header.
+
+                      '
+                  value:
+                    type: string
+                    description: 'Value of the SIP Header.
+
+                      '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `realtime.call.incoming`.
+
+            '
+          enum:
+          - realtime.call.incoming
+          x-stainless-const: true
+      x-oaiMeta:
+        name: realtime.call.incoming
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"realtime.call.incoming\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"call_id\": \"rtc_479a275623b54bdb9b6fbae2f7cbd408\",\n    \"sip_headers\": [\n      {\"name\": \"Max-Forwards\", \"value\": \"63\"},\n      {\"name\": \"CSeq\", \"value\": \"851287 INVITE\"},\n      {\"name\": \"Content-Type\", \"value\": \"application/sdp\"},\n    ]\n  }\n}\n"
+    WebhookFineTuningJobFailed:
+      type: object
+      title: fine_tuning.job.failed
+      description: 'Sent when a fine-tuning job has failed.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the fine-tuning job failed.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the fine-tuning job.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `fine_tuning.job.failed`.
+
+            '
+          enum:
+          - fine_tuning.job.failed
+          x-stainless-const: true
+      x-oaiMeta:
+        name: fine_tuning.job.failed
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"fine_tuning.job.failed\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"ftjob_abc123\"\n  }\n} \n"
+    WebhookBatchExpired:
+      type: object
+      title: batch.expired
+      description: 'Sent when a batch API request has expired.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the batch API request expired.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the batch API request.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `batch.expired`.
+
+            '
+          enum:
+          - batch.expired
+          x-stainless-const: true
+      x-oaiMeta:
+        name: batch.expired
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"batch.expired\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"batch_abc123\"\n  }\n}\n"
+    WebhookEvalRunFailed:
+      type: object
+      title: eval.run.failed
+      description: 'Sent when an eval run has failed.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the eval run failed.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the eval run.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `eval.run.failed`.
+
+            '
+          enum:
+          - eval.run.failed
+          x-stainless-const: true
+      x-oaiMeta:
+        name: eval.run.failed
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"eval.run.failed\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"evalrun_abc123\"\n  }\n} \n"
+    WebhookResponseIncomplete:
+      type: object
+      title: response.incomplete
+      description: 'Sent when a background response has been interrupted.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the model response was interrupted.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the model response.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `response.incomplete`.
+
+            '
+          enum:
+          - response.incomplete
+          x-stainless-const: true
+      x-oaiMeta:
+        name: response.incomplete
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"response.incomplete\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"resp_abc123\"\n  }\n}\n"
+    WebhookEvalRunCanceled:
+      type: object
+      title: eval.run.canceled
+      description: 'Sent when an eval run has been canceled.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the eval run was canceled.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the eval run.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `eval.run.canceled`.
+
+            '
+          enum:
+          - eval.run.canceled
+          x-stainless-const: true
+      x-oaiMeta:
+        name: eval.run.canceled
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"eval.run.canceled\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"evalrun_abc123\"\n  }\n} \n"
+    WebhookBatchCompleted:
+      type: object
+      title: batch.completed
+      description: 'Sent when a batch API request has been completed.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the batch API request was completed.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the batch API request.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `batch.completed`.
+
+            '
+          enum:
+          - batch.completed
+          x-stainless-const: true
+      x-oaiMeta:
+        name: batch.completed
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"batch.completed\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"batch_abc123\"\n  }\n}\n"
+    WebhookBatchCancelled:
+      type: object
+      title: batch.cancelled
+      description: 'Sent when a batch API request has been cancelled.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the batch API request was cancelled.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the batch API request.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `batch.cancelled`.
+
+            '
+          enum:
+          - batch.cancelled
+          x-stainless-const: true
+      x-oaiMeta:
+        name: batch.cancelled
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"batch.cancelled\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"batch_abc123\"\n  }\n}\n"
+    WebhookResponseFailed:
+      type: object
+      title: response.failed
+      description: 'Sent when a background response has failed.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the model response failed.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the model response.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `response.failed`.
+
+            '
+          enum:
+          - response.failed
+          x-stainless-const: true
+      x-oaiMeta:
+        name: response.failed
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"response.failed\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"resp_abc123\"\n  }\n}\n"
+    WebhookResponseCancelled:
+      type: object
+      title: response.cancelled
+      description: 'Sent when a background response has been cancelled.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the model response was cancelled.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the model response.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `response.cancelled`.
+
+            '
+          enum:
+          - response.cancelled
+          x-stainless-const: true
+      x-oaiMeta:
+        name: response.cancelled
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"response.cancelled\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"resp_abc123\"\n  }\n}\n"
+    WebhookEvalRunSucceeded:
+      type: object
+      title: eval.run.succeeded
+      description: 'Sent when an eval run has succeeded.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the eval run succeeded.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the eval run.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `eval.run.succeeded`.
+
+            '
+          enum:
+          - eval.run.succeeded
+          x-stainless-const: true
+      x-oaiMeta:
+        name: eval.run.succeeded
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"eval.run.succeeded\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"evalrun_abc123\"\n  }\n} \n"
+    WebhookResponseCompleted:
+      type: object
+      title: response.completed
+      description: 'Sent when a background response has been completed.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the model response was completed.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the model response.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `response.completed`.
+
+            '
+          enum:
+          - response.completed
+          x-stainless-const: true
+      x-oaiMeta:
+        name: response.completed
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"response.completed\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"resp_abc123\"\n  }\n}\n"
+    WebhookBatchFailed:
+      type: object
+      title: batch.failed
+      description: 'Sent when a batch API request has failed.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the batch API request failed.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the batch API request.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `batch.failed`.
+
+            '
+          enum:
+          - batch.failed
+          x-stainless-const: true
+      x-oaiMeta:
+        name: batch.failed
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"batch.failed\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"batch_abc123\"\n  }\n}\n"
+    WebhookFineTuningJobCancelled:
+      type: object
+      title: fine_tuning.job.cancelled
+      description: 'Sent when a fine-tuning job has been cancelled.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the fine-tuning job was cancelled.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the fine-tuning job.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `fine_tuning.job.cancelled`.
+
+            '
+          enum:
+          - fine_tuning.job.cancelled
+          x-stainless-const: true
+      x-oaiMeta:
+        name: fine_tuning.job.cancelled
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"fine_tuning.job.cancelled\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"ftjob_abc123\"\n  }\n} \n"
+    WebhookFineTuningJobSucceeded:
+      type: object
+      title: fine_tuning.job.succeeded
+      description: 'Sent when a fine-tuning job has succeeded.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the fine-tuning job succeeded.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the fine-tuning job.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `fine_tuning.job.succeeded`.
+
+            '
+          enum:
+          - fine_tuning.job.succeeded
+          x-stainless-const: true
+      x-oaiMeta:
+        name: fine_tuning.job.succeeded
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"fine_tuning.job.succeeded\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"ftjob_abc123\"\n  }\n} \n"
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+    AdminApiKeyAuth:
+      type: http
+      scheme: bearer
+x-oaiMeta:
+  navigationGroups:
+  - id: responses
+    title: Responses API
+  - id: webhooks
+    title: Webhooks
+  - id: endpoints
+    title: Platform APIs
+  - id: vector_stores
+    title: Vector stores
+  - id: chatkit
+    title: ChatKit
+    beta: true
+  - id: containers
+    title: Containers
+  - id: realtime
+    title: Realtime
+  - id: chat
+    title: Chat Completions
+  - id: assistants
+    title: Assistants
+    deprecated: true
+  - id: administration
+    title: Administration
+  - id: legacy
+    title: Legacy
+  groups:
+  - id: responses-streaming
+    title: Streaming events
+    description: 'When you [create a Response](/docs/api-reference/responses/create) with
+
+      `stream` set to `true`, the server will emit server-sent events to the
+
+      client as the Response is generated. This section contains the events that
+
+      are emitted by the server.
+
+
+      [Learn more about streaming responses](/docs/guides/streaming-responses?api-mode=responses).
+
+      '
+    navigationGroup: responses
+    sections:
+    - type: object
+      key: ResponseCreatedEvent
+      path: <auto>
+    - type: object
+      key: ResponseInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseIncompleteEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputItemAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputItemDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseContentPartAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseContentPartDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseTextDeltaEvent
+      path: response/output_text/delta
+    - type: object
+      key: ResponseTextDoneEvent
+      path: response/output_text/done
+    - type: object
+      key: ResponseRefusalDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseRefusalDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseFunctionCallArgumentsDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseFunctionCallArgumentsDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallSearchingEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallSearchingEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryPartAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryPartDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryTextDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryTextDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningTextDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningTextDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallGeneratingEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallPartialImageEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallArgumentsDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallArgumentsDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallInterpretingEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCodeDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCodeDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputTextAnnotationAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseQueuedEvent
+      path: <auto>
+    - type: object
+      key: ResponseCustomToolCallInputDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseCustomToolCallInputDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseErrorEvent
+      path: <auto>
+  - id: webhook-events
+    title: Webhook Events
+    description: 'Webhooks are HTTP requests sent by OpenAI to a URL you specify when certain
+
+      events happen during the course of API usage.
+
+
+      [Learn more about webhooks](/docs/guides/webhooks).
+
+      '
+    navigationGroup: webhooks
+    sections:
+    - type: object
+      key: WebhookResponseCompleted
+      path: <auto>
+    - type: object
+      key: WebhookResponseCancelled
+      path: <auto>
+    - type: object
+      key: WebhookResponseFailed
+      path: <auto>
+    - type: object
+      key: WebhookResponseIncomplete
+      path: <auto>
+    - type: object
+      key: WebhookBatchCompleted
+      path: <auto>
+    - type: object
+      key: WebhookBatchCancelled
+      path: <auto>
+    - type: object
+      key: WebhookBatchExpired
+      path: <auto>
+    - type: object
+      key: WebhookBatchFailed
+      path: <auto>
+    - type: object
+      key: WebhookFineTuningJobSucceeded
+      path: <auto>
+    - type: object
+      key: WebhookFineTuningJobFailed
+      path: <auto>
+    - type: object
+      key: WebhookFineTuningJobCancelled
+      path: <auto>
+    - type: object
+      key: WebhookEvalRunSucceeded
+      path: <auto>
+    - type: object
+      key: WebhookEvalRunFailed
+      path: <auto>
+    - type: object
+      key: WebhookEvalRunCanceled
+      path: <auto>
+    - type: object
+      key: WebhookRealtimeCallIncoming
+      path: <auto>
+  - id: images-streaming
+    title: Image Streaming
+    description: 'Stream image generation and editing in real time with server-sent events.
+
+      [Learn more about image streaming](/docs/guides/image-generation).
+
+      '
+    navigationGroup: endpoints
+    sections:
+    - type: object
+      key: ImageGenPartialImageEvent
+      path: <auto>
+    - type: object
+      key: ImageGenCompletedEvent
+      path: <auto>
+    - type: object
+      key: ImageEditPartialImageEvent
+      path: <auto>
+    - type: object
+      key: ImageEditCompletedEvent
+      path: <auto>
+  - id: realtime-client-events
+    title: Client events
+    description: 'These are events that the OpenAI Realtime WebSocket server will accept from the client.
+
+      '
+    navigationGroup: realtime
+    sections:
+    - type: object
+      key: RealtimeClientEventSessionUpdate
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventInputAudioBufferAppend
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventInputAudioBufferCommit
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventInputAudioBufferClear
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventConversationItemCreate
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventConversationItemRetrieve
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventConversationItemTruncate
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventConversationItemDelete
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventResponseCreate
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventResponseCancel
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventOutputAudioBufferClear
+      path: <auto>
+  - id: realtime-server-events
+    title: Server events
+    description: 'These are events emitted from the OpenAI Realtime WebSocket server to the client.
+
+      '
+    navigationGroup: realtime
+    sections:
+    - type: object
+      key: RealtimeServerEventError
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventSessionCreated
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventSessionUpdated
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemAdded
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemRetrieved
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemInputAudioTranscriptionCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemInputAudioTranscriptionDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemInputAudioTranscriptionSegment
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemInputAudioTranscriptionFailed
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemTruncated
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemDeleted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferCommitted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferDtmfEventReceived
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferCleared
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferSpeechStarted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferSpeechStopped
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferTimeoutTriggered
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventOutputAudioBufferStarted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventOutputAudioBufferStopped
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventOutputAudioBufferCleared
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseCreated
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseOutputItemAdded
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseOutputItemDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseContentPartAdded
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseContentPartDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseTextDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseTextDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseAudioTranscriptDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseAudioTranscriptDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseAudioDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseAudioDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseFunctionCallArgumentsDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseFunctionCallArgumentsDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallArgumentsDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallArgumentsDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallInProgress
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallFailed
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventMCPListToolsInProgress
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventMCPListToolsCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventMCPListToolsFailed
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventRateLimitsUpdated
+      path: <auto>
+  - id: realtime-translation-client-events
+    title: Translation client events
+    description: 'These are events that the OpenAI Realtime Translation WebSocket server will accept from the client.
+
+      '
+    navigationGroup: realtime
+    sections:
+    - type: object
+      key: RealtimeTranslationClientEventSessionUpdate
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationClientEventInputAudioBufferAppend
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationClientEventSessionClose
+      path: <auto>
+  - id: realtime-translation-server-events
+    title: Translation server events
+    description: 'These are events emitted from the OpenAI Realtime Translation WebSocket server to the client.
+
+      '
+    navigationGroup: realtime
+    sections:
+    - type: object
+      key: RealtimeServerEventError
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionCreated
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionUpdated
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionClosed
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionInputTranscriptDelta
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionOutputTranscriptDelta
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionOutputAudioDelta
+      path: <auto>
+  - id: chat-streaming
+    title: Streaming
+    description: 'Stream Chat Completions in real time. Receive chunks of completions
+
+      returned from the model using server-sent events.
+
+      [Learn more](/docs/guides/streaming-responses?api-mode=chat).
+
+      '
+    navigationGroup: chat
+    sections:
+    - type: object
+      key: CreateChatCompletionStreamResponse
+      path: streaming
+  - id: assistants-streaming
+    title: Streaming
+    beta: true
+    description: 'Stream the result of executing a Run or resuming a Run after submitting tool outputs.
+
+      You can stream events from the [Create Thread and Run](/docs/api-reference/runs/createThreadAndRun),
+
+      [Create Run](/docs/api-reference/runs/createRun), and [Submit Tool Outputs](/docs/api-reference/runs/submitToolOutputs)
+
+      endpoints by passing `"stream": true`. The response will be a [Server-Sent events](https://html.spec.whatwg.org/multipage/server-sent-events.html#server-sent-events) stream.
+
+      Our Node and Python SDKs provide helpful utilities to make streaming easy. Reference the
+
+      [Assistants API quickstart](/docs/assistants/overview) to learn more.
+
+      '
+    navigationGroup: assistants
+    sections:
+    - type: object
+      key: AssistantStreamEvent
+      path: events
+  - id: realtime-beta-client-events
+    title: Realtime Beta client events
+    description: 'These are events that the OpenAI Realtime WebSocket server will accept from the client.
+
+      '
+    navigationGroup: legacy
+    sections:
+    - type: object
+      key: RealtimeBetaClientEventSessionUpdate
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventInputAudioBufferAppend
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventInputAudioBufferCommit
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventInputAudioBufferClear
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventConversationItemCreate
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventConversationItemRetrieve
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventConversationItemTruncate
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventConversationItemDelete
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventResponseCreate
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventResponseCancel
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventTranscriptionSessionUpdate
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventOutputAudioBufferClear
+      path: <auto>
+  - id: realtime-beta-server-events
+    title: Realtime Beta server events
+    description: 'These are events emitted from the OpenAI Realtime WebSocket server to the client.
+
+      '
+    navigationGroup: legacy
+    sections:
+    - type: object
+      key: RealtimeBetaServerEventError
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventSessionCreated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventSessionUpdated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventTranscriptionSessionCreated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventTranscriptionSessionUpdated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemCreated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemRetrieved
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemInputAudioTranscriptionCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemInputAudioTranscriptionDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemInputAudioTranscriptionSegment
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemInputAudioTranscriptionFailed
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemTruncated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemDeleted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventInputAudioBufferCommitted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventInputAudioBufferCleared
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventInputAudioBufferSpeechStarted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventInputAudioBufferSpeechStopped
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferTimeoutTriggered
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseCreated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseOutputItemAdded
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseOutputItemDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseContentPartAdded
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseContentPartDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseTextDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseTextDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseAudioTranscriptDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseAudioTranscriptDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseAudioDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseAudioDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseFunctionCallArgumentsDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseFunctionCallArgumentsDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallArgumentsDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallArgumentsDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallInProgress
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallFailed
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventMCPListToolsInProgress
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventMCPListToolsCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventMCPListToolsFailed
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventRateLimitsUpdated
+      path: <auto>

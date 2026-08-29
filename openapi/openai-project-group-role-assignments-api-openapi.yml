@@ -1,8 +1,8 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  title: OpenAI Assistants Project group role assignments API
-  description: The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.
-  version: 2.0.0
+  title: OpenAI Project group role assignments API
+  description: The OpenAI REST API. Please see https://platform.openai.com/docs/api-reference for more details.
+  version: 2.3.0
   termsOfService: https://openai.com/policies/terms-of-use
   contact:
     name: OpenAI Support
@@ -183,17 +183,6 @@ paths:
           response: "{\n    \"object\": \"group.role.deleted\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
-    PublicAssignOrganizationGroupRoleBody:
-      type: object
-      description: Request payload for assigning a role to a group or user.
-      properties:
-        role_id:
-          type: string
-          description: Identifier of the role to assign.
-      required:
-      - role_id
-      x-oaiMeta:
-        example: "{\n    \"role_id\": \"role_01J1F8ROLE01\"\n}\n"
     AssignedRoleDetails:
       type: object
       description: Detailed information about a role assignment entry returned when listing assignments.
@@ -261,6 +250,38 @@ components:
       - created_by
       - created_by_user_obj
       - metadata
+    Group:
+      type: object
+      description: Summary information about a group returned in role assignment responses.
+      properties:
+        object:
+          type: string
+          enum:
+          - group
+          description: Always `group`.
+          x-stainless-const: true
+        id:
+          type: string
+          description: Identifier for the group.
+        name:
+          type: string
+          description: Display name of the group.
+        created_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (in seconds) when the group was created.
+        scim_managed:
+          type: boolean
+          description: Whether the group is managed through SCIM.
+      required:
+      - object
+      - id
+      - name
+      - created_at
+      - scim_managed
+      x-oaiMeta:
+        name: The group object
+        example: "{\n    \"object\": \"group\",\n    \"id\": \"group_01J1F8ABCDXYZ\",\n    \"name\": \"Support Team\",\n    \"created_at\": 1711471533,\n    \"scim_managed\": false\n}\n"
     Role:
       type: object
       description: Details about a role that can be assigned through the public Roles API.
@@ -304,6 +325,38 @@ components:
       x-oaiMeta:
         name: The role object
         example: "{\n    \"object\": \"role\",\n    \"id\": \"role_01J1F8ROLE01\",\n    \"name\": \"API Group Manager\",\n    \"description\": \"Allows managing organization groups\",\n    \"permissions\": [\n        \"api.groups.read\",\n        \"api.groups.write\"\n    ],\n    \"resource_type\": \"api.organization\",\n    \"predefined_role\": false\n}\n"
+    GroupRoleAssignment:
+      type: object
+      description: Role assignment linking a group to a role.
+      properties:
+        object:
+          type: string
+          enum:
+          - group.role
+          description: Always `group.role`.
+          x-stainless-const: true
+        group:
+          $ref: '#/components/schemas/Group'
+        role:
+          $ref: '#/components/schemas/Role'
+      required:
+      - object
+      - group
+      - role
+      x-oaiMeta:
+        name: The group role object
+        example: "{\n    \"object\": \"group.role\",\n    \"group\": {\n        \"object\": \"group\",\n        \"id\": \"group_01J1F8ABCDXYZ\",\n        \"name\": \"Support Team\",\n        \"created_at\": 1711471533,\n        \"scim_managed\": false\n    },\n    \"role\": {\n        \"object\": \"role\",\n        \"id\": \"role_01J1F8ROLE01\",\n        \"name\": \"API Group Manager\",\n        \"description\": \"Allows managing organization groups\",\n        \"permissions\": [\n            \"api.groups.read\",\n            \"api.groups.write\"\n        ],\n        \"resource_type\": \"api.organization\",\n        \"predefined_role\": false\n    }\n}\n"
+    PublicAssignOrganizationGroupRoleBody:
+      type: object
+      description: Request payload for assigning a role to a group or user.
+      properties:
+        role_id:
+          type: string
+          description: Identifier of the role to assign.
+      required:
+      - role_id
+      x-oaiMeta:
+        example: "{\n    \"role_id\": \"role_01J1F8ROLE01\"\n}\n"
     DeletedRoleAssignmentResource:
       type: object
       description: Confirmation payload returned after unassigning a role.
@@ -351,379 +404,709 @@ components:
       x-oaiMeta:
         name: Assigned role list
         example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"role_01J1F8ROLE01\",\n            \"name\": \"API Group Manager\",\n            \"permissions\": [\n                \"api.groups.read\",\n                \"api.groups.write\"\n            ],\n            \"resource_type\": \"api.organization\",\n            \"predefined_role\": false,\n            \"description\": \"Allows managing organization groups\",\n            \"created_at\": 1711471533,\n            \"updated_at\": 1711472599,\n            \"created_by\": \"user_abc123\",\n            \"created_by_user_obj\": {\n                \"id\": \"user_abc123\",\n                \"name\": \"Ada Lovelace\",\n                \"email\": \"ada@example.com\"\n            },\n            \"metadata\": {}\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
-    Group:
-      type: object
-      description: Summary information about a group returned in role assignment responses.
-      properties:
-        object:
-          type: string
-          enum:
-          - group
-          description: Always `group`.
-          x-stainless-const: true
-        id:
-          type: string
-          description: Identifier for the group.
-        name:
-          type: string
-          description: Display name of the group.
-        created_at:
-          type: integer
-          format: unixtime
-          description: Unix timestamp (in seconds) when the group was created.
-        scim_managed:
-          type: boolean
-          description: Whether the group is managed through SCIM.
-      required:
-      - object
-      - id
-      - name
-      - created_at
-      - scim_managed
-      x-oaiMeta:
-        name: The group object
-        example: "{\n    \"object\": \"group\",\n    \"id\": \"group_01J1F8ABCDXYZ\",\n    \"name\": \"Support Team\",\n    \"created_at\": 1711471533,\n    \"scim_managed\": false\n}\n"
-    GroupRoleAssignment:
-      type: object
-      description: Role assignment linking a group to a role.
-      properties:
-        object:
-          type: string
-          enum:
-          - group.role
-          description: Always `group.role`.
-          x-stainless-const: true
-        group:
-          $ref: '#/components/schemas/Group'
-        role:
-          $ref: '#/components/schemas/Role'
-      required:
-      - object
-      - group
-      - role
-      x-oaiMeta:
-        name: The group role object
-        example: "{\n    \"object\": \"group.role\",\n    \"group\": {\n        \"object\": \"group\",\n        \"id\": \"group_01J1F8ABCDXYZ\",\n        \"name\": \"Support Team\",\n        \"created_at\": 1711471533,\n        \"scim_managed\": false\n    },\n    \"role\": {\n        \"object\": \"role\",\n        \"id\": \"role_01J1F8ROLE01\",\n        \"name\": \"API Group Manager\",\n        \"description\": \"Allows managing organization groups\",\n        \"permissions\": [\n            \"api.groups.read\",\n            \"api.groups.write\"\n        ],\n        \"resource_type\": \"api.organization\",\n        \"predefined_role\": false\n    }\n}\n"
   securitySchemes:
     ApiKeyAuth:
       type: http
       scheme: bearer
+    AdminApiKeyAuth:
+      type: http
+      scheme: bearer
 x-oaiMeta:
-  groups:
-  - id: audio
-    title: Audio
-    description: 'Learn how to turn audio into text or text into audio.
-
-
-      Related guide: [Speech to text](/docs/guides/speech-to-text)
-
-      '
-    sections:
-    - type: endpoint
-      key: createSpeech
-      path: createSpeech
-    - type: endpoint
-      key: createTranscription
-      path: createTranscription
-    - type: endpoint
-      key: createTranslation
-      path: createTranslation
+  navigationGroups:
+  - id: responses
+    title: Responses API
+  - id: webhooks
+    title: Webhooks
+  - id: endpoints
+    title: Platform APIs
+  - id: vector_stores
+    title: Vector stores
+  - id: chatkit
+    title: ChatKit
+    beta: true
+  - id: containers
+    title: Containers
+  - id: realtime
+    title: Realtime
   - id: chat
-    title: Chat
-    description: 'Given a list of messages comprising a conversation, the model will return a response.
+    title: Chat Completions
+  - id: assistants
+    title: Assistants
+    deprecated: true
+  - id: administration
+    title: Administration
+  - id: legacy
+    title: Legacy
+  groups:
+  - id: responses-streaming
+    title: Streaming events
+    description: 'When you [create a Response](/docs/api-reference/responses/create) with
+
+      `stream` set to `true`, the server will emit server-sent events to the
+
+      client as the Response is generated. This section contains the events that
+
+      are emitted by the server.
 
 
-      Related guide: [Chat Completions](/docs/guides/text-generation)
+      [Learn more about streaming responses](/docs/guides/streaming-responses?api-mode=responses).
 
       '
+    navigationGroup: responses
     sections:
-    - type: endpoint
-      key: createChatCompletion
-      path: create
     - type: object
-      key: CreateChatCompletionResponse
-      path: object
+      key: ResponseCreatedEvent
+      path: <auto>
+    - type: object
+      key: ResponseInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseIncompleteEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputItemAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputItemDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseContentPartAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseContentPartDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseTextDeltaEvent
+      path: response/output_text/delta
+    - type: object
+      key: ResponseTextDoneEvent
+      path: response/output_text/done
+    - type: object
+      key: ResponseRefusalDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseRefusalDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseFunctionCallArgumentsDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseFunctionCallArgumentsDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallSearchingEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallSearchingEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryPartAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryPartDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryTextDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryTextDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningTextDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningTextDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallGeneratingEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallPartialImageEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallArgumentsDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallArgumentsDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallInterpretingEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCodeDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCodeDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputTextAnnotationAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseQueuedEvent
+      path: <auto>
+    - type: object
+      key: ResponseCustomToolCallInputDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseCustomToolCallInputDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseErrorEvent
+      path: <auto>
+  - id: webhook-events
+    title: Webhook Events
+    description: 'Webhooks are HTTP requests sent by OpenAI to a URL you specify when certain
+
+      events happen during the course of API usage.
+
+
+      [Learn more about webhooks](/docs/guides/webhooks).
+
+      '
+    navigationGroup: webhooks
+    sections:
+    - type: object
+      key: WebhookResponseCompleted
+      path: <auto>
+    - type: object
+      key: WebhookResponseCancelled
+      path: <auto>
+    - type: object
+      key: WebhookResponseFailed
+      path: <auto>
+    - type: object
+      key: WebhookResponseIncomplete
+      path: <auto>
+    - type: object
+      key: WebhookBatchCompleted
+      path: <auto>
+    - type: object
+      key: WebhookBatchCancelled
+      path: <auto>
+    - type: object
+      key: WebhookBatchExpired
+      path: <auto>
+    - type: object
+      key: WebhookBatchFailed
+      path: <auto>
+    - type: object
+      key: WebhookFineTuningJobSucceeded
+      path: <auto>
+    - type: object
+      key: WebhookFineTuningJobFailed
+      path: <auto>
+    - type: object
+      key: WebhookFineTuningJobCancelled
+      path: <auto>
+    - type: object
+      key: WebhookEvalRunSucceeded
+      path: <auto>
+    - type: object
+      key: WebhookEvalRunFailed
+      path: <auto>
+    - type: object
+      key: WebhookEvalRunCanceled
+      path: <auto>
+    - type: object
+      key: WebhookRealtimeCallIncoming
+      path: <auto>
+  - id: images-streaming
+    title: Image Streaming
+    description: 'Stream image generation and editing in real time with server-sent events.
+
+      [Learn more about image streaming](/docs/guides/image-generation).
+
+      '
+    navigationGroup: endpoints
+    sections:
+    - type: object
+      key: ImageGenPartialImageEvent
+      path: <auto>
+    - type: object
+      key: ImageGenCompletedEvent
+      path: <auto>
+    - type: object
+      key: ImageEditPartialImageEvent
+      path: <auto>
+    - type: object
+      key: ImageEditCompletedEvent
+      path: <auto>
+  - id: realtime-client-events
+    title: Client events
+    description: 'These are events that the OpenAI Realtime WebSocket server will accept from the client.
+
+      '
+    navigationGroup: realtime
+    sections:
+    - type: object
+      key: RealtimeClientEventSessionUpdate
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventInputAudioBufferAppend
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventInputAudioBufferCommit
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventInputAudioBufferClear
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventConversationItemCreate
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventConversationItemRetrieve
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventConversationItemTruncate
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventConversationItemDelete
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventResponseCreate
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventResponseCancel
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventOutputAudioBufferClear
+      path: <auto>
+  - id: realtime-server-events
+    title: Server events
+    description: 'These are events emitted from the OpenAI Realtime WebSocket server to the client.
+
+      '
+    navigationGroup: realtime
+    sections:
+    - type: object
+      key: RealtimeServerEventError
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventSessionCreated
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventSessionUpdated
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemAdded
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemRetrieved
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemInputAudioTranscriptionCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemInputAudioTranscriptionDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemInputAudioTranscriptionSegment
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemInputAudioTranscriptionFailed
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemTruncated
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemDeleted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferCommitted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferDtmfEventReceived
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferCleared
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferSpeechStarted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferSpeechStopped
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferTimeoutTriggered
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventOutputAudioBufferStarted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventOutputAudioBufferStopped
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventOutputAudioBufferCleared
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseCreated
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseOutputItemAdded
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseOutputItemDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseContentPartAdded
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseContentPartDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseTextDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseTextDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseAudioTranscriptDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseAudioTranscriptDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseAudioDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseAudioDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseFunctionCallArgumentsDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseFunctionCallArgumentsDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallArgumentsDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallArgumentsDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallInProgress
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallFailed
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventMCPListToolsInProgress
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventMCPListToolsCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventMCPListToolsFailed
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventRateLimitsUpdated
+      path: <auto>
+  - id: realtime-translation-client-events
+    title: Translation client events
+    description: 'These are events that the OpenAI Realtime Translation WebSocket server will accept from the client.
+
+      '
+    navigationGroup: realtime
+    sections:
+    - type: object
+      key: RealtimeTranslationClientEventSessionUpdate
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationClientEventInputAudioBufferAppend
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationClientEventSessionClose
+      path: <auto>
+  - id: realtime-translation-server-events
+    title: Translation server events
+    description: 'These are events emitted from the OpenAI Realtime Translation WebSocket server to the client.
+
+      '
+    navigationGroup: realtime
+    sections:
+    - type: object
+      key: RealtimeServerEventError
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionCreated
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionUpdated
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionClosed
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionInputTranscriptDelta
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionOutputTranscriptDelta
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionOutputAudioDelta
+      path: <auto>
+  - id: chat-streaming
+    title: Streaming
+    description: 'Stream Chat Completions in real time. Receive chunks of completions
+
+      returned from the model using server-sent events.
+
+      [Learn more](/docs/guides/streaming-responses?api-mode=chat).
+
+      '
+    navigationGroup: chat
+    sections:
     - type: object
       key: CreateChatCompletionStreamResponse
       path: streaming
-  - id: embeddings
-    title: Embeddings
-    description: 'Get a vector representation of a given input that can be easily consumed by machine learning models and algorithms.
-
-
-      Related guide: [Embeddings](/docs/guides/embeddings)
-
-      '
-    sections:
-    - type: endpoint
-      key: createEmbedding
-      path: create
-    - type: object
-      key: Embedding
-      path: object
-  - id: fine-tuning
-    title: Fine-tuning
-    description: 'Manage fine-tuning jobs to tailor a model to your specific training data.
-
-
-      Related guide: [Fine-tune models](/docs/guides/fine-tuning)
-
-      '
-    sections:
-    - type: endpoint
-      key: createFineTuningJob
-      path: create
-    - type: endpoint
-      key: listPaginatedFineTuningJobs
-      path: list
-    - type: endpoint
-      key: listFineTuningEvents
-      path: list-events
-    - type: endpoint
-      key: retrieveFineTuningJob
-      path: retrieve
-    - type: endpoint
-      key: cancelFineTuningJob
-      path: cancel
-    - type: object
-      key: FineTuningJob
-      path: object
-    - type: object
-      key: FineTuningJobEvent
-      path: event-object
-  - id: files
-    title: Files
-    description: 'Files are used to upload documents that can be used with features like [Assistants](/docs/api-reference/assistants) and [Fine-tuning](/docs/api-reference/fine-tuning).
-
-      '
-    sections:
-    - type: endpoint
-      key: createFile
-      path: create
-    - type: endpoint
-      key: listFiles
-      path: list
-    - type: endpoint
-      key: retrieveFile
-      path: retrieve
-    - type: endpoint
-      key: deleteFile
-      path: delete
-    - type: endpoint
-      key: downloadFile
-      path: retrieve-contents
-    - type: object
-      key: OpenAIFile
-      path: object
-  - id: images
-    title: Images
-    description: 'Given a prompt and/or an input image, the model will generate a new image.
-
-
-      Related guide: [Image generation](/docs/guides/images)
-
-      '
-    sections:
-    - type: endpoint
-      key: createImage
-      path: create
-    - type: endpoint
-      key: createImageEdit
-      path: createEdit
-    - type: endpoint
-      key: createImageVariation
-      path: createVariation
-    - type: object
-      key: Image
-      path: object
-  - id: models
-    title: Models
-    description: 'List and describe the various models available in the API. You can refer to the [Models](/docs/models) documentation to understand what models are available and the differences between them.
-
-      '
-    sections:
-    - type: endpoint
-      key: listModels
-      path: list
-    - type: endpoint
-      key: retrieveModel
-      path: retrieve
-    - type: endpoint
-      key: deleteModel
-      path: delete
-    - type: object
-      key: Model
-      path: object
-  - id: moderations
-    title: Moderations
-    description: 'Given a input text, outputs if the model classifies it as violating OpenAI''s content policy.
-
-
-      Related guide: [Moderations](/docs/guides/moderation)
-
-      '
-    sections:
-    - type: endpoint
-      key: createModeration
-      path: create
-    - type: object
-      key: CreateModerationResponse
-      path: object
-  - id: assistants
-    title: Assistants
+  - id: assistants-streaming
+    title: Streaming
     beta: true
-    description: 'Build assistants that can call models and use tools to perform tasks.
+    description: 'Stream the result of executing a Run or resuming a Run after submitting tool outputs.
 
+      You can stream events from the [Create Thread and Run](/docs/api-reference/runs/createThreadAndRun),
 
-      [Get started with the Assistants API](/docs/assistants)
+      [Create Run](/docs/api-reference/runs/createRun), and [Submit Tool Outputs](/docs/api-reference/runs/submitToolOutputs)
 
-      '
-    sections:
-    - type: endpoint
-      key: createAssistant
-      path: createAssistant
-    - type: endpoint
-      key: createAssistantFile
-      path: createAssistantFile
-    - type: endpoint
-      key: listAssistants
-      path: listAssistants
-    - type: endpoint
-      key: listAssistantFiles
-      path: listAssistantFiles
-    - type: endpoint
-      key: getAssistant
-      path: getAssistant
-    - type: endpoint
-      key: getAssistantFile
-      path: getAssistantFile
-    - type: endpoint
-      key: modifyAssistant
-      path: modifyAssistant
-    - type: endpoint
-      key: deleteAssistant
-      path: deleteAssistant
-    - type: endpoint
-      key: deleteAssistantFile
-      path: deleteAssistantFile
-    - type: object
-      key: AssistantObject
-      path: object
-    - type: object
-      key: AssistantFileObject
-      path: file-object
-  - id: threads
-    title: Threads
-    beta: true
-    description: 'Create threads that assistants can interact with.
+      endpoints by passing `"stream": true`. The response will be a [Server-Sent events](https://html.spec.whatwg.org/multipage/server-sent-events.html#server-sent-events) stream.
 
+      Our Node and Python SDKs provide helpful utilities to make streaming easy. Reference the
 
-      Related guide: [Assistants](/docs/assistants/overview)
+      [Assistants API quickstart](/docs/assistants/overview) to learn more.
 
       '
+    navigationGroup: assistants
     sections:
-    - type: endpoint
-      key: createThread
-      path: createThread
-    - type: endpoint
-      key: getThread
-      path: getThread
-    - type: endpoint
-      key: modifyThread
-      path: modifyThread
-    - type: endpoint
-      key: deleteThread
-      path: deleteThread
     - type: object
-      key: ThreadObject
-      path: object
-  - id: messages
-    title: Messages
-    beta: true
-    description: 'Create messages within threads
-
-
-      Related guide: [Assistants](/docs/assistants/overview)
+      key: AssistantStreamEvent
+      path: events
+  - id: realtime-beta-client-events
+    title: Realtime Beta client events
+    description: 'These are events that the OpenAI Realtime WebSocket server will accept from the client.
 
       '
+    navigationGroup: legacy
     sections:
-    - type: endpoint
-      key: createMessage
-      path: createMessage
-    - type: endpoint
-      key: listMessages
-      path: listMessages
-    - type: endpoint
-      key: listMessageFiles
-      path: listMessageFiles
-    - type: endpoint
-      key: getMessage
-      path: getMessage
-    - type: endpoint
-      key: getMessageFile
-      path: getMessageFile
-    - type: endpoint
-      key: modifyMessage
-      path: modifyMessage
     - type: object
-      key: MessageObject
-      path: object
+      key: RealtimeBetaClientEventSessionUpdate
+      path: <auto>
     - type: object
-      key: MessageFileObject
-      path: file-object
-  - id: runs
-    title: Runs
-    beta: true
-    description: 'Represents an execution run on a thread.
-
-
-      Related guide: [Assistants](/docs/assistants/overview)
+      key: RealtimeBetaClientEventInputAudioBufferAppend
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventInputAudioBufferCommit
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventInputAudioBufferClear
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventConversationItemCreate
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventConversationItemRetrieve
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventConversationItemTruncate
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventConversationItemDelete
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventResponseCreate
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventResponseCancel
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventTranscriptionSessionUpdate
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventOutputAudioBufferClear
+      path: <auto>
+  - id: realtime-beta-server-events
+    title: Realtime Beta server events
+    description: 'These are events emitted from the OpenAI Realtime WebSocket server to the client.
 
       '
+    navigationGroup: legacy
     sections:
-    - type: endpoint
-      key: createRun
-      path: createRun
-    - type: endpoint
-      key: createThreadAndRun
-      path: createThreadAndRun
-    - type: endpoint
-      key: listRuns
-      path: listRuns
-    - type: endpoint
-      key: listRunSteps
-      path: listRunSteps
-    - type: endpoint
-      key: getRun
-      path: getRun
-    - type: endpoint
-      key: getRunStep
-      path: getRunStep
-    - type: endpoint
-      key: modifyRun
-      path: modifyRun
-    - type: endpoint
-      key: submitToolOuputsToRun
-      path: submitToolOutputs
-    - type: endpoint
-      key: cancelRun
-      path: cancelRun
     - type: object
-      key: RunObject
-      path: object
+      key: RealtimeBetaServerEventError
+      path: <auto>
     - type: object
-      key: RunStepObject
-      path: step-object
-  - id: completions
-    title: Completions
-    legacy: true
-    description: 'Given a prompt, the model will return one or more predicted completions along with the probabilities of alternative tokens at each position. Most developer should use our [Chat Completions API](/docs/guides/text-generation/text-generation-models) to leverage our best and newest models. Most models that support the legacy Completions endpoint [will be shut off on January 4th, 2024](/docs/deprecations/2023-07-06-gpt-and-embeddings).
-
-      '
-    sections:
-    - type: endpoint
-      key: createCompletion
-      path: create
+      key: RealtimeBetaServerEventSessionCreated
+      path: <auto>
     - type: object
-      key: CreateCompletionResponse
-      path: object
+      key: RealtimeBetaServerEventSessionUpdated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventTranscriptionSessionCreated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventTranscriptionSessionUpdated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemCreated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemRetrieved
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemInputAudioTranscriptionCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemInputAudioTranscriptionDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemInputAudioTranscriptionSegment
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemInputAudioTranscriptionFailed
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemTruncated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemDeleted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventInputAudioBufferCommitted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventInputAudioBufferCleared
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventInputAudioBufferSpeechStarted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventInputAudioBufferSpeechStopped
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferTimeoutTriggered
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseCreated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseOutputItemAdded
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseOutputItemDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseContentPartAdded
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseContentPartDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseTextDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseTextDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseAudioTranscriptDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseAudioTranscriptDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseAudioDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseAudioDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseFunctionCallArgumentsDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseFunctionCallArgumentsDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallArgumentsDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallArgumentsDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallInProgress
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallFailed
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventMCPListToolsInProgress
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventMCPListToolsCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventMCPListToolsFailed
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventRateLimitsUpdated
+      path: <auto>

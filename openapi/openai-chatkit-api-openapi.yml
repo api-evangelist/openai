@@ -1,8 +1,8 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  title: OpenAI Assistants Chatkit API
-  description: The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.
-  version: 2.0.0
+  title: OpenAI Chatkit API
+  description: The OpenAI REST API. Please see https://platform.openai.com/docs/api-reference for more details.
+  version: 2.3.0
   termsOfService: https://openai.com/policies/terms-of-use
   contact:
     name: OpenAI Support
@@ -390,6 +390,26 @@ paths:
       - Chatkit
 components:
   schemas:
+    AutomaticThreadTitlingParam:
+      properties:
+        enabled:
+          type: boolean
+          description: Enable automatic thread title generation. Defaults to true.
+      type: object
+      required: []
+      title: Automatic thread titling configuration
+      description: Controls whether ChatKit automatically generates thread titles.
+    ChatSessionStatus:
+      type: string
+      enum:
+      - active
+      - expired
+      - cancelled
+    ClientToolCallStatus:
+      type: string
+      enum:
+      - in_progress
+      - completed
     UserMessageItem:
       properties:
         id:
@@ -447,175 +467,6 @@ components:
       - inference_options
       title: User Message Item
       description: User-authored messages within a thread.
-    ChatkitWorkflowTracing:
-      properties:
-        enabled:
-          type: boolean
-          description: Indicates whether tracing is enabled.
-      type: object
-      required:
-      - enabled
-      title: Tracing Configuration
-      description: Controls diagnostic tracing during the session.
-    ThreadListResource:
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: The type of object returned, must be `list`.
-          default: list
-          x-stainless-const: true
-        data:
-          items:
-            $ref: '#/components/schemas/ThreadResource'
-          type: array
-          description: A list of items
-        first_id:
-          anyOf:
-          - type: string
-            description: The ID of the first item in the list.
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-            description: The ID of the last item in the list.
-          - type: 'null'
-        has_more:
-          type: boolean
-          description: Whether there are more items available.
-      type: object
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
-      title: Threads
-      description: A paginated list of ChatKit threads.
-    ChatSessionFileUpload:
-      properties:
-        enabled:
-          type: boolean
-          description: Indicates if uploads are enabled for the session.
-        max_file_size:
-          anyOf:
-          - type: integer
-            description: Maximum upload size in megabytes.
-          - type: 'null'
-        max_files:
-          anyOf:
-          - type: integer
-            description: Maximum number of uploads allowed during the session.
-          - type: 'null'
-      type: object
-      required:
-      - enabled
-      - max_file_size
-      - max_files
-      title: File upload settings
-      description: Upload permissions and limits applied to the session.
-    WorkflowParam:
-      properties:
-        id:
-          type: string
-          description: Identifier for the workflow invoked by the session.
-        version:
-          type: string
-          description: Specific workflow version to run. Defaults to the latest deployed version.
-        state_variables:
-          additionalProperties:
-            oneOf:
-            - type: string
-              maxLength: 10485760
-            - type: integer
-            - type: boolean
-            - type: number
-          type: object
-          maxProperties: 64
-          description: State variables forwarded to the workflow. Keys may be up to 64 characters, values must be primitive types, and the map defaults to an empty object.
-          x-oaiTypeLabel: map
-        tracing:
-          $ref: '#/components/schemas/WorkflowTracingParam'
-          description: Optional tracing overrides for the workflow invocation. When omitted, tracing is enabled by default.
-      type: object
-      required:
-      - id
-      title: Workflow settings
-      description: Workflow reference and overrides applied to the chat session.
-    ClientToolCallStatus:
-      type: string
-      enum:
-      - in_progress
-      - completed
-    UrlAnnotation:
-      properties:
-        type:
-          type: string
-          enum:
-          - url
-          description: Type discriminator that is always `url` for this annotation.
-          default: url
-          x-stainless-const: true
-        source:
-          $ref: '#/components/schemas/UrlAnnotationSource'
-          description: URL referenced by the annotation.
-      type: object
-      required:
-      - type
-      - source
-      title: URL annotation
-      description: Annotation that references a URL.
-    ThreadResource:
-      properties:
-        id:
-          type: string
-          description: Identifier of the thread.
-        object:
-          type: string
-          enum:
-          - chatkit.thread
-          description: Type discriminator that is always `chatkit.thread`.
-          default: chatkit.thread
-          x-stainless-const: true
-        created_at:
-          type: integer
-          format: unixtime
-          description: Unix timestamp (in seconds) for when the thread was created.
-        title:
-          anyOf:
-          - type: string
-            description: Optional human-readable title for the thread. Defaults to null when no title has been generated.
-          - type: 'null'
-        status:
-          oneOf:
-          - $ref: '#/components/schemas/ActiveStatus'
-          - $ref: '#/components/schemas/LockedStatus'
-          - $ref: '#/components/schemas/ClosedStatus'
-          description: Current status for the thread. Defaults to `active` for newly created threads.
-          discriminator:
-            propertyName: type
-        user:
-          type: string
-          description: Free-form string that identifies your end user who owns the thread.
-      type: object
-      required:
-      - id
-      - object
-      - created_at
-      - title
-      - status
-      - user
-      title: The thread object
-      description: Represents a ChatKit thread and its current status.
-      example:
-        id: cthr_def456
-        object: chatkit.thread
-        created_at: 1712345600
-        title: Demo feedback
-        status:
-          type: active
-        user: user_456
     AssistantMessageItem:
       properties:
         id:
@@ -657,167 +508,6 @@ components:
       - content
       title: Assistant message
       description: Assistant-authored message within a thread.
-    DeletedThreadResource:
-      properties:
-        id:
-          type: string
-          description: Identifier of the deleted thread.
-        object:
-          type: string
-          enum:
-          - chatkit.thread.deleted
-          description: Type discriminator that is always `chatkit.thread.deleted`.
-          default: chatkit.thread.deleted
-          x-stainless-const: true
-        deleted:
-          type: boolean
-          description: Indicates that the thread has been deleted.
-      type: object
-      required:
-      - id
-      - object
-      - deleted
-      title: Deleted thread
-      description: Confirmation payload returned after deleting a thread.
-    ToolChoice:
-      properties:
-        id:
-          type: string
-          description: Identifier of the requested tool.
-      type: object
-      required:
-      - id
-      title: Tool choice
-      description: Tool selection that the assistant should honor when executing the item.
-    ChatSessionRateLimits:
-      properties:
-        max_requests_per_1_minute:
-          type: integer
-          description: Maximum allowed requests per one-minute window.
-      type: object
-      required:
-      - max_requests_per_1_minute
-      title: Rate limits
-      description: Active per-minute request limit for the session.
-    UserMessageInputText:
-      properties:
-        type:
-          type: string
-          enum:
-          - input_text
-          description: Type discriminator that is always `input_text`.
-          default: input_text
-          x-stainless-const: true
-        text:
-          type: string
-          description: Plain-text content supplied by the user.
-      type: object
-      required:
-      - type
-      - text
-      title: User message input
-      description: Text block that a user contributed to the thread.
-    ChatkitConfigurationParam:
-      properties:
-        automatic_thread_titling:
-          $ref: '#/components/schemas/AutomaticThreadTitlingParam'
-          description: Configuration for automatic thread titling. When omitted, automatic thread titling is enabled by default.
-        file_upload:
-          $ref: '#/components/schemas/FileUploadParam'
-          description: Configuration for upload enablement and limits. When omitted, uploads are disabled by default (max_files 10, max_file_size 512 MB).
-        history:
-          $ref: '#/components/schemas/HistoryParam'
-          description: Configuration for chat history retention. When omitted, history is enabled by default with no limit on recent_threads (null).
-      type: object
-      required: []
-      title: ChatKit configuration overrides
-      description: Optional per-session configuration settings for ChatKit behavior.
-    RateLimitsParam:
-      properties:
-        max_requests_per_1_minute:
-          type: integer
-          minimum: 1
-          description: Maximum number of requests allowed per minute for the session. Defaults to 10.
-      type: object
-      required: []
-      title: Rate limit overrides
-      description: Controls request rate limits for the session.
-    ChatSessionStatus:
-      type: string
-      enum:
-      - active
-      - expired
-      - cancelled
-    UrlAnnotationSource:
-      properties:
-        type:
-          type: string
-          enum:
-          - url
-          description: Type discriminator that is always `url`.
-          default: url
-          x-stainless-const: true
-        url:
-          type: string
-          format: uri
-          description: URL referenced by the annotation.
-      type: object
-      required:
-      - type
-      - url
-      title: URL annotation source
-      description: URL backing an annotation entry.
-    TaskItem:
-      properties:
-        id:
-          type: string
-          description: Identifier of the thread item.
-        object:
-          type: string
-          enum:
-          - chatkit.thread_item
-          description: Type discriminator that is always `chatkit.thread_item`.
-          default: chatkit.thread_item
-          x-stainless-const: true
-        created_at:
-          type: integer
-          format: unixtime
-          description: Unix timestamp (in seconds) for when the item was created.
-        thread_id:
-          type: string
-          description: Identifier of the parent thread.
-        type:
-          type: string
-          enum:
-          - chatkit.task
-          description: Type discriminator that is always `chatkit.task`.
-          default: chatkit.task
-          x-stainless-const: true
-        task_type:
-          $ref: '#/components/schemas/TaskType'
-          description: Subtype for the task.
-        heading:
-          anyOf:
-          - type: string
-            description: Optional heading for the task. Defaults to null when not provided.
-          - type: 'null'
-        summary:
-          anyOf:
-          - type: string
-            description: Optional summary that describes the task. Defaults to null when omitted.
-          - type: 'null'
-      type: object
-      required:
-      - id
-      - object
-      - created_at
-      - thread_id
-      - type
-      - task_type
-      - heading
-      - summary
-      title: Task item
-      description: Task emitted by the workflow to show progress and status updates.
     CreateChatSessionBody:
       properties:
         workflow:
@@ -842,57 +532,6 @@ components:
       - user
       title: Create chat session request
       description: Parameters for provisioning a new ChatKit session.
-    ChatkitWorkflow:
-      properties:
-        id:
-          type: string
-          description: Identifier of the workflow backing the session.
-        version:
-          anyOf:
-          - type: string
-            description: Specific workflow version used for the session. Defaults to null when using the latest deployment.
-          - type: 'null'
-        state_variables:
-          anyOf:
-          - additionalProperties:
-              oneOf:
-              - type: string
-              - type: integer
-              - type: boolean
-              - type: number
-            type: object
-            description: State variable key-value pairs applied when invoking the workflow. Defaults to null when no overrides were provided.
-            x-oaiTypeLabel: map
-          - type: 'null'
-        tracing:
-          $ref: '#/components/schemas/ChatkitWorkflowTracing'
-          description: Tracing settings applied to the workflow.
-      type: object
-      required:
-      - id
-      - version
-      - state_variables
-      - tracing
-      title: Workflow
-      description: Workflow metadata and state returned for the session.
-    FileAnnotationSource:
-      properties:
-        type:
-          type: string
-          enum:
-          - file
-          description: Type discriminator that is always `file`.
-          default: file
-          x-stainless-const: true
-        filename:
-          type: string
-          description: Filename referenced by the annotation.
-      type: object
-      required:
-      - type
-      - filename
-      title: File annotation source
-      description: Attachment source referenced by an annotation.
     TaskGroupTask:
       properties:
         type:
@@ -915,6 +554,72 @@ components:
       - summary
       title: Task group task
       description: Task entry that appears within a TaskGroup.
+    ResponseOutputText:
+      properties:
+        type:
+          type: string
+          enum:
+          - output_text
+          description: Type discriminator that is always `output_text`.
+          default: output_text
+          x-stainless-const: true
+        text:
+          type: string
+          description: Assistant generated text.
+        annotations:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/FileAnnotation'
+            - $ref: '#/components/schemas/UrlAnnotation'
+            description: Annotation object describing a cited source.
+            discriminator:
+              propertyName: type
+          type: array
+          description: Ordered list of annotations attached to the response text.
+      type: object
+      required:
+      - type
+      - text
+      - annotations
+      title: Assistant message content
+      description: Assistant response text accompanied by optional annotations.
+    ChatSessionHistory:
+      properties:
+        enabled:
+          type: boolean
+          description: Indicates if chat history is persisted for the session.
+        recent_threads:
+          anyOf:
+          - type: integer
+            description: Number of prior threads surfaced in history views. Defaults to null when all history is retained.
+          - type: 'null'
+      type: object
+      required:
+      - enabled
+      - recent_threads
+      title: History settings
+      description: History retention preferences returned for the session.
+    ExpiresAfterParam:
+      properties:
+        anchor:
+          type: string
+          enum:
+          - created_at
+          description: Base timestamp used to calculate expiration. Currently fixed to `created_at`.
+          default: created_at
+          x-stainless-const: true
+        seconds:
+          type: integer
+          maximum: 600
+          minimum: 1
+          format: int64
+          description: Number of seconds after the anchor when the session expires.
+      type: object
+      required:
+      - anchor
+      - seconds
+      title: Expiration overrides
+      description: Controls when the session expires relative to an anchor timestamp.
     ClientToolCallItem:
       properties:
         id:
@@ -972,77 +677,7 @@ components:
       - output
       title: Client tool call
       description: Record of a client side tool invocation initiated by the assistant.
-    Attachment:
-      properties:
-        type:
-          $ref: '#/components/schemas/AttachmentType'
-          description: Attachment discriminator.
-        id:
-          type: string
-          description: Identifier for the attachment.
-        name:
-          type: string
-          description: Original display name for the attachment.
-        mime_type:
-          type: string
-          description: MIME type of the attachment.
-        preview_url:
-          anyOf:
-          - type: string
-            format: uri
-            description: Preview URL for rendering the attachment inline.
-          - type: 'null'
-      type: object
-      required:
-      - type
-      - id
-      - name
-      - mime_type
-      - preview_url
-      title: Attachment
-      description: Attachment metadata included on thread items.
-    TaskType:
-      type: string
-      enum:
-      - custom
-      - thought
-    InferenceOptions:
-      properties:
-        tool_choice:
-          anyOf:
-          - $ref: '#/components/schemas/ToolChoice'
-            description: Preferred tool to invoke. Defaults to null when ChatKit should auto-select.
-          - type: 'null'
-        model:
-          anyOf:
-          - type: string
-            description: Model name that generated the response. Defaults to null when using the session default.
-          - type: 'null'
-      type: object
-      required:
-      - tool_choice
-      - model
-      title: Inference options
-      description: Model and tool overrides applied when generating the assistant response.
-    UserMessageQuotedText:
-      properties:
-        type:
-          type: string
-          enum:
-          - quoted_text
-          description: Type discriminator that is always `quoted_text`.
-          default: quoted_text
-          x-stainless-const: true
-        text:
-          type: string
-          description: Quoted text content.
-      type: object
-      required:
-      - type
-      - text
-      title: User message quoted text
-      description: Quoted snippet that the user referenced in their message.
-    TaskGroupItem:
+    WidgetMessageItem:
       properties:
         id:
           type: string
@@ -1064,15 +699,13 @@ components:
         type:
           type: string
           enum:
-          - chatkit.task_group
-          description: Type discriminator that is always `chatkit.task_group`.
-          default: chatkit.task_group
+          - chatkit.widget
+          description: Type discriminator that is always `chatkit.widget`.
+          default: chatkit.widget
           x-stainless-const: true
-        tasks:
-          items:
-            $ref: '#/components/schemas/TaskGroupTask'
-          type: array
-          description: Tasks included in the group.
+        widget:
+          type: string
+          description: Serialized widget payload rendered in the UI.
       type: object
       required:
       - id
@@ -1080,9 +713,178 @@ components:
       - created_at
       - thread_id
       - type
-      - tasks
-      title: Task group
-      description: Collection of workflow tasks grouped together in the thread.
+      - widget
+      title: Widget message
+      description: Thread item that renders a widget payload.
+    ThreadResource:
+      properties:
+        id:
+          type: string
+          description: Identifier of the thread.
+        object:
+          type: string
+          enum:
+          - chatkit.thread
+          description: Type discriminator that is always `chatkit.thread`.
+          default: chatkit.thread
+          x-stainless-const: true
+        created_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (in seconds) for when the thread was created.
+        title:
+          anyOf:
+          - type: string
+            description: Optional human-readable title for the thread. Defaults to null when no title has been generated.
+          - type: 'null'
+        status:
+          oneOf:
+          - $ref: '#/components/schemas/ActiveStatus'
+          - $ref: '#/components/schemas/LockedStatus'
+          - $ref: '#/components/schemas/ClosedStatus'
+          description: Current status for the thread. Defaults to `active` for newly created threads.
+          discriminator:
+            propertyName: type
+        user:
+          type: string
+          description: Free-form string that identifies your end user who owns the thread.
+      type: object
+      required:
+      - id
+      - object
+      - created_at
+      - title
+      - status
+      - user
+      title: The thread object
+      description: Represents a ChatKit thread and its current status.
+      example:
+        id: cthr_def456
+        object: chatkit.thread
+        created_at: 1712345600
+        title: Demo feedback
+        status:
+          type: active
+        user: user_456
+    ChatkitConfigurationParam:
+      properties:
+        automatic_thread_titling:
+          $ref: '#/components/schemas/AutomaticThreadTitlingParam'
+          description: Configuration for automatic thread titling. When omitted, automatic thread titling is enabled by default.
+        file_upload:
+          $ref: '#/components/schemas/FileUploadParam'
+          description: Configuration for upload enablement and limits. When omitted, uploads are disabled by default (max_files 10, max_file_size 512 MB).
+        history:
+          $ref: '#/components/schemas/HistoryParam'
+          description: Configuration for chat history retention. When omitted, history is enabled by default with no limit on recent_threads (null).
+      type: object
+      required: []
+      title: ChatKit configuration overrides
+      description: Optional per-session configuration settings for ChatKit behavior.
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    WorkflowParam:
+      properties:
+        id:
+          type: string
+          description: Identifier for the workflow invoked by the session.
+        version:
+          type: string
+          description: Specific workflow version to run. Defaults to the latest deployed version.
+        state_variables:
+          additionalProperties:
+            oneOf:
+            - type: string
+              maxLength: 10485760
+            - type: integer
+            - type: boolean
+            - type: number
+          type: object
+          maxProperties: 64
+          description: State variables forwarded to the workflow. Keys may be up to 64 characters, values must be primitive types, and the map defaults to an empty object.
+          x-oaiTypeLabel: map
+        tracing:
+          $ref: '#/components/schemas/WorkflowTracingParam'
+          description: Optional tracing overrides for the workflow invocation. When omitted, tracing is enabled by default.
+      type: object
+      required:
+      - id
+      title: Workflow settings
+      description: Workflow reference and overrides applied to the chat session.
+    ChatSessionFileUpload:
+      properties:
+        enabled:
+          type: boolean
+          description: Indicates if uploads are enabled for the session.
+        max_file_size:
+          anyOf:
+          - type: integer
+            description: Maximum upload size in megabytes.
+          - type: 'null'
+        max_files:
+          anyOf:
+          - type: integer
+            description: Maximum number of uploads allowed during the session.
+          - type: 'null'
+      type: object
+      required:
+      - enabled
+      - max_file_size
+      - max_files
+      title: File upload settings
+      description: Upload permissions and limits applied to the session.
+    ThreadListResource:
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: The type of object returned, must be `list`.
+          default: list
+          x-stainless-const: true
+        data:
+          items:
+            $ref: '#/components/schemas/ThreadResource'
+          type: array
+          description: A list of items
+        first_id:
+          anyOf:
+          - type: string
+            description: The ID of the first item in the list.
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+            description: The ID of the last item in the list.
+          - type: 'null'
+        has_more:
+          type: boolean
+          description: Whether there are more items available.
+      type: object
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+      title: Threads
+      description: A paginated list of ChatKit threads.
+    HistoryParam:
+      properties:
+        enabled:
+          type: boolean
+          description: Enables chat users to access previous ChatKit threads. Defaults to true.
+        recent_threads:
+          type: integer
+          minimum: 1
+          description: Number of recent ChatKit threads users have access to. Defaults to unlimited when unset.
+      type: object
+      required: []
+      title: Chat history configuration
+      description: Controls how much historical context is retained for the session.
     ThreadItemListResource:
       properties:
         object:
@@ -1119,6 +921,239 @@ components:
       - has_more
       title: Thread Items
       description: A paginated list of thread items rendered for the ChatKit API.
+    TaskType:
+      type: string
+      enum:
+      - custom
+      - thought
+    ChatSessionAutomaticThreadTitling:
+      properties:
+        enabled:
+          type: boolean
+          description: Whether automatic thread titling is enabled.
+      type: object
+      required:
+      - enabled
+      title: Automatic thread titling
+      description: Automatic thread title preferences for the session.
+    ChatkitWorkflow:
+      properties:
+        id:
+          type: string
+          description: Identifier of the workflow backing the session.
+        version:
+          anyOf:
+          - type: string
+            description: Specific workflow version used for the session. Defaults to null when using the latest deployment.
+          - type: 'null'
+        state_variables:
+          anyOf:
+          - additionalProperties:
+              oneOf:
+              - type: string
+              - type: integer
+              - type: boolean
+              - type: number
+            type: object
+            description: State variable key-value pairs applied when invoking the workflow. Defaults to null when no overrides were provided.
+            x-oaiTypeLabel: map
+          - type: 'null'
+        tracing:
+          $ref: '#/components/schemas/ChatkitWorkflowTracing'
+          description: Tracing settings applied to the workflow.
+      type: object
+      required:
+      - id
+      - version
+      - state_variables
+      - tracing
+      title: Workflow
+      description: Workflow metadata and state returned for the session.
+    ChatSessionChatkitConfiguration:
+      properties:
+        automatic_thread_titling:
+          $ref: '#/components/schemas/ChatSessionAutomaticThreadTitling'
+          description: Automatic thread titling preferences.
+        file_upload:
+          $ref: '#/components/schemas/ChatSessionFileUpload'
+          description: Upload settings for the session.
+        history:
+          $ref: '#/components/schemas/ChatSessionHistory'
+          description: History retention configuration.
+      type: object
+      required:
+      - automatic_thread_titling
+      - file_upload
+      - history
+      title: ChatKit configuration
+      description: ChatKit configuration for the session.
+    ChatSessionRateLimits:
+      properties:
+        max_requests_per_1_minute:
+          type: integer
+          description: Maximum allowed requests per one-minute window.
+      type: object
+      required:
+      - max_requests_per_1_minute
+      title: Rate limits
+      description: Active per-minute request limit for the session.
+    FileUploadParam:
+      properties:
+        enabled:
+          type: boolean
+          description: Enable uploads for this session. Defaults to false.
+        max_file_size:
+          type: integer
+          maximum: 512
+          minimum: 1
+          description: Maximum size in megabytes for each uploaded file. Defaults to 512 MB, which is the maximum allowable size.
+        max_files:
+          type: integer
+          minimum: 1
+          description: Maximum number of files that can be uploaded to the session. Defaults to 10.
+      type: object
+      required: []
+      title: File upload configuration
+      description: Controls whether users can upload files.
+    UserMessageQuotedText:
+      properties:
+        type:
+          type: string
+          enum:
+          - quoted_text
+          description: Type discriminator that is always `quoted_text`.
+          default: quoted_text
+          x-stainless-const: true
+        text:
+          type: string
+          description: Quoted text content.
+      type: object
+      required:
+      - type
+      - text
+      title: User message quoted text
+      description: Quoted snippet that the user referenced in their message.
+    UrlAnnotationSource:
+      properties:
+        type:
+          type: string
+          enum:
+          - url
+          description: Type discriminator that is always `url`.
+          default: url
+          x-stainless-const: true
+        url:
+          type: string
+          format: uri
+          description: URL referenced by the annotation.
+      type: object
+      required:
+      - type
+      - url
+      title: URL annotation source
+      description: URL backing an annotation entry.
+    UserMessageInputText:
+      properties:
+        type:
+          type: string
+          enum:
+          - input_text
+          description: Type discriminator that is always `input_text`.
+          default: input_text
+          x-stainless-const: true
+        text:
+          type: string
+          description: Plain-text content supplied by the user.
+      type: object
+      required:
+      - type
+      - text
+      title: User message input
+      description: Text block that a user contributed to the thread.
+    ChatkitWorkflowTracing:
+      properties:
+        enabled:
+          type: boolean
+          description: Indicates whether tracing is enabled.
+      type: object
+      required:
+      - enabled
+      title: Tracing Configuration
+      description: Controls diagnostic tracing during the session.
+    DeletedThreadResource:
+      properties:
+        id:
+          type: string
+          description: Identifier of the deleted thread.
+        object:
+          type: string
+          enum:
+          - chatkit.thread.deleted
+          description: Type discriminator that is always `chatkit.thread.deleted`.
+          default: chatkit.thread.deleted
+          x-stainless-const: true
+        deleted:
+          type: boolean
+          description: Indicates that the thread has been deleted.
+      type: object
+      required:
+      - id
+      - object
+      - deleted
+      title: Deleted thread
+      description: Confirmation payload returned after deleting a thread.
+    AttachmentType:
+      type: string
+      enum:
+      - image
+      - file
+    UrlAnnotation:
+      properties:
+        type:
+          type: string
+          enum:
+          - url
+          description: Type discriminator that is always `url` for this annotation.
+          default: url
+          x-stainless-const: true
+        source:
+          $ref: '#/components/schemas/UrlAnnotationSource'
+          description: URL referenced by the annotation.
+      type: object
+      required:
+      - type
+      - source
+      title: URL annotation
+      description: Annotation that references a URL.
+    ThreadItem:
+      oneOf:
+      - $ref: '#/components/schemas/UserMessageItem'
+      - $ref: '#/components/schemas/AssistantMessageItem'
+      - $ref: '#/components/schemas/WidgetMessageItem'
+      - $ref: '#/components/schemas/ClientToolCallItem'
+      - $ref: '#/components/schemas/TaskItem'
+      - $ref: '#/components/schemas/TaskGroupItem'
+      title: The thread item
+      discriminator:
+        propertyName: type
+    FileAnnotationSource:
+      properties:
+        type:
+          type: string
+          enum:
+          - file
+          description: Type discriminator that is always `file`.
+          default: file
+          x-stainless-const: true
+        filename:
+          type: string
+          description: Filename referenced by the annotation.
+      type: object
+      required:
+      - type
+      - filename
+      title: File annotation source
+      description: Attachment source referenced by an annotation.
     ClosedStatus:
       properties:
         type:
@@ -1139,6 +1174,94 @@ components:
       - reason
       title: Closed thread status
       description: Indicates that a thread has been closed.
+    FileAnnotation:
+      properties:
+        type:
+          type: string
+          enum:
+          - file
+          description: Type discriminator that is always `file` for this annotation.
+          default: file
+          x-stainless-const: true
+        source:
+          $ref: '#/components/schemas/FileAnnotationSource'
+          description: File attachment referenced by the annotation.
+      type: object
+      required:
+      - type
+      - source
+      title: File annotation
+      description: Annotation that references an uploaded file.
+    WorkflowTracingParam:
+      properties:
+        enabled:
+          type: boolean
+          description: Whether tracing is enabled during the session. Defaults to true.
+      type: object
+      required: []
+      title: Tracing Configuration
+      description: Controls diagnostic tracing during the session.
+    TaskItem:
+      properties:
+        id:
+          type: string
+          description: Identifier of the thread item.
+        object:
+          type: string
+          enum:
+          - chatkit.thread_item
+          description: Type discriminator that is always `chatkit.thread_item`.
+          default: chatkit.thread_item
+          x-stainless-const: true
+        created_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (in seconds) for when the item was created.
+        thread_id:
+          type: string
+          description: Identifier of the parent thread.
+        type:
+          type: string
+          enum:
+          - chatkit.task
+          description: Type discriminator that is always `chatkit.task`.
+          default: chatkit.task
+          x-stainless-const: true
+        task_type:
+          $ref: '#/components/schemas/TaskType'
+          description: Subtype for the task.
+        heading:
+          anyOf:
+          - type: string
+            description: Optional heading for the task. Defaults to null when not provided.
+          - type: 'null'
+        summary:
+          anyOf:
+          - type: string
+            description: Optional summary that describes the task. Defaults to null when omitted.
+          - type: 'null'
+      type: object
+      required:
+      - id
+      - object
+      - created_at
+      - thread_id
+      - type
+      - task_type
+      - heading
+      - summary
+      title: Task item
+      description: Task emitted by the workflow to show progress and status updates.
+    ToolChoice:
+      properties:
+        id:
+          type: string
+          description: Identifier of the requested tool.
+      type: object
+      required:
+      - id
+      title: Tool choice
+      description: Tool selection that the assistant should honor when executing the item.
     ChatSessionResource:
       properties:
         id:
@@ -1213,223 +1336,35 @@ components:
           history:
             enabled: true
             recent_threads: 10
-    ExpiresAfterParam:
+    InferenceOptions:
       properties:
-        anchor:
-          type: string
-          enum:
-          - created_at
-          description: Base timestamp used to calculate expiration. Currently fixed to `created_at`.
-          default: created_at
-          x-stainless-const: true
-        seconds:
-          type: integer
-          maximum: 600
-          minimum: 1
-          format: int64
-          description: Number of seconds after the anchor when the session expires.
-      type: object
-      required:
-      - anchor
-      - seconds
-      title: Expiration overrides
-      description: Controls when the session expires relative to an anchor timestamp.
-    HistoryParam:
-      properties:
-        enabled:
-          type: boolean
-          description: Enables chat users to access previous ChatKit threads. Defaults to true.
-        recent_threads:
-          type: integer
-          minimum: 1
-          description: Number of recent ChatKit threads users have access to. Defaults to unlimited when unset.
-      type: object
-      required: []
-      title: Chat history configuration
-      description: Controls how much historical context is retained for the session.
-    LockedStatus:
-      properties:
-        type:
-          type: string
-          enum:
-          - locked
-          description: Status discriminator that is always `locked`.
-          default: locked
-          x-stainless-const: true
-        reason:
+        tool_choice:
+          anyOf:
+          - $ref: '#/components/schemas/ToolChoice'
+            description: Preferred tool to invoke. Defaults to null when ChatKit should auto-select.
+          - type: 'null'
+        model:
           anyOf:
           - type: string
-            description: Reason that the thread was locked. Defaults to null when no reason is recorded.
+            description: Model name that generated the response. Defaults to null when using the session default.
           - type: 'null'
       type: object
       required:
-      - type
-      - reason
-      title: Locked thread status
-      description: Indicates that a thread is locked and cannot accept new input.
-    ThreadItem:
-      oneOf:
-      - $ref: '#/components/schemas/UserMessageItem'
-      - $ref: '#/components/schemas/AssistantMessageItem'
-      - $ref: '#/components/schemas/WidgetMessageItem'
-      - $ref: '#/components/schemas/ClientToolCallItem'
-      - $ref: '#/components/schemas/TaskItem'
-      - $ref: '#/components/schemas/TaskGroupItem'
-      title: The thread item
-      discriminator:
-        propertyName: type
-    FileUploadParam:
+      - tool_choice
+      - model
+      title: Inference options
+      description: Model and tool overrides applied when generating the assistant response.
+    RateLimitsParam:
       properties:
-        enabled:
-          type: boolean
-          description: Enable uploads for this session. Defaults to false.
-        max_file_size:
-          type: integer
-          maximum: 512
-          minimum: 1
-          description: Maximum size in megabytes for each uploaded file. Defaults to 512 MB, which is the maximum allowable size.
-        max_files:
+        max_requests_per_1_minute:
           type: integer
           minimum: 1
-          description: Maximum number of files that can be uploaded to the session. Defaults to 10.
+          description: Maximum number of requests allowed per minute for the session. Defaults to 10.
       type: object
       required: []
-      title: File upload configuration
-      description: Controls whether users can upload files.
-    ActiveStatus:
-      properties:
-        type:
-          type: string
-          enum:
-          - active
-          description: Status discriminator that is always `active`.
-          default: active
-          x-stainless-const: true
-      type: object
-      required:
-      - type
-      title: Active thread status
-      description: Indicates that a thread is active.
-    FileAnnotation:
-      properties:
-        type:
-          type: string
-          enum:
-          - file
-          description: Type discriminator that is always `file` for this annotation.
-          default: file
-          x-stainless-const: true
-        source:
-          $ref: '#/components/schemas/FileAnnotationSource'
-          description: File attachment referenced by the annotation.
-      type: object
-      required:
-      - type
-      - source
-      title: File annotation
-      description: Annotation that references an uploaded file.
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
-    WorkflowTracingParam:
-      properties:
-        enabled:
-          type: boolean
-          description: Whether tracing is enabled during the session. Defaults to true.
-      type: object
-      required: []
-      title: Tracing Configuration
-      description: Controls diagnostic tracing during the session.
-    AttachmentType:
-      type: string
-      enum:
-      - image
-      - file
-    ChatSessionHistory:
-      properties:
-        enabled:
-          type: boolean
-          description: Indicates if chat history is persisted for the session.
-        recent_threads:
-          anyOf:
-          - type: integer
-            description: Number of prior threads surfaced in history views. Defaults to null when all history is retained.
-          - type: 'null'
-      type: object
-      required:
-      - enabled
-      - recent_threads
-      title: History settings
-      description: History retention preferences returned for the session.
-    ResponseOutputText:
-      properties:
-        type:
-          type: string
-          enum:
-          - output_text
-          description: Type discriminator that is always `output_text`.
-          default: output_text
-          x-stainless-const: true
-        text:
-          type: string
-          description: Assistant generated text.
-        annotations:
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/FileAnnotation'
-            - $ref: '#/components/schemas/UrlAnnotation'
-            description: Annotation object describing a cited source.
-            discriminator:
-              propertyName: type
-          type: array
-          description: Ordered list of annotations attached to the response text.
-      type: object
-      required:
-      - type
-      - text
-      - annotations
-      title: Assistant message content
-      description: Assistant response text accompanied by optional annotations.
-    ChatSessionAutomaticThreadTitling:
-      properties:
-        enabled:
-          type: boolean
-          description: Whether automatic thread titling is enabled.
-      type: object
-      required:
-      - enabled
-      title: Automatic thread titling
-      description: Automatic thread title preferences for the session.
-    ChatSessionChatkitConfiguration:
-      properties:
-        automatic_thread_titling:
-          $ref: '#/components/schemas/ChatSessionAutomaticThreadTitling'
-          description: Automatic thread titling preferences.
-        file_upload:
-          $ref: '#/components/schemas/ChatSessionFileUpload'
-          description: Upload settings for the session.
-        history:
-          $ref: '#/components/schemas/ChatSessionHistory'
-          description: History retention configuration.
-      type: object
-      required:
-      - automatic_thread_titling
-      - file_upload
-      - history
-      title: ChatKit configuration
-      description: ChatKit configuration for the session.
-    AutomaticThreadTitlingParam:
-      properties:
-        enabled:
-          type: boolean
-          description: Enable automatic thread title generation. Defaults to true.
-      type: object
-      required: []
-      title: Automatic thread titling configuration
-      description: Controls whether ChatKit automatically generates thread titles.
-    WidgetMessageItem:
+      title: Rate limit overrides
+      description: Controls request rate limits for the session.
+    TaskGroupItem:
       properties:
         id:
           type: string
@@ -1451,13 +1386,15 @@ components:
         type:
           type: string
           enum:
-          - chatkit.widget
-          description: Type discriminator that is always `chatkit.widget`.
-          default: chatkit.widget
+          - chatkit.task_group
+          description: Type discriminator that is always `chatkit.task_group`.
+          default: chatkit.task_group
           x-stainless-const: true
-        widget:
-          type: string
-          description: Serialized widget payload rendered in the UI.
+        tasks:
+          items:
+            $ref: '#/components/schemas/TaskGroupTask'
+          type: array
+          description: Tasks included in the group.
       type: object
       required:
       - id
@@ -1465,329 +1402,775 @@ components:
       - created_at
       - thread_id
       - type
-      - widget
-      title: Widget message
-      description: Thread item that renders a widget payload.
+      - tasks
+      title: Task group
+      description: Collection of workflow tasks grouped together in the thread.
+    LockedStatus:
+      properties:
+        type:
+          type: string
+          enum:
+          - locked
+          description: Status discriminator that is always `locked`.
+          default: locked
+          x-stainless-const: true
+        reason:
+          anyOf:
+          - type: string
+            description: Reason that the thread was locked. Defaults to null when no reason is recorded.
+          - type: 'null'
+      type: object
+      required:
+      - type
+      - reason
+      title: Locked thread status
+      description: Indicates that a thread is locked and cannot accept new input.
+    Attachment:
+      properties:
+        type:
+          $ref: '#/components/schemas/AttachmentType'
+          description: Attachment discriminator.
+        id:
+          type: string
+          description: Identifier for the attachment.
+        name:
+          type: string
+          description: Original display name for the attachment.
+        mime_type:
+          type: string
+          description: MIME type of the attachment.
+        preview_url:
+          anyOf:
+          - type: string
+            format: uri
+            description: Preview URL for rendering the attachment inline.
+          - type: 'null'
+      type: object
+      required:
+      - type
+      - id
+      - name
+      - mime_type
+      - preview_url
+      title: Attachment
+      description: Attachment metadata included on thread items.
+    ActiveStatus:
+      properties:
+        type:
+          type: string
+          enum:
+          - active
+          description: Status discriminator that is always `active`.
+          default: active
+          x-stainless-const: true
+      type: object
+      required:
+      - type
+      title: Active thread status
+      description: Indicates that a thread is active.
   securitySchemes:
     ApiKeyAuth:
       type: http
       scheme: bearer
+    AdminApiKeyAuth:
+      type: http
+      scheme: bearer
 x-oaiMeta:
-  groups:
-  - id: audio
-    title: Audio
-    description: 'Learn how to turn audio into text or text into audio.
-
-
-      Related guide: [Speech to text](/docs/guides/speech-to-text)
-
-      '
-    sections:
-    - type: endpoint
-      key: createSpeech
-      path: createSpeech
-    - type: endpoint
-      key: createTranscription
-      path: createTranscription
-    - type: endpoint
-      key: createTranslation
-      path: createTranslation
+  navigationGroups:
+  - id: responses
+    title: Responses API
+  - id: webhooks
+    title: Webhooks
+  - id: endpoints
+    title: Platform APIs
+  - id: vector_stores
+    title: Vector stores
+  - id: chatkit
+    title: ChatKit
+    beta: true
+  - id: containers
+    title: Containers
+  - id: realtime
+    title: Realtime
   - id: chat
-    title: Chat
-    description: 'Given a list of messages comprising a conversation, the model will return a response.
+    title: Chat Completions
+  - id: assistants
+    title: Assistants
+    deprecated: true
+  - id: administration
+    title: Administration
+  - id: legacy
+    title: Legacy
+  groups:
+  - id: responses-streaming
+    title: Streaming events
+    description: 'When you [create a Response](/docs/api-reference/responses/create) with
+
+      `stream` set to `true`, the server will emit server-sent events to the
+
+      client as the Response is generated. This section contains the events that
+
+      are emitted by the server.
 
 
-      Related guide: [Chat Completions](/docs/guides/text-generation)
+      [Learn more about streaming responses](/docs/guides/streaming-responses?api-mode=responses).
 
       '
+    navigationGroup: responses
     sections:
-    - type: endpoint
-      key: createChatCompletion
-      path: create
     - type: object
-      key: CreateChatCompletionResponse
-      path: object
+      key: ResponseCreatedEvent
+      path: <auto>
+    - type: object
+      key: ResponseInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseIncompleteEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputItemAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputItemDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseContentPartAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseContentPartDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseTextDeltaEvent
+      path: response/output_text/delta
+    - type: object
+      key: ResponseTextDoneEvent
+      path: response/output_text/done
+    - type: object
+      key: ResponseRefusalDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseRefusalDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseFunctionCallArgumentsDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseFunctionCallArgumentsDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallSearchingEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallSearchingEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryPartAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryPartDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryTextDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryTextDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningTextDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningTextDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallGeneratingEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallPartialImageEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallArgumentsDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallArgumentsDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallInterpretingEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCodeDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCodeDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputTextAnnotationAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseQueuedEvent
+      path: <auto>
+    - type: object
+      key: ResponseCustomToolCallInputDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseCustomToolCallInputDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseErrorEvent
+      path: <auto>
+  - id: webhook-events
+    title: Webhook Events
+    description: 'Webhooks are HTTP requests sent by OpenAI to a URL you specify when certain
+
+      events happen during the course of API usage.
+
+
+      [Learn more about webhooks](/docs/guides/webhooks).
+
+      '
+    navigationGroup: webhooks
+    sections:
+    - type: object
+      key: WebhookResponseCompleted
+      path: <auto>
+    - type: object
+      key: WebhookResponseCancelled
+      path: <auto>
+    - type: object
+      key: WebhookResponseFailed
+      path: <auto>
+    - type: object
+      key: WebhookResponseIncomplete
+      path: <auto>
+    - type: object
+      key: WebhookBatchCompleted
+      path: <auto>
+    - type: object
+      key: WebhookBatchCancelled
+      path: <auto>
+    - type: object
+      key: WebhookBatchExpired
+      path: <auto>
+    - type: object
+      key: WebhookBatchFailed
+      path: <auto>
+    - type: object
+      key: WebhookFineTuningJobSucceeded
+      path: <auto>
+    - type: object
+      key: WebhookFineTuningJobFailed
+      path: <auto>
+    - type: object
+      key: WebhookFineTuningJobCancelled
+      path: <auto>
+    - type: object
+      key: WebhookEvalRunSucceeded
+      path: <auto>
+    - type: object
+      key: WebhookEvalRunFailed
+      path: <auto>
+    - type: object
+      key: WebhookEvalRunCanceled
+      path: <auto>
+    - type: object
+      key: WebhookRealtimeCallIncoming
+      path: <auto>
+  - id: images-streaming
+    title: Image Streaming
+    description: 'Stream image generation and editing in real time with server-sent events.
+
+      [Learn more about image streaming](/docs/guides/image-generation).
+
+      '
+    navigationGroup: endpoints
+    sections:
+    - type: object
+      key: ImageGenPartialImageEvent
+      path: <auto>
+    - type: object
+      key: ImageGenCompletedEvent
+      path: <auto>
+    - type: object
+      key: ImageEditPartialImageEvent
+      path: <auto>
+    - type: object
+      key: ImageEditCompletedEvent
+      path: <auto>
+  - id: realtime-client-events
+    title: Client events
+    description: 'These are events that the OpenAI Realtime WebSocket server will accept from the client.
+
+      '
+    navigationGroup: realtime
+    sections:
+    - type: object
+      key: RealtimeClientEventSessionUpdate
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventInputAudioBufferAppend
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventInputAudioBufferCommit
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventInputAudioBufferClear
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventConversationItemCreate
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventConversationItemRetrieve
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventConversationItemTruncate
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventConversationItemDelete
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventResponseCreate
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventResponseCancel
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventOutputAudioBufferClear
+      path: <auto>
+  - id: realtime-server-events
+    title: Server events
+    description: 'These are events emitted from the OpenAI Realtime WebSocket server to the client.
+
+      '
+    navigationGroup: realtime
+    sections:
+    - type: object
+      key: RealtimeServerEventError
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventSessionCreated
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventSessionUpdated
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemAdded
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemRetrieved
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemInputAudioTranscriptionCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemInputAudioTranscriptionDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemInputAudioTranscriptionSegment
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemInputAudioTranscriptionFailed
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemTruncated
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemDeleted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferCommitted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferDtmfEventReceived
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferCleared
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferSpeechStarted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferSpeechStopped
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferTimeoutTriggered
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventOutputAudioBufferStarted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventOutputAudioBufferStopped
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventOutputAudioBufferCleared
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseCreated
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseOutputItemAdded
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseOutputItemDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseContentPartAdded
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseContentPartDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseTextDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseTextDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseAudioTranscriptDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseAudioTranscriptDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseAudioDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseAudioDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseFunctionCallArgumentsDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseFunctionCallArgumentsDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallArgumentsDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallArgumentsDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallInProgress
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallFailed
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventMCPListToolsInProgress
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventMCPListToolsCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventMCPListToolsFailed
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventRateLimitsUpdated
+      path: <auto>
+  - id: realtime-translation-client-events
+    title: Translation client events
+    description: 'These are events that the OpenAI Realtime Translation WebSocket server will accept from the client.
+
+      '
+    navigationGroup: realtime
+    sections:
+    - type: object
+      key: RealtimeTranslationClientEventSessionUpdate
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationClientEventInputAudioBufferAppend
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationClientEventSessionClose
+      path: <auto>
+  - id: realtime-translation-server-events
+    title: Translation server events
+    description: 'These are events emitted from the OpenAI Realtime Translation WebSocket server to the client.
+
+      '
+    navigationGroup: realtime
+    sections:
+    - type: object
+      key: RealtimeServerEventError
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionCreated
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionUpdated
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionClosed
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionInputTranscriptDelta
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionOutputTranscriptDelta
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionOutputAudioDelta
+      path: <auto>
+  - id: chat-streaming
+    title: Streaming
+    description: 'Stream Chat Completions in real time. Receive chunks of completions
+
+      returned from the model using server-sent events.
+
+      [Learn more](/docs/guides/streaming-responses?api-mode=chat).
+
+      '
+    navigationGroup: chat
+    sections:
     - type: object
       key: CreateChatCompletionStreamResponse
       path: streaming
-  - id: embeddings
-    title: Embeddings
-    description: 'Get a vector representation of a given input that can be easily consumed by machine learning models and algorithms.
-
-
-      Related guide: [Embeddings](/docs/guides/embeddings)
-
-      '
-    sections:
-    - type: endpoint
-      key: createEmbedding
-      path: create
-    - type: object
-      key: Embedding
-      path: object
-  - id: fine-tuning
-    title: Fine-tuning
-    description: 'Manage fine-tuning jobs to tailor a model to your specific training data.
-
-
-      Related guide: [Fine-tune models](/docs/guides/fine-tuning)
-
-      '
-    sections:
-    - type: endpoint
-      key: createFineTuningJob
-      path: create
-    - type: endpoint
-      key: listPaginatedFineTuningJobs
-      path: list
-    - type: endpoint
-      key: listFineTuningEvents
-      path: list-events
-    - type: endpoint
-      key: retrieveFineTuningJob
-      path: retrieve
-    - type: endpoint
-      key: cancelFineTuningJob
-      path: cancel
-    - type: object
-      key: FineTuningJob
-      path: object
-    - type: object
-      key: FineTuningJobEvent
-      path: event-object
-  - id: files
-    title: Files
-    description: 'Files are used to upload documents that can be used with features like [Assistants](/docs/api-reference/assistants) and [Fine-tuning](/docs/api-reference/fine-tuning).
-
-      '
-    sections:
-    - type: endpoint
-      key: createFile
-      path: create
-    - type: endpoint
-      key: listFiles
-      path: list
-    - type: endpoint
-      key: retrieveFile
-      path: retrieve
-    - type: endpoint
-      key: deleteFile
-      path: delete
-    - type: endpoint
-      key: downloadFile
-      path: retrieve-contents
-    - type: object
-      key: OpenAIFile
-      path: object
-  - id: images
-    title: Images
-    description: 'Given a prompt and/or an input image, the model will generate a new image.
-
-
-      Related guide: [Image generation](/docs/guides/images)
-
-      '
-    sections:
-    - type: endpoint
-      key: createImage
-      path: create
-    - type: endpoint
-      key: createImageEdit
-      path: createEdit
-    - type: endpoint
-      key: createImageVariation
-      path: createVariation
-    - type: object
-      key: Image
-      path: object
-  - id: models
-    title: Models
-    description: 'List and describe the various models available in the API. You can refer to the [Models](/docs/models) documentation to understand what models are available and the differences between them.
-
-      '
-    sections:
-    - type: endpoint
-      key: listModels
-      path: list
-    - type: endpoint
-      key: retrieveModel
-      path: retrieve
-    - type: endpoint
-      key: deleteModel
-      path: delete
-    - type: object
-      key: Model
-      path: object
-  - id: moderations
-    title: Moderations
-    description: 'Given a input text, outputs if the model classifies it as violating OpenAI''s content policy.
-
-
-      Related guide: [Moderations](/docs/guides/moderation)
-
-      '
-    sections:
-    - type: endpoint
-      key: createModeration
-      path: create
-    - type: object
-      key: CreateModerationResponse
-      path: object
-  - id: assistants
-    title: Assistants
+  - id: assistants-streaming
+    title: Streaming
     beta: true
-    description: 'Build assistants that can call models and use tools to perform tasks.
+    description: 'Stream the result of executing a Run or resuming a Run after submitting tool outputs.
 
+      You can stream events from the [Create Thread and Run](/docs/api-reference/runs/createThreadAndRun),
 
-      [Get started with the Assistants API](/docs/assistants)
+      [Create Run](/docs/api-reference/runs/createRun), and [Submit Tool Outputs](/docs/api-reference/runs/submitToolOutputs)
 
-      '
-    sections:
-    - type: endpoint
-      key: createAssistant
-      path: createAssistant
-    - type: endpoint
-      key: createAssistantFile
-      path: createAssistantFile
-    - type: endpoint
-      key: listAssistants
-      path: listAssistants
-    - type: endpoint
-      key: listAssistantFiles
-      path: listAssistantFiles
-    - type: endpoint
-      key: getAssistant
-      path: getAssistant
-    - type: endpoint
-      key: getAssistantFile
-      path: getAssistantFile
-    - type: endpoint
-      key: modifyAssistant
-      path: modifyAssistant
-    - type: endpoint
-      key: deleteAssistant
-      path: deleteAssistant
-    - type: endpoint
-      key: deleteAssistantFile
-      path: deleteAssistantFile
-    - type: object
-      key: AssistantObject
-      path: object
-    - type: object
-      key: AssistantFileObject
-      path: file-object
-  - id: threads
-    title: Threads
-    beta: true
-    description: 'Create threads that assistants can interact with.
+      endpoints by passing `"stream": true`. The response will be a [Server-Sent events](https://html.spec.whatwg.org/multipage/server-sent-events.html#server-sent-events) stream.
 
+      Our Node and Python SDKs provide helpful utilities to make streaming easy. Reference the
 
-      Related guide: [Assistants](/docs/assistants/overview)
+      [Assistants API quickstart](/docs/assistants/overview) to learn more.
 
       '
+    navigationGroup: assistants
     sections:
-    - type: endpoint
-      key: createThread
-      path: createThread
-    - type: endpoint
-      key: getThread
-      path: getThread
-    - type: endpoint
-      key: modifyThread
-      path: modifyThread
-    - type: endpoint
-      key: deleteThread
-      path: deleteThread
     - type: object
-      key: ThreadObject
-      path: object
-  - id: messages
-    title: Messages
-    beta: true
-    description: 'Create messages within threads
-
-
-      Related guide: [Assistants](/docs/assistants/overview)
+      key: AssistantStreamEvent
+      path: events
+  - id: realtime-beta-client-events
+    title: Realtime Beta client events
+    description: 'These are events that the OpenAI Realtime WebSocket server will accept from the client.
 
       '
+    navigationGroup: legacy
     sections:
-    - type: endpoint
-      key: createMessage
-      path: createMessage
-    - type: endpoint
-      key: listMessages
-      path: listMessages
-    - type: endpoint
-      key: listMessageFiles
-      path: listMessageFiles
-    - type: endpoint
-      key: getMessage
-      path: getMessage
-    - type: endpoint
-      key: getMessageFile
-      path: getMessageFile
-    - type: endpoint
-      key: modifyMessage
-      path: modifyMessage
     - type: object
-      key: MessageObject
-      path: object
+      key: RealtimeBetaClientEventSessionUpdate
+      path: <auto>
     - type: object
-      key: MessageFileObject
-      path: file-object
-  - id: runs
-    title: Runs
-    beta: true
-    description: 'Represents an execution run on a thread.
-
-
-      Related guide: [Assistants](/docs/assistants/overview)
+      key: RealtimeBetaClientEventInputAudioBufferAppend
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventInputAudioBufferCommit
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventInputAudioBufferClear
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventConversationItemCreate
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventConversationItemRetrieve
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventConversationItemTruncate
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventConversationItemDelete
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventResponseCreate
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventResponseCancel
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventTranscriptionSessionUpdate
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventOutputAudioBufferClear
+      path: <auto>
+  - id: realtime-beta-server-events
+    title: Realtime Beta server events
+    description: 'These are events emitted from the OpenAI Realtime WebSocket server to the client.
 
       '
+    navigationGroup: legacy
     sections:
-    - type: endpoint
-      key: createRun
-      path: createRun
-    - type: endpoint
-      key: createThreadAndRun
-      path: createThreadAndRun
-    - type: endpoint
-      key: listRuns
-      path: listRuns
-    - type: endpoint
-      key: listRunSteps
-      path: listRunSteps
-    - type: endpoint
-      key: getRun
-      path: getRun
-    - type: endpoint
-      key: getRunStep
-      path: getRunStep
-    - type: endpoint
-      key: modifyRun
-      path: modifyRun
-    - type: endpoint
-      key: submitToolOuputsToRun
-      path: submitToolOutputs
-    - type: endpoint
-      key: cancelRun
-      path: cancelRun
     - type: object
-      key: RunObject
-      path: object
+      key: RealtimeBetaServerEventError
+      path: <auto>
     - type: object
-      key: RunStepObject
-      path: step-object
-  - id: completions
-    title: Completions
-    legacy: true
-    description: 'Given a prompt, the model will return one or more predicted completions along with the probabilities of alternative tokens at each position. Most developer should use our [Chat Completions API](/docs/guides/text-generation/text-generation-models) to leverage our best and newest models. Most models that support the legacy Completions endpoint [will be shut off on January 4th, 2024](/docs/deprecations/2023-07-06-gpt-and-embeddings).
-
-      '
-    sections:
-    - type: endpoint
-      key: createCompletion
-      path: create
+      key: RealtimeBetaServerEventSessionCreated
+      path: <auto>
     - type: object
-      key: CreateCompletionResponse
-      path: object
+      key: RealtimeBetaServerEventSessionUpdated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventTranscriptionSessionCreated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventTranscriptionSessionUpdated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemCreated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemRetrieved
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemInputAudioTranscriptionCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemInputAudioTranscriptionDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemInputAudioTranscriptionSegment
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemInputAudioTranscriptionFailed
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemTruncated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemDeleted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventInputAudioBufferCommitted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventInputAudioBufferCleared
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventInputAudioBufferSpeechStarted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventInputAudioBufferSpeechStopped
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferTimeoutTriggered
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseCreated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseOutputItemAdded
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseOutputItemDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseContentPartAdded
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseContentPartDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseTextDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseTextDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseAudioTranscriptDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseAudioTranscriptDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseAudioDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseAudioDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseFunctionCallArgumentsDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseFunctionCallArgumentsDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallArgumentsDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallArgumentsDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallInProgress
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallFailed
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventMCPListToolsInProgress
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventMCPListToolsCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventMCPListToolsFailed
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventRateLimitsUpdated
+      path: <auto>

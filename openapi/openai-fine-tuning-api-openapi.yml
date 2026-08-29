@@ -1,15 +1,15 @@
-openapi: 3.0.0
+openapi: 3.2.0
 info:
-  title: OpenAI Assistants Fine Tuning API
-  description: The Assistants API allows you to build AI assistants within your own applications. An Assistant has instructions and can leverage models, tools, and knowledge to respond to user queries. The Assistants API currently supports three types of tools - Code Interpreter, Retrieval, and Function calling. In the future, we plan to release more OpenAI-built tools, and allow you to provide your own tools on our platform.
-  version: 2.0.0
-  termsOfService: https://openai.com/policies/terms-of-use
+  title: Openai Fine Tuning API
   contact:
     name: OpenAI Support
     url: https://help.openai.com/
   license:
     name: MIT
     url: https://github.com/openai/openai-openapi/blob/master/LICENSE
+  termsOfService: https://openai.com/policies/terms-of-use
+  version: '1.0'
+  description: 'Operations tagged Fine Tuning across 2 of this provider''s published API definitions: fine-tuning-openapi-original.yml, openai-openapi-master.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.openai.com/v1
 security:
@@ -108,6 +108,8 @@ paths:
               '
             node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const list = await openai.fineTuning.jobs.list();\n\n  for await (const fineTune of list) {\n    console.log(fineTune);\n  }\n}\n\nmain();"
           response: "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": \"fine_tuning.job.event\",\n      \"id\": \"ft-event-TjX0lMfOniCZX64t9PUQT5hn\",\n      \"created_at\": 1689813489,\n      \"level\": \"warn\",\n      \"message\": \"Fine tuning process stopping due to job cancellation\",\n      \"data\": null,\n      \"type\": \"message\"\n    },\n    { ... },\n    { ... }\n  ], \"has_more\": true\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /fine_tuning/jobs/{fine_tuning_job_id}:
     get:
       operationId: retrieveFineTuningJob
@@ -151,6 +153,8 @@ paths:
               '
             node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const fineTune = await openai.fineTuning.jobs.retrieve(\"ftjob-abc123\");\n\n  console.log(fineTune);\n}\n\nmain();\n"
           response: "{\n  \"object\": \"fine_tuning.job\",\n  \"id\": \"ftjob-abc123\",\n  \"model\": \"davinci-002\",\n  \"created_at\": 1692661014,\n  \"finished_at\": 1692661190,\n  \"fine_tuned_model\": \"ft:davinci-002:my-org:custom_suffix:7q8mpxmy\",\n  \"organization_id\": \"org-123\",\n  \"result_files\": [\n      \"file-abc123\"\n  ],\n  \"status\": \"succeeded\",\n  \"validation_file\": null,\n  \"training_file\": \"file-abc123\",\n  \"hyperparameters\": {\n      \"n_epochs\": 4,\n  },\n  \"trained_tokens\": 5768\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /fine_tuning/jobs/{fine_tuning_job_id}/events:
     get:
       operationId: listFineTuningEvents
@@ -197,6 +201,8 @@ paths:
             python: "from openai import OpenAI\nclient = OpenAI()\n\nclient.fine_tuning.jobs.list_events(\n  fine_tuning_job_id=\"ftjob-abc123\",\n  limit=2\n)\n"
             node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const list = await openai.fineTuning.list_events(id=\"ftjob-abc123\", limit=2);\n\n  for await (const fineTune of list) {\n    console.log(fineTune);\n  }\n}\n\nmain();"
           response: "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": \"fine_tuning.job.event\",\n      \"id\": \"ft-event-ddTJfwuMVpfLXseO0Am0Gqjm\",\n      \"created_at\": 1692407401,\n      \"level\": \"info\",\n      \"message\": \"Fine tuning job successfully completed\",\n      \"data\": null,\n      \"type\": \"message\"\n    },\n    {\n      \"object\": \"fine_tuning.job.event\",\n      \"id\": \"ft-event-tyiGuB72evQncpH87xe505Sv\",\n      \"created_at\": 1692407400,\n      \"level\": \"info\",\n      \"message\": \"New fine-tuned model created: ft:gpt-3.5-turbo:openai::7p4lURel\",\n      \"data\": null,\n      \"type\": \"message\"\n    }\n  ],\n  \"has_more\": true\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /fine_tuning/jobs/{fine_tuning_job_id}/cancel:
     post:
       operationId: cancelFineTuningJob
@@ -237,6 +243,8 @@ paths:
               '
             node.js: "import OpenAI from \"openai\";\n\nconst openai = new OpenAI();\n\nasync function main() {\n  const fineTune = await openai.fineTuning.jobs.cancel(\"ftjob-abc123\");\n\n  console.log(fineTune);\n}\nmain();"
           response: "{\n  \"object\": \"fine_tuning.job\",\n  \"id\": \"ftjob-abc123\",\n  \"model\": \"gpt-3.5-turbo-0613\",\n  \"created_at\": 1689376978,\n  \"fine_tuned_model\": null,\n  \"organization_id\": \"org-123\",\n  \"result_files\": [],\n  \"hyperparameters\": {\n    \"n_epochs\":  \"auto\"\n  },\n  \"status\": \"cancelled\",\n  \"validation_file\": \"file-abc123\",\n  \"training_file\": \"file-abc123\"\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /fine_tuning/alpha/graders/run:
     post:
       operationId: runGrader
@@ -289,6 +297,8 @@ paths:
             go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAPIKey(\"My API Key\"),\n\t)\n\tresponse, err := client.FineTuning.Alpha.Graders.Run(context.TODO(), openai.FineTuningAlphaGraderRunParams{\n\t\tGrader: openai.FineTuningAlphaGraderRunParamsGraderUnion{\n\t\t\tOfStringCheck: &openai.StringCheckGraderParam{\n\t\t\t\tInput:     \"input\",\n\t\t\t\tName:      \"name\",\n\t\t\t\tOperation: openai.StringCheckGraderOperationEq,\n\t\t\t\tReference: \"reference\",\n\t\t\t},\n\t\t},\n\t\tModelSample: \"model_sample\",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", response.Metadata)\n}\n"
             java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.finetuning.alpha.graders.GraderRunParams;\nimport com.openai.models.finetuning.alpha.graders.GraderRunResponse;\nimport com.openai.models.graders.gradermodels.StringCheckGrader;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        GraderRunParams params = GraderRunParams.builder()\n            .grader(StringCheckGrader.builder()\n                .input(\"input\")\n                .name(\"name\")\n                .operation(StringCheckGrader.Operation.EQ)\n                .reference(\"reference\")\n                .build())\n            .modelSample(\"model_sample\")\n            .build();\n        GraderRunResponse response = client.fineTuning().alpha().graders().run(params);\n    }\n}"
             ruby: "require \"openai\"\n\nopenai = OpenAI::Client.new(api_key: \"My API Key\")\n\nresponse = openai.fine_tuning.alpha.graders.run(\n  grader: {input: \"input\", name: \"name\", operation: :eq, reference: \"reference\", type: :string_check},\n  model_sample: \"model_sample\"\n)\n\nputs(response)"
+    servers:
+    - url: https://api.openai.com/v1
   /fine_tuning/alpha/graders/validate:
     post:
       operationId: validateGrader
@@ -323,6 +333,8 @@ paths:
             java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.finetuning.alpha.graders.GraderValidateParams;\nimport com.openai.models.finetuning.alpha.graders.GraderValidateResponse;\nimport com.openai.models.graders.gradermodels.StringCheckGrader;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        GraderValidateParams params = GraderValidateParams.builder()\n            .grader(StringCheckGrader.builder()\n                .input(\"input\")\n                .name(\"name\")\n                .operation(StringCheckGrader.Operation.EQ)\n                .reference(\"reference\")\n                .build())\n            .build();\n        GraderValidateResponse response = client.fineTuning().alpha().graders().validate(params);\n    }\n}"
             ruby: "require \"openai\"\n\nopenai = OpenAI::Client.new(api_key: \"My API Key\")\n\nresponse = openai.fine_tuning.alpha.graders.validate(\n  grader: {input: \"input\", name: \"name\", operation: :eq, reference: \"reference\", type: :string_check}\n)\n\nputs(response)"
           response: "{\n  \"grader\": {\n    \"type\": \"string_check\",\n    \"name\": \"Example string check grader\",\n    \"input\": \"{{sample.output_text}}\",\n    \"reference\": \"{{item.label}}\",\n    \"operation\": \"eq\"\n  }\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions:
     get:
       operationId: listFineTuningCheckpointPermissions
@@ -446,6 +458,8 @@ paths:
             java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.finetuning.checkpoints.permissions.PermissionCreatePage;\nimport com.openai.models.finetuning.checkpoints.permissions.PermissionCreateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        PermissionCreateParams params = PermissionCreateParams.builder()\n            .fineTunedModelCheckpoint(\"ft:gpt-4o-mini-2024-07-18:org:weather:B7R9VjQd\")\n            .addProjectId(\"string\")\n            .build();\n        PermissionCreatePage page = client.fineTuning().checkpoints().permissions().create(params);\n    }\n}"
             ruby: "require \"openai\"\n\nopenai = OpenAI::Client.new(api_key: \"My API Key\")\n\npage = openai.fine_tuning.checkpoints.permissions.create(\n  \"ft:gpt-4o-mini-2024-07-18:org:weather:B7R9VjQd\",\n  project_ids: [\"string\"]\n)\n\nputs(page)"
           response: "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": \"checkpoint.permission\",\n      \"id\": \"cp_zc4Q7MP6XxulcVzj4MZdwsAB\",\n      \"created_at\": 1721764867,\n      \"project_id\": \"proj_abGMw1llN8IrBb6SvvY5A1iH\"\n    }\n  ],\n  \"first_id\": \"cp_zc4Q7MP6XxulcVzj4MZdwsAB\",\n  \"last_id\": \"cp_zc4Q7MP6XxulcVzj4MZdwsAB\",\n  \"has_more\": false\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions/{permission_id}:
     delete:
       operationId: deleteFineTuningCheckpointPermission
@@ -495,6 +509,8 @@ paths:
             java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.finetuning.checkpoints.permissions.PermissionDeleteParams;\nimport com.openai.models.finetuning.checkpoints.permissions.PermissionDeleteResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        PermissionDeleteParams params = PermissionDeleteParams.builder()\n            .fineTunedModelCheckpoint(\"ft:gpt-4o-mini-2024-07-18:org:weather:B7R9VjQd\")\n            .permissionId(\"cp_zc4Q7MP6XxulcVzj4MZdwsAB\")\n            .build();\n        PermissionDeleteResponse permission = client.fineTuning().checkpoints().permissions().delete(params);\n    }\n}"
             ruby: "require \"openai\"\n\nopenai = OpenAI::Client.new(api_key: \"My API Key\")\n\npermission = openai.fine_tuning.checkpoints.permissions.delete(\n  \"cp_zc4Q7MP6XxulcVzj4MZdwsAB\",\n  fine_tuned_model_checkpoint: \"ft:gpt-4o-mini-2024-07-18:org:weather:B7R9VjQd\"\n)\n\nputs(permission)"
           response: "{\n  \"object\": \"checkpoint.permission\",\n  \"id\": \"cp_zc4Q7MP6XxulcVzj4MZdwsAB\",\n  \"deleted\": true\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /fine_tuning/jobs/{fine_tuning_job_id}/checkpoints:
     get:
       operationId: listFineTuningJobCheckpoints
@@ -554,6 +570,8 @@ paths:
 
               puts(page)'
           response: "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": \"fine_tuning.job.checkpoint\",\n      \"id\": \"ftckpt_zc4Q7MP6XxulcVzj4MZdwsAB\",\n      \"created_at\": 1721764867,\n      \"fine_tuned_model_checkpoint\": \"ft:gpt-4o-mini-2024-07-18:my-org:custom-suffix:96olL566:ckpt-step-2000\",\n      \"metrics\": {\n        \"full_valid_loss\": 0.134,\n        \"full_valid_mean_token_accuracy\": 0.874\n      },\n      \"fine_tuning_job_id\": \"ftjob-abc123\",\n      \"step_number\": 2000\n    },\n    {\n      \"object\": \"fine_tuning.job.checkpoint\",\n      \"id\": \"ftckpt_enQCFmOTGj3syEpYVhBRLTSy\",\n      \"created_at\": 1721764800,\n      \"fine_tuned_model_checkpoint\": \"ft:gpt-4o-mini-2024-07-18:my-org:custom-suffix:7q8mpxmy:ckpt-step-1000\",\n      \"metrics\": {\n        \"full_valid_loss\": 0.167,\n        \"full_valid_mean_token_accuracy\": 0.781\n      },\n      \"fine_tuning_job_id\": \"ftjob-abc123\",\n      \"step_number\": 1000\n    }\n  ],\n  \"first_id\": \"ftckpt_zc4Q7MP6XxulcVzj4MZdwsAB\",\n  \"last_id\": \"ftckpt_enQCFmOTGj3syEpYVhBRLTSy\",\n  \"has_more\": true\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /fine_tuning/jobs/{fine_tuning_job_id}/pause:
     post:
       operationId: pauseFineTuningJob
@@ -601,6 +619,8 @@ paths:
 
               puts(fine_tuning_job)'
           response: "{\n  \"object\": \"fine_tuning.job\",\n  \"id\": \"ftjob-abc123\",\n  \"model\": \"gpt-4o-mini-2024-07-18\",\n  \"created_at\": 1721764800,\n  \"fine_tuned_model\": null,\n  \"organization_id\": \"org-123\",\n  \"result_files\": [],\n  \"status\": \"paused\",\n  \"validation_file\": \"file-abc123\",\n  \"training_file\": \"file-abc123\"\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
   /fine_tuning/jobs/{fine_tuning_job_id}/resume:
     post:
       operationId: resumeFineTuningJob
@@ -648,8 +668,307 @@ paths:
 
               puts(fine_tuning_job)'
           response: "{\n  \"object\": \"fine_tuning.job\",\n  \"id\": \"ftjob-abc123\",\n  \"model\": \"gpt-4o-mini-2024-07-18\",\n  \"created_at\": 1721764800,\n  \"fine_tuned_model\": null,\n  \"organization_id\": \"org-123\",\n  \"result_files\": [],\n  \"status\": \"queued\",\n  \"validation_file\": \"file-abc123\",\n  \"training_file\": \"file-abc123\"\n}\n"
+    servers:
+    - url: https://api.openai.com/v1
 components:
   schemas:
+    FineTuningJob:
+      type: object
+      title: FineTuningJob
+      description: 'The `fine_tuning.job` object represents a fine-tuning job that has been created through the API.
+
+        '
+      properties:
+        id:
+          type: string
+          description: The object identifier, which can be referenced in the API endpoints.
+        created_at:
+          type: integer
+          description: The Unix timestamp (in seconds) for when the fine-tuning job was created.
+        error:
+          type:
+          - object
+          - 'null'
+          description: For fine-tuning jobs that have `failed`, this will contain more information on the cause of the failure.
+          properties:
+            code:
+              type: string
+              description: A machine-readable error code.
+            message:
+              type: string
+              description: A human-readable error message.
+            param:
+              type:
+              - string
+              - 'null'
+              description: The parameter that was invalid, usually `training_file` or `validation_file`. This field will be null if the failure was not parameter-specific.
+          required:
+          - code
+          - message
+          - param
+        fine_tuned_model:
+          type:
+          - string
+          - 'null'
+          description: The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
+        finished_at:
+          type:
+          - integer
+          - 'null'
+          description: The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
+        hyperparameters:
+          type: object
+          description: The hyperparameters used for the fine-tuning job. See the [fine-tuning guide](/docs/guides/fine-tuning) for more details.
+          properties:
+            n_epochs:
+              oneOf:
+              - type: string
+                enum:
+                - auto
+              - type: integer
+                minimum: 1
+                maximum: 50
+              default: auto
+              description: 'The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
+
+                "auto" decides the optimal number of epochs based on the size of the dataset. If setting the number manually, we support any number between 1 and 50 epochs.'
+          required:
+          - n_epochs
+        model:
+          type: string
+          description: The base model that is being fine-tuned.
+        object:
+          type: string
+          description: The object type, which is always "fine_tuning.job".
+          enum:
+          - fine_tuning.job
+        organization_id:
+          type: string
+          description: The organization that owns the fine-tuning job.
+        result_files:
+          type: array
+          description: The compiled results file ID(s) for the fine-tuning job. You can retrieve the results with the [Files API](/docs/api-reference/files/retrieve-contents).
+          items:
+            type: string
+            example: file-abc123
+        status:
+          type: string
+          description: The current status of the fine-tuning job, which can be either `validating_files`, `queued`, `running`, `succeeded`, `failed`, or `cancelled`.
+          enum:
+          - validating_files
+          - queued
+          - running
+          - succeeded
+          - failed
+          - cancelled
+        trained_tokens:
+          type:
+          - integer
+          - 'null'
+          description: The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
+        training_file:
+          type: string
+          description: The file ID used for training. You can retrieve the training data with the [Files API](/docs/api-reference/files/retrieve-contents).
+        validation_file:
+          type:
+          - string
+          - 'null'
+          description: The file ID used for validation. You can retrieve the validation results with the [Files API](/docs/api-reference/files/retrieve-contents).
+      required:
+      - created_at
+      - error
+      - finished_at
+      - fine_tuned_model
+      - hyperparameters
+      - id
+      - model
+      - object
+      - organization_id
+      - result_files
+      - status
+      - trained_tokens
+      - training_file
+      - validation_file
+      x-oaiMeta:
+        name: The fine-tuning job object
+        example: "{\n  \"object\": \"fine_tuning.job\",\n  \"id\": \"ftjob-abc123\",\n  \"model\": \"davinci-002\",\n  \"created_at\": 1692661014,\n  \"finished_at\": 1692661190,\n  \"fine_tuned_model\": \"ft:davinci-002:my-org:custom_suffix:7q8mpxmy\",\n  \"organization_id\": \"org-123\",\n  \"result_files\": [\n      \"file-abc123\"\n  ],\n  \"status\": \"succeeded\",\n  \"validation_file\": null,\n  \"training_file\": \"file-abc123\",\n  \"hyperparameters\": {\n      \"n_epochs\": 4,\n  },\n  \"trained_tokens\": 5768\n}\n"
+    ListFineTuningJobEventsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FineTuningJobEvent'
+        object:
+          type: string
+          enum:
+          - list
+      required:
+      - object
+      - data
+    ListPaginatedFineTuningJobsResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FineTuningJob'
+        has_more:
+          type: boolean
+        object:
+          type: string
+          enum:
+          - list
+      required:
+      - object
+      - data
+      - has_more
+    FineTuneMethod:
+      type: object
+      description: The method used for fine-tuning.
+      properties:
+        type:
+          type: string
+          description: The type of method. Is either `supervised`, `dpo`, or `reinforcement`.
+          enum:
+          - supervised
+          - dpo
+          - reinforcement
+        supervised:
+          $ref: '#/components/schemas/FineTuneSupervisedMethod'
+        dpo:
+          $ref: '#/components/schemas/FineTuneDPOMethod'
+        reinforcement:
+          $ref: '#/components/schemas/FineTuneReinforcementMethod'
+      required:
+      - type
+    FineTuneSupervisedHyperparameters:
+      type: object
+      description: The hyperparameters used for the fine-tuning job.
+      properties:
+        batch_size:
+          description: 'Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
+
+            '
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: integer
+            minimum: 1
+            maximum: 256
+          default: auto
+        learning_rate_multiplier:
+          description: 'Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
+
+            '
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: number
+            minimum: 0
+            exclusiveMinimum: true
+          default: auto
+        n_epochs:
+          description: 'The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
+
+            '
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: integer
+            minimum: 1
+            maximum: 50
+          default: auto
+    ValidateGraderRequest:
+      type: object
+      title: ValidateGraderRequest
+      properties:
+        grader:
+          type: object
+          description: The grader used for the fine-tuning job.
+          oneOf:
+          - $ref: '#/components/schemas/GraderStringCheck'
+          - $ref: '#/components/schemas/GraderTextSimilarity'
+          - $ref: '#/components/schemas/GraderPython'
+          - $ref: '#/components/schemas/GraderScoreModel'
+          - $ref: '#/components/schemas/GraderMulti'
+      required:
+      - grader
+    GraderPython:
+      type: object
+      title: PythonGrader
+      description: 'A PythonGrader object that runs a python script on the input.
+
+        '
+      properties:
+        type:
+          type: string
+          enum:
+          - python
+          description: The object type, which is always `python`.
+          x-stainless-const: true
+        name:
+          type: string
+          description: The name of the grader.
+        source:
+          type: string
+          description: The source code of the python script.
+        image_tag:
+          type: string
+          description: The image tag to use for the python script.
+      required:
+      - type
+      - name
+      - source
+      x-oaiMeta:
+        name: Python Grader
+        group: graders
+        example: "{\n  \"type\": \"python\",\n  \"name\": \"Example python grader\",\n  \"image_tag\": \"2025-05-08\",\n  \"source\": \"\"\"\ndef grade(sample: dict, item: dict) -> float:\n    \\\"\"\"\n    Returns 1.0 if `output_text` equals `label`, otherwise 0.0.\n    \\\"\"\"\n    output = sample.get(\"output_text\")\n    label = item.get(\"label\")\n    return 1.0 if output == label else 0.0\n\"\"\",\n}\n"
+    InputAudio:
+      type: object
+      title: Input audio
+      description: 'An audio input to the model.
+
+        '
+      properties:
+        type:
+          type: string
+          description: 'The type of the input item. Always `input_audio`.
+
+            '
+          enum:
+          - input_audio
+          x-stainless-const: true
+        input_audio:
+          type: object
+          properties:
+            data:
+              type: string
+              description: 'Base64-encoded audio data.
+
+                '
+            format:
+              type: string
+              description: 'The format of the audio data. Currently supported formats are `mp3` and
+
+                `wav`.
+
+                '
+              enum:
+              - mp3
+              - wav
+          required:
+          - data
+          - format
+      required:
+      - type
+      - input_audio
     FineTuningJobCheckpoint:
       type: object
       title: FineTuningJobCheckpoint
@@ -708,432 +1027,23 @@ components:
       x-oaiMeta:
         name: The fine-tuning job checkpoint object
         example: "{\n  \"object\": \"fine_tuning.job.checkpoint\",\n  \"id\": \"ftckpt_qtZ5Gyk4BLq1SfLFWp3RtO3P\",\n  \"created_at\": 1712211699,\n  \"fine_tuned_model_checkpoint\": \"ft:gpt-4o-mini-2024-07-18:my-org:custom_suffix:9ABel2dg:ckpt-step-88\",\n  \"fine_tuning_job_id\": \"ftjob-fpbNQ3H1GrMehXRf8cO97xTN\",\n  \"metrics\": {\n    \"step\": 88,\n    \"train_loss\": 0.478,\n    \"train_mean_token_accuracy\": 0.924,\n    \"valid_loss\": 10.112,\n    \"valid_mean_token_accuracy\": 0.145,\n    \"full_valid_loss\": 0.567,\n    \"full_valid_mean_token_accuracy\": 0.944\n  },\n  \"step_number\": 88\n}\n"
-    InputTextContent:
-      properties:
-        type:
-          type: string
-          enum:
-          - input_text
-          description: The type of the input item. Always `input_text`.
-          default: input_text
-          x-stainless-const: true
-        text:
-          type: string
-          description: The text input to the model.
-      type: object
-      required:
-      - type
-      - text
-      title: Input text
-      description: A text input to the model.
-    ListFineTuningJobCheckpointsResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/FineTuningJobCheckpoint'
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        has_more:
-          type: boolean
-      required:
-      - object
-      - data
-      - has_more
-    EvalItemContentOutputText:
-      type: object
-      title: Output text
-      description: 'A text output from the model.
+    EvalItemContentItem:
+      title: Eval content item
+      description: 'A single content item: input text, output text, input image, or input audio.
 
         '
-      properties:
-        type:
-          type: string
-          description: 'The type of the output text. Always `output_text`.
-
-            '
-          enum:
-          - output_text
-          x-stainless-const: true
-        text:
-          type: string
-          description: 'The text output from the model.
-
-            '
-      required:
-      - type
-      - text
-    FineTuningJob_2:
+      oneOf:
+      - $ref: '#/components/schemas/EvalItemContentText'
+      - $ref: '#/components/schemas/InputTextContent'
+      - $ref: '#/components/schemas/EvalItemContentOutputText'
+      - $ref: '#/components/schemas/EvalItemInputImage'
+      - $ref: '#/components/schemas/InputAudio'
+    FineTuneDPOMethod:
       type: object
-      title: FineTuningJob
-      description: 'The `fine_tuning.job` object represents a fine-tuning job that has been created through the API.
-
-        '
-      properties:
-        id:
-          type: string
-          description: The object identifier, which can be referenced in the API endpoints.
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) for when the fine-tuning job was created.
-        error:
-          anyOf:
-          - type: object
-            description: For fine-tuning jobs that have `failed`, this will contain more information on the cause of the failure.
-            properties:
-              code:
-                type: string
-                description: A machine-readable error code.
-              message:
-                type: string
-                description: A human-readable error message.
-              param:
-                anyOf:
-                - type: string
-                  description: The parameter that was invalid, usually `training_file` or `validation_file`. This field will be null if the failure was not parameter-specific.
-                - type: 'null'
-            required:
-            - code
-            - message
-            - param
-          - type: 'null'
-        fine_tuned_model:
-          anyOf:
-          - type: string
-            description: The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
-          - type: 'null'
-        finished_at:
-          anyOf:
-          - type: integer
-            format: unixtime
-            description: The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
-          - type: 'null'
-        hyperparameters:
-          type: object
-          description: The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
-          properties:
-            batch_size:
-              anyOf:
-              - description: 'Number of examples in each batch. A larger batch size means that model parameters
-
-                  are updated less frequently, but with lower variance.
-
-                  '
-                oneOf:
-                - type: string
-                  enum:
-                  - auto
-                  x-stainless-const: true
-                - type: integer
-                  minimum: 1
-                  maximum: 256
-                default: auto
-              - type: 'null'
-            learning_rate_multiplier:
-              description: 'Scaling factor for the learning rate. A smaller learning rate may be useful to avoid
-
-                overfitting.
-
-                '
-              oneOf:
-              - type: string
-                enum:
-                - auto
-                x-stainless-const: true
-              - type: number
-                minimum: 0
-                exclusiveMinimum: true
-              default: auto
-            n_epochs:
-              description: 'The number of epochs to train the model for. An epoch refers to one full cycle
-
-                through the training dataset.
-
-                '
-              oneOf:
-              - type: string
-                enum:
-                - auto
-                x-stainless-const: true
-              - type: integer
-                minimum: 1
-                maximum: 50
-              default: auto
-        model:
-          type: string
-          description: The base model that is being fine-tuned.
-        object:
-          type: string
-          description: The object type, which is always "fine_tuning.job".
-          enum:
-          - fine_tuning.job
-          x-stainless-const: true
-        organization_id:
-          type: string
-          description: The organization that owns the fine-tuning job.
-        result_files:
-          type: array
-          description: The compiled results file ID(s) for the fine-tuning job. You can retrieve the results with the [Files API](/docs/api-reference/files/retrieve-contents).
-          items:
-            type: string
-            example: file-abc123
-        status:
-          type: string
-          description: The current status of the fine-tuning job, which can be either `validating_files`, `queued`, `running`, `succeeded`, `failed`, or `cancelled`.
-          enum:
-          - validating_files
-          - queued
-          - running
-          - succeeded
-          - failed
-          - cancelled
-        trained_tokens:
-          anyOf:
-          - type: integer
-            description: The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
-          - type: 'null'
-        training_file:
-          type: string
-          description: The file ID used for training. You can retrieve the training data with the [Files API](/docs/api-reference/files/retrieve-contents).
-        validation_file:
-          anyOf:
-          - type: string
-            description: The file ID used for validation. You can retrieve the validation results with the [Files API](/docs/api-reference/files/retrieve-contents).
-          - type: 'null'
-        integrations:
-          anyOf:
-          - type: array
-            description: A list of integrations to enable for this fine-tuning job.
-            maxItems: 5
-            items:
-              oneOf:
-              - $ref: '#/components/schemas/FineTuningIntegration'
-          - type: 'null'
-        seed:
-          type: integer
-          description: The seed used for the fine-tuning job.
-        estimated_finish:
-          anyOf:
-          - type: integer
-            format: unixtime
-            description: The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
-          - type: 'null'
-        method:
-          $ref: '#/components/schemas/FineTuneMethod'
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-      required:
-      - created_at
-      - error
-      - finished_at
-      - fine_tuned_model
-      - hyperparameters
-      - id
-      - model
-      - object
-      - organization_id
-      - result_files
-      - status
-      - trained_tokens
-      - training_file
-      - validation_file
-      - seed
-      x-oaiMeta:
-        name: The fine-tuning job object
-        example: "{\n  \"object\": \"fine_tuning.job\",\n  \"id\": \"ftjob-abc123\",\n  \"model\": \"davinci-002\",\n  \"created_at\": 1692661014,\n  \"finished_at\": 1692661190,\n  \"fine_tuned_model\": \"ft:davinci-002:my-org:custom_suffix:7q8mpxmy\",\n  \"organization_id\": \"org-123\",\n  \"result_files\": [\n      \"file-abc123\"\n  ],\n  \"status\": \"succeeded\",\n  \"validation_file\": null,\n  \"training_file\": \"file-abc123\",\n  \"hyperparameters\": {\n      \"n_epochs\": 4,\n      \"batch_size\": 1,\n      \"learning_rate_multiplier\": 1.0\n  },\n  \"trained_tokens\": 5768,\n  \"integrations\": [],\n  \"seed\": 0,\n  \"estimated_finish\": 0,\n  \"method\": {\n    \"type\": \"supervised\",\n    \"supervised\": {\n      \"hyperparameters\": {\n        \"n_epochs\": 4,\n        \"batch_size\": 1,\n        \"learning_rate_multiplier\": 1.0\n      }\n    }\n  },\n  \"metadata\": {\n    \"key\": \"value\"\n  }\n}\n"
-    FineTuneSupervisedMethod:
-      type: object
-      description: Configuration for the supervised fine-tuning method.
+      description: Configuration for the DPO fine-tuning method.
       properties:
         hyperparameters:
-          $ref: '#/components/schemas/FineTuneSupervisedHyperparameters'
-    FineTuneMethod:
-      type: object
-      description: The method used for fine-tuning.
-      properties:
-        type:
-          type: string
-          description: The type of method. Is either `supervised`, `dpo`, or `reinforcement`.
-          enum:
-          - supervised
-          - dpo
-          - reinforcement
-        supervised:
-          $ref: '#/components/schemas/FineTuneSupervisedMethod'
-        dpo:
-          $ref: '#/components/schemas/FineTuneDPOMethod'
-        reinforcement:
-          $ref: '#/components/schemas/FineTuneReinforcementMethod'
-      required:
-      - type
-    EvalItemInputImage:
-      title: Input image
-      description: An image input block used within EvalItem content arrays.
-      type: object
-      properties:
-        type:
-          type: string
-          description: 'The type of the image input. Always `input_image`.
-
-            '
-          enum:
-          - input_image
-          x-stainless-const: true
-        image_url:
-          type: string
-          format: uri
-          description: 'The URL of the image input.
-
-            '
-        detail:
-          type: string
-          description: 'The detail level of the image to be sent to the model. One of `high`, `low`, or `auto`. Defaults to `auto`.
-
-            '
-      required:
-      - type
-      - image_url
-    ListPaginatedFineTuningJobsResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/FineTuningJob'
-        has_more:
-          type: boolean
-        object:
-          type: string
-          enum:
-          - list
-      required:
-      - object
-      - data
-      - has_more
-    ListFineTuningCheckpointPermissionResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/FineTuningCheckpointPermission'
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        has_more:
-          type: boolean
-      required:
-      - object
-      - data
-      - has_more
-    ValidateGraderResponse:
-      type: object
-      title: ValidateGraderResponse
-      properties:
-        grader:
-          type: object
-          description: The grader used for the fine-tuning job.
-          oneOf:
-          - $ref: '#/components/schemas/GraderStringCheck'
-          - $ref: '#/components/schemas/GraderTextSimilarity'
-          - $ref: '#/components/schemas/GraderPython'
-          - $ref: '#/components/schemas/GraderScoreModel'
-          - $ref: '#/components/schemas/GraderMulti'
-    GraderStringCheck:
-      type: object
-      title: StringCheckGrader
-      description: 'A StringCheckGrader object that performs a string comparison between input and reference using a specified operation.
-
-        '
-      properties:
-        type:
-          type: string
-          enum:
-          - string_check
-          description: The object type, which is always `string_check`.
-          x-stainless-const: true
-        name:
-          type: string
-          description: The name of the grader.
-        input:
-          type: string
-          description: The input text. This may include template strings.
-        reference:
-          type: string
-          description: The reference text. This may include template strings.
-        operation:
-          type: string
-          enum:
-          - eq
-          - ne
-          - like
-          - ilike
-          description: The string check operation to perform. One of `eq`, `ne`, `like`, or `ilike`.
-      required:
-      - type
-      - name
-      - input
-      - reference
-      - operation
-      x-oaiMeta:
-        name: String Check Grader
-        group: graders
-        example: "{\n  \"type\": \"string_check\",\n  \"name\": \"Example string check grader\",\n  \"input\": \"{{sample.output_text}}\",\n  \"reference\": \"{{item.label}}\",\n  \"operation\": \"eq\"\n}\n"
-    ReasoningEffort:
-      anyOf:
-      - type: string
-        enum:
-        - none
-        - minimal
-        - low
-        - medium
-        - high
-        - xhigh
-        default: medium
-        description: 'Constrains effort on reasoning for
-
-          [reasoning models](https://platform.openai.com/docs/guides/reasoning).
-
-          Currently supported values are `none`, `minimal`, `low`, `medium`, `high`, and `xhigh`. Reducing
-
-          reasoning effort can result in faster responses and fewer tokens used
-
-          on reasoning in a response.
-
-
-          - `gpt-5.1` defaults to `none`, which does not perform reasoning. The supported reasoning values for `gpt-5.1` are `none`, `low`, `medium`, and `high`. Tool calls are supported for all reasoning values in gpt-5.1.
-
-          - All models before `gpt-5.1` default to `medium` reasoning effort, and do not support `none`.
-
-          - The `gpt-5-pro` model defaults to (and only supports) `high` reasoning effort.
-
-          - `xhigh` is supported for all models after `gpt-5.1-codex-max`.
-
-          '
-      - type: 'null'
+          $ref: '#/components/schemas/FineTuneDPOHyperparameters'
     FineTuneReinforcementHyperparameters:
       type: object
       description: The hyperparameters used for the reinforcement fine-tuning job.
@@ -1237,9 +1147,43 @@ components:
             type: string
       required:
       - project_ids
-    FineTuneReinforcementMethod:
+    GraderMulti:
       type: object
-      description: Configuration for the reinforcement fine-tuning method.
+      title: MultiGrader
+      description: A MultiGrader object combines the output of multiple graders to produce a single score.
+      properties:
+        type:
+          type: string
+          enum:
+          - multi
+          default: multi
+          description: The object type, which is always `multi`.
+          x-stainless-const: true
+        name:
+          type: string
+          description: The name of the grader.
+        graders:
+          oneOf:
+          - $ref: '#/components/schemas/GraderStringCheck'
+          - $ref: '#/components/schemas/GraderTextSimilarity'
+          - $ref: '#/components/schemas/GraderPython'
+          - $ref: '#/components/schemas/GraderScoreModel'
+          - $ref: '#/components/schemas/GraderLabelModel'
+        calculate_output:
+          type: string
+          description: A formula to calculate the output based on grader results.
+      required:
+      - name
+      - type
+      - graders
+      - calculate_output
+      x-oaiMeta:
+        name: Multi Grader
+        group: graders
+        example: "{\n  \"type\": \"multi\",\n  \"name\": \"example multi grader\",\n  \"graders\": [\n    {\n      \"type\": \"text_similarity\",\n      \"name\": \"example text similarity grader\",\n      \"input\": \"The graded text\",\n      \"reference\": \"The reference text\",\n      \"evaluation_metric\": \"fuzzy_match\"\n    },\n    {\n      \"type\": \"string_check\",\n      \"name\": \"Example string check grader\",\n      \"input\": \"{{sample.output_text}}\",\n      \"reference\": \"{{item.label}}\",\n      \"operation\": \"eq\"\n    }\n  ],\n  \"calculate_output\": \"0.5 * text_similarity_score +  0.5 * string_check_score)\"\n}\n"
+    ValidateGraderResponse:
+      type: object
+      title: ValidateGraderResponse
       properties:
         grader:
           type: object
@@ -1250,21 +1194,295 @@ components:
           - $ref: '#/components/schemas/GraderPython'
           - $ref: '#/components/schemas/GraderScoreModel'
           - $ref: '#/components/schemas/GraderMulti'
-        hyperparameters:
-          $ref: '#/components/schemas/FineTuneReinforcementHyperparameters'
-      required:
-      - grader
-    EvalItemContentItem:
-      title: Eval content item
-      description: 'A single content item: input text, output text, input image, or input audio.
+    GraderScoreModel:
+      type: object
+      title: ScoreModelGrader
+      description: 'A ScoreModelGrader object that uses a model to assign a score to the input.
 
         '
-      oneOf:
-      - $ref: '#/components/schemas/EvalItemContentText'
-      - $ref: '#/components/schemas/InputTextContent'
-      - $ref: '#/components/schemas/EvalItemContentOutputText'
-      - $ref: '#/components/schemas/EvalItemInputImage'
-      - $ref: '#/components/schemas/InputAudio'
+      properties:
+        type:
+          type: string
+          enum:
+          - score_model
+          description: The object type, which is always `score_model`.
+          x-stainless-const: true
+        name:
+          type: string
+          description: The name of the grader.
+        model:
+          type: string
+          description: The model to use for the evaluation.
+        sampling_params:
+          type: object
+          description: The sampling parameters for the model.
+          properties:
+            seed:
+              anyOf:
+              - type: integer
+                description: 'A seed value to initialize the randomness, during sampling.
+
+                  '
+              - type: 'null'
+            top_p:
+              anyOf:
+              - type: number
+                default: 1
+                example: 1
+                description: 'An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
+
+                  '
+              - type: 'null'
+            temperature:
+              anyOf:
+              - type: number
+                description: 'A higher temperature increases randomness in the outputs.
+
+                  '
+              - type: 'null'
+            max_completions_tokens:
+              anyOf:
+              - type: integer
+                minimum: 1
+                description: 'The maximum number of tokens the grader model may generate in its response.
+
+                  '
+              - type: 'null'
+            reasoning_effort:
+              $ref: '#/components/schemas/ReasoningEffort'
+        input:
+          type: array
+          items:
+            $ref: '#/components/schemas/EvalItem'
+          description: 'The input messages evaluated by the grader. Supports text, output text, input image, and input audio content blocks, and may include template strings.
+
+            '
+        range:
+          type: array
+          items:
+            type: number
+            min_items: 2
+            max_items: 2
+          description: The range of the score. Defaults to `[0, 1]`.
+      required:
+      - type
+      - name
+      - input
+      - model
+      x-oaiMeta:
+        name: Score Model Grader
+        group: graders
+        example: "{\n    \"type\": \"score_model\",\n    \"name\": \"Example score model grader\",\n    \"input\": [\n        {\n            \"role\": \"user\",\n            \"content\": [\n                {\n                    \"type\": \"input_text\",\n                    \"text\": (\n                        \"Score how close the reference answer is to the model answer. Score 1.0 if they are the same and 0.0 if they are different.\"\n                        \" Return just a floating point score\\n\\n\"\n                        \" Reference answer: {{item.label}}\\n\\n\"\n                        \" Model answer: {{sample.output_text}}\"\n                    )\n                },\n                {\n                    \"type\": \"input_image\",\n                    \"image_url\": \"https://example.com/reference.png\",\n                    \"file_id\": null,\n                    \"detail\": \"auto\"\n                }\n            ],\n        }\n    ],\n    \"model\": \"gpt-5-mini\",\n    \"sampling_params\": {\n        \"temperature\": 1,\n        \"top_p\": 1,\n        \"seed\": 42,\n        \"max_completions_tokens\": 32768,\n        \"reasoning_effort\": \"medium\"\n    },\n}\n"
+    ReasoningEffort:
+      anyOf:
+      - type: string
+        enum:
+        - none
+        - minimal
+        - low
+        - medium
+        - high
+        - xhigh
+        default: medium
+        description: 'Constrains effort on reasoning for
+
+          [reasoning models](https://platform.openai.com/docs/guides/reasoning).
+
+          Currently supported values are `none`, `minimal`, `low`, `medium`, `high`, and `xhigh`. Reducing
+
+          reasoning effort can result in faster responses and fewer tokens used
+
+          on reasoning in a response.
+
+
+          - `gpt-5.1` defaults to `none`, which does not perform reasoning. The supported reasoning values for `gpt-5.1` are `none`, `low`, `medium`, and `high`. Tool calls are supported for all reasoning values in gpt-5.1.
+
+          - All models before `gpt-5.1` default to `medium` reasoning effort, and do not support `none`.
+
+          - The `gpt-5-pro` model defaults to (and only supports) `high` reasoning effort.
+
+          - `xhigh` is supported for all models after `gpt-5.1-codex-max`.
+
+          '
+      - type: 'null'
+    EvalItemContentArray:
+      type: array
+      title: An array of Input text, Output text, Input image, and Input audio
+      description: 'A list of inputs, each of which may be either an input text, output text, input
+
+        image, or input audio object.
+
+        '
+      items:
+        $ref: '#/components/schemas/EvalItemContentItem'
+    GraderStringCheck:
+      type: object
+      title: StringCheckGrader
+      description: 'A StringCheckGrader object that performs a string comparison between input and reference using a specified operation.
+
+        '
+      properties:
+        type:
+          type: string
+          enum:
+          - string_check
+          description: The object type, which is always `string_check`.
+          x-stainless-const: true
+        name:
+          type: string
+          description: The name of the grader.
+        input:
+          type: string
+          description: The input text. This may include template strings.
+        reference:
+          type: string
+          description: The reference text. This may include template strings.
+        operation:
+          type: string
+          enum:
+          - eq
+          - ne
+          - like
+          - ilike
+          description: The string check operation to perform. One of `eq`, `ne`, `like`, or `ilike`.
+      required:
+      - type
+      - name
+      - input
+      - reference
+      - operation
+      x-oaiMeta:
+        name: String Check Grader
+        group: graders
+        example: "{\n  \"type\": \"string_check\",\n  \"name\": \"Example string check grader\",\n  \"input\": \"{{sample.output_text}}\",\n  \"reference\": \"{{item.label}}\",\n  \"operation\": \"eq\"\n}\n"
+    FineTuningCheckpointPermission:
+      type: object
+      title: FineTuningCheckpointPermission
+      description: 'The `checkpoint.permission` object represents a permission for a fine-tuned model checkpoint.
+
+        '
+      properties:
+        id:
+          type: string
+          description: The permission identifier, which can be referenced in the API endpoints.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the permission was created.
+        project_id:
+          type: string
+          description: The project identifier that the permission is for.
+        object:
+          type: string
+          description: The object type, which is always "checkpoint.permission".
+          enum:
+          - checkpoint.permission
+          x-stainless-const: true
+      required:
+      - created_at
+      - id
+      - object
+      - project_id
+      x-oaiMeta:
+        name: The fine-tuned model checkpoint permission object
+        example: "{\n  \"object\": \"checkpoint.permission\",\n  \"id\": \"cp_zc4Q7MP6XxulcVzj4MZdwsAB\",\n  \"created_at\": 1712211699,\n  \"project_id\": \"proj_abGMw1llN8IrBb6SvvY5A1iH\"\n}\n"
+    EvalItem:
+      type: object
+      title: Eval message object
+      description: 'A message input to the model with a role indicating instruction following
+
+        hierarchy. Instructions given with the `developer` or `system` role take
+
+        precedence over instructions given with the `user` role. Messages with the
+
+        `assistant` role are presumed to have been generated by the model in previous
+
+        interactions.
+
+        '
+      properties:
+        role:
+          type: string
+          description: 'The role of the message input. One of `user`, `assistant`, `system`, or
+
+            `developer`.
+
+            '
+          enum:
+          - user
+          - assistant
+          - system
+          - developer
+        content:
+          $ref: '#/components/schemas/EvalItemContent'
+        type:
+          type: string
+          description: 'The type of the message input. Always `message`.
+
+            '
+          enum:
+          - message
+          x-stainless-const: true
+      required:
+      - role
+      - content
+    FineTuneDPOHyperparameters:
+      type: object
+      description: The hyperparameters used for the DPO fine-tuning job.
+      properties:
+        beta:
+          description: 'The beta value for the DPO method. A higher beta value will increase the weight of the penalty between the policy and reference model.
+
+            '
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: number
+            minimum: 0
+            maximum: 2
+            exclusiveMinimum: true
+          default: auto
+        batch_size:
+          description: 'Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
+
+            '
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: integer
+            minimum: 1
+            maximum: 256
+          default: auto
+        learning_rate_multiplier:
+          description: 'Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
+
+            '
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: number
+            minimum: 0
+            exclusiveMinimum: true
+          default: auto
+        n_epochs:
+          description: 'The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
+
+            '
+          oneOf:
+          - type: string
+            enum:
+            - auto
+            x-stainless-const: true
+          - type: integer
+            minimum: 1
+            maximum: 50
+          default: auto
     CreateFineTuningJobRequest:
       type: object
       properties:
@@ -1469,333 +1687,24 @@ components:
       required:
       - model
       - training_file
-    EvalItemContentText:
-      type: string
-      title: Text input
-      description: 'A text input to the model.
-
-        '
-    RunGraderRequest:
-      type: object
-      title: RunGraderRequest
-      properties:
-        grader:
-          type: object
-          description: The grader used for the fine-tuning job.
-          oneOf:
-          - $ref: '#/components/schemas/GraderStringCheck'
-          - $ref: '#/components/schemas/GraderTextSimilarity'
-          - $ref: '#/components/schemas/GraderPython'
-          - $ref: '#/components/schemas/GraderScoreModel'
-          - $ref: '#/components/schemas/GraderMulti'
-        item:
-          type: object
-          description: "The dataset item provided to the grader. This will be used to populate \nthe `item` namespace. See [the guide](/docs/guides/graders) for more details. \n"
-        model_sample:
-          type: string
-          description: "The model sample to be evaluated. This value will be used to populate \nthe `sample` namespace. See [the guide](/docs/guides/graders) for more details.\nThe `output_json` variable will be populated if the model sample is a \nvalid JSON string.\n \n"
-      required:
-      - grader
-      - model_sample
-    ValidateGraderRequest:
-      type: object
-      title: ValidateGraderRequest
-      properties:
-        grader:
-          type: object
-          description: The grader used for the fine-tuning job.
-          oneOf:
-          - $ref: '#/components/schemas/GraderStringCheck'
-          - $ref: '#/components/schemas/GraderTextSimilarity'
-          - $ref: '#/components/schemas/GraderPython'
-          - $ref: '#/components/schemas/GraderScoreModel'
-          - $ref: '#/components/schemas/GraderMulti'
-      required:
-      - grader
-    FineTuneSupervisedHyperparameters:
-      type: object
-      description: The hyperparameters used for the fine-tuning job.
-      properties:
-        batch_size:
-          description: 'Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
-
-            '
-          oneOf:
-          - type: string
-            enum:
-            - auto
-            x-stainless-const: true
-          - type: integer
-            minimum: 1
-            maximum: 256
-          default: auto
-        learning_rate_multiplier:
-          description: 'Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
-
-            '
-          oneOf:
-          - type: string
-            enum:
-            - auto
-            x-stainless-const: true
-          - type: number
-            minimum: 0
-            exclusiveMinimum: true
-          default: auto
-        n_epochs:
-          description: 'The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
-
-            '
-          oneOf:
-          - type: string
-            enum:
-            - auto
-            x-stainless-const: true
-          - type: integer
-            minimum: 1
-            maximum: 50
-          default: auto
-    FineTuningCheckpointPermission:
-      type: object
-      title: FineTuningCheckpointPermission
-      description: 'The `checkpoint.permission` object represents a permission for a fine-tuned model checkpoint.
-
-        '
-      properties:
-        id:
-          type: string
-          description: The permission identifier, which can be referenced in the API endpoints.
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) for when the permission was created.
-        project_id:
-          type: string
-          description: The project identifier that the permission is for.
-        object:
-          type: string
-          description: The object type, which is always "checkpoint.permission".
-          enum:
-          - checkpoint.permission
-          x-stainless-const: true
-      required:
-      - created_at
-      - id
-      - object
-      - project_id
-      x-oaiMeta:
-        name: The fine-tuned model checkpoint permission object
-        example: "{\n  \"object\": \"checkpoint.permission\",\n  \"id\": \"cp_zc4Q7MP6XxulcVzj4MZdwsAB\",\n  \"created_at\": 1712211699,\n  \"project_id\": \"proj_abGMw1llN8IrBb6SvvY5A1iH\"\n}\n"
-    GraderTextSimilarity:
-      type: object
-      title: TextSimilarityGrader
-      description: 'A TextSimilarityGrader object which grades text based on similarity metrics.
-
-        '
+    InputTextContent:
       properties:
         type:
           type: string
           enum:
-          - text_similarity
-          default: text_similarity
-          description: The type of grader.
+          - input_text
+          description: The type of the input item. Always `input_text`.
+          default: input_text
           x-stainless-const: true
-        name:
+        text:
           type: string
-          description: The name of the grader.
-        input:
-          type: string
-          description: The text being graded.
-        reference:
-          type: string
-          description: The text being graded against.
-        evaluation_metric:
-          type: string
-          enum:
-          - cosine
-          - fuzzy_match
-          - bleu
-          - gleu
-          - meteor
-          - rouge_1
-          - rouge_2
-          - rouge_3
-          - rouge_4
-          - rouge_5
-          - rouge_l
-          description: "The evaluation metric to use. One of `cosine`, `fuzzy_match`, `bleu`, \n`gleu`, `meteor`, `rouge_1`, `rouge_2`, `rouge_3`, `rouge_4`, `rouge_5`, \nor `rouge_l`.\n"
+          description: The text input to the model.
+      type: object
       required:
       - type
-      - name
-      - input
-      - reference
-      - evaluation_metric
-      x-oaiMeta:
-        name: Text Similarity Grader
-        group: graders
-        example: "{\n  \"type\": \"text_similarity\",\n  \"name\": \"Example text similarity grader\",\n  \"input\": \"{{sample.output_text}}\",\n  \"reference\": \"{{item.label}}\",\n  \"evaluation_metric\": \"fuzzy_match\"\n}\n"
-    GraderLabelModel:
-      type: object
-      title: LabelModelGrader
-      description: 'A LabelModelGrader object which uses a model to assign labels to each item
-
-        in the evaluation.
-
-        '
-      properties:
-        type:
-          description: The object type, which is always `label_model`.
-          type: string
-          enum:
-          - label_model
-          x-stainless-const: true
-        name:
-          type: string
-          description: The name of the grader.
-        model:
-          type: string
-          description: The model to use for the evaluation. Must support structured outputs.
-        input:
-          type: array
-          items:
-            $ref: '#/components/schemas/EvalItem'
-        labels:
-          type: array
-          items:
-            type: string
-          description: The labels to assign to each item in the evaluation.
-        passing_labels:
-          type: array
-          items:
-            type: string
-          description: The labels that indicate a passing result. Must be a subset of labels.
-      required:
-      - type
-      - model
-      - input
-      - passing_labels
-      - labels
-      - name
-      x-oaiMeta:
-        name: Label Model Grader
-        group: graders
-        example: "{\n  \"name\": \"First label grader\",\n  \"type\": \"label_model\",\n  \"model\": \"gpt-4o-2024-08-06\",\n  \"input\": [\n    {\n      \"type\": \"message\",\n      \"role\": \"system\",\n      \"content\": {\n        \"type\": \"input_text\",\n        \"text\": \"Classify the sentiment of the following statement as one of positive, neutral, or negative\"\n      }\n    },\n    {\n      \"type\": \"message\",\n      \"role\": \"user\",\n      \"content\": {\n        \"type\": \"input_text\",\n        \"text\": \"Statement: {{item.response}}\"\n      }\n    }\n  ],\n  \"passing_labels\": [\n    \"positive\"\n  ],\n  \"labels\": [\n    \"positive\",\n    \"neutral\",\n    \"negative\"\n  ]\n}\n"
-    Metadata:
-      anyOf:
-      - type: object
-        description: 'Set of 16 key-value pairs that can be attached to an object. This can be
-
-          useful for storing additional information about the object in a structured
-
-          format, and querying for objects via API or the dashboard.
-
-
-          Keys are strings with a maximum length of 64 characters. Values are strings
-
-          with a maximum length of 512 characters.
-
-          '
-        additionalProperties:
-          type: string
-        x-oaiTypeLabel: map
-      - type: 'null'
-    EvalItemContentArray:
-      type: array
-      title: An array of Input text, Output text, Input image, and Input audio
-      description: 'A list of inputs, each of which may be either an input text, output text, input
-
-        image, or input audio object.
-
-        '
-      items:
-        $ref: '#/components/schemas/EvalItemContentItem'
-    GraderPython:
-      type: object
-      title: PythonGrader
-      description: 'A PythonGrader object that runs a python script on the input.
-
-        '
-      properties:
-        type:
-          type: string
-          enum:
-          - python
-          description: The object type, which is always `python`.
-          x-stainless-const: true
-        name:
-          type: string
-          description: The name of the grader.
-        source:
-          type: string
-          description: The source code of the python script.
-        image_tag:
-          type: string
-          description: The image tag to use for the python script.
-      required:
-      - type
-      - name
-      - source
-      x-oaiMeta:
-        name: Python Grader
-        group: graders
-        example: "{\n  \"type\": \"python\",\n  \"name\": \"Example python grader\",\n  \"image_tag\": \"2025-05-08\",\n  \"source\": \"\"\"\ndef grade(sample: dict, item: dict) -> float:\n    \\\"\"\"\n    Returns 1.0 if `output_text` equals `label`, otherwise 0.0.\n    \\\"\"\"\n    output = sample.get(\"output_text\")\n    label = item.get(\"label\")\n    return 1.0 if output == label else 0.0\n\"\"\",\n}\n"
-    FineTuneDPOHyperparameters:
-      type: object
-      description: The hyperparameters used for the DPO fine-tuning job.
-      properties:
-        beta:
-          description: 'The beta value for the DPO method. A higher beta value will increase the weight of the penalty between the policy and reference model.
-
-            '
-          oneOf:
-          - type: string
-            enum:
-            - auto
-            x-stainless-const: true
-          - type: number
-            minimum: 0
-            maximum: 2
-            exclusiveMinimum: true
-          default: auto
-        batch_size:
-          description: 'Number of examples in each batch. A larger batch size means that model parameters are updated less frequently, but with lower variance.
-
-            '
-          oneOf:
-          - type: string
-            enum:
-            - auto
-            x-stainless-const: true
-          - type: integer
-            minimum: 1
-            maximum: 256
-          default: auto
-        learning_rate_multiplier:
-          description: 'Scaling factor for the learning rate. A smaller learning rate may be useful to avoid overfitting.
-
-            '
-          oneOf:
-          - type: string
-            enum:
-            - auto
-            x-stainless-const: true
-          - type: number
-            minimum: 0
-            exclusiveMinimum: true
-          default: auto
-        n_epochs:
-          description: 'The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
-
-            '
-          oneOf:
-          - type: string
-            enum:
-            - auto
-            x-stainless-const: true
-          - type: integer
-            minimum: 1
-            maximum: 50
-          default: auto
+      - text
+      title: Input text
+      description: A text input to the model.
     FineTuningIntegration:
       type: object
       title: Fine-Tuning Job Integration
@@ -1853,7 +1762,7 @@ components:
               items:
                 type: string
                 example: custom-tag
-    ListFineTuningJobEventsResponse:
+    ListFineTuningJobEventsResponse_2:
       type: object
       properties:
         data:
@@ -1864,210 +1773,13 @@ components:
           type: string
           enum:
           - list
+          x-stainless-const: true
+        has_more:
+          type: boolean
       required:
       - object
       - data
-    EvalItemContent:
-      title: Eval content
-      description: 'Inputs to the model - can contain template strings. Supports text, output text, input images, and input audio, either as a single item or an array of items.
-
-        '
-      oneOf:
-      - $ref: '#/components/schemas/EvalItemContentItem'
-      - $ref: '#/components/schemas/EvalItemContentArray'
-    FineTuningJob:
-      type: object
-      title: FineTuningJob
-      description: 'The `fine_tuning.job` object represents a fine-tuning job that has been created through the API.
-
-        '
-      properties:
-        id:
-          type: string
-          description: The object identifier, which can be referenced in the API endpoints.
-        created_at:
-          type: integer
-          description: The Unix timestamp (in seconds) for when the fine-tuning job was created.
-        error:
-          type: object
-          nullable: true
-          description: For fine-tuning jobs that have `failed`, this will contain more information on the cause of the failure.
-          properties:
-            code:
-              type: string
-              description: A machine-readable error code.
-            message:
-              type: string
-              description: A human-readable error message.
-            param:
-              type: string
-              description: The parameter that was invalid, usually `training_file` or `validation_file`. This field will be null if the failure was not parameter-specific.
-              nullable: true
-          required:
-          - code
-          - message
-          - param
-        fine_tuned_model:
-          type: string
-          nullable: true
-          description: The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
-        finished_at:
-          type: integer
-          nullable: true
-          description: The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
-        hyperparameters:
-          type: object
-          description: The hyperparameters used for the fine-tuning job. See the [fine-tuning guide](/docs/guides/fine-tuning) for more details.
-          properties:
-            n_epochs:
-              oneOf:
-              - type: string
-                enum:
-                - auto
-              - type: integer
-                minimum: 1
-                maximum: 50
-              default: auto
-              description: 'The number of epochs to train the model for. An epoch refers to one full cycle through the training dataset.
-
-                "auto" decides the optimal number of epochs based on the size of the dataset. If setting the number manually, we support any number between 1 and 50 epochs.'
-          required:
-          - n_epochs
-        model:
-          type: string
-          description: The base model that is being fine-tuned.
-        object:
-          type: string
-          description: The object type, which is always "fine_tuning.job".
-          enum:
-          - fine_tuning.job
-        organization_id:
-          type: string
-          description: The organization that owns the fine-tuning job.
-        result_files:
-          type: array
-          description: The compiled results file ID(s) for the fine-tuning job. You can retrieve the results with the [Files API](/docs/api-reference/files/retrieve-contents).
-          items:
-            type: string
-            example: file-abc123
-        status:
-          type: string
-          description: The current status of the fine-tuning job, which can be either `validating_files`, `queued`, `running`, `succeeded`, `failed`, or `cancelled`.
-          enum:
-          - validating_files
-          - queued
-          - running
-          - succeeded
-          - failed
-          - cancelled
-        trained_tokens:
-          type: integer
-          nullable: true
-          description: The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
-        training_file:
-          type: string
-          description: The file ID used for training. You can retrieve the training data with the [Files API](/docs/api-reference/files/retrieve-contents).
-        validation_file:
-          type: string
-          nullable: true
-          description: The file ID used for validation. You can retrieve the validation results with the [Files API](/docs/api-reference/files/retrieve-contents).
-      required:
-      - created_at
-      - error
-      - finished_at
-      - fine_tuned_model
-      - hyperparameters
-      - id
-      - model
-      - object
-      - organization_id
-      - result_files
-      - status
-      - trained_tokens
-      - training_file
-      - validation_file
-      x-oaiMeta:
-        name: The fine-tuning job object
-        example: "{\n  \"object\": \"fine_tuning.job\",\n  \"id\": \"ftjob-abc123\",\n  \"model\": \"davinci-002\",\n  \"created_at\": 1692661014,\n  \"finished_at\": 1692661190,\n  \"fine_tuned_model\": \"ft:davinci-002:my-org:custom_suffix:7q8mpxmy\",\n  \"organization_id\": \"org-123\",\n  \"result_files\": [\n      \"file-abc123\"\n  ],\n  \"status\": \"succeeded\",\n  \"validation_file\": null,\n  \"training_file\": \"file-abc123\",\n  \"hyperparameters\": {\n      \"n_epochs\": 4,\n  },\n  \"trained_tokens\": 5768\n}\n"
-    EvalItem:
-      type: object
-      title: Eval message object
-      description: 'A message input to the model with a role indicating instruction following
-
-        hierarchy. Instructions given with the `developer` or `system` role take
-
-        precedence over instructions given with the `user` role. Messages with the
-
-        `assistant` role are presumed to have been generated by the model in previous
-
-        interactions.
-
-        '
-      properties:
-        role:
-          type: string
-          description: 'The role of the message input. One of `user`, `assistant`, `system`, or
-
-            `developer`.
-
-            '
-          enum:
-          - user
-          - assistant
-          - system
-          - developer
-        content:
-          $ref: '#/components/schemas/EvalItemContent'
-        type:
-          type: string
-          description: 'The type of the message input. Always `message`.
-
-            '
-          enum:
-          - message
-          x-stainless-const: true
-      required:
-      - role
-      - content
-    InputAudio:
-      type: object
-      title: Input audio
-      description: 'An audio input to the model.
-
-        '
-      properties:
-        type:
-          type: string
-          description: 'The type of the input item. Always `input_audio`.
-
-            '
-          enum:
-          - input_audio
-          x-stainless-const: true
-        input_audio:
-          type: object
-          properties:
-            data:
-              type: string
-              description: 'Base64-encoded audio data.
-
-                '
-            format:
-              type: string
-              description: 'The format of the audio data. Currently supported formats are `mp3` and
-
-                `wav`.
-
-                '
-              enum:
-              - mp3
-              - wav
-          required:
-          - data
-          - format
-      required:
-      - type
-      - input_audio
+      - has_more
     FineTuningJobEvent:
       type: object
       description: Fine-tuning job event object
@@ -2113,40 +1825,55 @@ components:
       x-oaiMeta:
         name: The fine-tuning job event object
         example: "{\n  \"object\": \"fine_tuning.job.event\",\n  \"id\": \"ftevent-abc123\"\n  \"created_at\": 1677610602,\n  \"level\": \"info\",\n  \"message\": \"Created fine-tuning job\",\n  \"data\": {},\n  \"type\": \"message\"\n}\n"
-    GraderMulti:
+    ListFineTuningJobCheckpointsResponse:
       type: object
-      title: MultiGrader
-      description: A MultiGrader object combines the output of multiple graders to produce a single score.
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FineTuningJobCheckpoint'
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
+    EvalItemContentOutputText:
+      type: object
+      title: Output text
+      description: 'A text output from the model.
+
+        '
       properties:
         type:
           type: string
+          description: 'The type of the output text. Always `output_text`.
+
+            '
           enum:
-          - multi
-          default: multi
-          description: The object type, which is always `multi`.
+          - output_text
           x-stainless-const: true
-        name:
+        text:
           type: string
-          description: The name of the grader.
-        graders:
-          oneOf:
-          - $ref: '#/components/schemas/GraderStringCheck'
-          - $ref: '#/components/schemas/GraderTextSimilarity'
-          - $ref: '#/components/schemas/GraderPython'
-          - $ref: '#/components/schemas/GraderScoreModel'
-          - $ref: '#/components/schemas/GraderLabelModel'
-        calculate_output:
-          type: string
-          description: A formula to calculate the output based on grader results.
+          description: 'The text output from the model.
+
+            '
       required:
-      - name
       - type
-      - graders
-      - calculate_output
-      x-oaiMeta:
-        name: Multi Grader
-        group: graders
-        example: "{\n  \"type\": \"multi\",\n  \"name\": \"example multi grader\",\n  \"graders\": [\n    {\n      \"type\": \"text_similarity\",\n      \"name\": \"example text similarity grader\",\n      \"input\": \"The graded text\",\n      \"reference\": \"The reference text\",\n      \"evaluation_metric\": \"fuzzy_match\"\n    },\n    {\n      \"type\": \"string_check\",\n      \"name\": \"Example string check grader\",\n      \"input\": \"{{sample.output_text}}\",\n      \"reference\": \"{{item.label}}\",\n      \"operation\": \"eq\"\n    }\n  ],\n  \"calculate_output\": \"0.5 * text_similarity_score +  0.5 * string_check_score)\"\n}\n"
+      - text
     RunGraderResponse:
       type: object
       properties:
@@ -2243,91 +1970,94 @@ components:
       - metadata
       - sub_rewards
       - model_grader_token_usage_per_model
-    FineTuneDPOMethod:
+    FineTuneSupervisedMethod:
       type: object
-      description: Configuration for the DPO fine-tuning method.
+      description: Configuration for the supervised fine-tuning method.
       properties:
         hyperparameters:
-          $ref: '#/components/schemas/FineTuneDPOHyperparameters'
-    GraderScoreModel:
+          $ref: '#/components/schemas/FineTuneSupervisedHyperparameters'
+    FineTuneReinforcementMethod:
       type: object
-      title: ScoreModelGrader
-      description: 'A ScoreModelGrader object that uses a model to assign a score to the input.
+      description: Configuration for the reinforcement fine-tuning method.
+      properties:
+        grader:
+          type: object
+          description: The grader used for the fine-tuning job.
+          oneOf:
+          - $ref: '#/components/schemas/GraderStringCheck'
+          - $ref: '#/components/schemas/GraderTextSimilarity'
+          - $ref: '#/components/schemas/GraderPython'
+          - $ref: '#/components/schemas/GraderScoreModel'
+          - $ref: '#/components/schemas/GraderMulti'
+        hyperparameters:
+          $ref: '#/components/schemas/FineTuneReinforcementHyperparameters'
+      required:
+      - grader
+    GraderLabelModel:
+      type: object
+      title: LabelModelGrader
+      description: 'A LabelModelGrader object which uses a model to assign labels to each item
+
+        in the evaluation.
 
         '
       properties:
         type:
+          description: The object type, which is always `label_model`.
           type: string
           enum:
-          - score_model
-          description: The object type, which is always `score_model`.
+          - label_model
           x-stainless-const: true
         name:
           type: string
           description: The name of the grader.
         model:
           type: string
-          description: The model to use for the evaluation.
-        sampling_params:
-          type: object
-          description: The sampling parameters for the model.
-          properties:
-            seed:
-              anyOf:
-              - type: integer
-                description: 'A seed value to initialize the randomness, during sampling.
-
-                  '
-              - type: 'null'
-            top_p:
-              anyOf:
-              - type: number
-                default: 1
-                example: 1
-                description: 'An alternative to temperature for nucleus sampling; 1.0 includes all tokens.
-
-                  '
-              - type: 'null'
-            temperature:
-              anyOf:
-              - type: number
-                description: 'A higher temperature increases randomness in the outputs.
-
-                  '
-              - type: 'null'
-            max_completions_tokens:
-              anyOf:
-              - type: integer
-                minimum: 1
-                description: 'The maximum number of tokens the grader model may generate in its response.
-
-                  '
-              - type: 'null'
-            reasoning_effort:
-              $ref: '#/components/schemas/ReasoningEffort'
+          description: The model to use for the evaluation. Must support structured outputs.
         input:
           type: array
           items:
             $ref: '#/components/schemas/EvalItem'
-          description: 'The input messages evaluated by the grader. Supports text, output text, input image, and input audio content blocks, and may include template strings.
-
-            '
-        range:
+        labels:
           type: array
           items:
-            type: number
-            min_items: 2
-            max_items: 2
-          description: The range of the score. Defaults to `[0, 1]`.
+            type: string
+          description: The labels to assign to each item in the evaluation.
+        passing_labels:
+          type: array
+          items:
+            type: string
+          description: The labels that indicate a passing result. Must be a subset of labels.
       required:
       - type
-      - name
-      - input
       - model
+      - input
+      - passing_labels
+      - labels
+      - name
       x-oaiMeta:
-        name: Score Model Grader
+        name: Label Model Grader
         group: graders
-        example: "{\n    \"type\": \"score_model\",\n    \"name\": \"Example score model grader\",\n    \"input\": [\n        {\n            \"role\": \"user\",\n            \"content\": [\n                {\n                    \"type\": \"input_text\",\n                    \"text\": (\n                        \"Score how close the reference answer is to the model answer. Score 1.0 if they are the same and 0.0 if they are different.\"\n                        \" Return just a floating point score\\n\\n\"\n                        \" Reference answer: {{item.label}}\\n\\n\"\n                        \" Model answer: {{sample.output_text}}\"\n                    )\n                },\n                {\n                    \"type\": \"input_image\",\n                    \"image_url\": \"https://example.com/reference.png\",\n                    \"file_id\": null,\n                    \"detail\": \"auto\"\n                }\n            ],\n        }\n    ],\n    \"model\": \"gpt-5-mini\",\n    \"sampling_params\": {\n        \"temperature\": 1,\n        \"top_p\": 1,\n        \"seed\": 42,\n        \"max_completions_tokens\": 32768,\n        \"reasoning_effort\": \"medium\"\n    },\n}\n"
+        example: "{\n  \"name\": \"First label grader\",\n  \"type\": \"label_model\",\n  \"model\": \"gpt-4o-2024-08-06\",\n  \"input\": [\n    {\n      \"type\": \"message\",\n      \"role\": \"system\",\n      \"content\": {\n        \"type\": \"input_text\",\n        \"text\": \"Classify the sentiment of the following statement as one of positive, neutral, or negative\"\n      }\n    },\n    {\n      \"type\": \"message\",\n      \"role\": \"user\",\n      \"content\": {\n        \"type\": \"input_text\",\n        \"text\": \"Statement: {{item.response}}\"\n      }\n    }\n  ],\n  \"passing_labels\": [\n    \"positive\"\n  ],\n  \"labels\": [\n    \"positive\",\n    \"neutral\",\n    \"negative\"\n  ]\n}\n"
+    Metadata:
+      anyOf:
+      - type: object
+        description: 'Set of 16 key-value pairs that can be attached to an object. This can be
+
+          useful for storing additional information about the object in a structured
+
+          format, and querying for objects via API or the dashboard.
+
+
+          Keys are strings with a maximum length of 64 characters. Values are strings
+
+          with a maximum length of 512 characters.
+
+          '
+        additionalProperties:
+          type: string
+        x-oaiTypeLabel: map
+      - type: 'null'
     DeleteFineTuningCheckpointPermissionResponse:
       type: object
       properties:
@@ -2347,10 +2077,350 @@ components:
       - id
       - object
       - deleted
+    RunGraderRequest:
+      type: object
+      title: RunGraderRequest
+      properties:
+        grader:
+          type: object
+          description: The grader used for the fine-tuning job.
+          oneOf:
+          - $ref: '#/components/schemas/GraderStringCheck'
+          - $ref: '#/components/schemas/GraderTextSimilarity'
+          - $ref: '#/components/schemas/GraderPython'
+          - $ref: '#/components/schemas/GraderScoreModel'
+          - $ref: '#/components/schemas/GraderMulti'
+        item:
+          type: object
+          description: "The dataset item provided to the grader. This will be used to populate \nthe `item` namespace. See [the guide](/docs/guides/graders) for more details. \n"
+        model_sample:
+          type: string
+          description: "The model sample to be evaluated. This value will be used to populate \nthe `sample` namespace. See [the guide](/docs/guides/graders) for more details.\nThe `output_json` variable will be populated if the model sample is a \nvalid JSON string.\n \n"
+      required:
+      - grader
+      - model_sample
+    ListFineTuningCheckpointPermissionResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FineTuningCheckpointPermission'
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
+    EvalItemContent:
+      title: Eval content
+      description: 'Inputs to the model - can contain template strings. Supports text, output text, input images, and input audio, either as a single item or an array of items.
+
+        '
+      oneOf:
+      - $ref: '#/components/schemas/EvalItemContentItem'
+      - $ref: '#/components/schemas/EvalItemContentArray'
+    GraderTextSimilarity:
+      type: object
+      title: TextSimilarityGrader
+      description: 'A TextSimilarityGrader object which grades text based on similarity metrics.
+
+        '
+      properties:
+        type:
+          type: string
+          enum:
+          - text_similarity
+          default: text_similarity
+          description: The type of grader.
+          x-stainless-const: true
+        name:
+          type: string
+          description: The name of the grader.
+        input:
+          type: string
+          description: The text being graded.
+        reference:
+          type: string
+          description: The text being graded against.
+        evaluation_metric:
+          type: string
+          enum:
+          - cosine
+          - fuzzy_match
+          - bleu
+          - gleu
+          - meteor
+          - rouge_1
+          - rouge_2
+          - rouge_3
+          - rouge_4
+          - rouge_5
+          - rouge_l
+          description: "The evaluation metric to use. One of `cosine`, `fuzzy_match`, `bleu`, \n`gleu`, `meteor`, `rouge_1`, `rouge_2`, `rouge_3`, `rouge_4`, `rouge_5`, \nor `rouge_l`.\n"
+      required:
+      - type
+      - name
+      - input
+      - reference
+      - evaluation_metric
+      x-oaiMeta:
+        name: Text Similarity Grader
+        group: graders
+        example: "{\n  \"type\": \"text_similarity\",\n  \"name\": \"Example text similarity grader\",\n  \"input\": \"{{sample.output_text}}\",\n  \"reference\": \"{{item.label}}\",\n  \"evaluation_metric\": \"fuzzy_match\"\n}\n"
+    ListPaginatedFineTuningJobsResponse_2:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/FineTuningJob_2'
+        has_more:
+          type: boolean
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+      required:
+      - object
+      - data
+      - has_more
+    EvalItemInputImage:
+      title: Input image
+      description: An image input block used within EvalItem content arrays.
+      type: object
+      properties:
+        type:
+          type: string
+          description: 'The type of the image input. Always `input_image`.
+
+            '
+          enum:
+          - input_image
+          x-stainless-const: true
+        image_url:
+          type: string
+          format: uri
+          description: 'The URL of the image input.
+
+            '
+        detail:
+          type: string
+          description: 'The detail level of the image to be sent to the model. One of `high`, `low`, or `auto`. Defaults to `auto`.
+
+            '
+      required:
+      - type
+      - image_url
+    FineTuningJob_2:
+      type: object
+      title: FineTuningJob
+      description: 'The `fine_tuning.job` object represents a fine-tuning job that has been created through the API.
+
+        '
+      properties:
+        id:
+          type: string
+          description: The object identifier, which can be referenced in the API endpoints.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the fine-tuning job was created.
+        error:
+          anyOf:
+          - type: object
+            description: For fine-tuning jobs that have `failed`, this will contain more information on the cause of the failure.
+            properties:
+              code:
+                type: string
+                description: A machine-readable error code.
+              message:
+                type: string
+                description: A human-readable error message.
+              param:
+                anyOf:
+                - type: string
+                  description: The parameter that was invalid, usually `training_file` or `validation_file`. This field will be null if the failure was not parameter-specific.
+                - type: 'null'
+            required:
+            - code
+            - message
+            - param
+          - type: 'null'
+        fine_tuned_model:
+          anyOf:
+          - type: string
+            description: The name of the fine-tuned model that is being created. The value will be null if the fine-tuning job is still running.
+          - type: 'null'
+        finished_at:
+          anyOf:
+          - type: integer
+            format: unixtime
+            description: The Unix timestamp (in seconds) for when the fine-tuning job was finished. The value will be null if the fine-tuning job is still running.
+          - type: 'null'
+        hyperparameters:
+          type: object
+          description: The hyperparameters used for the fine-tuning job. This value will only be returned when running `supervised` jobs.
+          properties:
+            batch_size:
+              anyOf:
+              - description: 'Number of examples in each batch. A larger batch size means that model parameters
+
+                  are updated less frequently, but with lower variance.
+
+                  '
+                oneOf:
+                - type: string
+                  enum:
+                  - auto
+                  x-stainless-const: true
+                - type: integer
+                  minimum: 1
+                  maximum: 256
+                default: auto
+              - type: 'null'
+            learning_rate_multiplier:
+              description: 'Scaling factor for the learning rate. A smaller learning rate may be useful to avoid
+
+                overfitting.
+
+                '
+              oneOf:
+              - type: string
+                enum:
+                - auto
+                x-stainless-const: true
+              - type: number
+                minimum: 0
+                exclusiveMinimum: true
+              default: auto
+            n_epochs:
+              description: 'The number of epochs to train the model for. An epoch refers to one full cycle
+
+                through the training dataset.
+
+                '
+              oneOf:
+              - type: string
+                enum:
+                - auto
+                x-stainless-const: true
+              - type: integer
+                minimum: 1
+                maximum: 50
+              default: auto
+        model:
+          type: string
+          description: The base model that is being fine-tuned.
+        object:
+          type: string
+          description: The object type, which is always "fine_tuning.job".
+          enum:
+          - fine_tuning.job
+          x-stainless-const: true
+        organization_id:
+          type: string
+          description: The organization that owns the fine-tuning job.
+        result_files:
+          type: array
+          description: The compiled results file ID(s) for the fine-tuning job. You can retrieve the results with the [Files API](/docs/api-reference/files/retrieve-contents).
+          items:
+            type: string
+            example: file-abc123
+        status:
+          type: string
+          description: The current status of the fine-tuning job, which can be either `validating_files`, `queued`, `running`, `succeeded`, `failed`, or `cancelled`.
+          enum:
+          - validating_files
+          - queued
+          - running
+          - succeeded
+          - failed
+          - cancelled
+        trained_tokens:
+          anyOf:
+          - type: integer
+            description: The total number of billable tokens processed by this fine-tuning job. The value will be null if the fine-tuning job is still running.
+          - type: 'null'
+        training_file:
+          type: string
+          description: The file ID used for training. You can retrieve the training data with the [Files API](/docs/api-reference/files/retrieve-contents).
+        validation_file:
+          anyOf:
+          - type: string
+            description: The file ID used for validation. You can retrieve the validation results with the [Files API](/docs/api-reference/files/retrieve-contents).
+          - type: 'null'
+        integrations:
+          anyOf:
+          - type: array
+            description: A list of integrations to enable for this fine-tuning job.
+            maxItems: 5
+            items:
+              oneOf:
+              - $ref: '#/components/schemas/FineTuningIntegration'
+          - type: 'null'
+        seed:
+          type: integer
+          description: The seed used for the fine-tuning job.
+        estimated_finish:
+          anyOf:
+          - type: integer
+            format: unixtime
+            description: The Unix timestamp (in seconds) for when the fine-tuning job is estimated to finish. The value will be null if the fine-tuning job is not running.
+          - type: 'null'
+        method:
+          $ref: '#/components/schemas/FineTuneMethod'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+      required:
+      - created_at
+      - error
+      - finished_at
+      - fine_tuned_model
+      - hyperparameters
+      - id
+      - model
+      - object
+      - organization_id
+      - result_files
+      - status
+      - trained_tokens
+      - training_file
+      - validation_file
+      - seed
+      x-oaiMeta:
+        name: The fine-tuning job object
+        example: "{\n  \"object\": \"fine_tuning.job\",\n  \"id\": \"ftjob-abc123\",\n  \"model\": \"davinci-002\",\n  \"created_at\": 1692661014,\n  \"finished_at\": 1692661190,\n  \"fine_tuned_model\": \"ft:davinci-002:my-org:custom_suffix:7q8mpxmy\",\n  \"organization_id\": \"org-123\",\n  \"result_files\": [\n      \"file-abc123\"\n  ],\n  \"status\": \"succeeded\",\n  \"validation_file\": null,\n  \"training_file\": \"file-abc123\",\n  \"hyperparameters\": {\n      \"n_epochs\": 4,\n      \"batch_size\": 1,\n      \"learning_rate_multiplier\": 1.0\n  },\n  \"trained_tokens\": 5768,\n  \"integrations\": [],\n  \"seed\": 0,\n  \"estimated_finish\": 0,\n  \"method\": {\n    \"type\": \"supervised\",\n    \"supervised\": {\n      \"hyperparameters\": {\n        \"n_epochs\": 4,\n        \"batch_size\": 1,\n        \"learning_rate_multiplier\": 1.0\n      }\n    }\n  },\n  \"metadata\": {\n    \"key\": \"value\"\n  }\n}\n"
+    EvalItemContentText:
+      type: string
+      title: Text input
+      description: 'A text input to the model.
+
+        '
   securitySchemes:
     ApiKeyAuth:
       type: http
       scheme: bearer
+    AdminApiKeyAuth:
+      type: http
+      scheme: bearer
+x-refined-from:
+- fine-tuning-openapi-original.yml
+- openai-openapi-master.yml
 x-oaiMeta:
   groups:
   - id: audio
