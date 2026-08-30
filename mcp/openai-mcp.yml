@@ -1,0 +1,105 @@
+generated: '2026-08-27'
+method: probed
+status: published
+source: >-
+  https://developers.openai.com/mcp — probed live on 2026-08-27 with an MCP
+  `initialize` handshake followed by `tools/list` over Streamable HTTP. Both calls
+  succeeded ANONYMOUSLY (HTTP 200, content-type text/event-stream, no OAuth
+  challenge). serverInfo returned {"name":"openai-docs-mcp","version":"1.0.0"},
+  protocolVersion 2025-06-18. The five tools below are the verbatim response,
+  saved with their real inputSchemas to mcp/openai-docs-mcp-tools.json.
+  Documented at https://developers.openai.com/learn/docs-mcp.
+description: >-
+  OpenAI runs one remote MCP server of its own and it is a DOCUMENTATION server,
+  not an API-control server. `openai-docs-mcp` lets an agent search, browse and
+  fetch the markdown behind platform.openai.com, developers.openai.com and
+  learn.chatgpt.com, and — the part that matters for agent readiness — pull the
+  OpenAPI fragment for any named OpenAI API endpoint via `get_openapi_spec`. No
+  tool on it calls the OpenAI API: an agent cannot create a completion, upload a
+  file, or manage a project through this server. Every tool is annotated
+  readOnlyHint:true / destructiveHint:false, and `execution.taskSupport` is
+  "forbidden" on all five, so the server itself declares it does no long-running
+  work. It needs no key, which makes it one of the very few MCP surfaces in the
+  catalog an agent can reach with zero configuration.
+  DELIBERATELY NOT COUNTED HERE: OpenAI's much larger MCP presence is as a
+  CONSUMER and a PLATFORM — the Responses API accepts remote MCP servers as
+  tools, the Apps SDK is a framework for third parties to BUILD MCP servers, and
+  the Codex CLI connects to external MCP servers via `codex mcp`. None of those
+  is OpenAI running a server for its own API, and folding them in would credit
+  the sales surface instead of the published one.
+deployment:
+  mode: remote
+  endpoint: https://developers.openai.com/mcp
+  auth: none
+  verified: probed
+server:
+  name: openai-docs-mcp
+  version: 1.0.0
+  transport: streamable-http
+  protocol_version: '2025-06-18'
+  capabilities:
+    tools:
+      listChanged: true
+  auth: none
+  scope: documentation and OpenAPI retrieval only — no API control plane
+  tools_file: mcp/openai-docs-mcp-tools.json
+tools:
+  - name: search_openai_docs
+    title: Search OpenAI Docs
+    description: >-
+      Search across platform.openai.com, developers.openai.com and
+      learn.chatgpt.com docs. Results include URLs.
+    input: {query: string (required), limit: integer 1-50, cursor: string}
+    read_only: true
+  - name: list_openai_docs
+    title: List OpenAI Docs
+    description: List or browse the crawled pages when the right query is not yet known.
+    input: {limit: integer 1-50, cursor: string}
+    read_only: true
+  - name: fetch_openai_doc
+    title: Fetch OpenAI Doc
+    description: >-
+      Fetch the markdown for a specific doc page so it can be quoted exactly;
+      an `anchor` fetches just one section.
+    input: {url: string (required), anchor: string}
+    read_only: true
+  - name: list_api_endpoints
+    title: List API Endpoints
+    description: List all OpenAI API endpoint URLs available in the OpenAPI spec.
+    input: {}
+    read_only: true
+  - name: get_openapi_spec
+    title: Get OpenAPI Spec
+    description: >-
+      Return the OpenAPI spec for a specific API endpoint URL; optionally filter
+      code samples by language or return only code samples.
+    input: {url: string (required), languages: array<string>, codeExamplesOnly: boolean}
+    read_only: true
+related_but_not_this_server:
+  - name: Remote MCP servers as Responses API tools
+    url: https://developers.openai.com/api/docs/guides/tools-connectors-mcp
+    relationship: consumer
+    note: OpenAI models CALL third-party MCP servers; this is not a server OpenAI publishes.
+  - name: Apps SDK
+    url: https://developers.openai.com/apps-sdk
+    relationship: platform
+    note: >-
+      A framework for third parties to build MCP servers that render UI inside
+      ChatGPT. Component library catalogued in components/openai-components.yml.
+  - name: codex mcp
+    url: https://learn.chatgpt.com/docs/codex/cli
+    relationship: client
+    note: The Codex CLI connects to external MCP servers. Catalogued in cli/openai-cli.yml.
+probe:
+  - url: https://developers.openai.com/mcp
+    method: POST
+    body: '{"jsonrpc":"2.0","id":1,"method":"initialize",...}'
+    status: 200
+    content_type: text/event-stream
+    result: 'serverInfo openai-docs-mcp 1.0.0; capabilities.tools.listChanged true'
+  - url: https://developers.openai.com/mcp
+    method: POST
+    body: '{"jsonrpc":"2.0","id":2,"method":"tools/list"}'
+    status: 200
+    content_type: text/event-stream
+    result: 5 tools with full inputSchema

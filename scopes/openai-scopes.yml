@@ -1,0 +1,105 @@
+generated: '2026-08-27'
+method: probed
+source: >-
+  https://auth.openai.com/.well-known/openid-configuration — fetched 2026-08-27,
+  HTTP 200, application/json, saved verbatim to
+  well-known/openai-auth-openid-configuration.json. The scopes below are its
+  `scopes_supported` array read directly, not transcribed from documentation.
+  derive-oauth-scopes.py openai found no oauth2 securityScheme in openapi/,
+  which is correct: the platform REST API is bearer-key only and its OAuth
+  surface lives on a separate host.
+description: >-
+  OpenAI's published OAuth scope set is the OIDC core four and nothing else —
+  openid, profile, email, offline_access. There is no scope for reading models,
+  creating responses, managing files or administering an organization, because
+  OAuth at OpenAI grants IDENTITY, not API authority. A token from
+  auth.openai.com tells your application who the user is; it does not let you
+  call api.openai.com on their behalf. Platform API authority is carried by a
+  long-lived project API key whose permissions are set in the console, and the
+  permission model there is coarse: a key is scoped to one project, and the
+  contract distinguishes exactly two security schemes (ApiKeyAuth,
+  AdminApiKeyAuth). For an agent this is the load-bearing fact: there is no
+  least-privilege, user-consented, per-operation grant available. You hold a key
+  that can do everything the project can do, or you hold nothing.
+authorization_server:
+  issuer: https://auth.openai.com
+  discovery: https://auth.openai.com/.well-known/openid-configuration
+  discovery_file: well-known/openai-auth-openid-configuration.json
+  authorization_endpoint: https://auth.openai.com/api/accounts/authorize
+  token_endpoint: https://auth.openai.com/api/accounts/oauth/token
+  revocation_endpoint: https://auth.openai.com/api/accounts/oauth/revoke
+  userinfo_endpoint: https://auth.openai.com/api/accounts/oauth/userinfo
+  jwks_uri: https://auth.openai.com/.well-known/jwks.json
+  grant_types_supported: [authorization_code, refresh_token]
+  response_types_supported: [code]
+  response_modes_supported: [query]
+  code_challenge_methods_supported: [S256]
+  token_endpoint_auth_methods_supported: [client_secret_basic, client_secret_post, none]
+  id_token_signing_alg_values_supported: [RS256]
+  subject_types_supported: [public]
+  registration_endpoint: null
+scopes:
+  - name: openid
+    description: >-
+      Required to receive an ID token. Signals an OIDC authentication request
+      rather than a bare OAuth authorization.
+    grants: identity assertion (sub claim)
+  - name: profile
+    description: >-
+      Access to the end-user's profile claims. The discovery document enumerates
+      them: name, family_name, given_name, middle_name, nickname,
+      preferred_username, profile, picture, website, gender, birthdate, zoneinfo,
+      locale, updated_at.
+    grants: read-only profile claims
+  - name: email
+    description: Access to the email and email_verified claims.
+    grants: read-only email claims
+  - name: offline_access
+    description: >-
+      Issues a refresh token so the client can obtain new access tokens without
+      the user present. The only scope in the set with a durable consequence.
+    grants: refresh_token issuance
+claims_supported:
+  - sub
+  - name
+  - family_name
+  - given_name
+  - middle_name
+  - nickname
+  - preferred_username
+  - profile
+  - picture
+  - website
+  - gender
+  - birthdate
+  - zoneinfo
+  - locale
+  - updated_at
+  - email
+  - email_verified
+api_authorization:
+  model: bearer API key
+  scheme_count: 2
+  schemes:
+    - {name: ApiKeyAuth, type: http, scheme: bearer, prefix: 'sk-proj-', boundary: one project}
+    - {name: AdminApiKeyAuth, type: http, scheme: bearer, prefix: 'sk-admin-', boundary: organization administration}
+  source: openapi/_original/openai-openapi-master.yml securitySchemes
+  granularity: >-
+    Project-level, not operation-level. The contract's only distinction is
+    admin-vs-not; 242 operations share two schemes.
+  detail: authentication/openai-authentication.yml
+gaps:
+  - >-
+    No scope grants access to the platform REST API. An OAuth token from
+    auth.openai.com cannot call api.openai.com.
+  - >-
+    No registration_endpoint, so RFC 7591 dynamic client registration is not
+    available — every OAuth client is created by a human in the console.
+  - >-
+    No /.well-known/oauth-protected-resource (RFC 9728) on any host, so an agent
+    hitting a 401 from api.openai.com is given no machine-readable pointer to the
+    authorization server that protects it.
+  - >-
+    No per-operation or per-resource permission scopes on API keys in the
+    published contract. Least privilege has to be achieved structurally, by
+    provisioning a separate project (see sandbox/openai-sandbox.yml).
