@@ -1,0 +1,99 @@
+generated: '2026-08-27'
+method: derived
+source: >-
+  Derived by binding the five tools returned live by
+  https://developers.openai.com/mcp (tools/list, saved verbatim to
+  mcp/openai-docs-mcp-tools.json) against the 242 operationIds in
+  openapi/_original/openai-openapi-master.yml and the 265 operationIds across
+  the 37 refined per-tag specs in openapi/. Both sides were read directly; no
+  mapping was inferred from prose.
+description: >-
+  The crosswalk for OpenAI is a near-total non-overlap, and that is the finding.
+  OpenAI publishes a large REST contract (242 operations) and a small MCP server
+  (5 tools), and NOT ONE MCP tool invokes a REST operation. The server is a
+  documentation retrieval surface: four tools read docs, and the fifth
+  (`get_openapi_spec`) returns the contract itself rather than calling it. An
+  agent connected to openai-docs-mcp can LEARN the whole API and CALL none of it.
+  This is the opposite shape to a vendor like Stripe, whose MCP tools proxy the
+  REST surface directly. `get_openapi_spec` and `list_api_endpoints` are recorded
+  below with binding: meta — they are ABOUT the operation set rather than bound
+  to any member of it, which is a distinct relationship from mcp_only and worth
+  keeping visible.
+surfaces:
+  openapi:
+    path: openapi/_original/openai-openapi-master.yml
+    refined: openapi/*.yml (37 documents, one per tag)
+    operations: 242
+    servers: https://api.openai.com/v1
+    gated: false
+    note: Contract is public; CALLING it requires a bearer API key.
+  mcp:
+    url: https://developers.openai.com/mcp
+    tools: 5
+    gated: false
+    note: Anonymous. tools/list returned real inputSchemas with no auth challenge.
+  graphql:
+    endpoint: null
+    gated: n/a
+    note: >-
+      OpenAI publishes no GraphQL endpoint. graphql/openai-schema.graphql is an
+      API Evangelist conceptual rendering of the REST surface and is explicitly
+      NOT a provider artifact — it is excluded from this crosswalk so it cannot
+      be mistaken for one.
+crosswalk: []
+mcp_only:
+  - tool: search_openai_docs
+    reason: >-
+      Full-text search over docs content. No REST operation exposes documentation
+      search; there is no /docs/search on api.openai.com.
+  - tool: list_openai_docs
+    reason: Documentation pagination. No REST counterpart.
+  - tool: fetch_openai_doc
+    reason: >-
+      Returns markdown for a docs URL. Not an API operation — the content lives
+      on the docs hosts, not behind api.openai.com.
+meta_tools:
+  - tool: list_api_endpoints
+    binding: meta
+    confidence: high
+    rest: []
+    note: >-
+      Enumerates the endpoint URLs in the OpenAPI spec. It describes the whole
+      operation set rather than binding to one operation, so it is neither a
+      crosswalk row nor genuinely mcp_only.
+  - tool: get_openapi_spec
+    binding: meta
+    confidence: high
+    rest: []
+    note: >-
+      Returns the OpenAPI fragment (and code samples) for a named endpoint URL.
+      The nearest thing to a bridge on this server: it hands an agent the
+      parameters and requestBody of any of the 242 operations, which the agent
+      must then call itself over plain HTTPS with its own key.
+rest_only:
+  count: 242
+  note: >-
+    Every operation in the contract is rest_only — there is no MCP tool for any
+    of them. The five highest-traffic examples, verified by operationId in
+    openapi/_original/openai-openapi-master.yml.
+  examples:
+    - operationId: createResponse
+      tag: Responses
+      note: The primary agent-facing endpoint; no MCP tool reaches it.
+    - operationId: createChatCompletion
+      tag: Chat
+    - operationId: createEmbedding
+      tag: Embeddings
+    - operationId: createFile
+      tag: Files
+    - operationId: listModels
+      tag: Models
+coverage:
+  mcp_tools: 5
+  mcp_tools_bound_to_rest: 0
+  mcp_tools_meta: 2
+  mcp_tools_mcp_only: 3
+  rest_operations: 242
+  rest_operations_covered_by_a_tool: 0
+  rest_coverage_pct: 0.0
+  graphql_fields_mapped: 0
