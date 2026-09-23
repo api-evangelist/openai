@@ -15,16 +15,16 @@ servers:
 security:
 - ApiKeyAuth: []
 tags:
-- name: Project groups
+- name: Project Groups
 paths:
   /organization/projects/{project_id}/groups:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Lists the groups that have access to a project.
+      summary: Lists the groups that have access to a project
       operationId: list-project-groups
       tags:
-      - Project groups
+      - Project Groups
       parameters:
       - name: project_id
         in: path
@@ -88,10 +88,10 @@ paths:
     post:
       security:
       - AdminApiKeyAuth: []
-      summary: Grants a group access to a project.
+      summary: Grants a group access to a project
       operationId: add-project-group
       tags:
-      - Project groups
+      - Project Groups
       parameters:
       - name: project_id
         in: path
@@ -138,10 +138,10 @@ paths:
     delete:
       security:
       - AdminApiKeyAuth: []
-      summary: Revokes a group's access to a project.
+      summary: Revokes a group's access to a project
       operationId: remove-project-group
       tags:
-      - Project groups
+      - Project Groups
       parameters:
       - name: project_id
         in: path
@@ -185,21 +185,25 @@ paths:
           response: "{\n    \"object\": \"project.group.deleted\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
-    InviteProjectGroupBody:
+    ProjectGroupDeletedResource:
       type: object
-      description: Request payload for granting a group access to a project.
+      description: Confirmation payload returned after removing a group from a project.
       properties:
-        group_id:
+        object:
           type: string
-          description: Identifier of the group to add to the project.
-        role:
-          type: string
-          description: Identifier of the project role to grant to the group.
+          enum:
+          - project.group.deleted
+          description: Always `project.group.deleted`.
+          x-stainless-const: true
+        deleted:
+          type: boolean
+          description: Whether the group membership in the project was removed.
       required:
-      - group_id
-      - role
+      - object
+      - deleted
       x-oaiMeta:
-        example: "{\n    \"group_id\": \"group_01J1F8ABCDXYZ\",\n    \"role\": \"role_01J1F8PROJ\"\n}\n"
+        name: Project group deletion confirmation
+        example: "{\n    \"object\": \"project.group.deleted\",\n    \"deleted\": true\n}\n"
     ProjectGroup:
       type: object
       description: Details about a group's membership in a project.
@@ -236,25 +240,6 @@ components:
       x-oaiMeta:
         name: The project group object
         example: "{\n    \"object\": \"project.group\",\n    \"project_id\": \"proj_abc123\",\n    \"group_id\": \"group_01J1F8ABCDXYZ\",\n    \"group_name\": \"Support Team\",\n    \"group_type\": \"group\",\n    \"created_at\": 1711471533\n}\n"
-    ProjectGroupDeletedResource:
-      type: object
-      description: Confirmation payload returned after removing a group from a project.
-      properties:
-        object:
-          type: string
-          enum:
-          - project.group.deleted
-          description: Always `project.group.deleted`.
-          x-stainless-const: true
-        deleted:
-          type: boolean
-          description: Whether the group membership in the project was removed.
-      required:
-      - object
-      - deleted
-      x-oaiMeta:
-        name: Project group deletion confirmation
-        example: "{\n    \"object\": \"project.group.deleted\",\n    \"deleted\": true\n}\n"
     ProjectGroupListResource:
       type: object
       description: Paginated list of groups that have access to a project.
@@ -286,6 +271,21 @@ components:
       x-oaiMeta:
         name: Project group list
         example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"object\": \"project.group\",\n            \"project_id\": \"proj_abc123\",\n            \"group_id\": \"group_01J1F8ABCDXYZ\",\n            \"group_name\": \"Support Team\",\n            \"created_at\": 1711471533\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
+    InviteProjectGroupBody:
+      type: object
+      description: Request payload for granting a group access to a project.
+      properties:
+        group_id:
+          type: string
+          description: Identifier of the group to add to the project.
+        role:
+          type: string
+          description: Identifier of the project role to grant to the group.
+      required:
+      - group_id
+      - role
+      x-oaiMeta:
+        example: "{\n    \"group_id\": \"group_01J1F8ABCDXYZ\",\n    \"role\": \"role_01J1F8PROJ\"\n}\n"
   securitySchemes:
     ApiKeyAuth:
       type: http

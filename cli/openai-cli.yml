@@ -1,0 +1,54 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  https://learn.chatgpt.com/docs/codex/cli (https://developers.openai.com/codex/cli
+  308s here), https://developers.openai.com/codex, and the npm registry metadata
+  for @openai/codex read 2026-08-27.
+description: >-
+  Codex is OpenAI's first-party CLI, and it is worth being precise about what it
+  is NOT: it is a coding agent, not an API management CLI. There is no
+  `openai models list`, no `openai files upload`, no equivalent of `stripe get`
+  — nothing in the command surface wraps the REST API for scripting. What Codex
+  gives an operator is an agent that runs in a terminal, reads AGENTS.md,
+  applies permission policies, and can attach to external MCP servers via
+  `codex mcp`. It is the fastest-moving package OpenAI publishes: version
+  0.150.1 shipped 2026-08-27, the same day as this read.
+docs: https://learn.chatgpt.com/docs/codex/cli
+repo: https://github.com/openai/codex
+binary: codex
+package: packages/openai-packages.yml ("@openai/codex", npm, 0.150.1, 2026-08-27)
+install:
+  shell: curl -fsSL https://chatgpt.com/codex/install.sh | sh
+  npm: npm install -g @openai/codex
+  homebrew: >-
+    Listed as an option on the install page; the exact formula string is not
+    quoted in the docs, so it is not reproduced here rather than guessed.
+commands:
+  session:
+    - {name: codex, description: Interactive mode — describe a task in natural language.}
+    - {name: codex resume, description: Return to a saved chat session.}
+    - {name: codex exec, description: Run tasks non-interactively, for scripts and CI.}
+    - {name: codex cloud, description: Move the current work to Codex cloud.}
+  flags:
+    - {name: --image, description: Attach visual context to the task.}
+    - {name: --search, description: Enable web search during the task.}
+  slash_commands:
+    - {name: /init, description: Create an AGENTS.md file with instructions for Codex.}
+    - {name: /status, description: Show the current session configuration.}
+    - {name: /permissions, description: Choose what Codex is allowed to do.}
+    - {name: /model, description: Choose the model and reasoning effort.}
+    - {name: /review, description: Review changes and find issues.}
+  integration:
+    - {name: codex mcp, description: Connect external MCP tools. See mcp/openai-mcp.yml.}
+    - {name: codex completion, description: Generate shell completions.}
+config:
+  file: config.toml
+  note: >-
+    The docs index lists config.toml among the Codex developer-tools topics; the
+    CLI page does not state its filesystem location, so no path is asserted here.
+covers_rest_api: false
+gap: >-
+  OpenAI ships no CLI for the platform REST API itself. An operator scripting
+  file uploads, fine-tuning jobs, project/user administration or usage reporting
+  has the SDKs and raw HTTPS and nothing else. The 2026-07-29 Terraform provider
+  is the closest thing to a declarative operations surface OpenAI publishes.

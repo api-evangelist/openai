@@ -19,10 +19,7 @@ tags:
 paths:
   /chatkit/sessions/{session_id}/cancel:
     post:
-      summary: 'Cancel an active ChatKit session and return its most recent metadata.
-
-
-        Cancelling prevents new requests from using the issued client secret.'
+      summary: Cancel an active ChatKit session and return its most recent metadata.
       operationId: CancelChatSessionMethod
       parameters:
       - name: session_id
@@ -78,7 +75,7 @@ paths:
       - Chatkit
   /chatkit/sessions:
     post:
-      summary: Create a ChatKit session.
+      summary: Create a ChatKit session
       operationId: CreateChatSessionMethod
       parameters: []
       requestBody:
@@ -132,7 +129,7 @@ paths:
       - Chatkit
   /chatkit/threads/{thread_id}/items:
     get:
-      summary: List items that belong to a ChatKit thread.
+      summary: List items that belong to a ChatKit thread
       operationId: ListThreadItemsMethod
       parameters:
       - name: thread_id
@@ -205,7 +202,7 @@ paths:
       - Chatkit
   /chatkit/threads/{thread_id}:
     get:
-      summary: Retrieve a ChatKit thread by its identifier.
+      summary: Retrieve a ChatKit thread by its identifier
       operationId: GetThreadMethod
       parameters:
       - name: thread_id
@@ -260,7 +257,7 @@ paths:
       tags:
       - Chatkit
     delete:
-      summary: Delete a ChatKit thread along with its items and stored attachments.
+      summary: Delete a ChatKit thread along with its items and stored attachments
       operationId: DeleteThreadMethod
       parameters:
       - name: thread_id
@@ -315,7 +312,7 @@ paths:
       - Chatkit
   /chatkit/threads:
     get:
-      summary: List ChatKit threads with optional pagination and user filters.
+      summary: List ChatKit threads with optional pagination and user filters
       operationId: ListThreadsMethod
       parameters:
       - name: limit
@@ -390,293 +387,6 @@ paths:
       - Chatkit
 components:
   schemas:
-    AutomaticThreadTitlingParam:
-      properties:
-        enabled:
-          type: boolean
-          description: Enable automatic thread title generation. Defaults to true.
-      type: object
-      required: []
-      title: Automatic thread titling configuration
-      description: Controls whether ChatKit automatically generates thread titles.
-    ChatSessionStatus:
-      type: string
-      enum:
-      - active
-      - expired
-      - cancelled
-    ClientToolCallStatus:
-      type: string
-      enum:
-      - in_progress
-      - completed
-    UserMessageItem:
-      properties:
-        id:
-          type: string
-          description: Identifier of the thread item.
-        object:
-          type: string
-          enum:
-          - chatkit.thread_item
-          description: Type discriminator that is always `chatkit.thread_item`.
-          default: chatkit.thread_item
-          x-stainless-const: true
-        created_at:
-          type: integer
-          format: unixtime
-          description: Unix timestamp (in seconds) for when the item was created.
-        thread_id:
-          type: string
-          description: Identifier of the parent thread.
-        type:
-          type: string
-          enum:
-          - chatkit.user_message
-          default: chatkit.user_message
-          x-stainless-const: true
-        content:
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/UserMessageInputText'
-            - $ref: '#/components/schemas/UserMessageQuotedText'
-            description: Content blocks that comprise a user message.
-            discriminator:
-              propertyName: type
-          type: array
-          description: Ordered content elements supplied by the user.
-        attachments:
-          items:
-            $ref: '#/components/schemas/Attachment'
-          type: array
-          description: Attachments associated with the user message. Defaults to an empty list.
-        inference_options:
-          anyOf:
-          - $ref: '#/components/schemas/InferenceOptions'
-            description: Inference overrides applied to the message. Defaults to null when unset.
-          - type: 'null'
-      type: object
-      required:
-      - id
-      - object
-      - created_at
-      - thread_id
-      - type
-      - content
-      - attachments
-      - inference_options
-      title: User Message Item
-      description: User-authored messages within a thread.
-    AssistantMessageItem:
-      properties:
-        id:
-          type: string
-          description: Identifier of the thread item.
-        object:
-          type: string
-          enum:
-          - chatkit.thread_item
-          description: Type discriminator that is always `chatkit.thread_item`.
-          default: chatkit.thread_item
-          x-stainless-const: true
-        created_at:
-          type: integer
-          format: unixtime
-          description: Unix timestamp (in seconds) for when the item was created.
-        thread_id:
-          type: string
-          description: Identifier of the parent thread.
-        type:
-          type: string
-          enum:
-          - chatkit.assistant_message
-          description: Type discriminator that is always `chatkit.assistant_message`.
-          default: chatkit.assistant_message
-          x-stainless-const: true
-        content:
-          items:
-            $ref: '#/components/schemas/ResponseOutputText'
-          type: array
-          description: Ordered assistant response segments.
-      type: object
-      required:
-      - id
-      - object
-      - created_at
-      - thread_id
-      - type
-      - content
-      title: Assistant message
-      description: Assistant-authored message within a thread.
-    CreateChatSessionBody:
-      properties:
-        workflow:
-          $ref: '#/components/schemas/WorkflowParam'
-          description: Workflow that powers the session.
-        user:
-          type: string
-          minLength: 1
-          description: A free-form string that identifies your end user; ensures this Session can access other objects that have the same `user` scope.
-        expires_after:
-          $ref: '#/components/schemas/ExpiresAfterParam'
-          description: Optional override for session expiration timing in seconds from creation. Defaults to 10 minutes.
-        rate_limits:
-          $ref: '#/components/schemas/RateLimitsParam'
-          description: Optional override for per-minute request limits. When omitted, defaults to 10.
-        chatkit_configuration:
-          $ref: '#/components/schemas/ChatkitConfigurationParam'
-          description: Optional overrides for ChatKit runtime configuration features
-      type: object
-      required:
-      - workflow
-      - user
-      title: Create chat session request
-      description: Parameters for provisioning a new ChatKit session.
-    TaskGroupTask:
-      properties:
-        type:
-          $ref: '#/components/schemas/TaskType'
-          description: Subtype for the grouped task.
-        heading:
-          anyOf:
-          - type: string
-            description: Optional heading for the grouped task. Defaults to null when not provided.
-          - type: 'null'
-        summary:
-          anyOf:
-          - type: string
-            description: Optional summary that describes the grouped task. Defaults to null when omitted.
-          - type: 'null'
-      type: object
-      required:
-      - type
-      - heading
-      - summary
-      title: Task group task
-      description: Task entry that appears within a TaskGroup.
-    ResponseOutputText:
-      properties:
-        type:
-          type: string
-          enum:
-          - output_text
-          description: Type discriminator that is always `output_text`.
-          default: output_text
-          x-stainless-const: true
-        text:
-          type: string
-          description: Assistant generated text.
-        annotations:
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/FileAnnotation'
-            - $ref: '#/components/schemas/UrlAnnotation'
-            description: Annotation object describing a cited source.
-            discriminator:
-              propertyName: type
-          type: array
-          description: Ordered list of annotations attached to the response text.
-      type: object
-      required:
-      - type
-      - text
-      - annotations
-      title: Assistant message content
-      description: Assistant response text accompanied by optional annotations.
-    ChatSessionHistory:
-      properties:
-        enabled:
-          type: boolean
-          description: Indicates if chat history is persisted for the session.
-        recent_threads:
-          anyOf:
-          - type: integer
-            description: Number of prior threads surfaced in history views. Defaults to null when all history is retained.
-          - type: 'null'
-      type: object
-      required:
-      - enabled
-      - recent_threads
-      title: History settings
-      description: History retention preferences returned for the session.
-    ExpiresAfterParam:
-      properties:
-        anchor:
-          type: string
-          enum:
-          - created_at
-          description: Base timestamp used to calculate expiration. Currently fixed to `created_at`.
-          default: created_at
-          x-stainless-const: true
-        seconds:
-          type: integer
-          maximum: 600
-          minimum: 1
-          format: int64
-          description: Number of seconds after the anchor when the session expires.
-      type: object
-      required:
-      - anchor
-      - seconds
-      title: Expiration overrides
-      description: Controls when the session expires relative to an anchor timestamp.
-    ClientToolCallItem:
-      properties:
-        id:
-          type: string
-          description: Identifier of the thread item.
-        object:
-          type: string
-          enum:
-          - chatkit.thread_item
-          description: Type discriminator that is always `chatkit.thread_item`.
-          default: chatkit.thread_item
-          x-stainless-const: true
-        created_at:
-          type: integer
-          format: unixtime
-          description: Unix timestamp (in seconds) for when the item was created.
-        thread_id:
-          type: string
-          description: Identifier of the parent thread.
-        type:
-          type: string
-          enum:
-          - chatkit.client_tool_call
-          description: Type discriminator that is always `chatkit.client_tool_call`.
-          default: chatkit.client_tool_call
-          x-stainless-const: true
-        status:
-          $ref: '#/components/schemas/ClientToolCallStatus'
-          description: Execution status for the tool call.
-        call_id:
-          type: string
-          description: Identifier for the client tool call.
-        name:
-          type: string
-          description: Tool name that was invoked.
-        arguments:
-          type: string
-          description: JSON-encoded arguments that were sent to the tool.
-        output:
-          anyOf:
-          - type: string
-            description: JSON-encoded output captured from the tool. Defaults to null while execution is in progress.
-          - type: 'null'
-      type: object
-      required:
-      - id
-      - object
-      - created_at
-      - thread_id
-      - type
-      - status
-      - call_id
-      - name
-      - arguments
-      - output
-      title: Client tool call
-      description: Record of a client side tool invocation initiated by the assistant.
     WidgetMessageItem:
       properties:
         id:
@@ -716,323 +426,22 @@ components:
       - widget
       title: Widget message
       description: Thread item that renders a widget payload.
-    ThreadResource:
-      properties:
-        id:
-          type: string
-          description: Identifier of the thread.
-        object:
-          type: string
-          enum:
-          - chatkit.thread
-          description: Type discriminator that is always `chatkit.thread`.
-          default: chatkit.thread
-          x-stainless-const: true
-        created_at:
-          type: integer
-          format: unixtime
-          description: Unix timestamp (in seconds) for when the thread was created.
-        title:
-          anyOf:
-          - type: string
-            description: Optional human-readable title for the thread. Defaults to null when no title has been generated.
-          - type: 'null'
-        status:
-          oneOf:
-          - $ref: '#/components/schemas/ActiveStatus'
-          - $ref: '#/components/schemas/LockedStatus'
-          - $ref: '#/components/schemas/ClosedStatus'
-          description: Current status for the thread. Defaults to `active` for newly created threads.
-          discriminator:
-            propertyName: type
-        user:
-          type: string
-          description: Free-form string that identifies your end user who owns the thread.
-      type: object
-      required:
-      - id
-      - object
-      - created_at
-      - title
-      - status
-      - user
-      title: The thread object
-      description: Represents a ChatKit thread and its current status.
-      example:
-        id: cthr_def456
-        object: chatkit.thread
-        created_at: 1712345600
-        title: Demo feedback
-        status:
-          type: active
-        user: user_456
-    ChatkitConfigurationParam:
-      properties:
-        automatic_thread_titling:
-          $ref: '#/components/schemas/AutomaticThreadTitlingParam'
-          description: Configuration for automatic thread titling. When omitted, automatic thread titling is enabled by default.
-        file_upload:
-          $ref: '#/components/schemas/FileUploadParam'
-          description: Configuration for upload enablement and limits. When omitted, uploads are disabled by default (max_files 10, max_file_size 512 MB).
-        history:
-          $ref: '#/components/schemas/HistoryParam'
-          description: Configuration for chat history retention. When omitted, history is enabled by default with no limit on recent_threads (null).
-      type: object
-      required: []
-      title: ChatKit configuration overrides
-      description: Optional per-session configuration settings for ChatKit behavior.
-    OrderEnum:
+    ChatSessionStatus:
       type: string
       enum:
-      - asc
-      - desc
-    WorkflowParam:
-      properties:
-        id:
-          type: string
-          description: Identifier for the workflow invoked by the session.
-        version:
-          type: string
-          description: Specific workflow version to run. Defaults to the latest deployed version.
-        state_variables:
-          additionalProperties:
-            oneOf:
-            - type: string
-              maxLength: 10485760
-            - type: integer
-            - type: boolean
-            - type: number
-          type: object
-          maxProperties: 64
-          description: State variables forwarded to the workflow. Keys may be up to 64 characters, values must be primitive types, and the map defaults to an empty object.
-          x-oaiTypeLabel: map
-        tracing:
-          $ref: '#/components/schemas/WorkflowTracingParam'
-          description: Optional tracing overrides for the workflow invocation. When omitted, tracing is enabled by default.
-      type: object
-      required:
-      - id
-      title: Workflow settings
-      description: Workflow reference and overrides applied to the chat session.
-    ChatSessionFileUpload:
-      properties:
-        enabled:
-          type: boolean
-          description: Indicates if uploads are enabled for the session.
-        max_file_size:
-          anyOf:
-          - type: integer
-            description: Maximum upload size in megabytes.
-          - type: 'null'
-        max_files:
-          anyOf:
-          - type: integer
-            description: Maximum number of uploads allowed during the session.
-          - type: 'null'
-      type: object
-      required:
-      - enabled
-      - max_file_size
-      - max_files
-      title: File upload settings
-      description: Upload permissions and limits applied to the session.
-    ThreadListResource:
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: The type of object returned, must be `list`.
-          default: list
-          x-stainless-const: true
-        data:
-          items:
-            $ref: '#/components/schemas/ThreadResource'
-          type: array
-          description: A list of items
-        first_id:
-          anyOf:
-          - type: string
-            description: The ID of the first item in the list.
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-            description: The ID of the last item in the list.
-          - type: 'null'
-        has_more:
-          type: boolean
-          description: Whether there are more items available.
-      type: object
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
-      title: Threads
-      description: A paginated list of ChatKit threads.
-    HistoryParam:
-      properties:
-        enabled:
-          type: boolean
-          description: Enables chat users to access previous ChatKit threads. Defaults to true.
-        recent_threads:
-          type: integer
-          minimum: 1
-          description: Number of recent ChatKit threads users have access to. Defaults to unlimited when unset.
-      type: object
-      required: []
-      title: Chat history configuration
-      description: Controls how much historical context is retained for the session.
-    ThreadItemListResource:
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: The type of object returned, must be `list`.
-          default: list
-          x-stainless-const: true
-        data:
-          items:
-            $ref: '#/components/schemas/ThreadItem'
-          type: array
-          description: A list of items
-        first_id:
-          anyOf:
-          - type: string
-            description: The ID of the first item in the list.
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-            description: The ID of the last item in the list.
-          - type: 'null'
-        has_more:
-          type: boolean
-          description: Whether there are more items available.
-      type: object
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
-      title: Thread Items
-      description: A paginated list of thread items rendered for the ChatKit API.
-    TaskType:
-      type: string
-      enum:
-      - custom
-      - thought
-    ChatSessionAutomaticThreadTitling:
-      properties:
-        enabled:
-          type: boolean
-          description: Whether automatic thread titling is enabled.
-      type: object
-      required:
-      - enabled
-      title: Automatic thread titling
-      description: Automatic thread title preferences for the session.
-    ChatkitWorkflow:
-      properties:
-        id:
-          type: string
-          description: Identifier of the workflow backing the session.
-        version:
-          anyOf:
-          - type: string
-            description: Specific workflow version used for the session. Defaults to null when using the latest deployment.
-          - type: 'null'
-        state_variables:
-          anyOf:
-          - additionalProperties:
-              oneOf:
-              - type: string
-              - type: integer
-              - type: boolean
-              - type: number
-            type: object
-            description: State variable key-value pairs applied when invoking the workflow. Defaults to null when no overrides were provided.
-            x-oaiTypeLabel: map
-          - type: 'null'
-        tracing:
-          $ref: '#/components/schemas/ChatkitWorkflowTracing'
-          description: Tracing settings applied to the workflow.
-      type: object
-      required:
-      - id
-      - version
-      - state_variables
-      - tracing
-      title: Workflow
-      description: Workflow metadata and state returned for the session.
-    ChatSessionChatkitConfiguration:
-      properties:
-        automatic_thread_titling:
-          $ref: '#/components/schemas/ChatSessionAutomaticThreadTitling'
-          description: Automatic thread titling preferences.
-        file_upload:
-          $ref: '#/components/schemas/ChatSessionFileUpload'
-          description: Upload settings for the session.
-        history:
-          $ref: '#/components/schemas/ChatSessionHistory'
-          description: History retention configuration.
-      type: object
-      required:
-      - automatic_thread_titling
-      - file_upload
-      - history
-      title: ChatKit configuration
-      description: ChatKit configuration for the session.
-    ChatSessionRateLimits:
+      - active
+      - expired
+      - cancelled
+    RateLimitsParam:
       properties:
         max_requests_per_1_minute:
           type: integer
-          description: Maximum allowed requests per one-minute window.
-      type: object
-      required:
-      - max_requests_per_1_minute
-      title: Rate limits
-      description: Active per-minute request limit for the session.
-    FileUploadParam:
-      properties:
-        enabled:
-          type: boolean
-          description: Enable uploads for this session. Defaults to false.
-        max_file_size:
-          type: integer
-          maximum: 512
           minimum: 1
-          description: Maximum size in megabytes for each uploaded file. Defaults to 512 MB, which is the maximum allowable size.
-        max_files:
-          type: integer
-          minimum: 1
-          description: Maximum number of files that can be uploaded to the session. Defaults to 10.
+          description: Maximum number of requests allowed per minute for the session. Defaults to 10.
       type: object
       required: []
-      title: File upload configuration
-      description: Controls whether users can upload files.
-    UserMessageQuotedText:
-      properties:
-        type:
-          type: string
-          enum:
-          - quoted_text
-          description: Type discriminator that is always `quoted_text`.
-          default: quoted_text
-          x-stainless-const: true
-        text:
-          type: string
-          description: Quoted text content.
-      type: object
-      required:
-      - type
-      - text
-      title: User message quoted text
-      description: Quoted snippet that the user referenced in their message.
+      title: Rate limit overrides
+      description: Controls request rate limits for the session.
     UrlAnnotationSource:
       properties:
         type:
@@ -1052,155 +461,36 @@ components:
       - url
       title: URL annotation source
       description: URL backing an annotation entry.
-    UserMessageInputText:
+    LockedStatus:
       properties:
         type:
           type: string
           enum:
-          - input_text
-          description: Type discriminator that is always `input_text`.
-          default: input_text
-          x-stainless-const: true
-        text:
-          type: string
-          description: Plain-text content supplied by the user.
-      type: object
-      required:
-      - type
-      - text
-      title: User message input
-      description: Text block that a user contributed to the thread.
-    ChatkitWorkflowTracing:
-      properties:
-        enabled:
-          type: boolean
-          description: Indicates whether tracing is enabled.
-      type: object
-      required:
-      - enabled
-      title: Tracing Configuration
-      description: Controls diagnostic tracing during the session.
-    DeletedThreadResource:
-      properties:
-        id:
-          type: string
-          description: Identifier of the deleted thread.
-        object:
-          type: string
-          enum:
-          - chatkit.thread.deleted
-          description: Type discriminator that is always `chatkit.thread.deleted`.
-          default: chatkit.thread.deleted
-          x-stainless-const: true
-        deleted:
-          type: boolean
-          description: Indicates that the thread has been deleted.
-      type: object
-      required:
-      - id
-      - object
-      - deleted
-      title: Deleted thread
-      description: Confirmation payload returned after deleting a thread.
-    AttachmentType:
-      type: string
-      enum:
-      - image
-      - file
-    UrlAnnotation:
-      properties:
-        type:
-          type: string
-          enum:
-          - url
-          description: Type discriminator that is always `url` for this annotation.
-          default: url
-          x-stainless-const: true
-        source:
-          $ref: '#/components/schemas/UrlAnnotationSource'
-          description: URL referenced by the annotation.
-      type: object
-      required:
-      - type
-      - source
-      title: URL annotation
-      description: Annotation that references a URL.
-    ThreadItem:
-      oneOf:
-      - $ref: '#/components/schemas/UserMessageItem'
-      - $ref: '#/components/schemas/AssistantMessageItem'
-      - $ref: '#/components/schemas/WidgetMessageItem'
-      - $ref: '#/components/schemas/ClientToolCallItem'
-      - $ref: '#/components/schemas/TaskItem'
-      - $ref: '#/components/schemas/TaskGroupItem'
-      title: The thread item
-      discriminator:
-        propertyName: type
-    FileAnnotationSource:
-      properties:
-        type:
-          type: string
-          enum:
-          - file
-          description: Type discriminator that is always `file`.
-          default: file
-          x-stainless-const: true
-        filename:
-          type: string
-          description: Filename referenced by the annotation.
-      type: object
-      required:
-      - type
-      - filename
-      title: File annotation source
-      description: Attachment source referenced by an annotation.
-    ClosedStatus:
-      properties:
-        type:
-          type: string
-          enum:
-          - closed
-          description: Status discriminator that is always `closed`.
-          default: closed
+          - locked
+          description: Status discriminator that is always `locked`.
+          default: locked
           x-stainless-const: true
         reason:
           anyOf:
           - type: string
-            description: Reason that the thread was closed. Defaults to null when no reason is recorded.
+            description: Reason that the thread was locked. Defaults to null when no reason is recorded.
           - type: 'null'
       type: object
       required:
       - type
       - reason
-      title: Closed thread status
-      description: Indicates that a thread has been closed.
-    FileAnnotation:
+      title: Locked thread status
+      description: Indicates that a thread is locked and cannot accept new input.
+    ChatSessionRateLimits:
       properties:
-        type:
-          type: string
-          enum:
-          - file
-          description: Type discriminator that is always `file` for this annotation.
-          default: file
-          x-stainless-const: true
-        source:
-          $ref: '#/components/schemas/FileAnnotationSource'
-          description: File attachment referenced by the annotation.
+        max_requests_per_1_minute:
+          type: integer
+          description: Maximum allowed requests per one-minute window.
       type: object
       required:
-      - type
-      - source
-      title: File annotation
-      description: Annotation that references an uploaded file.
-    WorkflowTracingParam:
-      properties:
-        enabled:
-          type: boolean
-          description: Whether tracing is enabled during the session. Defaults to true.
-      type: object
-      required: []
-      title: Tracing Configuration
-      description: Controls diagnostic tracing during the session.
+      - max_requests_per_1_minute
+      title: Rate limits
+      description: Active per-minute request limit for the session.
     TaskItem:
       properties:
         id:
@@ -1252,6 +542,53 @@ components:
       - summary
       title: Task item
       description: Task emitted by the workflow to show progress and status updates.
+    ResponseOutputText:
+      properties:
+        type:
+          type: string
+          enum:
+          - output_text
+          description: Type discriminator that is always `output_text`.
+          default: output_text
+          x-stainless-const: true
+        text:
+          type: string
+          description: Assistant generated text.
+        annotations:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/FileAnnotation'
+            - $ref: '#/components/schemas/UrlAnnotation'
+            description: Annotation object describing a cited source.
+            discriminator:
+              propertyName: type
+          type: array
+          description: Ordered list of annotations attached to the response text.
+      type: object
+      required:
+      - type
+      - text
+      - annotations
+      title: Assistant message content
+      description: Assistant response text accompanied by optional annotations.
+    UserMessageInputText:
+      properties:
+        type:
+          type: string
+          enum:
+          - input_text
+          description: Type discriminator that is always `input_text`.
+          default: input_text
+          x-stainless-const: true
+        text:
+          type: string
+          description: Plain-text content supplied by the user.
+      type: object
+      required:
+      - type
+      - text
+      title: User message input
+      description: Text block that a user contributed to the thread.
     ToolChoice:
       properties:
         id:
@@ -1262,6 +599,406 @@ components:
       - id
       title: Tool choice
       description: Tool selection that the assistant should honor when executing the item.
+    ThreadListResource:
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: The type of object returned, must be `list`.
+          default: list
+          x-stainless-const: true
+        data:
+          items:
+            $ref: '#/components/schemas/ThreadResource'
+          type: array
+          description: A list of items
+        first_id:
+          anyOf:
+          - type: string
+            description: The ID of the first item in the list.
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+            description: The ID of the last item in the list.
+          - type: 'null'
+        has_more:
+          type: boolean
+          description: Whether there are more items available.
+      type: object
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+      title: Threads
+      description: A paginated list of ChatKit threads.
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    UserMessageQuotedText:
+      properties:
+        type:
+          type: string
+          enum:
+          - quoted_text
+          description: Type discriminator that is always `quoted_text`.
+          default: quoted_text
+          x-stainless-const: true
+        text:
+          type: string
+          description: Quoted text content.
+      type: object
+      required:
+      - type
+      - text
+      title: User message quoted text
+      description: Quoted snippet that the user referenced in their message.
+    ChatSessionHistory:
+      properties:
+        enabled:
+          type: boolean
+          description: Indicates if chat history is persisted for the session.
+        recent_threads:
+          anyOf:
+          - type: integer
+            description: Number of prior threads surfaced in history views. Defaults to null when all history is retained.
+          - type: 'null'
+      type: object
+      required:
+      - enabled
+      - recent_threads
+      title: History settings
+      description: History retention preferences returned for the session.
+    ThreadResource:
+      properties:
+        id:
+          type: string
+          description: Identifier of the thread.
+        object:
+          type: string
+          enum:
+          - chatkit.thread
+          description: Type discriminator that is always `chatkit.thread`.
+          default: chatkit.thread
+          x-stainless-const: true
+        created_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (in seconds) for when the thread was created.
+        title:
+          anyOf:
+          - type: string
+            description: Optional human-readable title for the thread. Defaults to null when no title has been generated.
+          - type: 'null'
+        status:
+          oneOf:
+          - $ref: '#/components/schemas/ActiveStatus'
+          - $ref: '#/components/schemas/LockedStatus'
+          - $ref: '#/components/schemas/ClosedStatus'
+          description: Current status for the thread. Defaults to `active` for newly created threads.
+          discriminator:
+            propertyName: type
+        user:
+          type: string
+          description: Free-form string that identifies your end user who owns the thread.
+      type: object
+      required:
+      - id
+      - object
+      - created_at
+      - title
+      - status
+      - user
+      title: The thread object
+      description: Represents a ChatKit thread and its current status.
+      example:
+        id: cthr_def456
+        object: chatkit.thread
+        created_at: 1712345600
+        title: Demo feedback
+        status:
+          type: active
+        user: user_456
+    TaskGroupItem:
+      properties:
+        id:
+          type: string
+          description: Identifier of the thread item.
+        object:
+          type: string
+          enum:
+          - chatkit.thread_item
+          description: Type discriminator that is always `chatkit.thread_item`.
+          default: chatkit.thread_item
+          x-stainless-const: true
+        created_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (in seconds) for when the item was created.
+        thread_id:
+          type: string
+          description: Identifier of the parent thread.
+        type:
+          type: string
+          enum:
+          - chatkit.task_group
+          description: Type discriminator that is always `chatkit.task_group`.
+          default: chatkit.task_group
+          x-stainless-const: true
+        tasks:
+          items:
+            $ref: '#/components/schemas/TaskGroupTask'
+          type: array
+          description: Tasks included in the group.
+      type: object
+      required:
+      - id
+      - object
+      - created_at
+      - thread_id
+      - type
+      - tasks
+      title: Task group
+      description: Collection of workflow tasks grouped together in the thread.
+    TaskGroupTask:
+      properties:
+        type:
+          $ref: '#/components/schemas/TaskType'
+          description: Subtype for the grouped task.
+        heading:
+          anyOf:
+          - type: string
+            description: Optional heading for the grouped task. Defaults to null when not provided.
+          - type: 'null'
+        summary:
+          anyOf:
+          - type: string
+            description: Optional summary that describes the grouped task. Defaults to null when omitted.
+          - type: 'null'
+      type: object
+      required:
+      - type
+      - heading
+      - summary
+      title: Task group task
+      description: Task entry that appears within a TaskGroup.
+    DeletedThreadResource:
+      properties:
+        id:
+          type: string
+          description: Identifier of the deleted thread.
+        object:
+          type: string
+          enum:
+          - chatkit.thread.deleted
+          description: Type discriminator that is always `chatkit.thread.deleted`.
+          default: chatkit.thread.deleted
+          x-stainless-const: true
+        deleted:
+          type: boolean
+          description: Indicates that the thread has been deleted.
+      type: object
+      required:
+      - id
+      - object
+      - deleted
+      title: Deleted thread
+      description: Confirmation payload returned after deleting a thread.
+    FileAnnotationSource:
+      properties:
+        type:
+          type: string
+          enum:
+          - file
+          description: Type discriminator that is always `file`.
+          default: file
+          x-stainless-const: true
+        filename:
+          type: string
+          description: Filename referenced by the annotation.
+      type: object
+      required:
+      - type
+      - filename
+      title: File annotation source
+      description: Attachment source referenced by an annotation.
+    ThreadItemListResource:
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: The type of object returned, must be `list`.
+          default: list
+          x-stainless-const: true
+        data:
+          items:
+            $ref: '#/components/schemas/ThreadItem'
+          type: array
+          description: A list of items
+        first_id:
+          anyOf:
+          - type: string
+            description: The ID of the first item in the list.
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+            description: The ID of the last item in the list.
+          - type: 'null'
+        has_more:
+          type: boolean
+          description: Whether there are more items available.
+      type: object
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+      title: Thread Items
+      description: A paginated list of thread items rendered for the ChatKit API.
+    ActiveStatus:
+      properties:
+        type:
+          type: string
+          enum:
+          - active
+          description: Status discriminator that is always `active`.
+          default: active
+          x-stainless-const: true
+      type: object
+      required:
+      - type
+      title: Active thread status
+      description: Indicates that a thread is active.
+    ChatSessionFileUpload:
+      properties:
+        enabled:
+          type: boolean
+          description: Indicates if uploads are enabled for the session.
+        max_file_size:
+          anyOf:
+          - type: integer
+            description: Maximum upload size in megabytes.
+          - type: 'null'
+        max_files:
+          anyOf:
+          - type: integer
+            description: Maximum number of uploads allowed during the session.
+          - type: 'null'
+      type: object
+      required:
+      - enabled
+      - max_file_size
+      - max_files
+      title: File upload settings
+      description: Upload permissions and limits applied to the session.
+    ChatkitWorkflowTracing:
+      properties:
+        enabled:
+          type: boolean
+          description: Indicates whether tracing is enabled.
+      type: object
+      required:
+      - enabled
+      title: Tracing Configuration
+      description: Controls diagnostic tracing during the session.
+    AttachmentType:
+      type: string
+      enum:
+      - image
+      - file
+    Attachment:
+      properties:
+        type:
+          $ref: '#/components/schemas/AttachmentType'
+          description: Attachment discriminator.
+        id:
+          type: string
+          description: Identifier for the attachment.
+        name:
+          type: string
+          description: Original display name for the attachment.
+        mime_type:
+          type: string
+          description: MIME type of the attachment.
+        preview_url:
+          anyOf:
+          - type: string
+            format: uri
+            description: Preview URL for rendering the attachment inline.
+          - type: 'null'
+      type: object
+      required:
+      - type
+      - id
+      - name
+      - mime_type
+      - preview_url
+      title: Attachment
+      description: Attachment metadata included on thread items.
+    ClosedStatus:
+      properties:
+        type:
+          type: string
+          enum:
+          - closed
+          description: Status discriminator that is always `closed`.
+          default: closed
+          x-stainless-const: true
+        reason:
+          anyOf:
+          - type: string
+            description: Reason that the thread was closed. Defaults to null when no reason is recorded.
+          - type: 'null'
+      type: object
+      required:
+      - type
+      - reason
+      title: Closed thread status
+      description: Indicates that a thread has been closed.
+    UrlAnnotation:
+      properties:
+        type:
+          type: string
+          enum:
+          - url
+          description: Type discriminator that is always `url` for this annotation.
+          default: url
+          x-stainless-const: true
+        source:
+          $ref: '#/components/schemas/UrlAnnotationSource'
+          description: URL referenced by the annotation.
+      type: object
+      required:
+      - type
+      - source
+      title: URL annotation
+      description: Annotation that references a URL.
+    ChatSessionChatkitConfiguration:
+      properties:
+        automatic_thread_titling:
+          $ref: '#/components/schemas/ChatSessionAutomaticThreadTitling'
+          description: Automatic thread titling preferences.
+        file_upload:
+          $ref: '#/components/schemas/ChatSessionFileUpload'
+          description: Upload settings for the session.
+        history:
+          $ref: '#/components/schemas/ChatSessionHistory'
+          description: History retention configuration.
+      type: object
+      required:
+      - automatic_thread_titling
+      - file_upload
+      - history
+      title: ChatKit configuration
+      description: ChatKit configuration for the session.
     ChatSessionResource:
       properties:
         id:
@@ -1336,6 +1073,192 @@ components:
           history:
             enabled: true
             recent_threads: 10
+    ClientToolCallStatus:
+      type: string
+      enum:
+      - in_progress
+      - completed
+    ChatkitWorkflow:
+      properties:
+        id:
+          type: string
+          description: Identifier of the workflow backing the session.
+        version:
+          anyOf:
+          - type: string
+            description: Specific workflow version used for the session. Defaults to null when using the latest deployment.
+          - type: 'null'
+        state_variables:
+          anyOf:
+          - additionalProperties:
+              oneOf:
+              - type: string
+              - type: integer
+              - type: boolean
+              - type: number
+            type: object
+            description: State variable key-value pairs applied when invoking the workflow. Defaults to null when no overrides were provided.
+            x-oaiTypeLabel: map
+          - type: 'null'
+        tracing:
+          $ref: '#/components/schemas/ChatkitWorkflowTracing'
+          description: Tracing settings applied to the workflow.
+      type: object
+      required:
+      - id
+      - version
+      - state_variables
+      - tracing
+      title: Workflow
+      description: Workflow metadata and state returned for the session.
+    ExpiresAfterParam:
+      properties:
+        anchor:
+          type: string
+          enum:
+          - created_at
+          description: Base timestamp used to calculate expiration. Currently fixed to `created_at`.
+          default: created_at
+          x-stainless-const: true
+        seconds:
+          type: integer
+          maximum: 600
+          minimum: 1
+          format: int64
+          description: Number of seconds after the anchor when the session expires.
+      type: object
+      required:
+      - anchor
+      - seconds
+      title: Expiration overrides
+      description: Controls when the session expires relative to an anchor timestamp.
+    TaskType:
+      type: string
+      enum:
+      - custom
+      - thought
+    HistoryParam:
+      properties:
+        enabled:
+          type: boolean
+          description: Enables chat users to access previous ChatKit threads. Defaults to true.
+        recent_threads:
+          type: integer
+          minimum: 1
+          description: Number of recent ChatKit threads users have access to. Defaults to unlimited when unset.
+      type: object
+      required: []
+      title: Chat history configuration
+      description: Controls how much historical context is retained for the session.
+    AutomaticThreadTitlingParam:
+      properties:
+        enabled:
+          type: boolean
+          description: Enable automatic thread title generation. Defaults to true.
+      type: object
+      required: []
+      title: Automatic thread titling configuration
+      description: Controls whether ChatKit automatically generates thread titles.
+    WorkflowParam:
+      properties:
+        id:
+          type: string
+          description: Identifier for the workflow invoked by the session.
+        version:
+          type: string
+          description: Specific workflow version to run. Defaults to the latest deployed version.
+        state_variables:
+          additionalProperties:
+            oneOf:
+            - type: string
+              maxLength: 10485760
+            - type: integer
+            - type: boolean
+            - type: number
+          type: object
+          maxProperties: 64
+          description: State variables forwarded to the workflow. Keys may be up to 64 characters, values must be primitive types, and the map defaults to an empty object.
+          x-oaiTypeLabel: map
+        tracing:
+          $ref: '#/components/schemas/WorkflowTracingParam'
+          description: Optional tracing overrides for the workflow invocation. When omitted, tracing is enabled by default.
+      type: object
+      required:
+      - id
+      title: Workflow settings
+      description: Workflow reference and overrides applied to the chat session.
+    FileAnnotation:
+      properties:
+        type:
+          type: string
+          enum:
+          - file
+          description: Type discriminator that is always `file` for this annotation.
+          default: file
+          x-stainless-const: true
+        source:
+          $ref: '#/components/schemas/FileAnnotationSource'
+          description: File attachment referenced by the annotation.
+      type: object
+      required:
+      - type
+      - source
+      title: File annotation
+      description: Annotation that references an uploaded file.
+    ChatSessionAutomaticThreadTitling:
+      properties:
+        enabled:
+          type: boolean
+          description: Whether automatic thread titling is enabled.
+      type: object
+      required:
+      - enabled
+      title: Automatic thread titling
+      description: Automatic thread title preferences for the session.
+    FileUploadParam:
+      properties:
+        enabled:
+          type: boolean
+          description: Enable uploads for this session. Defaults to false.
+        max_file_size:
+          type: integer
+          maximum: 512
+          minimum: 1
+          description: Maximum size in megabytes for each uploaded file. Defaults to 512 MB, which is the maximum allowable size.
+        max_files:
+          type: integer
+          minimum: 1
+          description: Maximum number of files that can be uploaded to the session. Defaults to 10.
+      type: object
+      required: []
+      title: File upload configuration
+      description: Controls whether users can upload files.
+    ChatkitConfigurationParam:
+      properties:
+        automatic_thread_titling:
+          $ref: '#/components/schemas/AutomaticThreadTitlingParam'
+          description: Configuration for automatic thread titling. When omitted, automatic thread titling is enabled by default.
+        file_upload:
+          $ref: '#/components/schemas/FileUploadParam'
+          description: Configuration for upload enablement and limits. When omitted, uploads are disabled by default (max_files 10, max_file_size 512 MB).
+        history:
+          $ref: '#/components/schemas/HistoryParam'
+          description: Configuration for chat history retention. When omitted, history is enabled by default with no limit on recent_threads (null).
+      type: object
+      required: []
+      title: ChatKit configuration overrides
+      description: Optional per-session configuration settings for ChatKit behavior.
+    ThreadItem:
+      oneOf:
+      - $ref: '#/components/schemas/UserMessageItem'
+      - $ref: '#/components/schemas/AssistantMessageItem'
+      - $ref: '#/components/schemas/WidgetMessageItem'
+      - $ref: '#/components/schemas/ClientToolCallItem'
+      - $ref: '#/components/schemas/TaskItem'
+      - $ref: '#/components/schemas/TaskGroupItem'
+      title: The thread item
+      discriminator:
+        propertyName: type
     InferenceOptions:
       properties:
         tool_choice:
@@ -1354,17 +1277,7 @@ components:
       - model
       title: Inference options
       description: Model and tool overrides applied when generating the assistant response.
-    RateLimitsParam:
-      properties:
-        max_requests_per_1_minute:
-          type: integer
-          minimum: 1
-          description: Maximum number of requests allowed per minute for the session. Defaults to 10.
-      type: object
-      required: []
-      title: Rate limit overrides
-      description: Controls request rate limits for the session.
-    TaskGroupItem:
+    ClientToolCallItem:
       properties:
         id:
           type: string
@@ -1386,15 +1299,27 @@ components:
         type:
           type: string
           enum:
-          - chatkit.task_group
-          description: Type discriminator that is always `chatkit.task_group`.
-          default: chatkit.task_group
+          - chatkit.client_tool_call
+          description: Type discriminator that is always `chatkit.client_tool_call`.
+          default: chatkit.client_tool_call
           x-stainless-const: true
-        tasks:
-          items:
-            $ref: '#/components/schemas/TaskGroupTask'
-          type: array
-          description: Tasks included in the group.
+        status:
+          $ref: '#/components/schemas/ClientToolCallStatus'
+          description: Execution status for the tool call.
+        call_id:
+          type: string
+          description: Identifier for the client tool call.
+        name:
+          type: string
+          description: Tool name that was invoked.
+        arguments:
+          type: string
+          description: JSON-encoded arguments that were sent to the tool.
+        output:
+          anyOf:
+          - type: string
+            description: JSON-encoded output captured from the tool. Defaults to null while execution is in progress.
+          - type: 'null'
       type: object
       required:
       - id
@@ -1402,72 +1327,144 @@ components:
       - created_at
       - thread_id
       - type
-      - tasks
-      title: Task group
-      description: Collection of workflow tasks grouped together in the thread.
-    LockedStatus:
+      - status
+      - call_id
+      - name
+      - arguments
+      - output
+      title: Client tool call
+      description: Record of a client side tool invocation initiated by the assistant.
+    UserMessageItem:
       properties:
-        type:
-          type: string
-          enum:
-          - locked
-          description: Status discriminator that is always `locked`.
-          default: locked
-          x-stainless-const: true
-        reason:
-          anyOf:
-          - type: string
-            description: Reason that the thread was locked. Defaults to null when no reason is recorded.
-          - type: 'null'
-      type: object
-      required:
-      - type
-      - reason
-      title: Locked thread status
-      description: Indicates that a thread is locked and cannot accept new input.
-    Attachment:
-      properties:
-        type:
-          $ref: '#/components/schemas/AttachmentType'
-          description: Attachment discriminator.
         id:
           type: string
-          description: Identifier for the attachment.
-        name:
+          description: Identifier of the thread item.
+        object:
           type: string
-          description: Original display name for the attachment.
-        mime_type:
+          enum:
+          - chatkit.thread_item
+          description: Type discriminator that is always `chatkit.thread_item`.
+          default: chatkit.thread_item
+          x-stainless-const: true
+        created_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (in seconds) for when the item was created.
+        thread_id:
           type: string
-          description: MIME type of the attachment.
-        preview_url:
-          anyOf:
-          - type: string
-            format: uri
-            description: Preview URL for rendering the attachment inline.
-          - type: 'null'
-      type: object
-      required:
-      - type
-      - id
-      - name
-      - mime_type
-      - preview_url
-      title: Attachment
-      description: Attachment metadata included on thread items.
-    ActiveStatus:
-      properties:
+          description: Identifier of the parent thread.
         type:
           type: string
           enum:
-          - active
-          description: Status discriminator that is always `active`.
-          default: active
+          - chatkit.user_message
+          default: chatkit.user_message
           x-stainless-const: true
+        content:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/UserMessageInputText'
+            - $ref: '#/components/schemas/UserMessageQuotedText'
+            description: Content blocks that comprise a user message.
+            discriminator:
+              propertyName: type
+          type: array
+          description: Ordered content elements supplied by the user.
+        attachments:
+          items:
+            $ref: '#/components/schemas/Attachment'
+          type: array
+          description: Attachments associated with the user message. Defaults to an empty list.
+        inference_options:
+          anyOf:
+          - $ref: '#/components/schemas/InferenceOptions'
+            description: Inference overrides applied to the message. Defaults to null when unset.
+          - type: 'null'
       type: object
       required:
+      - id
+      - object
+      - created_at
+      - thread_id
       - type
-      title: Active thread status
-      description: Indicates that a thread is active.
+      - content
+      - attachments
+      - inference_options
+      title: User Message Item
+      description: User-authored messages within a thread.
+    WorkflowTracingParam:
+      properties:
+        enabled:
+          type: boolean
+          description: Whether tracing is enabled during the session. Defaults to true.
+      type: object
+      required: []
+      title: Tracing Configuration
+      description: Controls diagnostic tracing during the session.
+    CreateChatSessionBody:
+      properties:
+        workflow:
+          $ref: '#/components/schemas/WorkflowParam'
+          description: Workflow that powers the session.
+        user:
+          type: string
+          minLength: 1
+          description: A free-form string that identifies your end user; ensures this Session can access other objects that have the same `user` scope.
+        expires_after:
+          $ref: '#/components/schemas/ExpiresAfterParam'
+          description: Optional override for session expiration timing in seconds from creation. Defaults to 10 minutes.
+        rate_limits:
+          $ref: '#/components/schemas/RateLimitsParam'
+          description: Optional override for per-minute request limits. When omitted, defaults to 10.
+        chatkit_configuration:
+          $ref: '#/components/schemas/ChatkitConfigurationParam'
+          description: Optional overrides for ChatKit runtime configuration features
+      type: object
+      required:
+      - workflow
+      - user
+      title: Create chat session request
+      description: Parameters for provisioning a new ChatKit session.
+    AssistantMessageItem:
+      properties:
+        id:
+          type: string
+          description: Identifier of the thread item.
+        object:
+          type: string
+          enum:
+          - chatkit.thread_item
+          description: Type discriminator that is always `chatkit.thread_item`.
+          default: chatkit.thread_item
+          x-stainless-const: true
+        created_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (in seconds) for when the item was created.
+        thread_id:
+          type: string
+          description: Identifier of the parent thread.
+        type:
+          type: string
+          enum:
+          - chatkit.assistant_message
+          description: Type discriminator that is always `chatkit.assistant_message`.
+          default: chatkit.assistant_message
+          x-stainless-const: true
+        content:
+          items:
+            $ref: '#/components/schemas/ResponseOutputText'
+          type: array
+          description: Ordered assistant response segments.
+      type: object
+      required:
+      - id
+      - object
+      - created_at
+      - thread_id
+      - type
+      - content
+      title: Assistant message
+      description: Assistant-authored message within a thread.
   securitySchemes:
     ApiKeyAuth:
       type: http

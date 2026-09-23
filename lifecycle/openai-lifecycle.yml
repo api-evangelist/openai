@@ -1,0 +1,138 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  https://developers.openai.com/api/docs/deprecations (the published deprecation
+  policy and dated table; https://platform.openai.com/docs/deprecations 301s
+  here), https://developers.openai.com/changelog/,
+  https://status.openai.com/ and its JSON API
+  https://status.openai.com/api/v2/status.json (HTTP 200, application/json),
+  https://openai.com/policies/service-terms/, plus `deprecated:` flags in
+  openapi/_original/openai-openapi-master.yml.
+description: >-
+  OpenAI's lifecycle discipline is unusual and worth stating precisely: it
+  publishes a genuinely strong, dated, model-level deprecation policy with 3-6
+  month notice windows — better than most of the catalog — but it versions the
+  API almost not at all. There is no dated API version, no version request
+  header, and no API-level breaking-change train. What actually gets retired at
+  OpenAI is MODELS and PRODUCTS, not endpoint shapes, so the deprecation page is
+  the versioning story. The gap an agent feels is that none of this reaches the
+  wire: no RFC 8594 Sunset or Deprecation response header is emitted, so a
+  client calling a model that shuts down in 30 days learns nothing from the
+  response and must poll a web page.
+versioning:
+  scheme: none-at-the-api-level
+  mechanism: >-
+    A single unversioned surface under the /v1 path prefix. Model identity is the
+    real version axis — callers pin a dated model snapshot (e.g.
+    gpt-image-2-2026-04-21) rather than an API version.
+  version_header: null
+  spec_version: 2.3.0
+  spec_version_source: openapi/_original/openai-openapi-master.yml info.version
+  docs: https://developers.openai.com/api/docs/deprecations
+  notes: >-
+    A `beta` marker exists in x-oaiMeta navigation groups (ChatKit is flagged
+    beta) and some surfaces require an OpenAI-Beta request header — the Realtime
+    API requires `OpenAI-Beta: realtime=v1`. That is the closest thing to
+    versioning the wire carries.
+deprecation:
+  policy_url: https://developers.openai.com/api/docs/deprecations
+  changelog: https://developers.openai.com/changelog/
+  sunset_header: false
+  deprecation_header: false
+  notice_windows:
+    - class: generally-available models
+      minimum_notice: 6 months
+    - class: specialized variants (chat variants, Codex variants)
+      minimum_notice: 3 months
+    - class: preview models
+      minimum_notice: as little as 2 weeks
+  expedited: Safety or compliance concerns may shorten any of these windows.
+  notes: >-
+    Notice is published on a page with an announced date and a shutdown date per
+    entry. Nothing is signalled in HTTP responses, so an integration cannot
+    detect its own deprecation programmatically.
+deprecations:
+  - announced: '2026-07-20'
+    shutdown: '2027-01-20'
+    what: Legacy audio, realtime and transcription models (gpt-realtime, gpt-audio)
+    replacement: gpt-realtime-2.1, gpt-audio-1.5
+  - announced: '2026-06-11'
+    shutdown: '2026-12-11'
+    what: Older GPT-5 and o3 snapshots (gpt-5-2025-08-07, o3-2025-04-16)
+    replacement: gpt-5.6-sol, gpt-5.6-terra
+  - announced: '2026-06-03'
+    shutdown: '2026-11-30'
+    what: Reusable prompts (v1/prompts API)
+    replacement: Move prompt content into application code
+    note: >-
+      An ENDPOINT retirement rather than a model one — the clearest case where
+      the deprecation page is doing the job an API version would.
+  - announced: '2026-06-03'
+    shutdown: '2026-11-30'
+    what: Evals platform
+    replacement: Promptfoo (third party)
+  - announced: '2026-06-03'
+    shutdown: '2026-11-30'
+    what: Agent Builder
+    replacement: Agents SDK or ChatGPT Workspace
+  - announced: '2026-06-02'
+    shutdown: '2026-12-01'
+    what: GPT Image models (gpt-image-1-mini, gpt-image-1.5)
+    replacement: gpt-image-2
+  - announced: '2026-04-22'
+    shutdown: '2026-10-23'
+    what: Legacy GPT snapshots (gpt-3.5-turbo, gpt-4, o1)
+    replacement: gpt-5.6-terra, gpt-5.6-sol
+  - announced: '2026-03-24'
+    shutdown: '2026-09-24'
+    what: Videos API and Sora 2 models
+    replacement: none published
+    note: >-
+      The Videos API is still present in the contract
+      (openapi/openai-videos-api-openapi.yml) and shuts down inside 30 days of
+      this read with no successor named.
+status_page:
+  url: https://status.openai.com/
+  machine_readable: https://status.openai.com/api/v2/status.json
+  probe:
+    url: https://status.openai.com/api/v2/status.json
+    status: 200
+    content_type: application/json
+  note: >-
+    Statuspage-compatible JSON API — components, incidents and scheduled
+    maintenance are all machine-readable, which is more than the deprecation
+    surface offers.
+sla:
+  terms: https://openai.com/policies/service-terms/
+  public_uptime_target: null
+  note: >-
+    No numeric uptime commitment is published for standard API accounts;
+    availability commitments are handled in enterprise agreements.
+support:
+  help_center: https://help.openai.com/en
+  community: https://community.openai.com/categories
+  note: help.openai.com is behind a bot challenge (403 to automated clients).
+deprecated_operations:
+  count: 5
+  source: >-
+    openapi/_original/openai-openapi-master.yml — `deprecated` set true on the
+    operation object.
+  operations:
+    - {method: GET, path: /assistants, operationId: listAssistants, tag: Assistants}
+    - {method: POST, path: /assistants, operationId: createAssistant, tag: Assistants}
+    - {method: GET, path: "/assistants/{assistant_id}", operationId: getAssistant, tag: Assistants}
+    - {method: POST, path: "/assistants/{assistant_id}", operationId: modifyAssistant, tag: Assistants}
+    - {method: DELETE, path: "/assistants/{assistant_id}", operationId: deleteAssistant, tag: Assistants}
+  note: >-
+    Every deprecated operation in the contract belongs to the Assistants API,
+    superseded by the Responses API + Conversations API (migration guide:
+    https://developers.openai.com/api/docs/guides/migrate-to-responses/). A
+    further 22 `deprecated: true` markers appear on individual schema
+    properties and parameters rather than on operations.
+  gap: >-
+    The deprecations PAGE and the deprecated FLAGS do not agree. The page
+    announces the Videos API shutting down 2026-09-24 and v1/prompts on
+    2026-11-30; neither operation carries `deprecated: true` in the contract, so
+    an agent reading only the OpenAPI would believe both have an indefinite
+    future. Conversely the Assistants operations are flagged in the contract but
+    carry no dated shutdown on the page.

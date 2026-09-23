@@ -23,7 +23,7 @@ paths:
       operationId: createUpload
       tags:
       - Uploads
-      summary: "Creates an intermediate [Upload](/docs/api-reference/uploads/object) object\nthat you can add [Parts](/docs/api-reference/uploads/part-object) to.\nCurrently, an Upload can accept at most 8 GB in total and expires after an\nhour after you create it.\n\nOnce you complete the Upload, we will create a\n[File](/docs/api-reference/files/object) object that contains all the parts\nyou uploaded. This File is usable in the rest of our platform as a regular\nFile object.\n\nFor certain `purpose` values, the correct `mime_type` must be specified. \nPlease refer to documentation for the \n[supported MIME types for your use case](/docs/assistants/tools/file-search#supported-files).\n\nFor guidance on the proper filename extensions for each purpose, please\nfollow the documentation on [creating a\nFile](/docs/api-reference/files/create).\n\nReturns the Upload object with status `pending`.\n"
+      summary: Creates an intermediate Upload object that you can add Parts to.
       requestBody:
         required: true
         content:
@@ -63,12 +63,7 @@ paths:
       operationId: cancelUpload
       tags:
       - Uploads
-      summary: 'Cancels the Upload. No Parts may be added after an Upload is cancelled.
-
-
-        Returns the Upload object with status `cancelled`.
-
-        '
+      summary: Cancels the Upload.
       parameters:
       - in: path
         name: upload_id
@@ -114,7 +109,7 @@ paths:
       operationId: completeUpload
       tags:
       - Uploads
-      summary: "Completes the [Upload](/docs/api-reference/uploads/object). \n\nWithin the returned Upload object, there is a nested [File](/docs/api-reference/files/object) object that is ready to use in the rest of the platform.\n\nYou can specify the order of the Parts by passing in an ordered list of the Part IDs.\n\nThe number of bytes uploaded upon completion must match the number of bytes initially specified when creating the Upload object. No Parts may be added after an Upload is completed.\nReturns the Upload object with status `completed`, including an additional `file` property containing the created usable File object.\n"
+      summary: Completes the Upload.
       parameters:
       - in: path
         name: upload_id
@@ -164,7 +159,7 @@ paths:
       operationId: addUploadPart
       tags:
       - Uploads
-      summary: "Adds a [Part](/docs/api-reference/uploads/part-object) to an [Upload](/docs/api-reference/uploads/object) object. A Part represents a chunk of bytes from the file you are trying to upload. \n\nEach Part can be at most 64 MB, and you can add Parts until you hit the Upload maximum of 8 GB.\n\nIt is possible to add multiple Parts in parallel. You can decide the intended order of the Parts when you [complete the Upload](/docs/api-reference/uploads/complete).\n"
+      summary: Adds a Part to an Upload object.
       parameters:
       - in: path
         name: upload_id
@@ -211,36 +206,130 @@ paths:
           response: "{\n  \"id\": \"part_def456\",\n  \"object\": \"upload.part\",\n  \"created_at\": 1719185911,\n  \"upload_id\": \"upload_abc123\"\n}\n"
 components:
   schemas:
-    CompleteUploadRequest:
+    CreateUploadRequest:
       type: object
       additionalProperties: false
       properties:
-        part_ids:
-          type: array
-          description: 'The ordered list of Part IDs.
-
-            '
-          items:
-            type: string
-        md5:
-          description: 'The optional md5 checksum for the file contents to verify if the bytes uploaded matches what you expect.
+        filename:
+          description: 'The name of the file to upload.
 
             '
           type: string
+        purpose:
+          description: 'The intended purpose of the uploaded file.
+
+
+            See the [documentation on File
+
+            purposes](/docs/api-reference/files/create#files-create-purpose).
+
+            '
+          type: string
+          enum:
+          - assistants
+          - batch
+          - fine-tune
+          - vision
+        bytes:
+          description: 'The number of bytes in the file you are uploading.
+
+            '
+          type: integer
+        mime_type:
+          description: 'The MIME type of the file.
+
+
+
+            This must fall within the supported MIME types for your file purpose. See
+
+            the supported MIME types for assistants and vision.
+
+            '
+          type: string
+        expires_after:
+          $ref: '#/components/schemas/FileExpirationAfter'
       required:
-      - part_ids
-    AddUploadPartRequest:
+      - filename
+      - purpose
+      - bytes
+      - mime_type
+    Upload:
       type: object
-      additionalProperties: false
-      properties:
-        data:
-          description: 'The chunk of bytes for this Part.
+      title: Upload
+      description: 'The Upload object can accept byte chunks in the form of Parts.
 
-            '
+        '
+      properties:
+        id:
           type: string
-          format: binary
+          description: The Upload unique identifier, which can be referenced in API endpoints.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the Upload was created.
+        filename:
+          type: string
+          description: The name of the file to be uploaded.
+        bytes:
+          type: integer
+          description: The intended number of bytes to be uploaded.
+        purpose:
+          type: string
+          description: The intended purpose of the file. [Please refer here](/docs/api-reference/files/object#files/object-purpose) for acceptable values.
+        status:
+          type: string
+          description: The status of the Upload.
+          enum:
+          - pending
+          - completed
+          - cancelled
+          - expired
+        expires_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the Upload will expire.
+        object:
+          type: string
+          description: The object type, which is always "upload".
+          enum:
+          - upload
+          x-stainless-const: true
+        file:
+          allOf:
+          - $ref: '#/components/schemas/OpenAIFile'
+          - nullable: true
+            description: The ready File object after the Upload is completed.
       required:
-      - data
+      - bytes
+      - created_at
+      - expires_at
+      - filename
+      - id
+      - purpose
+      - status
+      x-oaiMeta:
+        name: The upload object
+        example: "{\n  \"id\": \"upload_abc123\",\n  \"object\": \"upload\",\n  \"bytes\": 2147483648,\n  \"created_at\": 1719184911,\n  \"filename\": \"training_examples.jsonl\",\n  \"purpose\": \"fine-tune\",\n  \"status\": \"completed\",\n  \"expires_at\": 1719127296,\n  \"file\": {\n    \"id\": \"file-xyz321\",\n    \"object\": \"file\",\n    \"bytes\": 2147483648,\n    \"created_at\": 1719186911,\n    \"filename\": \"training_examples.jsonl\",\n    \"purpose\": \"fine-tune\",\n  }\n}\n"
+    FileExpirationAfter:
+      type: object
+      title: File expiration policy
+      description: The expiration policy for a file. By default, files with `purpose=batch` expire after 30 days and all other files are persisted until they are manually deleted.
+      properties:
+        anchor:
+          description: 'Anchor timestamp after which the expiration policy applies. Supported anchors: `created_at`.'
+          type: string
+          enum:
+          - created_at
+          x-stainless-const: true
+        seconds:
+          description: The number of seconds after the anchor time that the file will expire. Must be between 3600 (1 hour) and 2592000 (30 days).
+          type: integer
+          format: int64
+          minimum: 3600
+          maximum: 2592000
+      required:
+      - anchor
+      - seconds
     OpenAIFile:
       title: OpenAIFile
       description: The `File` object represents a document that has been uploaded to OpenAI.
@@ -303,6 +392,24 @@ components:
       x-oaiMeta:
         name: The file object
         example: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"file\",\n  \"bytes\": 120000,\n  \"created_at\": 1677610602,\n  \"expires_at\": 1680202602,\n  \"filename\": \"salesOverview.pdf\",\n  \"purpose\": \"assistants\",\n}\n"
+    CompleteUploadRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        part_ids:
+          type: array
+          description: 'The ordered list of Part IDs.
+
+            '
+          items:
+            type: string
+        md5:
+          description: 'The optional md5 checksum for the file contents to verify if the bytes uploaded matches what you expect.
+
+            '
+          type: string
+      required:
+      - part_ids
     UploadPart:
       type: object
       title: UploadPart
@@ -334,130 +441,18 @@ components:
       x-oaiMeta:
         name: The upload part object
         example: "{\n    \"id\": \"part_def456\",\n    \"object\": \"upload.part\",\n    \"created_at\": 1719186911,\n    \"upload_id\": \"upload_abc123\"\n}\n"
-    CreateUploadRequest:
+    AddUploadPartRequest:
       type: object
       additionalProperties: false
       properties:
-        filename:
-          description: 'The name of the file to upload.
+        data:
+          description: 'The chunk of bytes for this Part.
 
             '
           type: string
-        purpose:
-          description: 'The intended purpose of the uploaded file.
-
-
-            See the [documentation on File
-
-            purposes](/docs/api-reference/files/create#files-create-purpose).
-
-            '
-          type: string
-          enum:
-          - assistants
-          - batch
-          - fine-tune
-          - vision
-        bytes:
-          description: 'The number of bytes in the file you are uploading.
-
-            '
-          type: integer
-        mime_type:
-          description: 'The MIME type of the file.
-
-
-
-            This must fall within the supported MIME types for your file purpose. See
-
-            the supported MIME types for assistants and vision.
-
-            '
-          type: string
-        expires_after:
-          $ref: '#/components/schemas/FileExpirationAfter'
+          format: binary
       required:
-      - filename
-      - purpose
-      - bytes
-      - mime_type
-    FileExpirationAfter:
-      type: object
-      title: File expiration policy
-      description: The expiration policy for a file. By default, files with `purpose=batch` expire after 30 days and all other files are persisted until they are manually deleted.
-      properties:
-        anchor:
-          description: 'Anchor timestamp after which the expiration policy applies. Supported anchors: `created_at`.'
-          type: string
-          enum:
-          - created_at
-          x-stainless-const: true
-        seconds:
-          description: The number of seconds after the anchor time that the file will expire. Must be between 3600 (1 hour) and 2592000 (30 days).
-          type: integer
-          format: int64
-          minimum: 3600
-          maximum: 2592000
-      required:
-      - anchor
-      - seconds
-    Upload:
-      type: object
-      title: Upload
-      description: 'The Upload object can accept byte chunks in the form of Parts.
-
-        '
-      properties:
-        id:
-          type: string
-          description: The Upload unique identifier, which can be referenced in API endpoints.
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) for when the Upload was created.
-        filename:
-          type: string
-          description: The name of the file to be uploaded.
-        bytes:
-          type: integer
-          description: The intended number of bytes to be uploaded.
-        purpose:
-          type: string
-          description: The intended purpose of the file. [Please refer here](/docs/api-reference/files/object#files/object-purpose) for acceptable values.
-        status:
-          type: string
-          description: The status of the Upload.
-          enum:
-          - pending
-          - completed
-          - cancelled
-          - expired
-        expires_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) for when the Upload will expire.
-        object:
-          type: string
-          description: The object type, which is always "upload".
-          enum:
-          - upload
-          x-stainless-const: true
-        file:
-          allOf:
-          - $ref: '#/components/schemas/OpenAIFile'
-          - nullable: true
-            description: The ready File object after the Upload is completed.
-      required:
-      - bytes
-      - created_at
-      - expires_at
-      - filename
-      - id
-      - purpose
-      - status
-      x-oaiMeta:
-        name: The upload object
-        example: "{\n  \"id\": \"upload_abc123\",\n  \"object\": \"upload\",\n  \"bytes\": 2147483648,\n  \"created_at\": 1719184911,\n  \"filename\": \"training_examples.jsonl\",\n  \"purpose\": \"fine-tune\",\n  \"status\": \"completed\",\n  \"expires_at\": 1719127296,\n  \"file\": {\n    \"id\": \"file-xyz321\",\n    \"object\": \"file\",\n    \"bytes\": 2147483648,\n    \"created_at\": 1719186911,\n    \"filename\": \"training_examples.jsonl\",\n    \"purpose\": \"fine-tune\",\n  }\n}\n"
+      - data
   securitySchemes:
     ApiKeyAuth:
       type: http

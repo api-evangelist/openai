@@ -1,0 +1,65 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for OpenAI Assistants Certificates API
+  version: 1.0.0
+extends: openapi/openai-certificates-api-openapi.yml
+x-generated: '2026-08-27'
+x-method: generated
+x-source: openapi/openai-certificates-api-openapi.yml
+x-note: >-
+  Captures the API Evangelist enrichment layer over OpenAI's own contract as a
+  repeatable OpenAPI Overlay 1.0.0 transformation. The upstream document at
+  openapi/openai-certificates-api-openapi.yml is never mutated. Every referenced
+  artifact is a real file in this repository.
+actions:
+  - target: $.info
+    update:
+      x-apievangelist:
+        catalog: https://apis.io/openai
+        provider: OpenAI
+        maintainer: Kin Lane <kin@apievangelist.com>
+        upstream: https://github.com/openai/openai-openapi
+        artifacts:
+          - apis.yml
+          - vocabulary/openai-vocabulary.yaml
+          - rules/openai-spectral-rules.yml
+          - conformance/openai-conformance.yml
+          - conventions/openai-conventions.yml
+          - errors/openai-problem-types.yml
+          - lifecycle/openai-lifecycle.yml
+          - rate-limits/openai-rate-limits.yml
+          - plans/openai-plans-pricing.yml
+          - packages/openai-packages.yml
+          - scopes/openai-scopes.yml
+          - authentication/openai-authentication.yml
+          - data-model/openai-data-model.yml
+          - mcp/openai-mcp.yml
+          - mcp/openai-tool-crosswalk.yml
+          - well-known/openai-well-known.yml
+          - sandbox/openai-sandbox.yml
+          - changelog/openai-changelog.yml
+          - agentic-access/openai-agentic-access.yml
+      x-runtime-semantics:
+        idempotency: none
+        idempotency_note: >-
+          No Idempotency-Key parameter exists on any operation in this contract.
+          A retried write is a second real write. See
+          conventions/openai-conventions.yml.
+        dry_run: none
+        reversibility: >-
+          Long-running jobs are cancellable; every DELETE is permanent with no
+          restore path. See the reversibility block in
+          conventions/openai-conventions.yml.
+        rate_limit_headers:
+          - x-ratelimit-limit-requests
+          - x-ratelimit-limit-tokens
+          - x-ratelimit-remaining-requests
+          - x-ratelimit-remaining-tokens
+          - x-ratelimit-reset-requests
+          - x-ratelimit-reset-tokens
+          - Retry-After
+        error_envelope: '{ "error": { "message", "type", "param", "code" } }'
+        error_note: >-
+          NOT RFC 9457. 429 is overloaded across five conditions and only one is
+          retryable; read error.code before backing off.
+        request_id_header: x-request-id

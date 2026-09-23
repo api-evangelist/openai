@@ -1,0 +1,82 @@
+generated: '2026-08-27'
+method: searched
+source: https://developers.openai.com/changelog/
+description: >-
+  OpenAI publishes a dated, per-item changelog on the developer site. It is a
+  PRODUCT changelog, not an API-version changelog: entries announce models,
+  pricing changes, service tiers and dashboard features, and almost never
+  announce a change to an endpoint's request or response shape. Nothing in the
+  recent window is marked breaking, which is consistent with a surface that has
+  no dated API versions to break — breaking change at OpenAI happens on the
+  deprecations page instead (lifecycle/openai-lifecycle.yml). Two things stand
+  out in this window: pricing moves DOWNWARD repeatedly (three separate
+  reductions in four weeks), and a first-party Terraform provider appeared on
+  2026-07-29, which is a governance surface the catalog did not previously have
+  from OpenAI.
+docs: https://developers.openai.com/changelog/
+versioning:
+  scheme: none-at-the-api-level
+  header: null
+  current: null
+  spec_version: 2.3.0
+  note: >-
+    Entries reference dated MODEL snapshots (gpt-5.6-sol, gpt-image-2-2026-04-21)
+    rather than an API version. Detail in lifecycle/openai-lifecycle.yml.
+window: 2026-07-28 to 2026-08-21 (the twelve most recent entries at time of read)
+entries:
+  - date: '2026-08-21'
+    title: Regional processing selection
+    breaking: false
+    additions: [Per-request regional processing via prefixed domains for API keys in projects with Global geography]
+  - date: '2026-08-21'
+    title: GPT-5.6 Sol pricing update
+    breaking: false
+    highlights: ['$4 per million input tokens and $20 per million output tokens, reduced through at least 2026-11-21']
+  - date: '2026-08-20'
+    title: Prompt caching dashboard
+    breaking: false
+    additions: [Cache hit rates, cache reads per write, token breakdowns by model and tier]
+  - date: '2026-08-20'
+    title: Transparent backgrounds in image generation
+    breaking: false
+    additions: [Preview support for transparent backgrounds on gpt-image-2 in the Images and Responses APIs, PNG and WebP]
+  - date: '2026-08-13'
+    title: Ultrafast mode
+    breaking: false
+    additions: [New API service tier for GPT-5.6 Sol, up to 14x faster, limited preview]
+  - date: '2026-08-07'
+    title: Daybreak security tiers
+    breaking: false
+    additions: [Daybreak Blue for defensive security work, Daybreak Red for authorized offensive security testing]
+  - date: '2026-08-06'
+    title: chat-latest snapshot update
+    breaking: false
+    additions: [chat-latest repointed to the current ChatGPT model for Plus and Pro]
+  - date: '2026-08-05'
+    title: Fast mode long-context support
+    breaking: false
+    additions: ['Fast mode handles requests beyond 272K tokens on GPT-5.6, up to 2.5x faster']
+  - date: '2026-08-04'
+    title: API key filtering in dashboards
+    breaking: false
+    additions: [Group and filter by API key in the Usage and Costs dashboards and in the Usage and Costs APIs]
+  - date: '2026-07-30'
+    title: GPT-5.6 pricing reductions and Fast mode launch
+    breaking: false
+    highlights: ['GPT-5.6 Luna costs 80% less, GPT-5.6 Terra costs 20% less; Fast mode replaces Priority Processing']
+  - date: '2026-07-29'
+    title: OpenAI Terraform provider
+    breaking: false
+    additions: [Official Terraform provider for managing API Platform resources as infrastructure as code]
+  - date: '2026-07-28'
+    title: GPT Transcribe models
+    breaking: false
+    additions: [GPT Transcribe for file transcription, GPT Live Transcribe for low-latency streaming]
+observations:
+  breaking_changes_in_window: 0
+  pricing_reductions_in_window: 3
+  note: >-
+    The absence of breaking entries is a property of how OpenAI versions, not
+    evidence of stability. Endpoint and product retirement is announced on
+    https://developers.openai.com/api/docs/deprecations, where eight entries are
+    live and one — the Videos API — shuts down 2026-09-24.

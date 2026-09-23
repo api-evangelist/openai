@@ -1,0 +1,124 @@
+generated: '2026-08-27'
+method: probed
+source: >-
+  Live HTTP probes of every /.well-known/ path against the apis.yml baseURL host
+  (https://api.openai.com), the OpenAPI servers[] host (https://api.openai.com/v1),
+  the corporate host (https://openai.com), the docs/console hosts
+  (https://platform.openai.com, https://developers.openai.com) and the identity
+  host (https://auth.openai.com). Status is the HTTP code observed at fetch time.
+description: >-
+  OpenAI serves exactly two real machine documents at well-known paths, and both
+  are on hosts other than the API host. api.openai.com answers a bare 404 with a
+  zero-length body for every /.well-known/ path. platform.openai.com is an SPA
+  catch-all: it answers 200 with an identical 3,810-byte text/html shell for
+  EVERY /.well-known/ path including paths that cannot exist, so those 200s are
+  recorded as not-a-document and nothing was saved from them. openai.com serves a
+  real PGP-signed RFC 9116 security.txt; auth.openai.com serves a real RFC 8414 /
+  OIDC discovery document. There is no /.well-known/api-catalog (RFC 9727)
+  anywhere on the estate, and no /.well-known/ucp.json or acp.json — notable
+  because OpenAI authors the Agentic Commerce Protocol but does not itself
+  advertise an ACP surface at a well-known path.
+hosts:
+  - host: https://openai.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        type: text/plain; charset=utf-8
+        file: openai-security.txt
+        note: RFC 9116, PGP-signed (SHA512). Canonical self-declares this URL.
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/ucp.json
+        status: 404
+      - path: /.well-known/acp.json
+        status: 404
+      - path: /.well-known/dnt-policy.txt
+        status: 404
+  - host: https://auth.openai.com
+    documents:
+      - path: /.well-known/openid-configuration
+        status: 200
+        type: application/json
+        file: openai-auth-openid-configuration.json
+        note: >-
+          Real OIDC discovery document. issuer https://auth.openai.com;
+          grant_types_supported [authorization_code, refresh_token];
+          code_challenge_methods_supported [S256]; scopes_supported
+          [openid, profile, email, offline_access]. NO registration_endpoint,
+          so RFC 7591 dynamic client registration is not offered.
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        note: >-
+          NOT a document — returns 51KB of text/html (the sign-in app shell).
+          Recorded as a miss.
+  - host: https://api.openai.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/oauth-authorization-server
+        status: 404
+      - path: /.well-known/oauth-protected-resource
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/ai-plugin.json
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/agent.json
+        status: 404
+  - host: https://platform.openai.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 200
+        type: text/plain
+        note: >-
+          Byte-identical to the openai.com document whose own Canonical field
+          points at https://openai.com/.well-known/security.txt, so it is served
+          here as a mirror. Saved once, under openai.com.
+      - path: /.well-known/api-catalog
+        status: 200
+        note: NOT a document — 3,810-byte text/html SPA shell. Recorded as a miss.
+      - path: /.well-known/openid-configuration
+        status: 200
+        note: NOT a document — same 3,810-byte SPA shell.
+      - path: /.well-known/oauth-authorization-server
+        status: 200
+        note: NOT a document — same 3,810-byte SPA shell.
+      - path: /.well-known/oauth-protected-resource
+        status: 200
+        note: NOT a document — same 3,810-byte SPA shell.
+      - path: /.well-known/agent-card.json
+        status: 200
+        note: NOT a document — same 3,810-byte SPA shell. Not an A2A agent card.
+  - host: https://developers.openai.com
+    documents:
+      - path: /.well-known/security.txt
+        status: 404
+      - path: /.well-known/api-catalog
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+  - host: https://chatgpt.com
+    documents:
+      - path: /.well-known/openid-configuration
+        status: 404
+      - path: /.well-known/agent-card.json
+        status: 404
+      - path: /.well-known/ucp.json
+        status: 404
+summary:
+  documents_served: 2
+  security_txt: true
+  api_catalog: false
+  oauth_protected_resource: false
+  openid_configuration: true
+  agent_card: false
+  agentic_commerce_manifest: false
+  dynamic_client_registration: false

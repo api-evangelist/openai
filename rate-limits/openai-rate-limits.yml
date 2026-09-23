@@ -4,19 +4,36 @@ schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main
 provider: OpenAI
 providerId: openai
 created: '2026-05-04'
-# Provenance stamped 2026-08-11: this artifact was written by the API Evangelist
-# bulk sweep dated 2026-05-04, not harvested from the provider. See roadmap#35.
-method: generated
-modified: '2026-05-22'
-reconciled: true
+modified: '2026-08-27'
+generated: '2026-08-27'
+method: searched
+source: https://developers.openai.com/api/docs/guides/rate-limits
+sources:
+  - https://developers.openai.com/api/docs/guides/rate-limits
+  - https://platform.openai.com/docs/guides/rate-limits
+  - https://developers.openai.com/api/docs/guides/error-codes
+supersedes: >-
+  The 2026-05-04 bulk-sweep version of this file, which carried tiers and header
+  names but no `limits[]` array at all — so every consumer reading limit_count
+  saw zero while the artifact looked populated. It also asserted per-tier RPM/TPM
+  figures for GPT-5 that the rate-limits guide does not publish; those are
+  removed rather than carried forward, because OpenAI states model-level numbers
+  on the models page per model and does not tabulate them by tier.
 tags:
   - Rate Limiting
   - AI
-description: 'OpenAI rate limits scale by usage tier (Tier 1-5+) which advances automatically based on
-  cumulative spend. Five metrics: RPM, RPD, TPM, TPD, IPM.'
-sources:
-  - https://developers.openai.com/api/docs/pricing
-  - https://platform.openai.com/docs/guides/rate-limits
+description: >-
+  OpenAI throttles on five dimensions at once — requests per minute, requests per
+  day, tokens per minute, tokens per day and images per minute, plus audio
+  minutes per minute for streaming audio models — and whichever is hit first
+  returns 429. The numbers themselves are per MODEL and per usage TIER, and
+  OpenAI publishes them in two different places: the monthly usage ceiling is
+  tabulated by tier in the rate-limits guide (recorded below), while RPM/TPM are
+  published per model on the models page and are not tabulated by tier anywhere,
+  so they are not reproduced here rather than guessed at. Tier advancement is
+  automatic on cumulative spend. The runtime signal is good: nine
+  x-ratelimit-* headers plus Retry-After, including a separate project-token
+  triple, so an agent can pace itself without ever reading the docs.
 headers:
   limitRequests: x-ratelimit-limit-requests
   limitTokens: x-ratelimit-limit-tokens
@@ -24,37 +41,104 @@ headers:
   remainingTokens: x-ratelimit-remaining-tokens
   resetRequests: x-ratelimit-reset-requests
   resetTokens: x-ratelimit-reset-tokens
+  limitProjectTokens: x-ratelimit-limit-project-tokens
+  remainingProjectTokens: x-ratelimit-remaining-project-tokens
+  resetProjectTokens: x-ratelimit-reset-project-tokens
+  retryAfter: Retry-After
 responseCodes:
   throttled: 429
-tiers:
-  - name: Free
-    qualification: trial credit
-    notes: Most-restricted limits, evaluation only.
-  - name: Tier 1
-    qualification: $5 paid
-    rpm_gpt5: 1000
-    tpm_gpt5: 500000
-  - name: Tier 2
-    qualification: $50 paid + 7 days
-  - name: Tier 3
-    qualification: $100 paid + 7 days
-  - name: Tier 4
-    qualification: $250 paid + 14 days
-  - name: Tier 5
-    qualification: $1,000 paid + 30 days
-    rpm_gpt5: 10000
-    tpm_gpt5: 5000000
+  slowDown: 503
 metrics:
-  - RPM (requests/minute)
-  - RPD (requests/day)
-  - TPM (tokens/minute)
-  - TPD (tokens/day)
-  - IPM (images/minute)
+  - {id: RPM, name: Requests per minute}
+  - {id: RPD, name: Requests per day}
+  - {id: TPM, name: Tokens per minute}
+  - {id: TPD, name: Tokens per day}
+  - {id: IPM, name: Images per minute}
+  - {id: APM, name: Audio minutes per minute, applies_to: streaming audio models}
+limits:
+  - name: Free tier monthly usage limit
+    scope: organization
+    tier: Free
+    qualification: User in an allowed geography
+    metric: usd_per_month
+    limit: 100
+    timeFrame: month
+    currency: USD
+  - name: Tier 1 monthly usage limit
+    scope: organization
+    tier: Tier 1
+    qualification: $5 paid
+    metric: usd_per_month
+    limit: 100
+    timeFrame: month
+    currency: USD
+  - name: Tier 2 monthly usage limit
+    scope: organization
+    tier: Tier 2
+    qualification: $50 paid
+    metric: usd_per_month
+    limit: 500
+    timeFrame: month
+    currency: USD
+  - name: Tier 3 monthly usage limit
+    scope: organization
+    tier: Tier 3
+    qualification: $100 paid
+    metric: usd_per_month
+    limit: 1000
+    timeFrame: month
+    currency: USD
+  - name: Tier 4 monthly usage limit
+    scope: organization
+    tier: Tier 4
+    qualification: $250 paid
+    metric: usd_per_month
+    limit: 5000
+    timeFrame: month
+    currency: USD
+  - name: Tier 5 monthly usage limit
+    scope: organization
+    tier: Tier 5
+    qualification: $1,000 paid
+    metric: usd_per_month
+    limit: 200000
+    timeFrame: month
+    currency: USD
+  - name: Realtime WebSocket connection duration
+    scope: connection
+    metric: minutes_per_connection
+    limit: 60
+    timeFrame: connection
+    source: >-
+      openapi/_original/openai-openapi-master.yml — the Realtime error code
+      websocket_connection_limit_reached documents a 60-minute connection ceiling.
+    note: A hard cap rather than a throttle; reconnect to continue.
+tiers:
+  - {name: Free, qualification: User in an allowed geography, monthly_usage_limit_usd: 100}
+  - {name: Tier 1, qualification: $5 paid, monthly_usage_limit_usd: 100}
+  - {name: Tier 2, qualification: $50 paid, monthly_usage_limit_usd: 500}
+  - {name: Tier 3, qualification: $100 paid, monthly_usage_limit_usd: 1000}
+  - {name: Tier 4, qualification: $250 paid, monthly_usage_limit_usd: 5000}
+  - {name: Tier 5, qualification: $1,000 paid, monthly_usage_limit_usd: 200000}
 policies:
-  - name: Auto tier advancement
-    description: Tier upgrades happen automatically when both spend and account-age thresholds are crossed.
-  - name: Above Tier 5
-    description: Contact OpenAI sales for custom limits beyond Tier 5.
+  - name: Automatic tier advancement
+    description: >-
+      Tiers advance automatically once cumulative paid spend crosses the
+      threshold. There is no application step.
   - name: Per-model limits
-    description: Each model has its own RPM/TPM ceiling; check the platform.openai.com/account/limits
-      page.
+    description: >-
+      Each model carries its own RPM/TPM ceiling, summarised on the models page
+      and shown for your organization at platform.openai.com/account/limits.
+      OpenAI does not publish a tier-by-model matrix, so no per-model numbers are
+      asserted in this artifact.
+  - name: Above Tier 5
+    description: Custom limits beyond Tier 5 are arranged through OpenAI sales.
+  - name: Backoff guidance
+    description: >-
+      Honor Retry-After and back off exponentially on 429 rate-limit responses.
+      A 503 "Slow Down" is different — it asks for a sustained rate reduction
+      held for 15 minutes, not a per-request retry.
+  - name: 429 is overloaded
+    description: >-
+      Five distinct conditions return 429 and only one is retryable. Read
+      error.code before retrying. See errors/openai-problem-types.yml.

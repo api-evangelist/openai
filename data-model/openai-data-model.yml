@@ -1,0 +1,118 @@
+generated: '2026-08-27'
+method: derived
+source: >-
+  Derived from openapi/_original/openai-openapi-master.yml — 959 component
+  schemas, their $ref links, and every `<entity>_id` reference property. Entity
+  identifier prefixes were read from the `example` values in the same schemas.
+  The visual render of the product taxonomy is subway/openai-subway-map.svg;
+  this is the machine-readable graph.
+docs: https://developers.openai.com/api/reference/
+notation: >-
+  relationships use has_one / has_many / belongs_to with the foreign-key field
+  name; direction is from the entity that owns the reference.
+description: >-
+  OpenAI's object model has two clearly separated halves and a seam between
+  them. The INFERENCE half (Response, Conversation, Item) is the current
+  generation and is deliberately shallow — a Response chains to its predecessor
+  by previous_response_id and that is nearly the whole graph. The ASSISTANTS
+  half (Assistant, Thread, Message, Run, RunStep) is the previous generation,
+  deeply nested, and every one of its five top-level operations is flagged
+  `deprecated: true` in the contract. Between them sits a shared RESOURCE layer
+  — File, VectorStore, Container, Batch, FineTuningJob — that both halves
+  reference by id and that carries most of the real referential integrity. The
+  ADMINISTRATION layer (Organization, Project, User, Group, Role, ApiKey) is a
+  separate graph entirely, reachable only with AdminApiKeyAuth. The dominant
+  reference field in the whole contract is `event_id` (119 schemas), which is a
+  measure of how much of this API is streamed rather than fetched.
+entities:
+  - {name: Response, id_prefix: resp_, domain: inference, description: "One model invocation and its output; the current-generation primary object."}
+  - {name: Conversation, id_prefix: conv_, domain: inference, description: "Durable server-side conversation state that Responses can read and append to."}
+  - {name: ConversationItem, id_prefix: msg_/item_, domain: inference, description: "A single item inside a conversation."}
+  - {name: ChatCompletion, id_prefix: chatcmpl-, domain: inference, description: "Chat Completions result object; the older sibling of Response, still fully supported."}
+  - {name: Model, id_prefix: null, domain: inference, description: "A model identifier. Fine-tuned models appear here with an ft- prefix."}
+  - {name: Embedding, id_prefix: null, domain: inference, description: "A vector produced from input text."}
+  - {name: File, id_prefix: file-, domain: resources, description: "An uploaded file. The most-referenced shared resource in the contract."}
+  - {name: Upload, id_prefix: upload_, domain: resources, description: "A multipart upload in progress; expires one hour after creation and becomes a File on completion."}
+  - {name: VectorStore, id_prefix: vs_, domain: resources, description: "A searchable store of embedded file content used by file search."}
+  - {name: VectorStoreFile, id_prefix: file-, domain: resources, description: "A File attached to and processed into a VectorStore."}
+  - {name: VectorStoreFileBatch, id_prefix: vsfb_, domain: resources, description: "A batch attachment job over many files; cancellable."}
+  - {name: Container, id_prefix: cntr_, domain: resources, description: "A code-interpreter execution container."}
+  - {name: ContainerFile, id_prefix: cfile_, domain: resources, description: "A file inside a container."}
+  - {name: Batch, id_prefix: batch_, domain: jobs, description: "An asynchronous bulk-inference job at 50% price; cancellable within a 10-minute cancelling window."}
+  - {name: FineTuningJob, id_prefix: ftjob-, domain: jobs, description: "A training run that produces a fine-tuned Model."}
+  - {name: FineTuningCheckpoint, id_prefix: ftckpt_, domain: jobs, description: "An intermediate checkpoint of a fine-tuning run, with its own permission objects."}
+  - {name: Eval, id_prefix: eval_, domain: jobs, description: "An evaluation definition. Announced for shutdown 2026-11-30."}
+  - {name: EvalRun, id_prefix: evalrun_, domain: jobs, description: "One execution of an Eval; cancellable."}
+  - {name: Video, id_prefix: video_, domain: jobs, description: "A generated video. The API is announced for shutdown 2026-09-24."}
+  - {name: Assistant, id_prefix: asst_, domain: assistants-legacy, description: "A configured assistant. All five top-level operations are deprecated in the contract."}
+  - {name: Thread, id_prefix: thread_, domain: assistants-legacy, description: "A conversation container for the Assistants API."}
+  - {name: Message, id_prefix: msg_, domain: assistants-legacy, description: "A message inside a Thread."}
+  - {name: Run, id_prefix: run_, domain: assistants-legacy, description: "An execution of an Assistant against a Thread; cancellable while in_progress."}
+  - {name: RunStep, id_prefix: step_, domain: assistants-legacy, description: "One step within a Run — a message creation or a tool call."}
+  - {name: ChatKitSession, id_prefix: cksess_, domain: chatkit, description: "An embedded chat session. Beta in the contract's x-oaiMeta navigation."}
+  - {name: ChatKitThread, id_prefix: ckthr_, domain: chatkit, description: "A thread inside a ChatKit session."}
+  - {name: Skill, id_prefix: skill_, domain: skills, description: "A packaged agent skill, versioned."}
+  - {name: Organization, id_prefix: org-, domain: administration, description: "The billing and identity root. AdminApiKeyAuth only."}
+  - {name: Project, id_prefix: proj_, domain: administration, description: "The isolation boundary — own keys, own spend limit, own rate limits."}
+  - {name: User, id_prefix: user-, domain: administration, description: "An organization member. Carries is_scim_managed."}
+  - {name: Group, id_prefix: group_, domain: administration, description: "A membership group. Carries scim_managed / is_scim_managed."}
+  - {name: Role, id_prefix: role_, domain: administration, description: "A named permission role assignable at organization or project scope."}
+  - {name: Invite, id_prefix: invite-, domain: administration, description: "A pending organization invitation."}
+  - {name: ProjectApiKey, id_prefix: key_, domain: administration, description: "A project-scoped credential. Deleting it is immediate and irreversible."}
+  - {name: AdminApiKey, id_prefix: key_, domain: administration, description: "An organization-administration credential."}
+  - {name: ServiceAccount, id_prefix: svc_acct_, domain: administration, description: "A non-human project member holding its own key."}
+  - {name: Certificate, id_prefix: cert_, domain: administration, description: "An mTLS certificate, activatable atomically in batches of up to 10 at org or project scope."}
+  - {name: AuditLogEvent, id_prefix: audit_log-, domain: administration, description: "An immutable record of an administrative action, including scim.enabled and scim.disabled."}
+  - {name: UsageRecord, id_prefix: null, domain: administration, description: "Aggregated usage/cost, groupable by API key since 2026-08-04."}
+  - {name: WebhookEvent, id_prefix: evt_, domain: events, description: "An outbound event delivered to your endpoint; deduplicate on the webhook-id header."}
+  - {name: RealtimeEvent, id_prefix: event_, domain: events, description: "A client or server event on the Realtime WebSocket. Modelled in asyncapi/openai-realtime-asyncapi.yml."}
+relationships:
+  - {from: Response, to: Response, type: belongs_to, via: previous_response_id, note: Chains a multi-turn exchange without server-side conversation state.}
+  - {from: Response, to: Conversation, type: belongs_to, via: conversation, note: Optional — a Response can read and append to durable conversation state.}
+  - {from: ConversationItem, to: Conversation, type: belongs_to, via: conversation_id}
+  - {from: ConversationItem, to: ConversationItem, type: belongs_to, via: previous_item_id}
+  - {from: Conversation, to: ConversationItem, type: has_many, via: items}
+  - {from: Batch, to: File, type: belongs_to, via: input_file_id, note: The JSONL of requests to execute.}
+  - {from: Batch, to: File, type: has_one, via: output_file_id, note: Results; present even on a cancelled batch, partially filled.}
+  - {from: Batch, to: File, type: has_one, via: error_file_id}
+  - {from: FineTuningJob, to: File, type: belongs_to, via: training_file}
+  - {from: FineTuningJob, to: File, type: belongs_to, via: validation_file}
+  - {from: FineTuningJob, to: Model, type: has_one, via: fine_tuned_model, note: The job PRODUCES a model; deleting that model does not replay for free.}
+  - {from: FineTuningJob, to: Organization, type: belongs_to, via: organization_id}
+  - {from: FineTuningCheckpoint, to: FineTuningJob, type: belongs_to, via: fine_tuning_job_id}
+  - {from: VectorStoreFile, to: VectorStore, type: belongs_to, via: vector_store_id}
+  - {from: VectorStoreFile, to: File, type: belongs_to, via: id, note: A VectorStoreFile is keyed by the File id it was built from.}
+  - {from: VectorStore, to: VectorStoreFile, type: has_many, via: files}
+  - {from: VectorStoreFileBatch, to: VectorStore, type: belongs_to, via: vector_store_id}
+  - {from: Upload, to: File, type: has_one, via: file, note: Completing an Upload materialises a File.}
+  - {from: ContainerFile, to: Container, type: belongs_to, via: container_id}
+  - {from: Thread, to: Message, type: has_many, via: messages}
+  - {from: Message, to: Thread, type: belongs_to, via: thread_id}
+  - {from: Run, to: Thread, type: belongs_to, via: thread_id}
+  - {from: Run, to: Assistant, type: belongs_to, via: assistant_id}
+  - {from: RunStep, to: Run, type: belongs_to, via: run_id}
+  - {from: RunStep, to: Thread, type: belongs_to, via: thread_id}
+  - {from: Assistant, to: VectorStore, type: has_many, via: tool_resources.file_search.vector_store_ids}
+  - {from: Assistant, to: File, type: has_many, via: tool_resources.code_interpreter.file_ids}
+  - {from: ChatKitThread, to: ChatKitSession, type: belongs_to, via: session_id}
+  - {from: Project, to: Organization, type: belongs_to, via: organization}
+  - {from: ProjectApiKey, to: Project, type: belongs_to, via: project_id}
+  - {from: ServiceAccount, to: Project, type: belongs_to, via: project_id}
+  - {from: User, to: Organization, type: belongs_to, via: organization}
+  - {from: Group, to: User, type: has_many, via: members, note: Membership may be SCIM-managed (is_scim_managed).}
+  - {from: Role, to: Project, type: has_many, via: project role assignments}
+  - {from: Role, to: Organization, type: has_many, via: organization role assignments}
+  - {from: Certificate, to: Project, type: has_many, via: project certificate activations}
+  - {from: AuditLogEvent, to: User, type: belongs_to, via: actor}
+  - {from: UsageRecord, to: ProjectApiKey, type: belongs_to, via: api_key_id, note: Added 2026-08-04 — usage is now groupable by key.}
+observations:
+  schemas: 959
+  most_referenced_id_field: {field: event_id, schemas: 119, note: The contract is dominated by streamed event shapes rather than fetchable resources.}
+  second: {field: item_id, schemas: 101}
+  deprecated_cluster: assistants-legacy — Assistant, Thread, Message, Run, RunStep
+  shared_spine: >-
+    File is the hub. Batch, FineTuningJob, VectorStore, Assistant, Container and
+    Upload all reference it, and there is no restore path for deleteFile — which
+    makes it the single highest-consequence delete in the model. See the
+    reversibility block in conventions/openai-conventions.yml.
+  render: subway/openai-subway-map.svg

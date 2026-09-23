@@ -21,7 +21,7 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Lists the organization roles assigned to a user within the organization.
+      summary: Lists the organization roles assigned to a user within the organization
       operationId: list-user-role-assignments
       tags:
       - User organization role assignments
@@ -86,7 +86,7 @@ paths:
     post:
       security:
       - AdminApiKeyAuth: []
-      summary: Assigns an organization role to a user within the organization.
+      summary: Assigns an organization role to a user within the organization
       operationId: assign-user-role
       tags:
       - User organization role assignments
@@ -136,7 +136,7 @@ paths:
     delete:
       security:
       - AdminApiKeyAuth: []
-      summary: Unassigns an organization role from a user within the organization.
+      summary: Unassigns an organization role from a user within the organization
       operationId: unassign-user-role
       tags:
       - User organization role assignments
@@ -250,6 +250,128 @@ components:
       - created_by
       - created_by_user_obj
       - metadata
+    UserRoleAssignment:
+      type: object
+      description: Role assignment linking a user to a role.
+      properties:
+        object:
+          type: string
+          enum:
+          - user.role
+          description: Always `user.role`.
+          x-stainless-const: true
+        user:
+          $ref: '#/components/schemas/User'
+        role:
+          $ref: '#/components/schemas/Role'
+      required:
+      - object
+      - user
+      - role
+      x-oaiMeta:
+        name: The user role object
+        example: "{\n    \"object\": \"user.role\",\n    \"user\": {\n        \"object\": \"organization.user\",\n        \"id\": \"user_abc123\",\n        \"name\": \"Ada Lovelace\",\n        \"email\": \"ada@example.com\",\n        \"role\": \"owner\",\n        \"added_at\": 1711470000\n    },\n    \"role\": {\n        \"object\": \"role\",\n        \"id\": \"role_01J1F8ROLE01\",\n        \"name\": \"API Group Manager\",\n        \"description\": \"Allows managing organization groups\",\n        \"permissions\": [\n            \"api.groups.read\",\n            \"api.groups.write\"\n        ],\n        \"resource_type\": \"api.organization\",\n        \"predefined_role\": false\n    }\n}\n"
+    DeletedRoleAssignmentResource:
+      type: object
+      description: Confirmation payload returned after unassigning a role.
+      properties:
+        object:
+          type: string
+          description: Identifier for the deleted assignment, such as `group.role.deleted` or `user.role.deleted`.
+        deleted:
+          type: boolean
+          description: Whether the assignment was removed.
+      required:
+      - object
+      - deleted
+      x-oaiMeta:
+        name: Role assignment deletion confirmation
+        example: "{\n    \"object\": \"group.role.deleted\",\n    \"deleted\": true\n}\n"
+    PublicAssignOrganizationGroupRoleBody:
+      type: object
+      description: Request payload for assigning a role to a group or user.
+      properties:
+        role_id:
+          type: string
+          description: Identifier of the role to assign.
+      required:
+      - role_id
+      x-oaiMeta:
+        example: "{\n    \"role_id\": \"role_01J1F8ROLE01\"\n}\n"
+    Role:
+      type: object
+      description: Details about a role that can be assigned through the public Roles API.
+      properties:
+        object:
+          type: string
+          enum:
+          - role
+          description: Always `role`.
+          x-stainless-const: true
+        id:
+          type: string
+          description: Identifier for the role.
+        name:
+          type: string
+          description: Unique name for the role.
+        description:
+          description: Optional description of the role.
+          anyOf:
+          - type: string
+          - type: 'null'
+        permissions:
+          type: array
+          description: Permissions granted by the role.
+          items:
+            type: string
+        resource_type:
+          type: string
+          description: Resource type the role is bound to (for example `api.organization` or `api.project`).
+        predefined_role:
+          type: boolean
+          description: Whether the role is predefined and managed by OpenAI.
+      required:
+      - object
+      - id
+      - name
+      - description
+      - permissions
+      - resource_type
+      - predefined_role
+      x-oaiMeta:
+        name: The role object
+        example: "{\n    \"object\": \"role\",\n    \"id\": \"role_01J1F8ROLE01\",\n    \"name\": \"API Group Manager\",\n    \"description\": \"Allows managing organization groups\",\n    \"permissions\": [\n        \"api.groups.read\",\n        \"api.groups.write\"\n    ],\n    \"resource_type\": \"api.organization\",\n    \"predefined_role\": false\n}\n"
+    RoleListResource:
+      type: object
+      description: Paginated list of roles assigned to a principal.
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: Always `list`.
+          x-stainless-const: true
+        data:
+          type: array
+          description: Role assignments returned in the current page.
+          items:
+            $ref: '#/components/schemas/AssignedRoleDetails'
+        has_more:
+          type: boolean
+          description: Whether additional assignments are available when paginating.
+        next:
+          description: Cursor to fetch the next page of results, or `null` when there are no more assignments.
+          anyOf:
+          - type: string
+          - type: 'null'
+      required:
+      - object
+      - data
+      - has_more
+      - next
+      x-oaiMeta:
+        name: Assigned role list
+        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"role_01J1F8ROLE01\",\n            \"name\": \"API Group Manager\",\n            \"permissions\": [\n                \"api.groups.read\",\n                \"api.groups.write\"\n            ],\n            \"resource_type\": \"api.organization\",\n            \"predefined_role\": false,\n            \"description\": \"Allows managing organization groups\",\n            \"created_at\": 1711471533,\n            \"updated_at\": 1711472599,\n            \"created_by\": \"user_abc123\",\n            \"created_by_user_obj\": {\n                \"id\": \"user_abc123\",\n                \"name\": \"Ada Lovelace\",\n                \"email\": \"ada@example.com\"\n            },\n            \"metadata\": {}\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
     User:
       type: object
       description: Represents an individual `user` within an organization.
@@ -393,128 +515,6 @@ components:
       x-oaiMeta:
         name: The user object
         example: "{\n    \"object\": \"organization.user\",\n    \"id\": \"user_abc\",\n    \"name\": \"First Last\",\n    \"email\": \"user@example.com\",\n    \"role\": \"owner\",\n    \"added_at\": 1711471533\n}\n"
-    Role:
-      type: object
-      description: Details about a role that can be assigned through the public Roles API.
-      properties:
-        object:
-          type: string
-          enum:
-          - role
-          description: Always `role`.
-          x-stainless-const: true
-        id:
-          type: string
-          description: Identifier for the role.
-        name:
-          type: string
-          description: Unique name for the role.
-        description:
-          description: Optional description of the role.
-          anyOf:
-          - type: string
-          - type: 'null'
-        permissions:
-          type: array
-          description: Permissions granted by the role.
-          items:
-            type: string
-        resource_type:
-          type: string
-          description: Resource type the role is bound to (for example `api.organization` or `api.project`).
-        predefined_role:
-          type: boolean
-          description: Whether the role is predefined and managed by OpenAI.
-      required:
-      - object
-      - id
-      - name
-      - description
-      - permissions
-      - resource_type
-      - predefined_role
-      x-oaiMeta:
-        name: The role object
-        example: "{\n    \"object\": \"role\",\n    \"id\": \"role_01J1F8ROLE01\",\n    \"name\": \"API Group Manager\",\n    \"description\": \"Allows managing organization groups\",\n    \"permissions\": [\n        \"api.groups.read\",\n        \"api.groups.write\"\n    ],\n    \"resource_type\": \"api.organization\",\n    \"predefined_role\": false\n}\n"
-    PublicAssignOrganizationGroupRoleBody:
-      type: object
-      description: Request payload for assigning a role to a group or user.
-      properties:
-        role_id:
-          type: string
-          description: Identifier of the role to assign.
-      required:
-      - role_id
-      x-oaiMeta:
-        example: "{\n    \"role_id\": \"role_01J1F8ROLE01\"\n}\n"
-    DeletedRoleAssignmentResource:
-      type: object
-      description: Confirmation payload returned after unassigning a role.
-      properties:
-        object:
-          type: string
-          description: Identifier for the deleted assignment, such as `group.role.deleted` or `user.role.deleted`.
-        deleted:
-          type: boolean
-          description: Whether the assignment was removed.
-      required:
-      - object
-      - deleted
-      x-oaiMeta:
-        name: Role assignment deletion confirmation
-        example: "{\n    \"object\": \"group.role.deleted\",\n    \"deleted\": true\n}\n"
-    RoleListResource:
-      type: object
-      description: Paginated list of roles assigned to a principal.
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: Always `list`.
-          x-stainless-const: true
-        data:
-          type: array
-          description: Role assignments returned in the current page.
-          items:
-            $ref: '#/components/schemas/AssignedRoleDetails'
-        has_more:
-          type: boolean
-          description: Whether additional assignments are available when paginating.
-        next:
-          description: Cursor to fetch the next page of results, or `null` when there are no more assignments.
-          anyOf:
-          - type: string
-          - type: 'null'
-      required:
-      - object
-      - data
-      - has_more
-      - next
-      x-oaiMeta:
-        name: Assigned role list
-        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"role_01J1F8ROLE01\",\n            \"name\": \"API Group Manager\",\n            \"permissions\": [\n                \"api.groups.read\",\n                \"api.groups.write\"\n            ],\n            \"resource_type\": \"api.organization\",\n            \"predefined_role\": false,\n            \"description\": \"Allows managing organization groups\",\n            \"created_at\": 1711471533,\n            \"updated_at\": 1711472599,\n            \"created_by\": \"user_abc123\",\n            \"created_by_user_obj\": {\n                \"id\": \"user_abc123\",\n                \"name\": \"Ada Lovelace\",\n                \"email\": \"ada@example.com\"\n            },\n            \"metadata\": {}\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
-    UserRoleAssignment:
-      type: object
-      description: Role assignment linking a user to a role.
-      properties:
-        object:
-          type: string
-          enum:
-          - user.role
-          description: Always `user.role`.
-          x-stainless-const: true
-        user:
-          $ref: '#/components/schemas/User'
-        role:
-          $ref: '#/components/schemas/Role'
-      required:
-      - object
-      - user
-      - role
-      x-oaiMeta:
-        name: The user role object
-        example: "{\n    \"object\": \"user.role\",\n    \"user\": {\n        \"object\": \"organization.user\",\n        \"id\": \"user_abc123\",\n        \"name\": \"Ada Lovelace\",\n        \"email\": \"ada@example.com\",\n        \"role\": \"owner\",\n        \"added_at\": 1711470000\n    },\n    \"role\": {\n        \"object\": \"role\",\n        \"id\": \"role_01J1F8ROLE01\",\n        \"name\": \"API Group Manager\",\n        \"description\": \"Allows managing organization groups\",\n        \"permissions\": [\n            \"api.groups.read\",\n            \"api.groups.write\"\n        ],\n        \"resource_type\": \"api.organization\",\n        \"predefined_role\": false\n    }\n}\n"
   securitySchemes:
     ApiKeyAuth:
       type: http

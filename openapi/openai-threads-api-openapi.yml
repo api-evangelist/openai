@@ -22,7 +22,7 @@ paths:
       operationId: listMessageFiles
       tags:
       - Threads
-      summary: OpenAI Returns a list of message files.
+      summary: OpenAI Returns a list of message files
       parameters:
       - name: thread_id
         in: path
@@ -95,7 +95,7 @@ paths:
       operationId: getMessageFile
       tags:
       - Threads
-      summary: OpenAI Retrieves a message file.
+      summary: OpenAI Retrieves a message file
       parameters:
       - in: path
         name: thread_id
@@ -143,7 +143,7 @@ paths:
       operationId: createThread
       tags:
       - Threads
-      summary: OpenAI Create a thread.
+      summary: OpenAI Create a thread
       requestBody:
         content:
           application/json:
@@ -190,7 +190,7 @@ paths:
       operationId: getThread
       tags:
       - Threads
-      summary: OpenAI Retrieves a thread.
+      summary: OpenAI Retrieves a thread
       parameters:
       - in: path
         name: thread_id
@@ -229,7 +229,7 @@ paths:
       operationId: modifyThread
       tags:
       - Threads
-      summary: OpenAI Modifies a thread.
+      summary: OpenAI Modifies a thread
       parameters:
       - in: path
         name: thread_id
@@ -265,7 +265,7 @@ paths:
       operationId: deleteThread
       tags:
       - Threads
-      summary: OpenAI Delete a thread.
+      summary: OpenAI Delete a thread
       parameters:
       - in: path
         name: thread_id
@@ -307,7 +307,7 @@ paths:
       operationId: listMessages
       tags:
       - Threads
-      summary: OpenAI Returns a list of messages for a given thread.
+      summary: OpenAI Returns a list of messages for a given thread
       parameters:
       - in: path
         name: thread_id
@@ -380,7 +380,7 @@ paths:
       operationId: createMessage
       tags:
       - Threads
-      summary: OpenAI Create a message.
+      summary: OpenAI Create a message
       parameters:
       - in: path
         name: thread_id
@@ -419,7 +419,7 @@ paths:
       operationId: getMessage
       tags:
       - Threads
-      summary: OpenAI Retrieve a message.
+      summary: OpenAI Retrieve a message
       parameters:
       - in: path
         name: thread_id
@@ -455,7 +455,7 @@ paths:
       operationId: modifyMessage
       tags:
       - Threads
-      summary: OpenAI Modifies a message.
+      summary: OpenAI Modifies a message
       parameters:
       - in: path
         name: thread_id
@@ -500,7 +500,7 @@ paths:
       operationId: createThreadAndRun
       tags:
       - Threads
-      summary: OpenAI Create a thread and run it in one request.
+      summary: OpenAI Create a thread and run it in one request
       requestBody:
         required: true
         content:
@@ -532,7 +532,7 @@ paths:
       operationId: listRuns
       tags:
       - Threads
-      summary: OpenAI Returns a list of runs belonging to a thread.
+      summary: OpenAI Returns a list of runs belonging to a thread
       parameters:
       - name: thread_id
         in: path
@@ -596,7 +596,7 @@ paths:
       operationId: createRun
       tags:
       - Threads
-      summary: OpenAI Create a run.
+      summary: OpenAI Create a run
       parameters:
       - in: path
         name: thread_id
@@ -635,7 +635,7 @@ paths:
       operationId: getRun
       tags:
       - Threads
-      summary: OpenAI Retrieves a run.
+      summary: OpenAI Retrieves a run
       parameters:
       - in: path
         name: thread_id
@@ -671,7 +671,7 @@ paths:
       operationId: modifyRun
       tags:
       - Threads
-      summary: OpenAI Modifies a run.
+      summary: OpenAI Modifies a run
       parameters:
       - in: path
         name: thread_id
@@ -716,7 +716,7 @@ paths:
       operationId: submitToolOuputsToRun
       tags:
       - Threads
-      summary: 'OpenAI When a run has the `status: "requires_action"` and `required_action.type` is `submit_tool_outputs`, this endpoint can be used to submit the outputs from the tool calls once they''re all completed. All outputs must be submitted in a single request.'
+      summary: 'OpenAI When a run has the `status: "requires_action"` and…'
       parameters:
       - in: path
         name: thread_id
@@ -761,7 +761,7 @@ paths:
       operationId: cancelRun
       tags:
       - Threads
-      summary: OpenAI Cancels a run that is `in_progress`.
+      summary: OpenAI Cancels a run that is `in_progress`
       parameters:
       - in: path
         name: thread_id
@@ -800,7 +800,7 @@ paths:
       operationId: listRunSteps
       tags:
       - Threads
-      summary: OpenAI Returns a list of run steps belonging to a run.
+      summary: OpenAI Returns a list of run steps belonging to a run
       parameters:
       - name: thread_id
         in: path
@@ -873,7 +873,7 @@ paths:
       operationId: getRunStep
       tags:
       - Threads
-      summary: OpenAI Retrieves a run step.
+      summary: OpenAI Retrieves a run step
       parameters:
       - in: path
         name: thread_id
@@ -915,31 +915,6 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
-    ListMessageFilesResponse:
-      properties:
-        object:
-          type: string
-          example: list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/MessageFileObject'
-        first_id:
-          type: string
-          example: file-abc123
-        last_id:
-          type: string
-          example: file-abc456
-        has_more:
-          type: boolean
-          example: false
-      required:
-      - object
-      - data
-      - items
-      - first_id
-      - last_id
-      - has_more
     MessageFileObject:
       type: object
       title: Message files
@@ -968,6 +943,31 @@ components:
         name: The message file object
         beta: true
         example: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"thread.message.file\",\n  \"created_at\": 1698107661,\n  \"message_id\": \"message_QLoItBbqwyAJEzlTy4y9kOMM\",\n  \"file_id\": \"file-abc123\"\n}\n"
+    ListMessageFilesResponse:
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageFileObject'
+        first_id:
+          type: string
+          example: file-abc123
+        last_id:
+          type: string
+          example: file-abc456
+        has_more:
+          type: boolean
+          example: false
+      required:
+      - object
+      - data
+      - items
+      - first_id
+      - last_id
+      - has_more
     RunStepObject:
       type: object
       title: Run steps
@@ -1086,6 +1086,64 @@ components:
         name: The run step object
         beta: true
         example: "{\n  \"id\": \"step_abc123\",\n  \"object\": \"thread.run.step\",\n  \"created_at\": 1699063291,\n  \"run_id\": \"run_abc123\",\n  \"assistant_id\": \"asst_abc123\",\n  \"thread_id\": \"thread_abc123\",\n  \"type\": \"message_creation\",\n  \"status\": \"completed\",\n  \"cancelled_at\": null,\n  \"completed_at\": 1699063291,\n  \"expired_at\": null,\n  \"failed_at\": null,\n  \"last_error\": null,\n  \"step_details\": {\n    \"type\": \"message_creation\",\n    \"message_creation\": {\n      \"message_id\": \"msg_abc123\"\n    }\n  },\n  \"usage\": {\n    \"prompt_tokens\": 123,\n    \"completion_tokens\": 456,\n    \"total_tokens\": 579\n  }\n}\n"
+    ThreadObject:
+      type: object
+      title: Thread
+      description: Represents a thread that contains [messages](/docs/api-reference/messages).
+      properties:
+        id:
+          description: The identifier, which can be referenced in API endpoints.
+          type: string
+        object:
+          description: The object type, which is always `thread`.
+          type: string
+          enum:
+          - thread
+        created_at:
+          description: The Unix timestamp (in seconds) for when the thread was created.
+          type: integer
+        metadata:
+          description: 'Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+
+            '
+          type:
+          - object
+          - 'null'
+          x-oaiTypeLabel: map
+      required:
+      - id
+      - object
+      - created_at
+      - metadata
+      x-oaiMeta:
+        name: The thread object
+        beta: true
+        example: "{\n  \"id\": \"thread_abc123\",\n  \"object\": \"thread\",\n  \"created_at\": 1698107661,\n  \"metadata\": {}\n}\n"
+    ListRunsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RunObject'
+        first_id:
+          type: string
+          example: run_abc123
+        last_id:
+          type: string
+          example: run_abc456
+        has_more:
+          type: boolean
+          example: false
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
     MessageObject:
       type: object
       title: The message object
@@ -1159,6 +1217,45 @@ components:
         name: The message object
         beta: true
         example: "{\n  \"id\": \"msg_abc123\",\n  \"object\": \"thread.message\",\n  \"created_at\": 1698983503,\n  \"thread_id\": \"thread_abc123\",\n  \"role\": \"assistant\",\n  \"content\": [\n    {\n      \"type\": \"text\",\n      \"text\": {\n        \"value\": \"Hi! How can I help you today?\",\n        \"annotations\": []\n      }\n    }\n  ],\n  \"file_ids\": [],\n  \"assistant_id\": \"asst_abc123\",\n  \"run_id\": \"run_abc123\",\n  \"metadata\": {}\n}\n"
+    DeleteThreadResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        deleted:
+          type: boolean
+        object:
+          type: string
+          enum:
+          - thread.deleted
+      required:
+      - id
+      - object
+      - deleted
+    ListMessagesResponse:
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageObject'
+        first_id:
+          type: string
+          example: msg_abc123
+        last_id:
+          type: string
+          example: msg_abc123
+        has_more:
+          type: boolean
+          example: false
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
     ListRunStepsResponse:
       properties:
         object:
@@ -1340,103 +1437,6 @@ components:
         name: The run object
         beta: true
         example: "{\n  \"id\": \"run_abc123\",\n  \"object\": \"thread.run\",\n  \"created_at\": 1698107661,\n  \"assistant_id\": \"asst_abc123\",\n  \"thread_id\": \"thread_abc123\",\n  \"status\": \"completed\",\n  \"started_at\": 1699073476,\n  \"expires_at\": null,\n  \"cancelled_at\": null,\n  \"failed_at\": null,\n  \"completed_at\": 1699073498,\n  \"last_error\": null,\n  \"model\": \"gpt-4\",\n  \"instructions\": null,\n  \"tools\": [{\"type\": \"retrieval\"}, {\"type\": \"code_interpreter\"}],\n  \"file_ids\": [],\n  \"metadata\": {},\n  \"usage\": {\n    \"prompt_tokens\": 123,\n    \"completion_tokens\": 456,\n    \"total_tokens\": 579\n  }\n}\n"
-    ListMessagesResponse:
-      properties:
-        object:
-          type: string
-          example: list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/MessageObject'
-        first_id:
-          type: string
-          example: msg_abc123
-        last_id:
-          type: string
-          example: msg_abc123
-        has_more:
-          type: boolean
-          example: false
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
-    ListRunsResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          example: list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/RunObject'
-        first_id:
-          type: string
-          example: run_abc123
-        last_id:
-          type: string
-          example: run_abc456
-        has_more:
-          type: boolean
-          example: false
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
-    ThreadObject:
-      type: object
-      title: Thread
-      description: Represents a thread that contains [messages](/docs/api-reference/messages).
-      properties:
-        id:
-          description: The identifier, which can be referenced in API endpoints.
-          type: string
-        object:
-          description: The object type, which is always `thread`.
-          type: string
-          enum:
-          - thread
-        created_at:
-          description: The Unix timestamp (in seconds) for when the thread was created.
-          type: integer
-        metadata:
-          description: 'Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
-
-            '
-          type:
-          - object
-          - 'null'
-          x-oaiTypeLabel: map
-      required:
-      - id
-      - object
-      - created_at
-      - metadata
-      x-oaiMeta:
-        name: The thread object
-        beta: true
-        example: "{\n  \"id\": \"thread_abc123\",\n  \"object\": \"thread\",\n  \"created_at\": 1698107661,\n  \"metadata\": {}\n}\n"
-    DeleteThreadResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        deleted:
-          type: boolean
-        object:
-          type: string
-          enum:
-          - thread.deleted
-      required:
-      - id
-      - object
-      - deleted
   securitySchemes:
     ApiKeyAuth:
       type: http

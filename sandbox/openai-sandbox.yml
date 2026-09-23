@@ -1,0 +1,99 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  https://platform.openai.com/playground, https://platform.openai.com/api-keys,
+  https://developers.openai.com/api/docs/guides/rate-limits,
+  https://developers.openai.com/api/docs/guides/batch, and the Projects /
+  Certificates / Usage surfaces in
+  openapi/_original/openai-openapi-master.yml. Probed 2026-08-27.
+description: >-
+  OpenAI has NO test mode. This is the honest headline and it separates OpenAI
+  from every payments-shaped provider in the catalog: there are no test keys, no
+  test-vs-live key prefixes, no fixtures, no magic values, no time simulation,
+  and no way to exercise a write path without it counting and being billed.
+  Every call an agent makes against api.openai.com is a real, metered call
+  against real quota. What OpenAI provides instead is (a) an interactive
+  Playground console for human exploration, (b) free-tier credit and a Free
+  usage tier for evaluation, and (c) PROJECTS as the isolation primitive —
+  a separate project with its own keys, its own spend limit and its own rate
+  limits is the nearest thing to a sandbox, and it is what the docs steer
+  operators toward. An agent integrator should read this as: build your own
+  containment, because the API ships none.
+test_mode:
+  exists: false
+  key_prefixes_differ: false
+  evidence: >-
+    Keys are issued per project at platform.openai.com/api-keys with the prefixes
+    sk-proj- (project) and sk-admin- (organization administration). Neither
+    encodes an environment, and no test-mode prefix is documented anywhere.
+  consequence: >-
+    There is no way to call createResponse, createFineTuningJob or
+    deleteVectorStore in a rehearsal mode. Combined with no dry-run parameter
+    and no idempotency key (conventions/openai-conventions.yml), an agent's first
+    attempt at a write is always the real one.
+console:
+  name: Playground
+  url: https://platform.openai.com/playground
+  probe: {url: https://platform.openai.com/playground, status: 403, note: Cloudflare bot challenge to automated clients; a live human-facing page, not a dead link.}
+  description: >-
+    Interactive console for Responses, Chat, Realtime, Images and Assistants —
+    pick a model, set parameters, send a prompt, read the response, and export
+    the equivalent code. Calls made here are billed to the selected project.
+  billed: true
+isolation_primitives:
+  - name: Project
+    description: >-
+      The real containment boundary. Each project has its own API keys, its own
+      spend limit, its own rate limits, and its own usage/cost reporting. A
+      "staging" project is how OpenAI expects environments to be separated.
+    operations: [create-project, modify-project, archive-project, create-project-api-key, delete-project-api-key]
+    contract: openapi/openai-projects-api-openapi.yml
+  - name: Project spend limit
+    description: >-
+      A hard monthly ceiling per project. The blast radius control an agent
+      deployment actually gets — exceeding it returns 429 with
+      project_spend_limit_exceeded rather than continuing to spend.
+    error_code: project_spend_limit_exceeded
+  - name: Organization spend limit
+    description: Organization-wide monthly ceiling; 429 organization_spend_limit_exceeded.
+  - name: IP allowlist
+    description: >-
+      Project-level source-IP restriction. A 401 "IP not authorized" is returned
+      to calls from outside it. See errors/openai-problem-types.yml.
+evaluation_access:
+  - name: Free tier
+    description: >-
+      A usage tier with the most restricted limits, intended for evaluation.
+      Documented alongside Tiers 1-5 at
+      https://developers.openai.com/api/docs/guides/rate-limits.
+    note: Restricted quota, not a separate environment. Calls are still real.
+cost_reduction_paths:
+  - name: Batch API
+    discount: Documented as a reduced-price asynchronous path with a 24h completion window.
+    note: >-
+      Cheaper, not free, and not a sandbox — batches produce real output and are
+      billed. Cancellable within the window (conventions/openai-conventions.yml).
+    contract: openapi/openai-batch-api-openapi.yml
+  - name: Flex service tier
+    note: Reduced-price tier documented on the pricing page. Real calls, lower price.
+absent:
+  test_keys: false
+  test_fixtures: false
+  test_cards_or_tokens: n/a
+  time_simulation: false
+  trigger_tooling: false
+  dry_run_parameter: false
+  note: >-
+    Each of these was looked for and not found. `false` here means checked and
+    absent, not unchecked. No dry_run / simulate / preview / validate_only
+    parameter appears on any of the 242 operations in the contract.
+agent_guidance:
+  - >-
+    Provision a dedicated project with its own key and a low spend limit before
+    pointing an agent at OpenAI. That limit is the only automatic brake in the
+    system.
+  - >-
+    There is no safe rehearsal. If a flow must be validated before it runs for
+    real, validate it against a mock built from openapi/ — the contract is
+    complete enough to generate one, which is what examples/ and
+    collections/ in this repo are for.

@@ -1,0 +1,139 @@
+generated: '2026-08-27'
+method: searched
+format: openai-error-object
+source: >-
+  https://developers.openai.com/api/docs/guides/error-codes (the published error
+  reference), enriched from the 4xx/5xx responses in
+  openapi/_original/openai-openapi-master.yml and from a live unauthenticated
+  GET https://api.openai.com/v1/models on 2026-08-27, which returned HTTP 401
+  with the envelope reproduced below verbatim.
+description: >-
+  OpenAI does NOT use RFC 9457 application/problem+json. Every error is a plain
+  application/json body wrapping a single `error` object. The catalog below is
+  the published HTTP-status reference plus the documented `code` values; note
+  that OpenAI overloads 429 for five materially different conditions — rate
+  limiting, exhausted prepaid credit, org spend limit, project spend limit and
+  org usage limit — which an agent CANNOT distinguish from the status code
+  alone. Reading error.code is mandatory on 429: one of the five is retryable
+  with backoff and four are not retryable at all until a human changes a billing
+  setting.
+envelope:
+  media_type: application/json
+  rfc9457: false
+  shape: '{ "error": { "message": string, "type": string, "param": string|null, "code": string|null } }'
+  observed:
+    request: GET https://api.openai.com/v1/models (no Authorization header)
+    status: 401
+    body: '{ "error": { "message": "Missing bearer authentication in header", "type": "invalid_request_error", "param": ... } }'
+  tracing:
+    response_header: x-request-id
+    client_header: X-Client-Request-Id
+    note: >-
+      Share x-request-id with support. When a timeout prevents reading the
+      response header, the docs direct you to the X-Client-Request-Id you sent.
+error_types:
+  - invalid_request_error: The request itself is malformed, unauthenticated, or references something that does not exist.
+  - insufficient_quota: Billing/quota condition — returned on 429 for credit and spend-limit exhaustion.
+  - server_error: A problem on OpenAI's side.
+problems:
+  - status: 400
+    title: Bad Request
+    meaning: Invalid or unsupported parameter.
+    code: service_tier
+    param: service_tier
+    remediation: The requested service tier is not allowed for the project; change it in project settings.
+    retryable: false
+  - status: 401
+    title: Invalid Authentication
+    meaning: Credentials are invalid, revoked, or lack permission for this operation.
+    remediation: Verify the API key and organization ID; regenerate the key if needed.
+    retryable: false
+  - status: 401
+    title: Incorrect API key provided
+    meaning: The key has a typo, was deleted, or a stale value is cached.
+    remediation: Clear cached credentials; generate a new key at platform.openai.com/api-keys.
+    retryable: false
+  - status: 401
+    title: Not a member of an organization
+    meaning: The account is not attached to any organization.
+    remediation: Create an organization or request an invitation to one.
+    retryable: false
+  - status: 401
+    title: IP not authorized
+    meaning: The request source IP is not on the project allowlist.
+    remediation: Call from an allowlisted IP or update the allowlist.
+    retryable: false
+  - status: 403
+    title: Country, region, or territory not supported
+    meaning: Geographic access restriction.
+    remediation: See the supported-countries documentation. Not retryable from this location.
+    retryable: false
+  - status: 429
+    title: Rate limit reached
+    meaning: Too many requests too quickly for the project's usage tier.
+    remediation: Honor Retry-After; back off exponentially. See rate-limits/openai-rate-limits.yml.
+    retryable: true
+  - status: 429
+    title: Credit balance exhausted
+    code: credit_balance_exhausted
+    error_type: insufficient_quota
+    meaning: The organization has no prepaid credits remaining.
+    remediation: Add credits in billing settings. RETRY WILL NOT HELP.
+    retryable: false
+  - status: 429
+    title: Organization spend limit reached
+    code: organization_spend_limit_exceeded
+    error_type: insufficient_quota
+    meaning: The organization exceeded its configured monthly spend threshold.
+    remediation: Raise or remove the limit in organization settings. RETRY WILL NOT HELP.
+    retryable: false
+  - status: 429
+    title: Project spend limit reached
+    code: project_spend_limit_exceeded
+    error_type: insufficient_quota
+    meaning: The project exceeded its configured monthly spend threshold.
+    remediation: Raise or remove the limit in project settings. RETRY WILL NOT HELP.
+    retryable: false
+  - status: 429
+    title: Organization usage limit reached
+    code: organization_usage_limit_exceeded
+    error_type: insufficient_quota
+    meaning: The organization hit the usage ceiling OpenAI assigned it.
+    remediation: Request a higher approved limit or contact support. RETRY WILL NOT HELP.
+    retryable: false
+  - status: 500
+    title: Server error
+    meaning: A problem processing the request on OpenAI's side.
+    remediation: Retry after a brief wait; check https://status.openai.com/.
+    retryable: true
+  - status: 503
+    title: Engine overloaded
+    meaning: The engine is under heavy load right now.
+    remediation: Retry with exponential backoff.
+    retryable: true
+  - status: 503
+    title: Slow Down
+    meaning: A sudden increase in your request rate is impacting reliability.
+    remediation: >-
+      Reduce to baseline rate, hold steady for 15 minutes, then increase
+      gradually. Distinct from 429 — the guidance is a sustained reduction, not a
+      per-request retry.
+    retryable: conditional
+realtime_websocket_errors:
+  - code: previous_response_not_found
+    meaning: The referenced previous response has expired or is unknown.
+    remediation: Retry with full context and previous_response_id set to null.
+  - code: websocket_connection_limit_reached
+    meaning: The 60-minute Realtime connection limit was reached.
+    remediation: Open a new WebSocket connection.
+agent_guidance:
+  - >-
+    Never treat 429 as uniformly retryable. Read error.code first: only "rate
+    limit reached" (no code / rate-limit shape) is backoff-retryable; the four
+    insufficient_quota codes need a human to change a billing setting and
+    retrying them burns budget for nothing.
+  - >-
+    503 has two distinct meanings. "Engine overloaded" is a normal backoff. "Slow
+    Down" asks for a 15-minute sustained rate reduction — a per-request retry is
+    the wrong response and can make it worse.
+  - Capture x-request-id on every response; it is the only handle support accepts.

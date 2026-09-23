@@ -21,7 +21,7 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Returns a list of invites in the organization.
+      summary: Returns a list of invites in the organization
       operationId: list-invites
       tags:
       - Invites
@@ -74,7 +74,7 @@ paths:
     post:
       security:
       - AdminApiKeyAuth: []
-      summary: Create an invite for a user to the organization. The invite must be accepted by the user before they have access to the organization.
+      summary: Create an invite for a user to the organization.
       operationId: inviteUser
       tags:
       - Invites
@@ -117,7 +117,7 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Retrieves an invite.
+      summary: Retrieves an invite
       operationId: retrieve-invite
       tags:
       - Invites
@@ -159,7 +159,7 @@ paths:
     delete:
       security:
       - AdminApiKeyAuth: []
-      summary: Delete an invite. If the invite has already been accepted, it cannot be deleted.
+      summary: Delete an invite. If the invite has already been accepted, it cannot be deleted
       operationId: delete-invite
       tags:
       - Invites
@@ -200,6 +200,23 @@ paths:
           response: "{\n    \"object\": \"organization.invite.deleted\",\n    \"id\": \"invite-abc\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
+    InviteDeleteResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.invite.deleted
+          description: The object type, which is always `organization.invite.deleted`
+          x-stainless-const: true
+        id:
+          type: string
+        deleted:
+          type: boolean
+      required:
+      - object
+      - id
+      - deleted
     Invite:
       type: object
       description: Represents an individual `invite` to the organization.
@@ -274,23 +291,36 @@ components:
       x-oaiMeta:
         name: The invite object
         example: "{\n  \"object\": \"organization.invite\",\n  \"id\": \"invite-abc\",\n  \"email\": \"user@example.com\",\n  \"role\": \"owner\",\n  \"status\": \"accepted\",\n  \"created_at\": 1711471533,\n  \"expires_at\": 1711471533,\n  \"accepted_at\": 1711471533,\n  \"projects\": [\n    {\n      \"id\": \"project-xyz\",\n      \"role\": \"member\"\n    }\n  ]\n}\n"
-    InviteDeleteResponse:
+    InviteListResponse:
       type: object
       properties:
         object:
           type: string
           enum:
-          - organization.invite.deleted
-          description: The object type, which is always `organization.invite.deleted`
+          - list
+          description: The object type, which is always `list`
           x-stainless-const: true
-        id:
-          type: string
-        deleted:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Invite'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The first `invite_id` in the retrieved `list`
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The last `invite_id` in the retrieved `list`
+        has_more:
           type: boolean
+          description: The `has_more` property is used for pagination to indicate there are additional results.
       required:
       - object
-      - id
-      - deleted
+      - data
+      - has_more
     InviteRequest:
       type: object
       properties:
@@ -324,36 +354,6 @@ components:
       required:
       - email
       - role
-    InviteListResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: The object type, which is always `list`
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Invite'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The first `invite_id` in the retrieved `list`
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The last `invite_id` in the retrieved `list`
-        has_more:
-          type: boolean
-          description: The `has_more` property is used for pagination to indicate there are additional results.
-      required:
-      - object
-      - data
-      - has_more
   securitySchemes:
     ApiKeyAuth:
       type: http

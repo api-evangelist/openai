@@ -21,7 +21,7 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Get costs details for the organization.
+      summary: Get costs details for the organization
       operationId: usage-costs
       tags:
       - Usage
@@ -127,7 +127,7 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Get audio speeches usage details for the organization.
+      summary: Get audio speeches usage details for the organization
       operationId: usage-audio-speeches
       tags:
       - Usage
@@ -257,7 +257,7 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Get audio transcriptions usage details for the organization.
+      summary: Get audio transcriptions usage details for the organization
       operationId: usage-audio-transcriptions
       tags:
       - Usage
@@ -387,7 +387,7 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Get code interpreter sessions usage details for the organization.
+      summary: Get code interpreter sessions usage details for the organization
       operationId: usage-code-interpreter-sessions
       tags:
       - Usage
@@ -490,7 +490,7 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Get completions usage details for the organization.
+      summary: Get completions usage details for the organization
       operationId: usage-completions
       tags:
       - Usage
@@ -630,7 +630,7 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Get embeddings usage details for the organization.
+      summary: Get embeddings usage details for the organization
       operationId: usage-embeddings
       tags:
       - Usage
@@ -760,7 +760,7 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Get images usage details for the organization.
+      summary: Get images usage details for the organization
       operationId: usage-images
       tags:
       - Usage
@@ -918,7 +918,7 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Get moderations usage details for the organization.
+      summary: Get moderations usage details for the organization
       operationId: usage-moderations
       tags:
       - Usage
@@ -1048,7 +1048,7 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Get vector stores usage details for the organization.
+      summary: Get vector stores usage details for the organization
       operationId: usage-vector-stores
       tags:
       - Usage
@@ -1149,18 +1149,41 @@ paths:
           response: "{\n    \"object\": \"page\",\n    \"data\": [\n        {\n            \"object\": \"bucket\",\n            \"start_time\": 1730419200,\n            \"end_time\": 1730505600,\n            \"results\": [\n                {\n                    \"object\": \"organization.usage.vector_stores.result\",\n                    \"usage_bytes\": 1024,\n                    \"project_id\": null\n                }\n            ]\n        }\n    ],\n    \"has_more\": false,\n    \"next_page\": null\n}\n"
 components:
   schemas:
-    UsageModerationsResult:
+    UsageResponse:
       type: object
-      description: The aggregated moderations usage details of the specific time bucket.
       properties:
         object:
           type: string
           enum:
-          - organization.usage.moderations.result
+          - page
           x-stainless-const: true
-        input_tokens:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/UsageTimeBucket'
+        has_more:
+          type: boolean
+        next_page:
+          anyOf:
+          - type: string
+          - type: 'null'
+      required:
+      - object
+      - data
+      - has_more
+      - next_page
+    UsageAudioSpeechesResult:
+      type: object
+      description: The aggregated audio speeches usage details of the specific time bucket.
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.usage.audio_speeches.result
+          x-stainless-const: true
+        characters:
           type: integer
-          description: The aggregated number of input tokens used.
+          description: The number of characters processed.
         num_model_requests:
           type: integer
           description: The count of requests made to the model.
@@ -1186,63 +1209,11 @@ components:
           - type: 'null'
       required:
       - object
-      - input_tokens
+      - characters
       - num_model_requests
       x-oaiMeta:
-        name: Moderations usage object
-        example: "{\n    \"object\": \"organization.usage.moderations.result\",\n    \"input_tokens\": 20,\n    \"num_model_requests\": 2,\n    \"project_id\": \"proj_abc\",\n    \"user_id\": \"user-abc\",\n    \"api_key_id\": \"key_abc\",\n    \"model\": \"text-moderation\"\n}\n"
-    UsageImagesResult:
-      type: object
-      description: The aggregated images usage details of the specific time bucket.
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.usage.images.result
-          x-stainless-const: true
-        images:
-          type: integer
-          description: The number of images processed.
-        num_model_requests:
-          type: integer
-          description: The count of requests made to the model.
-        source:
-          anyOf:
-          - type: string
-            description: When `group_by=source`, this field provides the source of the grouped usage result, possible values are `image.generation`, `image.edit`, `image.variation`.
-          - type: 'null'
-        size:
-          anyOf:
-          - type: string
-            description: When `group_by=size`, this field provides the image size of the grouped usage result.
-          - type: 'null'
-        project_id:
-          anyOf:
-          - type: string
-            description: When `group_by=project_id`, this field provides the project ID of the grouped usage result.
-          - type: 'null'
-        user_id:
-          anyOf:
-          - type: string
-            description: When `group_by=user_id`, this field provides the user ID of the grouped usage result.
-          - type: 'null'
-        api_key_id:
-          anyOf:
-          - type: string
-            description: When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
-          - type: 'null'
-        model:
-          anyOf:
-          - type: string
-            description: When `group_by=model`, this field provides the model name of the grouped usage result.
-          - type: 'null'
-      required:
-      - object
-      - images
-      - num_model_requests
-      x-oaiMeta:
-        name: Images usage object
-        example: "{\n    \"object\": \"organization.usage.images.result\",\n    \"images\": 2,\n    \"num_model_requests\": 2,\n    \"size\": \"1024x1024\",\n    \"source\": \"image.generation\",\n    \"project_id\": \"proj_abc\",\n    \"user_id\": \"user-abc\",\n    \"api_key_id\": \"key_abc\",\n    \"model\": \"dall-e-3\"\n}\n"
+        name: Audio speeches usage object
+        example: "{\n    \"object\": \"organization.usage.audio_speeches.result\",\n    \"characters\": 45,\n    \"num_model_requests\": 1,\n    \"project_id\": \"proj_abc\",\n    \"user_id\": \"user-abc\",\n    \"api_key_id\": \"key_abc\",\n    \"model\": \"tts-1\"\n}\n"
     UsageCompletionsResult:
       type: object
       description: The aggregated completions usage details of the specific time bucket.
@@ -1308,94 +1279,6 @@ components:
       x-oaiMeta:
         name: Completions usage object
         example: "{\n    \"object\": \"organization.usage.completions.result\",\n    \"input_tokens\": 5000,\n    \"output_tokens\": 1000,\n    \"input_cached_tokens\": 4000,\n    \"input_audio_tokens\": 300,\n    \"output_audio_tokens\": 200,\n    \"num_model_requests\": 5,\n    \"project_id\": \"proj_abc\",\n    \"user_id\": \"user-abc\",\n    \"api_key_id\": \"key_abc\",\n    \"model\": \"gpt-4o-mini-2024-07-18\",\n    \"batch\": false,\n    \"service_tier\": \"default\"\n}\n"
-    UsageCodeInterpreterSessionsResult:
-      type: object
-      description: The aggregated code interpreter sessions usage details of the specific time bucket.
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.usage.code_interpreter_sessions.result
-          x-stainless-const: true
-        num_sessions:
-          type: integer
-          description: The number of code interpreter sessions.
-        project_id:
-          anyOf:
-          - type: string
-            description: When `group_by=project_id`, this field provides the project ID of the grouped usage result.
-          - type: 'null'
-      required:
-      - object
-      - num_sessions
-      x-oaiMeta:
-        name: Code interpreter sessions usage object
-        example: "{\n    \"object\": \"organization.usage.code_interpreter_sessions.result\",\n    \"num_sessions\": 1,\n    \"project_id\": \"proj_abc\"\n}\n"
-    UsageEmbeddingsResult:
-      type: object
-      description: The aggregated embeddings usage details of the specific time bucket.
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.usage.embeddings.result
-          x-stainless-const: true
-        input_tokens:
-          type: integer
-          description: The aggregated number of input tokens used.
-        num_model_requests:
-          type: integer
-          description: The count of requests made to the model.
-        project_id:
-          anyOf:
-          - type: string
-            description: When `group_by=project_id`, this field provides the project ID of the grouped usage result.
-          - type: 'null'
-        user_id:
-          anyOf:
-          - type: string
-            description: When `group_by=user_id`, this field provides the user ID of the grouped usage result.
-          - type: 'null'
-        api_key_id:
-          anyOf:
-          - type: string
-            description: When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
-          - type: 'null'
-        model:
-          anyOf:
-          - type: string
-            description: When `group_by=model`, this field provides the model name of the grouped usage result.
-          - type: 'null'
-      required:
-      - object
-      - input_tokens
-      - num_model_requests
-      x-oaiMeta:
-        name: Embeddings usage object
-        example: "{\n    \"object\": \"organization.usage.embeddings.result\",\n    \"input_tokens\": 20,\n    \"num_model_requests\": 2,\n    \"project_id\": \"proj_abc\",\n    \"user_id\": \"user-abc\",\n    \"api_key_id\": \"key_abc\",\n    \"model\": \"text-embedding-ada-002-v2\"\n}\n"
-    UsageVectorStoresResult:
-      type: object
-      description: The aggregated vector stores usage details of the specific time bucket.
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.usage.vector_stores.result
-          x-stainless-const: true
-        usage_bytes:
-          type: integer
-          description: The vector stores usage in bytes.
-        project_id:
-          anyOf:
-          - type: string
-            description: When `group_by=project_id`, this field provides the project ID of the grouped usage result.
-          - type: 'null'
-      required:
-      - object
-      - usage_bytes
-      x-oaiMeta:
-        name: Vector stores usage object
-        example: "{\n    \"object\": \"organization.usage.vector_stores.result\",\n    \"usage_bytes\": 1024,\n    \"project_id\": \"proj_abc\"\n}\n"
     UsageTimeBucket:
       type: object
       properties:
@@ -1472,29 +1355,188 @@ components:
       x-oaiMeta:
         name: Costs object
         example: "{\n    \"object\": \"organization.costs.result\",\n    \"amount\": {\n      \"value\": 0.06,\n      \"currency\": \"usd\"\n    },\n    \"line_item\": \"Image models\",\n    \"project_id\": \"proj_abc\",\n    \"quantity\": 10000\n}\n"
-    UsageResponse:
+    UsageEmbeddingsResult:
       type: object
+      description: The aggregated embeddings usage details of the specific time bucket.
       properties:
         object:
           type: string
           enum:
-          - page
+          - organization.usage.embeddings.result
           x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/UsageTimeBucket'
-        has_more:
-          type: boolean
-        next_page:
+        input_tokens:
+          type: integer
+          description: The aggregated number of input tokens used.
+        num_model_requests:
+          type: integer
+          description: The count of requests made to the model.
+        project_id:
           anyOf:
           - type: string
+            description: When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+          - type: 'null'
+        user_id:
+          anyOf:
+          - type: string
+            description: When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+          - type: 'null'
+        api_key_id:
+          anyOf:
+          - type: string
+            description: When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+          - type: 'null'
+        model:
+          anyOf:
+          - type: string
+            description: When `group_by=model`, this field provides the model name of the grouped usage result.
           - type: 'null'
       required:
       - object
-      - data
-      - has_more
-      - next_page
+      - input_tokens
+      - num_model_requests
+      x-oaiMeta:
+        name: Embeddings usage object
+        example: "{\n    \"object\": \"organization.usage.embeddings.result\",\n    \"input_tokens\": 20,\n    \"num_model_requests\": 2,\n    \"project_id\": \"proj_abc\",\n    \"user_id\": \"user-abc\",\n    \"api_key_id\": \"key_abc\",\n    \"model\": \"text-embedding-ada-002-v2\"\n}\n"
+    UsageVectorStoresResult:
+      type: object
+      description: The aggregated vector stores usage details of the specific time bucket.
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.usage.vector_stores.result
+          x-stainless-const: true
+        usage_bytes:
+          type: integer
+          description: The vector stores usage in bytes.
+        project_id:
+          anyOf:
+          - type: string
+            description: When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+          - type: 'null'
+      required:
+      - object
+      - usage_bytes
+      x-oaiMeta:
+        name: Vector stores usage object
+        example: "{\n    \"object\": \"organization.usage.vector_stores.result\",\n    \"usage_bytes\": 1024,\n    \"project_id\": \"proj_abc\"\n}\n"
+    UsageImagesResult:
+      type: object
+      description: The aggregated images usage details of the specific time bucket.
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.usage.images.result
+          x-stainless-const: true
+        images:
+          type: integer
+          description: The number of images processed.
+        num_model_requests:
+          type: integer
+          description: The count of requests made to the model.
+        source:
+          anyOf:
+          - type: string
+            description: When `group_by=source`, this field provides the source of the grouped usage result, possible values are `image.generation`, `image.edit`, `image.variation`.
+          - type: 'null'
+        size:
+          anyOf:
+          - type: string
+            description: When `group_by=size`, this field provides the image size of the grouped usage result.
+          - type: 'null'
+        project_id:
+          anyOf:
+          - type: string
+            description: When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+          - type: 'null'
+        user_id:
+          anyOf:
+          - type: string
+            description: When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+          - type: 'null'
+        api_key_id:
+          anyOf:
+          - type: string
+            description: When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+          - type: 'null'
+        model:
+          anyOf:
+          - type: string
+            description: When `group_by=model`, this field provides the model name of the grouped usage result.
+          - type: 'null'
+      required:
+      - object
+      - images
+      - num_model_requests
+      x-oaiMeta:
+        name: Images usage object
+        example: "{\n    \"object\": \"organization.usage.images.result\",\n    \"images\": 2,\n    \"num_model_requests\": 2,\n    \"size\": \"1024x1024\",\n    \"source\": \"image.generation\",\n    \"project_id\": \"proj_abc\",\n    \"user_id\": \"user-abc\",\n    \"api_key_id\": \"key_abc\",\n    \"model\": \"dall-e-3\"\n}\n"
+    UsageCodeInterpreterSessionsResult:
+      type: object
+      description: The aggregated code interpreter sessions usage details of the specific time bucket.
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.usage.code_interpreter_sessions.result
+          x-stainless-const: true
+        num_sessions:
+          type: integer
+          description: The number of code interpreter sessions.
+        project_id:
+          anyOf:
+          - type: string
+            description: When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+          - type: 'null'
+      required:
+      - object
+      - num_sessions
+      x-oaiMeta:
+        name: Code interpreter sessions usage object
+        example: "{\n    \"object\": \"organization.usage.code_interpreter_sessions.result\",\n    \"num_sessions\": 1,\n    \"project_id\": \"proj_abc\"\n}\n"
+    UsageModerationsResult:
+      type: object
+      description: The aggregated moderations usage details of the specific time bucket.
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.usage.moderations.result
+          x-stainless-const: true
+        input_tokens:
+          type: integer
+          description: The aggregated number of input tokens used.
+        num_model_requests:
+          type: integer
+          description: The count of requests made to the model.
+        project_id:
+          anyOf:
+          - type: string
+            description: When `group_by=project_id`, this field provides the project ID of the grouped usage result.
+          - type: 'null'
+        user_id:
+          anyOf:
+          - type: string
+            description: When `group_by=user_id`, this field provides the user ID of the grouped usage result.
+          - type: 'null'
+        api_key_id:
+          anyOf:
+          - type: string
+            description: When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
+          - type: 'null'
+        model:
+          anyOf:
+          - type: string
+            description: When `group_by=model`, this field provides the model name of the grouped usage result.
+          - type: 'null'
+      required:
+      - object
+      - input_tokens
+      - num_model_requests
+      x-oaiMeta:
+        name: Moderations usage object
+        example: "{\n    \"object\": \"organization.usage.moderations.result\",\n    \"input_tokens\": 20,\n    \"num_model_requests\": 2,\n    \"project_id\": \"proj_abc\",\n    \"user_id\": \"user-abc\",\n    \"api_key_id\": \"key_abc\",\n    \"model\": \"text-moderation\"\n}\n"
     UsageAudioTranscriptionsResult:
       type: object
       description: The aggregated audio transcriptions usage details of the specific time bucket.
@@ -1538,48 +1580,6 @@ components:
       x-oaiMeta:
         name: Audio transcriptions usage object
         example: "{\n    \"object\": \"organization.usage.audio_transcriptions.result\",\n    \"seconds\": 10,\n    \"num_model_requests\": 1,\n    \"project_id\": \"proj_abc\",\n    \"user_id\": \"user-abc\",\n    \"api_key_id\": \"key_abc\",\n    \"model\": \"tts-1\"\n}\n"
-    UsageAudioSpeechesResult:
-      type: object
-      description: The aggregated audio speeches usage details of the specific time bucket.
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.usage.audio_speeches.result
-          x-stainless-const: true
-        characters:
-          type: integer
-          description: The number of characters processed.
-        num_model_requests:
-          type: integer
-          description: The count of requests made to the model.
-        project_id:
-          anyOf:
-          - type: string
-            description: When `group_by=project_id`, this field provides the project ID of the grouped usage result.
-          - type: 'null'
-        user_id:
-          anyOf:
-          - type: string
-            description: When `group_by=user_id`, this field provides the user ID of the grouped usage result.
-          - type: 'null'
-        api_key_id:
-          anyOf:
-          - type: string
-            description: When `group_by=api_key_id`, this field provides the API key ID of the grouped usage result.
-          - type: 'null'
-        model:
-          anyOf:
-          - type: string
-            description: When `group_by=model`, this field provides the model name of the grouped usage result.
-          - type: 'null'
-      required:
-      - object
-      - characters
-      - num_model_requests
-      x-oaiMeta:
-        name: Audio speeches usage object
-        example: "{\n    \"object\": \"organization.usage.audio_speeches.result\",\n    \"characters\": 45,\n    \"num_model_requests\": 1,\n    \"project_id\": \"proj_abc\",\n    \"user_id\": \"user-abc\",\n    \"api_key_id\": \"key_abc\",\n    \"model\": \"tts-1\"\n}\n"
   securitySchemes:
     ApiKeyAuth:
       type: http

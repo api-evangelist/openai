@@ -1,0 +1,73 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  https://developers.openai.com/apps-sdk/build/custom-ux,
+  https://platform.openai.com/docs/api-reference/chatkit,
+  https://github.com/openai/chatkit-js,
+  https://github.com/openai/openai-apps-sdk-examples, and npm registry metadata
+  for @openai/chatkit, @openai/chatkit-react and @openai/apps-sdk-ui read
+  2026-08-27.
+description: >-
+  OpenAI publishes two distinct client-side UI surfaces, and they render in
+  different places, which is the thing to get right. ChatKit renders in YOUR
+  application — a drop-in chat interface backed by the ChatKit API on
+  api.openai.com. The Apps SDK component layer renders INSIDE ChatGPT — React
+  bundles served as MCP resources with the MIME type
+  `text/html;profile=mcp-app`, talking to the host through a `window.openai`
+  bridge. Neither is an SDK in the packages/ sense; both are catalogued there as
+  packages and here as interface surfaces. Note the maintenance asymmetry:
+  ChatKit last shipped 2026-07-31 while @openai/apps-sdk-ui has not released
+  since 2026-05-05, four months, against an estate that otherwise ships weekly.
+docs:
+  - https://platform.openai.com/docs/api-reference/chatkit
+  - https://developers.openai.com/apps-sdk/build/custom-ux
+libraries:
+  - {name: "@openai/chatkit", version: 1.9.0, published: '2026-07-31', purpose: ChatKit web component loader; catalogued in packages/}
+  - {name: "@openai/chatkit-react", version: 1.6.1, published: '2026-07-31', purpose: React bindings for ChatKit}
+  - {name: "@openai/apps-sdk-ui", version: 0.2.2, published: '2026-05-05', purpose: Optional Apps SDK component library matching the ChatGPT container}
+families:
+  chatkit:
+    description: >-
+      An embeddable chat interface for your own product, backed by the ChatKit
+      API (openapi/openai-chatkit-api-openapi.yml — sessions and threads, flagged
+      beta in the contract's x-oaiMeta navigation).
+    renders_in: your application
+    backend: 'api.openai.com /chatkit/sessions and /chatkit/threads'
+    repo: https://github.com/openai/chatkit-js
+    components:
+      - {name: ChatKit web component, description: Framework-agnostic custom element that renders the full chat surface.}
+      - {name: ChatKit React component, description: React wrapper over the same element.}
+  apps_sdk_ui:
+    description: >-
+      Ready-made buttons, cards, input controls and layout primitives that match
+      the ChatGPT container, so an app does not have to rebuild base components.
+    renders_in: ChatGPT
+    transport: >-
+      React components are built into JavaScript bundles, exposed as MCP
+      resources with MIME type text/html;profile=mcp-app, and inlined by the
+      server as <div id="root"></div><script type="module">${component}</script>.
+    host_bridge:
+      global: window.openai
+      capabilities: [checkout, file handling, modals, widget state persistence]
+    components:
+      - {name: Buttons, description: ChatGPT-styled button primitives.}
+      - {name: Cards, description: Container primitives for structured results.}
+      - {name: Input controls, description: Form inputs matching the host styling.}
+      - {name: Layout primitives, description: Spacing and arrangement primitives for the ChatGPT container.}
+  pizzaz_examples:
+    description: >-
+      OpenAI's published blueprint gallery of working Apps SDK components.
+      Examples, not a shipped component library.
+    repo: https://github.com/openai/openai-apps-sdk-examples
+    components:
+      - {name: Pizzaz List, description: Ranked card display with favorites and action buttons.}
+      - {name: Pizzaz Carousel, description: Embla-powered horizontal scroller for media-heavy content.}
+      - {name: Pizzaz Map, description: Mapbox integration with a fullscreen inspector.}
+      - {name: Pizzaz Album, description: Stacked gallery view for detailed exploration.}
+      - {name: Pizzaz Video, description: Scripted player with overlays and fullscreen controls.}
+cdn:
+  published: false
+  note: >-
+    The Apps SDK documentation names no CDN URL — components are bundled by the
+    developer and inlined in the MCP server response, so there is no pinned or
+    floating CDN artifact to version-check.

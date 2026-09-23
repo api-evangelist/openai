@@ -21,7 +21,7 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Lists all of the users in the organization.
+      summary: Lists all of the users in the organization
       operationId: list-users
       tags:
       - Users
@@ -83,7 +83,7 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Retrieves a user by their identifier.
+      summary: Retrieves a user by their identifier
       operationId: retrieve-user
       tags:
       - Users
@@ -125,7 +125,7 @@ paths:
     post:
       security:
       - AdminApiKeyAuth: []
-      summary: Modifies a user's role in the organization.
+      summary: Modifies a user's role in the organization
       operationId: modify-user
       tags:
       - Users
@@ -174,7 +174,7 @@ paths:
     delete:
       security:
       - AdminApiKeyAuth: []
-      summary: Deletes a user from the organization.
+      summary: Deletes a user from the organization
       operationId: delete-user
       tags:
       - Users
@@ -215,6 +215,22 @@ paths:
           response: "{\n    \"object\": \"organization.user.deleted\",\n    \"id\": \"user_abc\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
+    UserDeleteResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.user.deleted
+          x-stainless-const: true
+        id:
+          type: string
+        deleted:
+          type: boolean
+      required:
+      - object
+      - id
+      - deleted
     UserRoleUpdateRequest:
       type: object
       properties:
@@ -238,6 +254,32 @@ components:
           - type: string
           - type: 'null'
           description: Developer persona metadata.
+    UserListResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
     User:
       type: object
       description: Represents an individual `user` within an organization.
@@ -381,48 +423,6 @@ components:
       x-oaiMeta:
         name: The user object
         example: "{\n    \"object\": \"organization.user\",\n    \"id\": \"user_abc\",\n    \"name\": \"First Last\",\n    \"email\": \"user@example.com\",\n    \"role\": \"owner\",\n    \"added_at\": 1711471533\n}\n"
-    UserDeleteResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.user.deleted
-          x-stainless-const: true
-        id:
-          type: string
-        deleted:
-          type: boolean
-      required:
-      - object
-      - id
-      - deleted
-    UserListResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        has_more:
-          type: boolean
-      required:
-      - object
-      - data
-      - has_more
   securitySchemes:
     ApiKeyAuth:
       type: http

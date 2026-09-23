@@ -91,7 +91,7 @@ paths:
       operationId: listBatches
       tags:
       - Batch
-      summary: List your organization's batches.
+      summary: List your organization's batches
       parameters:
       - in: query
         name: after
@@ -144,7 +144,7 @@ paths:
       operationId: retrieveBatch
       tags:
       - Batch
-      summary: Retrieves a batch.
+      summary: Retrieves a batch
       parameters:
       - in: path
         name: batch_id
@@ -186,7 +186,7 @@ paths:
       operationId: cancelBatch
       tags:
       - Batch
-      summary: Cancels an in-progress batch. The batch will be in status `cancelling` for up to 10 minutes, before changing to `cancelled`, where it will have partial results (if any) available in the output file.
+      summary: Cancels an in-progress batch.
       parameters:
       - in: path
         name: batch_id
@@ -225,6 +225,26 @@ paths:
           response: "{\n  \"id\": \"batch_abc123\",\n  \"object\": \"batch\",\n  \"endpoint\": \"/v1/chat/completions\",\n  \"errors\": null,\n  \"input_file_id\": \"file-abc123\",\n  \"completion_window\": \"24h\",\n  \"status\": \"cancelling\",\n  \"output_file_id\": null,\n  \"error_file_id\": null,\n  \"created_at\": 1711471533,\n  \"in_progress_at\": 1711471538,\n  \"expires_at\": 1711557933,\n  \"finalizing_at\": null,\n  \"completed_at\": null,\n  \"failed_at\": null,\n  \"expired_at\": null,\n  \"cancelling_at\": 1711475133,\n  \"cancelled_at\": null,\n  \"request_counts\": {\n    \"total\": 100,\n    \"completed\": 23,\n    \"failed\": 1\n  },\n  \"metadata\": {\n    \"customer_id\": \"user_123456789\",\n    \"batch_description\": \"Nightly eval job\",\n  }\n}\n"
 components:
   schemas:
+    BatchFileExpirationAfter:
+      type: object
+      title: File expiration policy
+      description: The expiration policy for the output and/or error file that are generated for a batch.
+      properties:
+        anchor:
+          description: 'Anchor timestamp after which the expiration policy applies. Supported anchors: `created_at`. Note that the anchor is the file creation time, not the time the batch is created.'
+          type: string
+          enum:
+          - created_at
+          x-stainless-const: true
+        seconds:
+          description: The number of seconds after the anchor time that the file will expire. Must be between 3600 (1 hour) and 2592000 (30 days).
+          type: integer
+          format: int64
+          minimum: 3600
+          maximum: 2592000
+      required:
+      - anchor
+      - seconds
     Batch:
       type: object
       properties:
@@ -433,26 +453,6 @@ components:
           type: string
         x-oaiTypeLabel: map
       - type: 'null'
-    BatchFileExpirationAfter:
-      type: object
-      title: File expiration policy
-      description: The expiration policy for the output and/or error file that are generated for a batch.
-      properties:
-        anchor:
-          description: 'Anchor timestamp after which the expiration policy applies. Supported anchors: `created_at`. Note that the anchor is the file creation time, not the time the batch is created.'
-          type: string
-          enum:
-          - created_at
-          x-stainless-const: true
-        seconds:
-          description: The number of seconds after the anchor time that the file will expire. Must be between 3600 (1 hour) and 2592000 (30 days).
-          type: integer
-          format: int64
-          minimum: 3600
-          maximum: 2592000
-      required:
-      - anchor
-      - seconds
     ListBatchesResponse:
       type: object
       properties:

@@ -1,0 +1,241 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  https://developers.openai.com/api/reference/ and the cross-cutting guides
+  (rate-limits, error-codes, webhooks, deprecations, production-best-practices),
+  reconciled operation by operation against
+  openapi/_original/openai-openapi-master.yml (242 operations) and confirmed
+  live where possible — GET https://api.openai.com/v1/models returned 401 with
+  the error envelope recorded below on 2026-08-27.
+description: >-
+  The conventions that hold across every OpenAI endpoint rather than any single
+  one. Two of them are unusual enough that an agent integrator should know them
+  before writing a retry loop. First, OpenAI has NO idempotency key: it is the
+  only convention in this artifact where the answer is a plain no, and combined
+  with a 429 that means five different things it makes naive retry logic
+  genuinely unsafe on write paths. Second, versioning is carried by MODEL
+  IDENTITY, not by an API version — there is no version header to pin, so the
+  stable thing to pin is a dated model snapshot.
+base_url: https://api.openai.com/v1
+api_style: REST over HTTPS, JSON request and response bodies, SSE for streaming
+authentication:
+  scheme: HTTP Bearer
+  header: 'Authorization: Bearer <key>'
+  key_types:
+    - {name: project API key, prefix: 'sk-proj-', scope: one project}
+    - {name: admin API key, prefix: 'sk-admin-', scope: organization administration (securityScheme AdminApiKeyAuth)}
+  optional_headers:
+    - {name: OpenAI-Organization, purpose: select the organization when a key spans several}
+    - {name: OpenAI-Project, purpose: select the project}
+    - {name: 'OpenAI-Beta', purpose: 'opt into a beta surface; the Realtime API requires OpenAI-Beta: realtime=v1'}
+  oauth:
+    issuer: https://auth.openai.com
+    discovery: well-known/openai-auth-openid-configuration.json
+    note: >-
+      OAuth/OIDC exists for user sign-in and Apps SDK / Codex authorization, NOT
+      for calling the platform REST API. Platform calls are bearer API keys only.
+  docs: https://platform.openai.com/docs/api-reference/authentication
+  detail: authentication/openai-authentication.yml
+idempotency:
+  supported: false
+  mechanism: null
+  evidence: >-
+    No Idempotency-Key parameter appears on any of the 242 operations in the
+    contract. The four occurrences of "idempotent" are prose on Certificates
+    activate/deactivate describing atomic batch semantics, not a client-supplied
+    key.
+  what_exists_instead:
+    - >-
+      Webhook consumers dedupe on the `webhook-id` header
+      (https://platform.openai.com/docs/guides/webhooks). That protects the
+      inbound direction only.
+    - >-
+      The Agentic Commerce Protocol specifies an Idempotency-Key header — but the
+      call direction there is OpenAI -> Merchant, so the MERCHANT implements it.
+      It is not an affordance of OpenAI's API.
+  agent_risk: >-
+    A retried POST /responses or POST /chat/completions is a second billable
+    inference, not a deduplicated no-op. Retry only on 5xx and on the
+    rate-limit flavour of 429, never on the four insufficient_quota codes, and
+    prefer a client-side dedupe key of your own on write paths.
+pagination:
+  style: cursor
+  request_params:
+    - {name: limit, type: integer, note: page size}
+    - {name: after, type: string, note: object id to start after}
+    - {name: before, type: string, note: object id to end before}
+    - {name: order, type: string, values: [asc, desc]}
+  response_shape: '{ "object": "list", "data": [...], "first_id": string, "last_id": string, "has_more": boolean }'
+  note: >-
+    Uniform across list operations. `has_more` plus `last_id` is the loop
+    condition; there is no total count and no Link header.
+expansion:
+  supported: partial
+  mechanism: >-
+    The Responses API takes an `include[]` array to pull in optional output
+    (e.g. reasoning content, file-search results, log probabilities). There is
+    no general Stripe-style dotted `expand[]` across all resources.
+metadata:
+  supported: true
+  shape: 'map of up to 16 key-value pairs; keys <= 64 chars, values <= 512 chars'
+  applies_to: Most durable objects — responses, conversations, files, vector stores, fine-tuning jobs, batches, assistants, threads.
+  note: The recommended place to carry your own correlation ids given there is no idempotency key.
+request_tracing:
+  response_header: x-request-id
+  client_header: X-Client-Request-Id
+  note: >-
+    Capture x-request-id on every call. When a timeout stops you reading it, the
+    docs direct support to the X-Client-Request-Id you generated and sent.
+versioning:
+  api_version_header: null
+  path_prefix: /v1
+  real_version_axis: model identifier
+  note: >-
+    Pin a dated model snapshot (gpt-image-2-2026-04-21) rather than a floating
+    alias if you need stability. Deprecation is announced on a page with 3-6
+    months notice and never in a response header. See lifecycle/openai-lifecycle.yml.
+error_envelope:
+  rfc9457: false
+  media_type: application/json
+  shape: '{ "error": { "message": string, "type": string, "param": string|null, "code": string|null } }'
+  detail: errors/openai-problem-types.yml
+  critical: >-
+    429 is overloaded across five conditions. Read error.code before retrying —
+    only the rate-limit flavour is backoff-retryable.
+rate_limit_signaling:
+  status_on_exhaustion: 429
+  retry_header: Retry-After
+  headers:
+    - x-ratelimit-limit-requests
+    - x-ratelimit-limit-tokens
+    - x-ratelimit-remaining-requests
+    - x-ratelimit-remaining-tokens
+    - x-ratelimit-reset-requests
+    - x-ratelimit-reset-tokens
+    - x-ratelimit-limit-project-tokens
+    - x-ratelimit-remaining-project-tokens
+    - x-ratelimit-reset-project-tokens
+  detail: rate-limits/openai-rate-limits.yml
+streaming:
+  mechanism: 'Server-Sent Events (text/event-stream) via stream: true'
+  websocket: 'wss://api.openai.com/v1/realtime?model={model} — see asyncapi/openai-realtime-asyncapi.yml'
+webhooks:
+  supported: true
+  signing: Standard Webhooks-style signature with webhook-id / webhook-timestamp / webhook-signature headers
+  dedupe_key: webhook-id
+  contract: openapi/_original/openai-openapi-master.yml top-level webhooks block
+  docs: https://platform.openai.com/docs/guides/webhooks
+dry_run_mode:
+  supported: false
+  evidence: >-
+    No dry_run, simulate, preview or validate_only parameter appears anywhere in
+    the 242-operation contract. An agent cannot rehearse a destructive call.
+
+reversibility:
+  grade: verified
+  summary: >-
+    OpenAI's write surface splits cleanly in two, and the split is the finding.
+    LONG-RUNNING JOBS are genuinely reversible: batches, fine-tuning jobs,
+    background responses, assistant runs, vector-store file batches and uploads
+    all expose an explicit cancel operation, and two of them state the window in
+    the contract. RESOURCE DELETES are not reversible at all: 30 DELETE
+    operations exist and not one has a restore, undo, trash or recover
+    counterpart anywhere in the contract or the docs. There is no soft-delete, no
+    retention window, and no recycle bin. An agent that calls deleteVectorStore
+    or deleteFile has taken an action nothing in this API can take back.
+  reversible:
+    - action: Batch job
+      forward: createBatch
+      reversal: cancelBatch
+      window: >-
+        While the batch is in progress. The contract states the batch sits in
+        `cancelling` for up to 10 minutes before reaching `cancelled`, with
+        partial results available in the output file.
+      window_source: 'openapi/_original/openai-openapi-master.yml — cancelBatch summary'
+      grade: verified
+    - action: Multipart upload
+      forward: createUpload
+      reversal: cancelUpload
+      window: >-
+        Within one hour of creation — the contract states "an Upload can accept
+        at most 8 GB in total and expires after an hour after you create it."
+        No Parts may be added after cancellation.
+      window_source: 'openapi/_original/openai-openapi-master.yml — createUpload / cancelUpload summaries'
+      grade: verified
+    - action: Background model response
+      forward: createResponse (with background=true)
+      reversal: cancelResponse
+      window: >-
+        While running, and ONLY for responses created with `background: true`.
+        A synchronous response cannot be cancelled.
+      window_source: 'openapi/_original/openai-openapi-master.yml — cancelResponse summary'
+      grade: documented
+    - action: Fine-tuning job
+      forward: createFineTuningJob
+      reversal: cancelFineTuningJob
+      window: >-
+        "Immediately cancel a fine-tune job" — no bounded window is stated beyond
+        the job still running.
+      grade: documented
+    - action: Assistant run
+      forward: createRun
+      reversal: cancelRun
+      window: While the run status is `in_progress`. No duration stated.
+      grade: documented
+    - action: Vector store file batch
+      forward: createVectorStoreFileBatch
+      reversal: cancelVectorStoreFileBatch
+      window: >-
+        Best-effort — "attempts to cancel the processing of files in this batch
+        as soon as possible." Files already processed are not un-processed.
+      grade: documented
+    - action: Eval run
+      forward: createEvalRun
+      reversal: cancelEvalRun
+      window: While the run is in progress. No duration stated.
+      grade: documented
+    - action: ChatKit session
+      forward: CreateChatSessionMethod
+      reversal: CancelChatSessionMethod
+      window: While the session is active. No duration stated.
+      grade: documented
+  irreversible:
+    count: 30
+    note: >-
+      Every DELETE in the contract. No restore/undelete operation exists for any
+      of them, and no retention window is documented anywhere.
+    highest_consequence:
+      - {operationId: deleteVectorStore, path: "/vector_stores/{vector_store_id}", note: Destroys the store and its embeddings; re-ingestion is the only recovery and it is billable.}
+      - {operationId: deleteFile, path: "/files/{file_id}", note: Removes the uploaded source file; anything referencing it breaks.}
+      - {operationId: deleteModel, path: "/models/{model}", note: Deletes a fine-tuned model. The training run cannot be replayed for free.}
+      - {operationId: delete-user, path: "/organization/users/{user_id}", note: Removes a member from the organization.}
+      - {operationId: delete-project-api-key, path: "/organization/projects/{project_id}/api_keys/{api_key_id}", note: Revokes a live credential; every integration using it fails immediately.}
+      - {operationId: deleteFineTuningCheckpointPermission, path: "/fine_tuning/checkpoints/{fine_tuned_model_checkpoint}/permissions/{permission_id}", note: Revokes checkpoint access.}
+      - {operationId: DeleteVideo, path: "/videos/{video_id}", note: Generated video is destroyed; regeneration is billable and non-deterministic.}
+      - {operationId: deleteConversation, path: "/conversations/{conversation_id}", note: Destroys stored conversation state used by the Responses API.}
+  agent_guidance:
+    - >-
+      Treat every DELETE at OpenAI as permanent. There is no window inside which
+      it can be undone, because there is no undo. Confirm with a human, or write
+      the identifier somewhere recoverable first.
+    - >-
+      For anything long-running, prefer the cancellable path: background=true on
+      responses gives you cancelResponse, and a synchronous call gives you
+      nothing.
+    - >-
+      Cancellation is not a refund. Cancelled batches keep their partial results
+      and cancelled fine-tunes have already consumed compute.
+  cross_reference:
+    dry_run: false
+    idempotency: false
+    note: >-
+      All three agent-safety rails are absent or partial here: no dry-run to
+      rehearse with, no idempotency key to make a retry safe, and no undo on
+      deletes. Cancellation of running jobs is the only one OpenAI ships.
+cross_links:
+  errors: errors/openai-problem-types.yml
+  lifecycle: lifecycle/openai-lifecycle.yml
+  authentication: authentication/openai-authentication.yml
+  rate_limits: rate-limits/openai-rate-limits.yml
+  scopes: scopes/openai-scopes.yml
+  sandbox: sandbox/openai-sandbox.yml

@@ -210,15 +210,8 @@ paths:
       - Containers
   /containers/{container_id}/files:
     post:
-      summary: 'Create a Container File
-
-
-        You can send either a multipart/form-data request with the raw file content, or a JSON request with a file ID.
-
-        '
-      description: 'Creates a container file.
-
-        '
+      summary: Create a Container File You can send either a multipart/form-data request with…
+      description: Creates a container file.
       operationId: CreateContainerFile
       parameters:
       - name: container_id
@@ -470,116 +463,6 @@ paths:
       - Containers
 components:
   schemas:
-    ContainerNetworkPolicyDomainSecretParam:
-      properties:
-        domain:
-          type: string
-          minLength: 1
-          description: The domain associated with the secret.
-        name:
-          type: string
-          minLength: 1
-          description: The name of the secret to inject for the domain.
-        value:
-          type: string
-          maxLength: 10485760
-          minLength: 1
-          description: The secret value to inject for the domain.
-      type: object
-      required:
-      - domain
-      - name
-      - value
-    InlineSkillSourceParam:
-      properties:
-        type:
-          type: string
-          enum:
-          - base64
-          description: The type of the inline skill source. Must be `base64`.
-          default: base64
-          x-stainless-const: true
-        media_type:
-          type: string
-          enum:
-          - application/zip
-          description: The media type of the inline skill payload. Must be `application/zip`.
-          default: application/zip
-          x-stainless-const: true
-        data:
-          type: string
-          maxLength: 70254592
-          minLength: 1
-          description: Base64-encoded skill zip bundle.
-      type: object
-      required:
-      - type
-      - media_type
-      - data
-      description: Inline skill payload
-    CreateContainerBody:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the container to create.
-        file_ids:
-          type: array
-          description: IDs of files to copy to the container.
-          items:
-            type: string
-        expires_after:
-          type: object
-          description: Container expiration time in seconds relative to the 'anchor' time.
-          properties:
-            anchor:
-              type: string
-              enum:
-              - last_active_at
-              description: Time anchor for the expiration time. Currently only 'last_active_at' is supported.
-            minutes:
-              type: integer
-          required:
-          - anchor
-          - minutes
-        skills:
-          type: array
-          description: An optional list of skills referenced by id or inline data.
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/SkillReferenceParam'
-            - $ref: '#/components/schemas/InlineSkillParam'
-            discriminator:
-              propertyName: type
-        memory_limit:
-          type: string
-          enum:
-          - 1g
-          - 4g
-          - 16g
-          - 64g
-          description: Optional memory limit for the container. Defaults to "1g".
-        network_policy:
-          description: Network access policy for the container.
-          oneOf:
-          - $ref: '#/components/schemas/ContainerNetworkPolicyDisabledParam'
-          - $ref: '#/components/schemas/ContainerNetworkPolicyAllowlistParam'
-          discriminator:
-            propertyName: type
-      required:
-      - name
-    ContainerNetworkPolicyDisabledParam:
-      properties:
-        type:
-          type: string
-          enum:
-          - disabled
-          description: Disable outbound network access. Always `disabled`.
-          default: disabled
-          x-stainless-const: true
-      type: object
-      required:
-      - type
     InlineSkillParam:
       properties:
         type:
@@ -604,19 +487,6 @@ components:
       - name
       - description
       - source
-    CreateContainerFileBody:
-      type: object
-      properties:
-        file_id:
-          type: string
-          description: Name of the file to create.
-        file:
-          description: 'The File object (not file name) to be uploaded.
-
-            '
-          type: string
-          format: binary
-      required: []
     SkillReferenceParam:
       properties:
         type:
@@ -718,6 +588,194 @@ components:
       x-oaiMeta:
         name: The container object
         example: "{\n   \"id\": \"cntr_682dfebaacac8198bbfe9c2474fb6f4a085685cbe3cb5863\",\n   \"object\": \"container\",\n   \"created_at\": 1747844794,\n   \"status\": \"running\",\n   \"expires_after\": {\n     \"anchor\": \"last_active_at\",\n     \"minutes\": 20\n   },\n   \"last_active_at\": 1747844794,\n   \"memory_limit\": \"1g\",\n   \"name\": \"My Container\"\n}\n"
+    ContainerNetworkPolicyDomainSecretParam:
+      properties:
+        domain:
+          type: string
+          minLength: 1
+          description: The domain associated with the secret.
+        name:
+          type: string
+          minLength: 1
+          description: The name of the secret to inject for the domain.
+        value:
+          type: string
+          maxLength: 10485760
+          minLength: 1
+          description: The secret value to inject for the domain.
+      type: object
+      required:
+      - domain
+      - name
+      - value
+    InlineSkillSourceParam:
+      properties:
+        type:
+          type: string
+          enum:
+          - base64
+          description: The type of the inline skill source. Must be `base64`.
+          default: base64
+          x-stainless-const: true
+        media_type:
+          type: string
+          enum:
+          - application/zip
+          description: The media type of the inline skill payload. Must be `application/zip`.
+          default: application/zip
+          x-stainless-const: true
+        data:
+          type: string
+          maxLength: 70254592
+          minLength: 1
+          description: Base64-encoded skill zip bundle.
+      type: object
+      required:
+      - type
+      - media_type
+      - data
+      description: Inline skill payload
+    ContainerNetworkPolicyDisabledParam:
+      properties:
+        type:
+          type: string
+          enum:
+          - disabled
+          description: Disable outbound network access. Always `disabled`.
+          default: disabled
+          x-stainless-const: true
+      type: object
+      required:
+      - type
+    ContainerFileListResource:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: The type of object returned, must be 'list'.
+        data:
+          type: array
+          description: A list of container files.
+          items:
+            $ref: '#/components/schemas/ContainerFileResource'
+        first_id:
+          type: string
+          description: The ID of the first file in the list.
+        last_id:
+          type: string
+          description: The ID of the last file in the list.
+        has_more:
+          type: boolean
+          description: Whether there are more files available.
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    ContainerFileResource:
+      type: object
+      title: The container file object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the file.
+        object:
+          type: string
+          description: The type of this object (`container.file`).
+        container_id:
+          type: string
+          description: The container this file belongs to.
+        created_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (in seconds) when the file was created.
+        bytes:
+          type: integer
+          description: Size of the file in bytes.
+        path:
+          type: string
+          description: Path of the file in the container.
+        source:
+          type: string
+          description: Source of the file (e.g., `user`, `assistant`).
+      required:
+      - id
+      - object
+      - created_at
+      - bytes
+      - container_id
+      - path
+      - source
+      x-oaiMeta:
+        name: The container file object
+        example: "{\n    \"id\": \"cfile_682e0e8a43c88191a7978f477a09bdf5\",\n    \"object\": \"container.file\",\n    \"created_at\": 1747848842,\n    \"bytes\": 880,\n    \"container_id\": \"cntr_682e0e7318108198aa783fd921ff305e08e78805b9fdbb04\",\n    \"path\": \"/mnt/data/88e12fa445d32636f190a0b33daed6cb-tsconfig.json\",\n    \"source\": \"user\"\n}\n"
+    CreateContainerBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the container to create.
+        file_ids:
+          type: array
+          description: IDs of files to copy to the container.
+          items:
+            type: string
+        expires_after:
+          type: object
+          description: Container expiration time in seconds relative to the 'anchor' time.
+          properties:
+            anchor:
+              type: string
+              enum:
+              - last_active_at
+              description: Time anchor for the expiration time. Currently only 'last_active_at' is supported.
+            minutes:
+              type: integer
+          required:
+          - anchor
+          - minutes
+        skills:
+          type: array
+          description: An optional list of skills referenced by id or inline data.
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/SkillReferenceParam'
+            - $ref: '#/components/schemas/InlineSkillParam'
+            discriminator:
+              propertyName: type
+        memory_limit:
+          type: string
+          enum:
+          - 1g
+          - 4g
+          - 16g
+          - 64g
+          description: Optional memory limit for the container. Defaults to "1g".
+        network_policy:
+          description: Network access policy for the container.
+          oneOf:
+          - $ref: '#/components/schemas/ContainerNetworkPolicyDisabledParam'
+          - $ref: '#/components/schemas/ContainerNetworkPolicyAllowlistParam'
+          discriminator:
+            propertyName: type
+      required:
+      - name
+    CreateContainerFileBody:
+      type: object
+      properties:
+        file_id:
+          type: string
+          description: Name of the file to create.
+        file:
+          description: 'The File object (not file name) to be uploaded.
+
+            '
+          type: string
+          format: binary
+      required: []
     ContainerListResource:
       type: object
       properties:
@@ -771,71 +829,6 @@ components:
       required:
       - type
       - allowed_domains
-    ContainerFileResource:
-      type: object
-      title: The container file object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the file.
-        object:
-          type: string
-          description: The type of this object (`container.file`).
-        container_id:
-          type: string
-          description: The container this file belongs to.
-        created_at:
-          type: integer
-          format: unixtime
-          description: Unix timestamp (in seconds) when the file was created.
-        bytes:
-          type: integer
-          description: Size of the file in bytes.
-        path:
-          type: string
-          description: Path of the file in the container.
-        source:
-          type: string
-          description: Source of the file (e.g., `user`, `assistant`).
-      required:
-      - id
-      - object
-      - created_at
-      - bytes
-      - container_id
-      - path
-      - source
-      x-oaiMeta:
-        name: The container file object
-        example: "{\n    \"id\": \"cfile_682e0e8a43c88191a7978f477a09bdf5\",\n    \"object\": \"container.file\",\n    \"created_at\": 1747848842,\n    \"bytes\": 880,\n    \"container_id\": \"cntr_682e0e7318108198aa783fd921ff305e08e78805b9fdbb04\",\n    \"path\": \"/mnt/data/88e12fa445d32636f190a0b33daed6cb-tsconfig.json\",\n    \"source\": \"user\"\n}\n"
-    ContainerFileListResource:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: The type of object returned, must be 'list'.
-        data:
-          type: array
-          description: A list of container files.
-          items:
-            $ref: '#/components/schemas/ContainerFileResource'
-        first_id:
-          type: string
-          description: The ID of the first file in the list.
-        last_id:
-          type: string
-          description: The ID of the last file in the list.
-        has_more:
-          type: boolean
-          description: Whether there are more files available.
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
   securitySchemes:
     ApiKeyAuth:
       type: http

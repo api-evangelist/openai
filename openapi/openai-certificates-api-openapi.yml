@@ -21,7 +21,7 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: List uploaded certificates for this organization.
+      summary: List uploaded certificates for this organization
       operationId: listOrganizationCertificates
       tags:
       - Certificates
@@ -89,12 +89,7 @@ paths:
     post:
       security:
       - AdminApiKeyAuth: []
-      summary: 'Upload a certificate to the organization. This does **not** automatically activate the certificate.
-
-
-        Organizations can upload up to 50 certificates.
-
-        '
+      summary: Upload a certificate to the organization.
       operationId: uploadCertificate
       tags:
       - Certificates
@@ -137,12 +132,7 @@ paths:
     post:
       security:
       - AdminApiKeyAuth: []
-      summary: 'Activate certificates at the organization level.
-
-
-        You can atomically and idempotently activate up to 10 certificates at a time.
-
-        '
+      summary: Activate certificates at the organization level.
       operationId: activateOrganizationCertificates
       tags:
       - Certificates
@@ -185,12 +175,7 @@ paths:
     post:
       security:
       - AdminApiKeyAuth: []
-      summary: 'Deactivate certificates at the organization level.
-
-
-        You can atomically and idempotently deactivate up to 10 certificates at a time.
-
-        '
+      summary: Deactivate certificates at the organization level.
       operationId: deactivateOrganizationCertificates
       tags:
       - Certificates
@@ -233,12 +218,7 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: 'Get a certificate that has been uploaded to the organization.
-
-
-        You can get a certificate regardless of whether it is active or not.
-
-        '
+      summary: Get a certificate that has been uploaded to the organization.
       operationId: getCertificate
       tags:
       - Certificates
@@ -294,9 +274,7 @@ paths:
     post:
       security:
       - AdminApiKeyAuth: []
-      summary: 'Modify a certificate. Note that only the name can be modified.
-
-        '
+      summary: Modify a certificate. Note that only the name can be modified
       operationId: modifyCertificate
       tags:
       - Certificates
@@ -345,12 +323,7 @@ paths:
     delete:
       security:
       - AdminApiKeyAuth: []
-      summary: 'Delete a certificate from the organization.
-
-
-        The certificate must be inactive for the organization and all projects.
-
-        '
+      summary: Delete a certificate from the organization.
       operationId: deleteCertificate
       tags:
       - Certificates
@@ -397,7 +370,7 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: List certificates for this project.
+      summary: List certificates for this project
       operationId: listProjectCertificates
       tags:
       - Certificates
@@ -472,12 +445,7 @@ paths:
     post:
       security:
       - AdminApiKeyAuth: []
-      summary: 'Activate certificates at the project level.
-
-
-        You can atomically and idempotently activate up to 10 certificates at a time.
-
-        '
+      summary: Activate certificates at the project level.
       operationId: activateProjectCertificates
       tags:
       - Certificates
@@ -527,7 +495,7 @@ paths:
     post:
       security:
       - AdminApiKeyAuth: []
-      summary: "Deactivate certificates at the project level. You can atomically and \nidempotently deactivate up to 10 certificates at a time.\n"
+      summary: Deactivate certificates at the project level.
       operationId: deactivateProjectCertificates
       tags:
       - Certificates
@@ -575,63 +543,6 @@ paths:
           response: "{\n  \"object\": \"organization.project.certificate.deactivation\",\n  \"data\": [\n    {\n      \"object\": \"organization.project.certificate\",\n      \"id\": \"cert_abc\",\n      \"name\": \"My Example Certificate\",\n      \"active\": false,\n      \"created_at\": 1234567,\n      \"certificate_details\": {\n        \"valid_at\": 12345667,\n        \"expires_at\": 12345678\n      }\n    },\n    {\n      \"object\": \"organization.project.certificate\",\n      \"id\": \"cert_def\",\n      \"name\": \"My Example Certificate 2\",\n      \"active\": false,\n      \"created_at\": 1234567,\n      \"certificate_details\": {\n        \"valid_at\": 12345667,\n        \"expires_at\": 12345678\n      }\n    },\n  ],\n}\n"
 components:
   schemas:
-    ListProjectCertificatesResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationProjectCertificate'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          example: cert_abc
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          example: cert_abc
-        has_more:
-          type: boolean
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-      required:
-      - object
-      - data
-      - has_more
-      - first_id
-      - last_id
-    OrganizationProjectCertificateDeactivationResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.certificate.deactivation
-          description: The project certificate deactivation result type.
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationProjectCertificate'
-      required:
-      - object
-      - data
-    UploadCertificateRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: An optional name for the certificate
-        certificate:
-          type: string
-          description: The certificate content in PEM format
-      required:
-      - certificate
     OrganizationProjectCertificate:
       type: object
       description: Represents an individual certificate configured at the project level.
@@ -675,12 +586,64 @@ components:
       - created_at
       - certificate_details
       - active
-    ModifyCertificateRequest:
+    OrganizationProjectCertificateActivationResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.certificate.activation
+          description: The project certificate activation result type.
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationProjectCertificate'
+      required:
+      - object
+      - data
+    UploadCertificateRequest:
       type: object
       properties:
         name:
           type: string
-          description: The updated name for the certificate
+          description: An optional name for the certificate
+        certificate:
+          type: string
+          description: The certificate content in PEM format
+      required:
+      - certificate
+    DeleteCertificateResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          description: The object type, must be `certificate.deleted`.
+          enum:
+          - certificate.deleted
+          x-stainless-const: true
+        id:
+          type: string
+          description: The ID of the certificate that was deleted.
+      required:
+      - object
+      - id
+    OrganizationProjectCertificateDeactivationResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.certificate.deactivation
+          description: The project certificate deactivation result type.
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationProjectCertificate'
+      required:
+      - object
+      - data
     OrganizationCertificateActivationResponse:
       type: object
       properties:
@@ -697,122 +660,6 @@ components:
       required:
       - object
       - data
-    ToggleCertificatesRequest:
-      type: object
-      properties:
-        certificate_ids:
-          type: array
-          items:
-            type: string
-            example: cert_abc
-          minItems: 1
-          maxItems: 10
-      required:
-      - certificate_ids
-    ListCertificatesResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationCertificate'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          example: cert_abc
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          example: cert_abc
-        has_more:
-          type: boolean
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-      required:
-      - object
-      - data
-      - has_more
-      - first_id
-      - last_id
-    OrganizationCertificateDeactivationResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.certificate.deactivation
-          description: The organization certificate deactivation result type.
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationCertificate'
-      required:
-      - object
-      - data
-    DeleteCertificateResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          description: The object type, must be `certificate.deleted`.
-          enum:
-          - certificate.deleted
-          x-stainless-const: true
-        id:
-          type: string
-          description: The ID of the certificate that was deleted.
-      required:
-      - object
-      - id
-    OrganizationCertificate:
-      type: object
-      description: Represents an individual certificate configured at the organization level.
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.certificate
-          description: The object type, which is always `organization.certificate`.
-          x-stainless-const: true
-        id:
-          type: string
-          description: The identifier, which can be referenced in API endpoints
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The name of the certificate.
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) of when the certificate was uploaded.
-        certificate_details:
-          type: object
-          properties:
-            valid_at:
-              type: integer
-              format: unixtime
-              description: The Unix timestamp (in seconds) of when the certificate becomes valid.
-            expires_at:
-              type: integer
-              format: unixtime
-              description: The Unix timestamp (in seconds) of when the certificate expires.
-        active:
-          type: boolean
-          description: Whether the certificate is currently active at the organization level.
-      required:
-      - object
-      - id
-      - name
-      - created_at
-      - certificate_details
-      - active
     Certificate:
       type: object
       description: Represents an individual `certificate` uploaded to the organization.
@@ -872,22 +719,143 @@ components:
       x-oaiMeta:
         name: The certificate object
         example: "{\n  \"object\": \"certificate\",\n  \"id\": \"cert_abc\",\n  \"name\": \"My Certificate\",\n  \"created_at\": 1234567,\n  \"certificate_details\": {\n    \"valid_at\": 1234567,\n    \"expires_at\": 12345678,\n    \"content\": \"-----BEGIN CERTIFICATE----- MIIGAjCCA...6znFlOW+ -----END CERTIFICATE-----\"\n  }\n}\n"
-    OrganizationProjectCertificateActivationResponse:
+    OrganizationCertificateDeactivationResponse:
       type: object
       properties:
         object:
           type: string
           enum:
-          - organization.project.certificate.activation
-          description: The project certificate activation result type.
+          - organization.certificate.deactivation
+          description: The organization certificate deactivation result type.
           x-stainless-const: true
         data:
           type: array
           items:
-            $ref: '#/components/schemas/OrganizationProjectCertificate'
+            $ref: '#/components/schemas/OrganizationCertificate'
       required:
       - object
       - data
+    ModifyCertificateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The updated name for the certificate
+    OrganizationCertificate:
+      type: object
+      description: Represents an individual certificate configured at the organization level.
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.certificate
+          description: The object type, which is always `organization.certificate`.
+          x-stainless-const: true
+        id:
+          type: string
+          description: The identifier, which can be referenced in API endpoints
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The name of the certificate.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) of when the certificate was uploaded.
+        certificate_details:
+          type: object
+          properties:
+            valid_at:
+              type: integer
+              format: unixtime
+              description: The Unix timestamp (in seconds) of when the certificate becomes valid.
+            expires_at:
+              type: integer
+              format: unixtime
+              description: The Unix timestamp (in seconds) of when the certificate expires.
+        active:
+          type: boolean
+          description: Whether the certificate is currently active at the organization level.
+      required:
+      - object
+      - id
+      - name
+      - created_at
+      - certificate_details
+      - active
+    ListCertificatesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationCertificate'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: cert_abc
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: cert_abc
+        has_more:
+          type: boolean
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+      required:
+      - object
+      - data
+      - has_more
+      - first_id
+      - last_id
+    ListProjectCertificatesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationProjectCertificate'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: cert_abc
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: cert_abc
+        has_more:
+          type: boolean
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+      required:
+      - object
+      - data
+      - has_more
+      - first_id
+      - last_id
+    ToggleCertificatesRequest:
+      type: object
+      properties:
+        certificate_ids:
+          type: array
+          items:
+            type: string
+            example: cert_abc
+          minItems: 1
+          maxItems: 10
+      required:
+      - certificate_ids
   securitySchemes:
     ApiKeyAuth:
       type: http

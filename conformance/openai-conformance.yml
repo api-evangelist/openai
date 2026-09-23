@@ -1,0 +1,224 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  Derived from openapi/_original/openai-openapi-master.yml (securitySchemes,
+  webhooks block, error schema, structured-output json_schema fields, SCIM state
+  fields and audit-log event types) and confirmed against OpenAI's own published
+  surface: https://openai.com/.well-known/security.txt (fetched 200),
+  https://auth.openai.com/.well-known/openid-configuration (fetched 200),
+  https://developers.openai.com/api/docs/guides/error-codes,
+  https://developers.openai.com/api/docs/deprecations,
+  https://developers.openai.com/commerce/specs/checkout,
+  https://trust.openai.com/.
+description: >-
+  What OpenAI's contract and served documents actually declare, standard by
+  standard, with the evidence location for each. The interesting result is the
+  split: OpenAI conforms very strongly to the general web/API standards layer
+  (OpenAPI 3.1, JSON Schema, OAuth 2.0/OIDC with PKCE, SSE, RFC 9116) and
+  AUTHORS two of the agent-era standards it is measured against (the Agentic
+  Commerce Protocol; MCP support in the Responses API), while declining several
+  of the conventional REST hygiene standards outright — no RFC 9457
+  problem+json, no idempotency keys on its own writes, no RFC 8594 Sunset
+  headers, no RFC 9727 api-catalog.
+standards:
+  - id: openapi
+    version: 3.1.0
+    conforms: true
+    evidence: >-
+      openapi/_original/openai-openapi-master.yml declares `openapi: 3.1.0`,
+      info.version 2.3.0, and is published by OpenAI itself at
+      https://github.com/openai/openai-openapi under MIT.
+  - id: json-schema
+    version: 2020-12
+    conforms: true
+    evidence: >-
+      OpenAPI 3.1 schema objects are JSON Schema 2020-12. Separately, Structured
+      Outputs takes a caller-supplied JSON Schema in
+      response_format.json_schema.schema and the spec's own descriptions link
+      https://json-schema.org/ at five places (master spec lines 47912, 48308,
+      49167, 50188, 67582).
+  - id: oauth2
+    conforms: true
+    evidence: >-
+      https://auth.openai.com/.well-known/openid-configuration (HTTP 200,
+      application/json) declares authorization_endpoint, token_endpoint,
+      revocation_endpoint, grant_types_supported [authorization_code,
+      refresh_token] and code_challenge_methods_supported [S256]. Saved verbatim
+      to well-known/openai-auth-openid-configuration.json.
+  - id: oidc
+    conforms: true
+    evidence: >-
+      Same document: issuer https://auth.openai.com, jwks_uri, userinfo_endpoint,
+      id_token_signing_alg_values_supported [RS256], scopes_supported
+      [openid, profile, email, offline_access], subject_types_supported [public].
+  - id: pkce
+    rfc: RFC 7636
+    conforms: true
+    evidence: code_challenge_methods_supported ["S256"] in the served OIDC discovery document.
+  - id: dynamic-client-registration
+    rfc: RFC 7591
+    conforms: false
+    evidence: >-
+      The served discovery document at auth.openai.com carries NO
+      registration_endpoint. Every OAuth client is registered by a human through
+      the platform console.
+  - id: oauth-protected-resource
+    rfc: RFC 9728
+    conforms: false
+    evidence: >-
+      /.well-known/oauth-protected-resource returns 404 on api.openai.com and an
+      SPA HTML shell (200, text/html) on platform.openai.com. No resource
+      metadata is served. See well-known/openai-well-known.yml.
+  - id: http-bearer-auth
+    rfc: RFC 6750
+    conforms: true
+    evidence: >-
+      securitySchemes ApiKeyAuth and AdminApiKeyAuth are both
+      {type: http, scheme: bearer}; an unauthenticated GET
+      https://api.openai.com/v1/models returns 401 with
+      "Missing bearer authentication in header".
+  - id: scim
+    version: '2.0'
+    conforms: partial
+    evidence: >-
+      The contract declares SCIM-managed identity state as first-class:
+      `is_scim_managed` on User and Group schemas and `scim_managed` on the
+      group/project schemas (master spec lines 50763-50919, 72955), plus
+      `scim.enabled` and `scim.disabled` audit-log event types (lines 39237-39250,
+      enumerated at 39894). This is a declared SCIM integration surface in the
+      contract itself, which is why it is recorded here.
+    caveat: >-
+      OpenAI's OWN SCIM 2.0 endpoints are not part of this published contract and
+      could not be verified first-hand: api.openai.com/scim/v2/ServiceProviderConfig,
+      /Users and /Schemas each returned a bare 404 anonymously, and OpenAI's SCIM
+      documentation on help.openai.com is behind a bot challenge (403 to both our
+      crawler and a browser User-Agent). Recorded as partial rather than true, and
+      the only first-party evidence claimed is what is inside the contract.
+  - id: sse
+    name: Server-Sent Events
+    conforms: true
+    evidence: >-
+      text/event-stream appears as a documented response media type at six places
+      in the master spec; streaming responses on Chat, Responses and Assistants
+      are SSE. The MCP server at developers.openai.com/mcp also answers
+      text/event-stream.
+  - id: websocket
+    conforms: true
+    evidence: >-
+      The Realtime API is a WebSocket surface at
+      wss://api.openai.com/v1/realtime?model={model}; captured as AsyncAPI 2.6.0
+      in asyncapi/openai-realtime-asyncapi.yml.
+  - id: openapi-webhooks
+    conforms: true
+    evidence: >-
+      openapi/_original/openai-openapi-master.yml carries a top-level
+      OpenAPI 3.1 `webhooks:` block (line 38082) enumerating the event types.
+    caveat: >-
+      The block survives only in the master. It was dropped by the per-tag refine
+      pass, so all 37 refined documents in openapi/ score zero on
+      webhooks_or_callbacks — a refine defect on our side, not an OpenAI gap.
+  - id: rfc9457
+    name: Problem Details for HTTP APIs
+    conforms: false
+    evidence: >-
+      No application/problem+json media type anywhere in the contract. Errors use
+      OpenAI's own envelope {"error":{"message","type","param","code"}}, observed
+      live on a 401 from https://api.openai.com/v1/models. See
+      errors/openai-problem-types.yml.
+  - id: idempotency-key
+    conforms: false
+    evidence: >-
+      No Idempotency-Key parameter on any POST/PATCH/PUT in the 242-operation
+      contract. The only occurrences of "idempotent" are prose on four Certificates
+      operations describing atomic batch behaviour, not a client-supplied key.
+    caveat: >-
+      Idempotency-Key IS specified in the Agentic Commerce Protocol — but there
+      OpenAI is the CALLER and the merchant implements the header
+      (developers.openai.com/commerce/specs/checkout states "Call direction:
+      OpenAI -> Merchant"). It is not an affordance of OpenAI's own API and is
+      deliberately not credited as one.
+  - id: rfc8594
+    name: Sunset / Deprecation HTTP headers
+    conforms: false
+    evidence: >-
+      https://developers.openai.com/api/docs/deprecations publishes a dated
+      deprecation table with 3-6 month notice windows but documents no Sunset or
+      Deprecation response header. Deprecation is announced on a page, not in the
+      response.
+  - id: rfc9727
+    name: .well-known/api-catalog
+    conforms: false
+    evidence: >-
+      404 on openai.com, api.openai.com and developers.openai.com; 200-with-HTML-shell
+      on platform.openai.com. See well-known/openai-well-known.yml.
+  - id: rfc9116
+    name: security.txt
+    conforms: true
+    evidence: >-
+      https://openai.com/.well-known/security.txt returns 200 text/plain, PGP-signed
+      (SHA512), with Contact, Acknowledgments, Policy, Hiring, Canonical and
+      Encryption fields. Saved to well-known/openai-security.txt.
+  - id: pagination
+    conforms: true
+    evidence: >-
+      Cursor pagination is uniform across list operations — after/before/limit/order
+      request parameters and {object:"list", data, first_id, last_id, has_more}
+      responses. Captured in conventions/openai-conventions.yml.
+  - id: soc2
+    conforms: true
+    evidence: https://trust.openai.com/ — SOC 2 named. See security/openai-trust-center.yml.
+  - id: iso-27001
+    conforms: true
+    evidence: https://trust.openai.com/ — ISO 27001 plus ISO 27017 and ISO 27018.
+  - id: gdpr
+    conforms: true
+    evidence: https://trust.openai.com/ and https://openai.com/policies/privacy-policy/.
+  - id: fedramp
+    conforms: true
+    evidence: https://trust.openai.com/ — FedRAMP named among published certifications.
+  - id: csa-star
+    conforms: true
+    evidence: https://trust.openai.com/.
+  - id: pci-dss
+    conforms: true
+    evidence: https://trust.openai.com/.
+  - id: hipaa
+    conforms: unknown
+    evidence: >-
+      Not among the certifications the trust-center probe surfaced. OpenAI signs
+      BAAs commercially, but nothing machine-readable states it, so this is left
+      unknown rather than asserted.
+domain_standards:
+  - id: mcp
+    name: Model Context Protocol
+    role: implementer-and-platform
+    conforms: true
+    evidence: >-
+      OpenAI serves a live MCP server at https://developers.openai.com/mcp
+      (protocolVersion 2025-06-18, verified by handshake on 2026-08-27; see
+      mcp/openai-mcp.yml), the Responses API accepts remote MCP servers as tools,
+      and the Apps SDK is a framework for building MCP servers that render UI in
+      ChatGPT. All three are the standard implemented, not sold.
+  - id: acp
+    name: Agentic Commerce Protocol
+    role: author
+    conforms: true
+    spec: https://developers.openai.com/commerce/specs/checkout
+    evidence: >-
+      OpenAI authors and publishes ACP — the Agentic Checkout Spec and the
+      Delegated Payment Spec, with a named header contract (Authorization,
+      Idempotency-Key, Request-Id, Signature, Timestamp, API-Version) and a
+      declared call direction of OpenAI -> Merchant.
+    caveat: >-
+      OpenAI defines the protocol but does not itself advertise it at a
+      well-known path: /.well-known/ucp.json and /.well-known/acp.json return 404
+      on both openai.com and chatgpt.com. The spec is published as documentation,
+      not as a served manifest.
+  - id: agents-md
+    name: AGENTS.md
+    role: author-and-implementer
+    conforms: true
+    evidence: >-
+      Codex CLI writes and reads AGENTS.md (`/init` — "create an AGENTS.md file
+      with instructions for Codex"), and OpenAI publishes an Agent Skills
+      repository at https://github.com/openai/skills.

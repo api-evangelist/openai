@@ -1,0 +1,68 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  GitHub code search across the openai organization (`org:openai extension:proto`)
+  on 2026-08-27, which returned five files across three non-forked
+  OpenAI-owned repositories. Each was fetched verbatim from
+  raw.githubusercontent.com (HTTP 200) and saved unmodified. Fork status of every
+  repository was checked via the GitHub API — none is a fork.
+description: >-
+  OpenAI publishes real Protobuf service definitions, and every one of them is a
+  TOOLING protocol rather than an API contract. Nothing here describes
+  api.openai.com: there is no gRPC surface for chat, responses, embeddings or
+  administration, and none is documented. What exists is three protocols inside
+  the Codex CLI (code-mode host, exec-server relay, thread config) and two inside
+  OpenAI's Apple-Silicon VM orchestration stack (Orchard, tart-guest-agent).
+  Recorded because they are genuine first-party published contracts under an
+  OpenAI-owned org, and flagged plainly so nobody mistakes them for a gRPC
+  version of the OpenAI API.
+covers_platform_api: false
+services:
+  - file: openai-codex-code-mode-v1.proto
+    package: codex.code_mode.v1
+    service: CodeModeHost
+    rpcs: 9
+    repo: https://github.com/openai/codex
+    path: codex-rs/code-mode-protocol/src/grpc/codex.code_mode.v1.proto
+    description: >-
+      Hosts stateful JavaScript execution for Codex and delegates nested tool
+      calls to the session owner, keeping large tool inputs and outputs off the
+      session event stream so independent HTTP/2 streams progress concurrently.
+      Streaming on both OpenSession and SubscribeToToolCalls.
+  - file: openai-codex-exec-server-relay-v1.proto
+    package: codex.exec_server.relay.v1
+    service: null
+    rpcs: 0
+    repo: https://github.com/openai/codex
+    path: codex-rs/exec-server/src/proto/codex.exec_server.relay.v1.proto
+    description: Message definitions only — the relay wire format for the Codex exec server. No service block.
+  - file: openai-codex-thread-config-v1.proto
+    package: codex.thread_config.v1
+    service: ThreadConfigLoader
+    rpcs: 1
+    repo: https://github.com/openai/codex
+    path: codex-rs/config/src/thread_config/proto/codex.thread_config.v1.proto
+    description: Loads per-thread configuration for a Codex session.
+  - file: openai-orchard-rpc.proto
+    package: null
+    service: Controller
+    rpcs: 3
+    repo: https://github.com/openai/orchard
+    path: rpc/orchard.proto
+    description: >-
+      Controller RPC for Orchard, OpenAI's orchestrator for running Tart virtual
+      machines across a cluster of Apple Silicon devices. Infrastructure, not product.
+  - file: openai-tart-guest-agent-rpc.proto
+    package: null
+    service: Agent
+    rpcs: 3
+    repo: https://github.com/openai/tart-guest-agent
+    path: proto/rpc/agent.proto
+    description: Guest agent RPC for Tart VMs. Infrastructure, not product.
+totals:
+  files: 5
+  services: 4
+  rpcs: 16
+buf_build:
+  published: false
+  note: No openai module was found on buf.build; the .proto files live only in the source repositories.

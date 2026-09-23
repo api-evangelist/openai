@@ -1,0 +1,76 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+option go_package = "github.com/cirruslabs/tart-guest-agent/internal/rpc";
+
+service Agent {
+  rpc Exec(stream ExecRequest) returns (stream ExecResponse);
+  rpc Signal(SignalRequest) returns (google.protobuf.Empty);
+  rpc ResolveIP(ResolveIPRequest) returns (ResolveIPResponse);
+}
+
+message ExecRequest {
+  message Command {
+    string name = 1;
+    repeated string args = 2;
+    bool interactive = 3;
+    bool tty = 4;
+    TerminalSize terminal_size = 5;
+    bool detach = 6;
+    map<string, string> env = 7;
+    string workdir = 8;
+    string user = 9;
+  }
+
+  oneof type {
+    Command command = 1;
+    IOChunk standard_input = 2;
+    TerminalSize terminal_resize = 3;
+  }
+}
+
+message ExecResponse {
+  message Exit {
+    int32 code = 1;
+  }
+
+  message Started {
+    string exec_id = 1;
+  }
+
+  oneof type {
+    Exit exit = 1;
+    IOChunk standard_output = 2;
+    IOChunk standard_error = 3;
+    Started started = 4;
+  }
+}
+
+message TerminalSize {
+  uint32 rows = 1;
+  uint32 cols = 2;
+}
+
+message IOChunk {
+  bytes data = 1;
+}
+
+message ResolveIPRequest {
+  // nothing for now
+}
+
+message ResolveIPResponse {
+  string ip = 1;
+}
+
+message SignalRequest {
+  enum Signal {
+    SIGNAL_UNSPECIFIED = 0;
+    SIGNAL_SIGTERM = 1;
+    SIGNAL_SIGKILL = 2;
+  }
+
+  string exec_id = 1;
+  Signal signal = 2;
+}

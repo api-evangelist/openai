@@ -21,7 +21,7 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Lists the roles configured for the organization.
+      summary: Lists the roles configured for the organization
       operationId: list-roles
       tags:
       - Roles
@@ -82,7 +82,7 @@ paths:
     post:
       security:
       - AdminApiKeyAuth: []
-      summary: Creates a custom role for the organization.
+      summary: Creates a custom role for the organization
       operationId: create-role
       tags:
       - Roles
@@ -125,7 +125,7 @@ paths:
     post:
       security:
       - AdminApiKeyAuth: []
-      summary: Updates an existing organization role.
+      summary: Updates an existing organization role
       operationId: update-role
       tags:
       - Roles
@@ -174,7 +174,7 @@ paths:
     delete:
       security:
       - AdminApiKeyAuth: []
-      summary: Deletes a custom role from the organization.
+      summary: Deletes a custom role from the organization
       operationId: delete-role
       tags:
       - Roles
@@ -217,7 +217,7 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Lists the roles configured for a project.
+      summary: Lists the roles configured for a project
       operationId: list-project-roles
       tags:
       - Roles
@@ -284,7 +284,7 @@ paths:
     post:
       security:
       - AdminApiKeyAuth: []
-      summary: Creates a custom role for a project.
+      summary: Creates a custom role for a project
       operationId: create-project-role
       tags:
       - Roles
@@ -325,7 +325,7 @@ paths:
     post:
       security:
       - AdminApiKeyAuth: []
-      summary: Updates an existing project role.
+      summary: Updates an existing project role
       operationId: update-project-role
       tags:
       - Roles
@@ -380,7 +380,7 @@ paths:
     delete:
       security:
       - AdminApiKeyAuth: []
-      summary: Deletes a custom role from a project.
+      summary: Deletes a custom role from a project
       operationId: delete-project-role
       tags:
       - Roles
@@ -427,6 +427,72 @@ paths:
           response: "{\n    \"object\": \"role.deleted\",\n    \"id\": \"role_01J1F8PROJ\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
+    RoleDeletedResource:
+      type: object
+      description: Confirmation payload returned after deleting a role.
+      properties:
+        object:
+          type: string
+          enum:
+          - role.deleted
+          description: Always `role.deleted`.
+          x-stainless-const: true
+        id:
+          type: string
+          description: Identifier of the deleted role.
+        deleted:
+          type: boolean
+          description: Whether the role was deleted.
+      required:
+      - object
+      - id
+      - deleted
+      x-oaiMeta:
+        name: Role deletion confirmation
+        example: "{\n    \"object\": \"role.deleted\",\n    \"id\": \"role_01J1F8ROLE01\",\n    \"deleted\": true\n}\n"
+    Role:
+      type: object
+      description: Details about a role that can be assigned through the public Roles API.
+      properties:
+        object:
+          type: string
+          enum:
+          - role
+          description: Always `role`.
+          x-stainless-const: true
+        id:
+          type: string
+          description: Identifier for the role.
+        name:
+          type: string
+          description: Unique name for the role.
+        description:
+          description: Optional description of the role.
+          anyOf:
+          - type: string
+          - type: 'null'
+        permissions:
+          type: array
+          description: Permissions granted by the role.
+          items:
+            type: string
+        resource_type:
+          type: string
+          description: Resource type the role is bound to (for example `api.organization` or `api.project`).
+        predefined_role:
+          type: boolean
+          description: Whether the role is predefined and managed by OpenAI.
+      required:
+      - object
+      - id
+      - name
+      - description
+      - permissions
+      - resource_type
+      - predefined_role
+      x-oaiMeta:
+        name: The role object
+        example: "{\n    \"object\": \"role\",\n    \"id\": \"role_01J1F8ROLE01\",\n    \"name\": \"API Group Manager\",\n    \"description\": \"Allows managing organization groups\",\n    \"permissions\": [\n        \"api.groups.read\",\n        \"api.groups.write\"\n    ],\n    \"resource_type\": \"api.organization\",\n    \"predefined_role\": false\n}\n"
     PublicCreateOrganizationRoleBody:
       type: object
       description: Request payload for creating a custom role.
@@ -472,72 +538,6 @@ components:
           - type: 'null'
       x-oaiMeta:
         example: "{\n    \"role_name\": \"API Group Manager\",\n    \"permissions\": [\n        \"api.groups.read\",\n        \"api.groups.write\"\n    ],\n    \"description\": \"Allows managing organization groups\"\n}\n"
-    Role:
-      type: object
-      description: Details about a role that can be assigned through the public Roles API.
-      properties:
-        object:
-          type: string
-          enum:
-          - role
-          description: Always `role`.
-          x-stainless-const: true
-        id:
-          type: string
-          description: Identifier for the role.
-        name:
-          type: string
-          description: Unique name for the role.
-        description:
-          description: Optional description of the role.
-          anyOf:
-          - type: string
-          - type: 'null'
-        permissions:
-          type: array
-          description: Permissions granted by the role.
-          items:
-            type: string
-        resource_type:
-          type: string
-          description: Resource type the role is bound to (for example `api.organization` or `api.project`).
-        predefined_role:
-          type: boolean
-          description: Whether the role is predefined and managed by OpenAI.
-      required:
-      - object
-      - id
-      - name
-      - description
-      - permissions
-      - resource_type
-      - predefined_role
-      x-oaiMeta:
-        name: The role object
-        example: "{\n    \"object\": \"role\",\n    \"id\": \"role_01J1F8ROLE01\",\n    \"name\": \"API Group Manager\",\n    \"description\": \"Allows managing organization groups\",\n    \"permissions\": [\n        \"api.groups.read\",\n        \"api.groups.write\"\n    ],\n    \"resource_type\": \"api.organization\",\n    \"predefined_role\": false\n}\n"
-    RoleDeletedResource:
-      type: object
-      description: Confirmation payload returned after deleting a role.
-      properties:
-        object:
-          type: string
-          enum:
-          - role.deleted
-          description: Always `role.deleted`.
-          x-stainless-const: true
-        id:
-          type: string
-          description: Identifier of the deleted role.
-        deleted:
-          type: boolean
-          description: Whether the role was deleted.
-      required:
-      - object
-      - id
-      - deleted
-      x-oaiMeta:
-        name: Role deletion confirmation
-        example: "{\n    \"object\": \"role.deleted\",\n    \"id\": \"role_01J1F8ROLE01\",\n    \"deleted\": true\n}\n"
     PublicRoleListResource:
       type: object
       description: Paginated list of roles available on an organization or project.

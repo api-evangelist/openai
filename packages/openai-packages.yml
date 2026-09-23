@@ -1,0 +1,232 @@
+generated: '2026-08-27'
+method: searched
+source: >-
+  https://platform.openai.com/docs/libraries plus direct registry metadata reads
+  on 2026-08-27 — registry.npmjs.org, pypi.org/pypi/<pkg>/json,
+  repo1.maven.org maven-metadata.xml + central.sonatype.com component API,
+  api.nuget.org registration index, proxy.golang.org/<module>/@latest,
+  rubygems.org/api/v1/gems/<gem>.json, crates.io/api/v1/crates/<crate>.
+description: >-
+  First-party OpenAI client libraries and developer tools, each confirmed
+  against its public registry with the latest published version and its release
+  date read from registry metadata rather than from documentation prose. Every
+  core-language SDK is under active release: seven of the ten official server
+  SDKs published a version within the last eight days, and the Node, Python, Go
+  and Ruby clients all published within 30 hours of this read. The one abandonment
+  signal in the set is `ruby-openai` (community, NOT first-party) which last shipped
+  2025-08-29 and is superseded by OpenAI's own `openai` gem. Go is the one place a
+  consumer can get badly stale code: the un-suffixed module path and /v2 both still
+  resolve and are 13 and 11 months behind /v3 respectively.
+packages:
+  - language: python
+    registry: pypi
+    name: openai
+    url: https://pypi.org/project/openai/
+    source: https://github.com/openai/openai-python
+    install: pip install openai
+    official: true
+    version: 3.5.0
+    published: '2026-08-27'
+  - language: python
+    registry: pypi
+    name: openai-agents
+    url: https://pypi.org/project/openai-agents/
+    source: https://github.com/openai/openai-agents-python
+    install: pip install openai-agents
+    official: true
+    version: 0.22.0
+    published: '2026-08-19'
+    note: Agents SDK — multi-agent orchestration over the Responses API.
+  - language: python
+    registry: pypi
+    name: openai-harmony
+    url: https://pypi.org/project/openai-harmony/
+    source: https://github.com/openai/harmony
+    install: pip install openai-harmony
+    official: true
+    version: 0.0.8
+    published: '2025-11-05'
+    note: >-
+      Response format library for the gpt-oss open-weight models. The Python
+      wheel trails the Rust crate and the npm build (both 0.4.0); a consumer
+      pinning the PyPI package is nine months behind.
+  - language: javascript
+    registry: npm
+    name: openai
+    url: https://www.npmjs.com/package/openai
+    source: https://github.com/openai/openai-node
+    install: npm install openai
+    official: true
+    version: 7.7.0
+    published: '2026-08-27'
+  - language: javascript
+    registry: npm
+    name: "@openai/agents"
+    url: https://www.npmjs.com/package/@openai/agents
+    source: https://github.com/openai/openai-agents-js
+    install: npm install @openai/agents
+    official: true
+    version: 0.17.0
+    published: '2026-08-19'
+  - language: javascript
+    registry: npm
+    name: "@openai/codex"
+    url: https://www.npmjs.com/package/@openai/codex
+    source: https://github.com/openai/codex
+    install: npm install -g @openai/codex
+    official: true
+    version: 0.150.1
+    published: '2026-08-27'
+    note: >-
+      The Codex CLI binary. Command surface is catalogued in cli/openai-cli.yml.
+      Fastest-moving package in the set.
+  - language: javascript
+    registry: npm
+    name: "@openai/chatkit"
+    url: https://www.npmjs.com/package/@openai/chatkit
+    source: https://github.com/openai/chatkit-js
+    install: npm install @openai/chatkit
+    official: true
+    version: 1.9.0
+    published: '2026-07-31'
+    note: Embeddable chat UI web component. See components/openai-components.yml.
+  - language: javascript
+    registry: npm
+    name: "@openai/chatkit-react"
+    url: https://www.npmjs.com/package/@openai/chatkit-react
+    source: https://github.com/openai/chatkit-js
+    install: npm install @openai/chatkit-react
+    official: true
+    version: 1.6.1
+    published: '2026-07-31'
+  - language: javascript
+    registry: npm
+    name: "@openai/apps-sdk-ui"
+    url: https://www.npmjs.com/package/@openai/apps-sdk-ui
+    source: https://github.com/openai/openai-apps-sdk-examples
+    install: npm install @openai/apps-sdk-ui
+    official: true
+    version: 0.2.2
+    published: '2026-05-05'
+    note: >-
+      Apps SDK component library (buttons, cards, inputs, layout primitives that
+      match the ChatGPT container). Nearly four months without a release while
+      the rest of the estate ships weekly — the slowest-moving first-party
+      JavaScript package OpenAI publishes.
+  - language: javascript
+    registry: npm
+    name: openai-harmony
+    url: https://www.npmjs.com/package/openai-harmony
+    source: https://github.com/openai/harmony
+    install: npm install openai-harmony
+    official: true
+    version: 0.4.0
+    published: '2025-08-27'
+  - language: go
+    registry: pkg.go.dev
+    name: github.com/openai/openai-go/v3
+    url: https://pkg.go.dev/github.com/openai/openai-go/v3
+    source: https://github.com/openai/openai-go
+    install: go get github.com/openai/openai-go/v3
+    official: true
+    version: v3.53.0
+    published: '2026-08-26'
+  - language: go
+    registry: pkg.go.dev
+    name: github.com/openai/openai-go/v2
+    url: https://pkg.go.dev/github.com/openai/openai-go/v2
+    source: https://github.com/openai/openai-go
+    install: go get github.com/openai/openai-go/v2
+    official: true
+    version: v2.7.1
+    published: '2025-09-30'
+    note: >-
+      Superseded major version, still resolvable via proxy.golang.org. Eleven
+      months stale — a consumer who omits the /v3 suffix silently gets this.
+  - language: go
+    registry: pkg.go.dev
+    name: github.com/openai/openai-go
+    url: https://pkg.go.dev/github.com/openai/openai-go
+    source: https://github.com/openai/openai-go
+    install: go get github.com/openai/openai-go
+    official: true
+    version: v1.12.0
+    published: '2025-07-30'
+    note: >-
+      Un-suffixed v1 module path, last tagged 2025-07-30 and thirteen months
+      behind /v3. The most likely place an OpenAI consumer pins stale code.
+  - language: java
+    registry: maven
+    name: com.openai:openai-java
+    url: https://central.sonatype.com/artifact/com.openai/openai-java
+    source: https://github.com/openai/openai-java
+    install: "implementation(\"com.openai:openai-java:4.52.0\")"
+    official: true
+    version: 4.52.0
+    published: '2026-08-17'
+    license: Apache-2.0
+  - language: dotnet
+    registry: nuget
+    name: OpenAI
+    url: https://www.nuget.org/packages/OpenAI
+    source: https://github.com/openai/openai-dotnet
+    install: dotnet add package OpenAI
+    official: true
+    version: 2.13.0
+    published: '2026-08-10'
+  - language: ruby
+    registry: rubygems
+    name: openai
+    url: https://rubygems.org/gems/openai
+    source: https://github.com/openai/openai-ruby
+    install: gem install openai
+    official: true
+    version: 0.81.0
+    published: '2026-08-26'
+  - language: rust
+    registry: crates.io
+    name: openai-harmony
+    url: https://crates.io/crates/openai-harmony
+    source: https://github.com/openai/harmony
+    install: cargo add openai-harmony
+    official: true
+    version: 0.0.8
+    published: '2025-11-05'
+    note: >-
+      crates.io max_version reads 0.0.8 while the npm build of the same project
+      is 0.4.0. OpenAI ships no general-purpose first-party Rust API client.
+not_first_party:
+  - language: ruby
+    registry: rubygems
+    name: ruby-openai
+    url: https://rubygems.org/gems/ruby-openai
+    version: 8.3.0
+    published: '2025-08-29'
+    official: false
+    note: >-
+      Community gem (alexrudall), NOT an OpenAI release. Recorded because it long
+      predates the official `openai` gem and still outranks it in search; it has
+      not published in twelve months. Superseded by the first-party `openai` gem.
+  - language: javascript
+    registry: npm
+    name: openai-agents
+    url: https://www.npmjs.com/package/openai-agents
+    version: 1.1.0
+    published: '2024-11-29'
+    official: false
+    note: >-
+      Name-squat on the un-scoped path; the official package is @openai/agents.
+      Abandoned since 2024-11-29.
+registries_checked_no_result:
+  - registry: npm
+    name: "@openai/apps-sdk"
+    status: 404
+    note: The Apps SDK ships as documentation plus @openai/apps-sdk-ui; there is no such package.
+  - registry: maven
+    query: "g:com.openai (solrsearch)"
+    note: >-
+      search.maven.org solrsearch returns zero docs for the com.openai group even
+      though repo1.maven.org serves the artifact; version read from
+      repo1.maven.org/maven2/com/openai/openai-java/maven-metadata.xml and the
+      publish date from central.sonatype.com. An honest note about the registry,
+      not about OpenAI.
