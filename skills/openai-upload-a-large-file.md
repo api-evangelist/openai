@@ -1,5 +1,5 @@
 ---
-name: Upload a large file in parts
+name: upload-a-large-file
 description: Use the multipart Upload flow for files too large for a single POST, and cancel cleanly inside the one-hour expiry window.
 api: openapi/openai-uploads-api-openapi.yml
 operations: [createUpload, addUploadPart, completeUpload, cancelUpload]

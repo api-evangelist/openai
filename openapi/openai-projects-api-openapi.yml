@@ -9,7 +9,7 @@ info:
     url: https://help.openai.com/
   license:
     name: MIT
-    url: https://github.com/openai/openai-openapi/blob/master/LICENSE
+    identifier: MIT
 servers:
 - url: https://api.openai.com/v1
 security:
@@ -19,7 +19,8 @@ tags:
 paths:
   /organization/projects:
     get:
-      summary: Returns a list of projects
+      summary: List projects
+      description: Returns a list of projects.
       operationId: list-projects
       security:
       - AdminApiKeyAuth: []
@@ -57,28 +58,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProjectListResponse'
       x-oaiMeta:
-        name: List projects
         group: administration
         examples:
           request:
             curl: "curl https://api.openai.com/v1/organization/projects?after=proj_abc&limit=20&include_archived=false \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const project of client.admin.organization.projects.list()) {\n  console.log(project.id);\n}"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\npage = client.admin.organization.projects.list()\npage = page.data[0]\nprint(page.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tpage, err := client.Admin.Organization.Projects.List(context.TODO(), openai.AdminOrganizationProjectListParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", page)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.ProjectListPage;\nimport com.openai.models.admin.organization.projects.ProjectListParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        ProjectListPage page = client.admin().organization().projects().list();\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
-
-
-              page = openai.admin.organization.projects.list
-
-
-              puts(page)'
           response: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"proj_abc\",\n            \"object\": \"organization.project\",\n            \"name\": \"Project example\",\n            \"created_at\": 1711471533,\n            \"archived_at\": null,\n            \"status\": \"active\"\n        }\n    ],\n    \"first_id\": \"proj-abc\",\n    \"last_id\": \"proj-xyz\",\n    \"has_more\": false\n}\n"
     post:
-      summary: Create a new project in the organization.
+      summary: Create project
+      description: Create a new project in the organization. Projects can be created and archived, but cannot be deleted.
       operationId: create-project
       security:
       - AdminApiKeyAuth: []
@@ -99,29 +86,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/Project'
       x-oaiMeta:
-        name: Create project
         group: administration
         examples:
           request:
             curl: "curl -X POST https://api.openai.com/v1/organization/projects \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n      \"name\": \"Project ABC\"\n  }'\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst project = await client.admin.organization.projects.create({ name: 'name' });\n\nconsole.log(project.id);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\nproject = client.admin.organization.projects.create(\n    name=\"name\",\n)\nprint(project.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tproject, err := client.Admin.Organization.Projects.New(context.TODO(), openai.AdminOrganizationProjectNewParams{\n\t\tName: \"name\",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", project.ID)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.Project;\nimport com.openai.models.admin.organization.projects.ProjectCreateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        ProjectCreateParams params = ProjectCreateParams.builder()\n            .name(\"name\")\n            .build();\n        Project project = client.admin().organization().projects().create(params);\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
-
-
-              project = openai.admin.organization.projects.create(name: "name")
-
-
-              puts(project)'
           response: "{\n    \"id\": \"proj_abc\",\n    \"object\": \"organization.project\",\n    \"name\": \"Project ABC\",\n    \"created_at\": 1711471533,\n    \"archived_at\": null,\n    \"status\": \"active\"\n}\n"
   /organization/projects/{project_id}:
     get:
-      summary: Retrieves a project
+      summary: Retrieve project
+      description: Retrieves a project.
       operationId: retrieve-project
       security:
       - AdminApiKeyAuth: []
@@ -142,29 +115,14 @@ paths:
               schema:
                 $ref: '#/components/schemas/Project'
       x-oaiMeta:
-        name: Retrieve project
         group: administration
-        description: Retrieve a project.
         examples:
           request:
             curl: "curl https://api.openai.com/v1/organization/projects/proj_abc \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst project = await client.admin.organization.projects.retrieve('project_id');\n\nconsole.log(project.id);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\nproject = client.admin.organization.projects.retrieve(\n    \"project_id\",\n)\nprint(project.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tproject, err := client.Admin.Organization.Projects.Get(context.TODO(), \"project_id\")\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", project.ID)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.Project;\nimport com.openai.models.admin.organization.projects.ProjectRetrieveParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        Project project = client.admin().organization().projects().retrieve(\"project_id\");\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
-
-
-              project = openai.admin.organization.projects.retrieve("project_id")
-
-
-              puts(project)'
           response: "{\n    \"id\": \"proj_abc\",\n    \"object\": \"organization.project\",\n    \"name\": \"Project example\",\n    \"created_at\": 1711471533,\n    \"archived_at\": null,\n    \"status\": \"active\"\n}\n"
     post:
-      summary: Modifies a project in the organization
+      summary: Modify project
+      description: Modifies a project in the organization.
       operationId: modify-project
       security:
       - AdminApiKeyAuth: []
@@ -198,31 +156,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       x-oaiMeta:
-        name: Modify project
         group: administration
         examples:
           request:
             curl: "curl -X POST https://api.openai.com/v1/organization/projects/proj_abc \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n      \"name\": \"Project DEF\"\n  }'\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst project = await client.admin.organization.projects.update('project_id');\n\nconsole.log(project.id);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\nproject = client.admin.organization.projects.update(\n    project_id=\"project_id\",\n)\nprint(project.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tproject, err := client.Admin.Organization.Projects.Update(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\topenai.AdminOrganizationProjectUpdateParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", project.ID)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.Project;\nimport com.openai.models.admin.organization.projects.ProjectUpdateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        Project project = client.admin().organization().projects().update(\"project_id\");\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
-
-
-              project = openai.admin.organization.projects.update("project_id")
-
-
-              puts(project)'
-          response: ''
   /organization/projects/{project_id}/api_keys:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Returns a list of API keys in the project
+      summary: List project API keys
+      description: Returns a list of API keys in the project.
       operationId: list-project-api-keys
       tags:
       - Projects
@@ -250,6 +193,18 @@ paths:
         required: false
         schema:
           type: string
+      - name: owner_project_access
+        in: query
+        description: 'Filter API keys by whether the owner currently has effective access to the project. Use `active` for owners with access, `inactive` for owners without access, or `any` for all enabled project API keys. If omitted, the endpoint applies its existing membership-based visibility rules, which may exclude some enabled keys.
+
+          '
+        required: false
+        schema:
+          type: string
+          enum:
+          - active
+          - inactive
+          - any
       responses:
         '200':
           description: Project API keys listed successfully.
@@ -258,31 +213,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProjectApiKeyListResponse'
       x-oaiMeta:
-        name: List project API keys
         group: administration
         examples:
           request:
-            curl: "curl https://api.openai.com/v1/organization/projects/proj_abc/api_keys?after=key_abc&limit=20 \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const projectAPIKey of client.admin.organization.projects.apiKeys.list('project_id')) {\n  console.log(projectAPIKey.id);\n}"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\npage = client.admin.organization.projects.api_keys.list(\n    project_id=\"project_id\",\n)\npage = page.data[0]\nprint(page.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tpage, err := client.Admin.Organization.Projects.APIKeys.List(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\topenai.AdminOrganizationProjectAPIKeyListParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", page)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.apikeys.ApiKeyListPage;\nimport com.openai.models.admin.organization.projects.apikeys.ApiKeyListParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        ApiKeyListPage page = client.admin().organization().projects().apiKeys().list(\"project_id\");\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
-
-
-              page = openai.admin.organization.projects.api_keys.list("project_id")
-
-
-              puts(page)'
-          response: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"object\": \"organization.project.api_key\",\n            \"redacted_value\": \"sk-abc...def\",\n            \"name\": \"My API Key\",\n            \"created_at\": 1711471533,\n            \"last_used_at\": 1711471534,\n            \"id\": \"key_abc\",\n            \"owner\": {\n                \"type\": \"user\",\n                \"user\": {\n                    \"id\": \"user_abc\",\n                    \"name\": \"First Last\",\n                    \"email\": \"user@example.com\",\n                    \"role\": \"owner\",\n                    \"created_at\": 1711471533\n                }\n            }\n        }\n    ],\n    \"first_id\": \"key_abc\",\n    \"last_id\": \"key_xyz\",\n    \"has_more\": false\n}\n"
+            curl: "curl https://api.openai.com/v1/organization/projects/proj_abc/api_keys?after=key_abc&limit=20&owner_project_access=any \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\"\n"
+          response: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"object\": \"organization.project.api_key\",\n            \"redacted_value\": \"sk-abc...def\",\n            \"name\": \"My API Key\",\n            \"created_at\": 1711471533,\n            \"last_used_at\": 1711471534,\n            \"id\": \"key_abc\",\n            \"owner_project_access\": \"active\",\n            \"owner\": {\n                \"type\": \"user\",\n                \"user\": {\n                    \"id\": \"user_abc\",\n                    \"name\": \"First Last\",\n                    \"email\": \"user@example.com\",\n                    \"role\": \"owner\",\n                    \"created_at\": 1711471533\n                }\n            }\n        }\n    ],\n    \"first_id\": \"key_abc\",\n    \"last_id\": \"key_xyz\",\n    \"has_more\": false\n}\n"
   /organization/projects/{project_id}/api_keys/{api_key_id}:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Retrieves an API key in the project
+      summary: Retrieve project API key
+      description: Retrieves an API key in the project.
       operationId: retrieve-project-api-key
       tags:
       - Projects
@@ -307,30 +248,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProjectApiKey'
       x-oaiMeta:
-        name: Retrieve project API key
         group: administration
         examples:
           request:
             curl: "curl https://api.openai.com/v1/organization/projects/proj_abc/api_keys/key_abc \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst projectAPIKey = await client.admin.organization.projects.apiKeys.retrieve('api_key_id', {\n  project_id: 'project_id',\n});\n\nconsole.log(projectAPIKey.id);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\nproject_api_key = client.admin.organization.projects.api_keys.retrieve(\n    api_key_id=\"api_key_id\",\n    project_id=\"project_id\",\n)\nprint(project_api_key.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tprojectAPIKey, err := client.Admin.Organization.Projects.APIKeys.Get(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\t\"api_key_id\",\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", projectAPIKey.ID)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.apikeys.ApiKeyRetrieveParams;\nimport com.openai.models.admin.organization.projects.apikeys.ProjectApiKey;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        ApiKeyRetrieveParams params = ApiKeyRetrieveParams.builder()\n            .projectId(\"project_id\")\n            .apiKeyId(\"api_key_id\")\n            .build();\n        ProjectApiKey projectApiKey = client.admin().organization().projects().apiKeys().retrieve(params);\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
-
-
-              project_api_key = openai.admin.organization.projects.api_keys.retrieve("api_key_id", project_id: "project_id")
-
-
-              puts(project_api_key)'
-          response: "{\n    \"object\": \"organization.project.api_key\",\n    \"redacted_value\": \"sk-abc...def\",\n    \"name\": \"My API Key\",\n    \"created_at\": 1711471533,\n    \"last_used_at\": 1711471534,\n    \"id\": \"key_abc\",\n    \"owner\": {\n        \"type\": \"user\",\n        \"user\": {\n            \"id\": \"user_abc\",\n            \"name\": \"First Last\",\n            \"email\": \"user@example.com\",\n            \"role\": \"owner\",\n            \"created_at\": 1711471533\n        }\n    }\n}\n"
+          response: "{\n    \"object\": \"organization.project.api_key\",\n    \"redacted_value\": \"sk-abc...def\",\n    \"name\": \"My API Key\",\n    \"created_at\": 1711471533,\n    \"last_used_at\": 1711471534,\n    \"id\": \"key_abc\",\n    \"owner_project_access\": \"active\",\n    \"owner\": {\n        \"type\": \"user\",\n        \"user\": {\n            \"id\": \"user_abc\",\n            \"name\": \"First Last\",\n            \"email\": \"user@example.com\",\n            \"role\": \"owner\",\n            \"created_at\": 1711471533\n        }\n    }\n}\n"
     delete:
       security:
       - AdminApiKeyAuth: []
-      summary: Deletes an API key from the project.
+      summary: Delete project API key
+      description: 'Deletes an API key from the project.
+
+
+        Returns confirmation of the key deletion, or an error if the key belonged to
+
+        a service account.'
       operationId: delete-project-api-key
       tags:
       - Projects
@@ -361,29 +293,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       x-oaiMeta:
-        name: Delete project API key
         group: administration
         examples:
           request:
             curl: "curl -X DELETE https://api.openai.com/v1/organization/projects/proj_abc/api_keys/key_abc \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst apiKey = await client.admin.organization.projects.apiKeys.delete('api_key_id', {\n  project_id: 'project_id',\n});\n\nconsole.log(apiKey.id);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\napi_key = client.admin.organization.projects.api_keys.delete(\n    api_key_id=\"api_key_id\",\n    project_id=\"project_id\",\n)\nprint(api_key.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tapiKey, err := client.Admin.Organization.Projects.APIKeys.Delete(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\t\"api_key_id\",\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", apiKey.ID)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.apikeys.ApiKeyDeleteParams;\nimport com.openai.models.admin.organization.projects.apikeys.ApiKeyDeleteResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        ApiKeyDeleteParams params = ApiKeyDeleteParams.builder()\n            .projectId(\"project_id\")\n            .apiKeyId(\"api_key_id\")\n            .build();\n        ApiKeyDeleteResponse apiKey = client.admin().organization().projects().apiKeys().delete(params);\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
-
-
-              api_key = openai.admin.organization.projects.api_keys.delete("api_key_id", project_id: "project_id")
-
-
-              puts(api_key)'
           response: "{\n    \"object\": \"organization.project.api_key.deleted\",\n    \"id\": \"key_abc\",\n    \"deleted\": true\n}\n"
   /organization/projects/{project_id}/archive:
     post:
-      summary: Archives a project in the organization.
+      summary: Archive project
+      description: Archives a project in the organization. Archived projects cannot be used or updated.
       operationId: archive-project
       security:
       - AdminApiKeyAuth: []
@@ -404,31 +322,109 @@ paths:
               schema:
                 $ref: '#/components/schemas/Project'
       x-oaiMeta:
-        name: Archive project
         group: administration
         examples:
           request:
             curl: "curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/archive \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst project = await client.admin.organization.projects.archive('project_id');\n\nconsole.log(project.id);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\nproject = client.admin.organization.projects.archive(\n    \"project_id\",\n)\nprint(project.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tproject, err := client.Admin.Organization.Projects.Archive(context.TODO(), \"project_id\")\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", project.ID)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.Project;\nimport com.openai.models.admin.organization.projects.ProjectArchiveParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        Project project = client.admin().organization().projects().archive(\"project_id\");\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
-
-
-              project = openai.admin.organization.projects.archive("project_id")
-
-
-              puts(project)'
           response: "{\n    \"id\": \"proj_abc\",\n    \"object\": \"organization.project\",\n    \"name\": \"Project DEF\",\n    \"created_at\": 1711471533,\n    \"archived_at\": 1711471533,\n    \"status\": \"archived\"\n}\n"
+  /organization/projects/{project_id}/model_permissions:
+    get:
+      security:
+      - AdminApiKeyAuth: []
+      summary: Retrieve project model permissions
+      description: Returns model permissions for a project.
+      operationId: retrieve-project-model-permissions
+      tags:
+      - Projects
+      parameters:
+      - name: project_id
+        in: path
+        description: The ID of the project.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Project model permissions retrieved successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectModelPermissions'
+      x-oaiMeta:
+        group: administration
+        examples:
+          request:
+            curl: "curl https://api.openai.com/v1/organization/projects/proj_abc/model_permissions \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\"\n"
+          response: "{\n    \"object\": \"project.model_permissions\",\n    \"mode\": \"allow_list\",\n    \"model_ids\": [\n        \"gpt-6-astra\",\n        \"o3\"\n    ]\n}\n"
+    post:
+      security:
+      - AdminApiKeyAuth: []
+      summary: Modify project model permissions
+      description: Updates model permissions for a project.
+      operationId: update-project-model-permissions
+      tags:
+      - Projects
+      parameters:
+      - name: project_id
+        in: path
+        description: The ID of the project.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: The project model permissions update request payload.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectModelPermissionsUpdateRequest'
+      responses:
+        '200':
+          description: Project model permissions updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectModelPermissions'
+      x-oaiMeta:
+        group: administration
+        examples:
+          request:
+            curl: "curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/model_permissions \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n      \"mode\": \"deny_list\",\n      \"model_ids\": [\n          \"o3\"\n      ]\n  }'\n"
+          response: "{\n    \"object\": \"project.model_permissions\",\n    \"mode\": \"deny_list\",\n    \"model_ids\": [\n        \"o3\"\n    ]\n}\n"
+    delete:
+      security:
+      - AdminApiKeyAuth: []
+      summary: Delete project model permissions
+      description: Deletes model permissions for a project.
+      operationId: delete-project-model-permissions
+      tags:
+      - Projects
+      parameters:
+      - name: project_id
+        in: path
+        description: The ID of the project.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Project model permissions deleted successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectModelPermissionsDeleteResponse'
+      x-oaiMeta:
+        group: administration
+        examples:
+          request:
+            curl: "curl -X DELETE https://api.openai.com/v1/organization/projects/proj_abc/model_permissions \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\"\n"
+          response: "{\n    \"object\": \"project.model_permissions.deleted\",\n    \"deleted\": true\n}\n"
   /organization/projects/{project_id}/rate_limits:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Returns the rate limits per model for a project
+      summary: List project rate limits
+      description: Returns the rate limits per model for a project.
       operationId: list-project-rate-limits
       tags:
       - Projects
@@ -472,32 +468,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProjectRateLimitListResponse'
       x-oaiMeta:
-        name: List project rate limits
         group: administration
         examples:
           request:
             curl: "curl https://api.openai.com/v1/organization/projects/proj_abc/rate_limits?after=rl_xxx&limit=20 \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const projectRateLimit of client.admin.organization.projects.rateLimits.listRateLimits(\n  'project_id',\n)) {\n  console.log(projectRateLimit.id);\n}"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\npage = client.admin.organization.projects.rate_limits.list_rate_limits(\n    project_id=\"project_id\",\n)\npage = page.data[0]\nprint(page.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tpage, err := client.Admin.Organization.Projects.RateLimits.ListRateLimits(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\topenai.AdminOrganizationProjectRateLimitListRateLimitsParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", page)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.ratelimits.RateLimitListRateLimitsPage;\nimport com.openai.models.admin.organization.projects.ratelimits.RateLimitListRateLimitsParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        RateLimitListRateLimitsPage page = client.admin().organization().projects().rateLimits().listRateLimits(\"project_id\");\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
-
-
-              page = openai.admin.organization.projects.rate_limits.list_rate_limits("project_id")
-
-
-              puts(page)'
           response: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n          \"object\": \"project.rate_limit\",\n          \"id\": \"rl-ada\",\n          \"model\": \"ada\",\n          \"max_requests_per_1_minute\": 600,\n          \"max_tokens_per_1_minute\": 150000,\n          \"max_images_per_1_minute\": 10\n        }\n    ],\n    \"first_id\": \"rl-ada\",\n    \"last_id\": \"rl-ada\",\n    \"has_more\": false\n}\n"
           error_response: "{\n    \"code\": 404,\n    \"message\": \"The project {project_id} was not found\"\n}\n"
   /organization/projects/{project_id}/rate_limits/{rate_limit_id}:
     post:
       security:
       - AdminApiKeyAuth: []
-      summary: Updates a project rate limit
+      summary: Modify project rate limit
+      description: Updates a project rate limit.
       operationId: update-project-rate-limits
       tags:
       - Projects
@@ -535,23 +517,18 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       x-oaiMeta:
-        name: Modify project rate limit
         group: administration
         examples:
           request:
             curl: "curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/rate_limits/rl_xxx \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n      \"max_requests_per_1_minute\": 500\n  }'\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst projectRateLimit = await client.admin.organization.projects.rateLimits.updateRateLimit(\n  'rate_limit_id',\n  { project_id: 'project_id' },\n);\n\nconsole.log(projectRateLimit.id);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\nproject_rate_limit = client.admin.organization.projects.rate_limits.update_rate_limit(\n    rate_limit_id=\"rate_limit_id\",\n    project_id=\"project_id\",\n)\nprint(project_rate_limit.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tprojectRateLimit, err := client.Admin.Organization.Projects.RateLimits.UpdateRateLimit(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\t\"rate_limit_id\",\n\t\topenai.AdminOrganizationProjectRateLimitUpdateRateLimitParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", projectRateLimit.ID)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.ratelimits.ProjectRateLimit;\nimport com.openai.models.admin.organization.projects.ratelimits.RateLimitUpdateRateLimitParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        RateLimitUpdateRateLimitParams params = RateLimitUpdateRateLimitParams.builder()\n            .projectId(\"project_id\")\n            .rateLimitId(\"rate_limit_id\")\n            .build();\n        ProjectRateLimit projectRateLimit = client.admin().organization().projects().rateLimits().updateRateLimit(params);\n    }\n}"
-            ruby: "require \"openai\"\n\nopenai = OpenAI::Client.new(admin_api_key: \"My Admin API Key\")\n\nproject_rate_limit = openai.admin.organization.projects.rate_limits.update_rate_limit(\n  \"rate_limit_id\",\n  project_id: \"project_id\"\n)\n\nputs(project_rate_limit)"
           response: "{\n    \"object\": \"project.rate_limit\",\n    \"id\": \"rl-ada\",\n    \"model\": \"ada\",\n    \"max_requests_per_1_minute\": 600,\n    \"max_tokens_per_1_minute\": 150000,\n    \"max_images_per_1_minute\": 10\n  }\n"
           error_response: "{\n    \"code\": 404,\n    \"message\": \"The project {project_id} was not found\"\n}\n"
   /organization/projects/{project_id}/service_accounts:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Returns a list of service accounts in the project
+      summary: List project service accounts
+      description: Returns a list of service accounts in the project.
       operationId: list-project-service-accounts
       tags:
       - Projects
@@ -593,30 +570,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       x-oaiMeta:
-        name: List project service accounts
         group: administration
         examples:
           request:
             curl: "curl https://api.openai.com/v1/organization/projects/proj_abc/service_accounts?after=custom_id&limit=20 \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const projectServiceAccount of client.admin.organization.projects.serviceAccounts.list(\n  'project_id',\n)) {\n  console.log(projectServiceAccount.id);\n}"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\npage = client.admin.organization.projects.service_accounts.list(\n    project_id=\"project_id\",\n)\npage = page.data[0]\nprint(page.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tpage, err := client.Admin.Organization.Projects.ServiceAccounts.List(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\topenai.AdminOrganizationProjectServiceAccountListParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", page)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.serviceaccounts.ServiceAccountListPage;\nimport com.openai.models.admin.organization.projects.serviceaccounts.ServiceAccountListParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        ServiceAccountListPage page = client.admin().organization().projects().serviceAccounts().list(\"project_id\");\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
-
-
-              page = openai.admin.organization.projects.service_accounts.list("project_id")
-
-
-              puts(page)'
           response: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"object\": \"organization.project.service_account\",\n            \"id\": \"svc_acct_abc\",\n            \"name\": \"Service Account\",\n            \"role\": \"owner\",\n            \"created_at\": 1711471533\n        }\n    ],\n    \"first_id\": \"svc_acct_abc\",\n    \"last_id\": \"svc_acct_xyz\",\n    \"has_more\": false\n}\n"
     post:
       security:
       - AdminApiKeyAuth: []
-      summary: Creates a new service account in the project.
+      summary: Create project service account
+      description: Creates a new service account in the project. By default, this also returns an unredacted API key for the service account.
       operationId: create-project-service-account
       tags:
       - Projects
@@ -648,31 +611,17 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       x-oaiMeta:
-        name: Create project service account
         group: administration
         examples:
           request:
             curl: "curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/service_accounts \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n      \"name\": \"Production App\"\n  }'\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst serviceAccount = await client.admin.organization.projects.serviceAccounts.create(\n  'project_id',\n  { name: 'name' },\n);\n\nconsole.log(serviceAccount.id);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\nservice_account = client.admin.organization.projects.service_accounts.create(\n    project_id=\"project_id\",\n    name=\"name\",\n)\nprint(service_account.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tserviceAccount, err := client.Admin.Organization.Projects.ServiceAccounts.New(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\topenai.AdminOrganizationProjectServiceAccountNewParams{\n\t\t\tName: \"name\",\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", serviceAccount.ID)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.serviceaccounts.ServiceAccountCreateParams;\nimport com.openai.models.admin.organization.projects.serviceaccounts.ServiceAccountCreateResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        ServiceAccountCreateParams params = ServiceAccountCreateParams.builder()\n            .projectId(\"project_id\")\n            .name(\"name\")\n            .build();\n        ServiceAccountCreateResponse serviceAccount = client.admin().organization().projects().serviceAccounts().create(params);\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
-
-
-              service_account = openai.admin.organization.projects.service_accounts.create("project_id", name: "name")
-
-
-              puts(service_account)'
           response: "{\n    \"object\": \"organization.project.service_account\",\n    \"id\": \"svc_acct_abc\",\n    \"name\": \"Production App\",\n    \"role\": \"member\",\n    \"created_at\": 1711471533,\n    \"api_key\": {\n        \"object\": \"organization.project.service_account.api_key\",\n        \"value\": \"sk-abcdefghijklmnop123\",\n        \"name\": \"Secret Key\",\n        \"created_at\": 1711471533,\n        \"id\": \"key_abc\"\n    }\n}\n"
   /organization/projects/{project_id}/service_accounts/{service_account_id}:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Retrieves a service account in the project
+      summary: Retrieve project service account
+      description: Retrieves a service account in the project.
       operationId: retrieve-project-service-account
       tags:
       - Projects
@@ -697,21 +646,62 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProjectServiceAccount'
       x-oaiMeta:
-        name: Retrieve project service account
         group: administration
         examples:
           request:
             curl: "curl https://api.openai.com/v1/organization/projects/proj_abc/service_accounts/svc_acct_abc \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst projectServiceAccount = await client.admin.organization.projects.serviceAccounts.retrieve(\n  'service_account_id',\n  { project_id: 'project_id' },\n);\n\nconsole.log(projectServiceAccount.id);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\nproject_service_account = client.admin.organization.projects.service_accounts.retrieve(\n    service_account_id=\"service_account_id\",\n    project_id=\"project_id\",\n)\nprint(project_service_account.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tprojectServiceAccount, err := client.Admin.Organization.Projects.ServiceAccounts.Get(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\t\"service_account_id\",\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", projectServiceAccount.ID)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.serviceaccounts.ProjectServiceAccount;\nimport com.openai.models.admin.organization.projects.serviceaccounts.ServiceAccountRetrieveParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        ServiceAccountRetrieveParams params = ServiceAccountRetrieveParams.builder()\n            .projectId(\"project_id\")\n            .serviceAccountId(\"service_account_id\")\n            .build();\n        ProjectServiceAccount projectServiceAccount = client.admin().organization().projects().serviceAccounts().retrieve(params);\n    }\n}"
-            ruby: "require \"openai\"\n\nopenai = OpenAI::Client.new(admin_api_key: \"My Admin API Key\")\n\nproject_service_account = openai.admin.organization.projects.service_accounts.retrieve(\n  \"service_account_id\",\n  project_id: \"project_id\"\n)\n\nputs(project_service_account)"
           response: "{\n    \"object\": \"organization.project.service_account\",\n    \"id\": \"svc_acct_abc\",\n    \"name\": \"Service Account\",\n    \"role\": \"owner\",\n    \"created_at\": 1711471533\n}\n"
+    post:
+      security:
+      - AdminApiKeyAuth: []
+      summary: Update project service account
+      description: Updates a service account in the project.
+      operationId: update-project-service-account
+      tags:
+      - Projects
+      parameters:
+      - name: project_id
+        in: path
+        description: The ID of the project.
+        required: true
+        schema:
+          type: string
+      - name: service_account_id
+        in: path
+        description: The ID of the service account.
+        required: true
+        schema:
+          type: string
+      requestBody:
+        description: Fields to update on the service account.
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateProjectServiceAccountBody'
+      responses:
+        '200':
+          description: Project service account updated successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectServiceAccount'
+      x-oaiMeta:
+        group: administration
+        examples:
+          request:
+            curl: "curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/service_accounts/svc_acct_abc \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n      \"name\": \"Updated service account\",\n      \"role\": \"member\"\n  }'\n"
+          response: "{\n    \"object\": \"organization.project.service_account\",\n    \"id\": \"svc_acct_abc\",\n    \"name\": \"Updated service account\",\n    \"role\": \"member\",\n    \"created_at\": 1711471533\n}\n"
     delete:
       security:
       - AdminApiKeyAuth: []
-      summary: Deletes a service account from the project.
+      summary: Delete project service account
+      description: 'Deletes a service account from the project.
+
+
+        Returns confirmation of service account deletion, or an error if the project
+
+        is archived (archived projects have no service accounts).'
       operationId: delete-project-service-account
       tags:
       - Projects
@@ -735,32 +725,50 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ProjectServiceAccountDeleteResponse'
+        '400':
+          description: 'The request is invalid or the service account cannot be deleted in its current state.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: 'The caller is not permitted to delete the service account.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionErrorResponse'
+        '404':
+          description: 'The project or service account was not found in the organization.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: 'The request rate limit was exceeded.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
       x-oaiMeta:
-        name: Delete project service account
         group: administration
         examples:
           request:
             curl: "curl -X DELETE https://api.openai.com/v1/organization/projects/proj_abc/service_accounts/svc_acct_abc \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst serviceAccount = await client.admin.organization.projects.serviceAccounts.delete(\n  'service_account_id',\n  { project_id: 'project_id' },\n);\n\nconsole.log(serviceAccount.id);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\nservice_account = client.admin.organization.projects.service_accounts.delete(\n    service_account_id=\"service_account_id\",\n    project_id=\"project_id\",\n)\nprint(service_account.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tserviceAccount, err := client.Admin.Organization.Projects.ServiceAccounts.Delete(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\t\"service_account_id\",\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", serviceAccount.ID)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.serviceaccounts.ServiceAccountDeleteParams;\nimport com.openai.models.admin.organization.projects.serviceaccounts.ServiceAccountDeleteResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        ServiceAccountDeleteParams params = ServiceAccountDeleteParams.builder()\n            .projectId(\"project_id\")\n            .serviceAccountId(\"service_account_id\")\n            .build();\n        ServiceAccountDeleteResponse serviceAccount = client.admin().organization().projects().serviceAccounts().delete(params);\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
-
-
-              service_account = openai.admin.organization.projects.service_accounts.delete("service_account_id", project_id: "project_id")
-
-
-              puts(service_account)'
           response: "{\n    \"object\": \"organization.project.service_account.deleted\",\n    \"id\": \"svc_acct_abc\",\n    \"deleted\": true\n}\n"
   /organization/projects/{project_id}/users:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Returns a list of users in the project
+      summary: List project users
+      description: Returns a list of users in the project.
       operationId: list-project-users
       tags:
       - Projects
@@ -802,30 +810,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       x-oaiMeta:
-        name: List project users
         group: administration
         examples:
           request:
             curl: "curl https://api.openai.com/v1/organization/projects/proj_abc/users?after=user_abc&limit=20 \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const projectUser of client.admin.organization.projects.users.list('project_id')) {\n  console.log(projectUser.id);\n}"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\npage = client.admin.organization.projects.users.list(\n    project_id=\"project_id\",\n)\npage = page.data[0]\nprint(page.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tpage, err := client.Admin.Organization.Projects.Users.List(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\topenai.AdminOrganizationProjectUserListParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", page)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.users.UserListPage;\nimport com.openai.models.admin.organization.projects.users.UserListParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        UserListPage page = client.admin().organization().projects().users().list(\"project_id\");\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
-
-
-              page = openai.admin.organization.projects.users.list("project_id")
-
-
-              puts(page)'
           response: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"object\": \"organization.project.user\",\n            \"id\": \"user_abc\",\n            \"name\": \"First Last\",\n            \"email\": \"user@example.com\",\n            \"role\": \"owner\",\n            \"added_at\": 1711471533\n        }\n    ],\n    \"first_id\": \"user-abc\",\n    \"last_id\": \"user-xyz\",\n    \"has_more\": false\n}\n"
     post:
       security:
       - AdminApiKeyAuth: []
-      summary: Adds a user to the project.
+      summary: Create project user
+      description: Adds a user to the project. Users must already be members of the organization to be added to a project.
       operationId: create-project-user
       parameters:
       - name: project_id
@@ -851,37 +845,53 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProjectUser'
         '400':
-          description: Error response for various conditions.
+          description: 'The request is invalid or the user cannot be added to the project in its current state.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '403':
+          description: The caller lacks the required permissions.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PermissionErrorResponse'
+        '404':
+          description: 'The project or user was not found in the organization.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '409':
+          description: 'The request conflicts with the current state of the resource.
+
+            '
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '429':
+          description: The request exceeded the rate limit.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       x-oaiMeta:
-        name: Create project user
         group: administration
         examples:
           request:
             curl: "curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/users \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n      \"user_id\": \"user_abc\",\n      \"role\": \"member\"\n  }'\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst projectUser = await client.admin.organization.projects.users.create('project_id', {\n  role: 'role',\n});\n\nconsole.log(projectUser.id);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\nproject_user = client.admin.organization.projects.users.create(\n    project_id=\"project_id\",\n    role=\"role\",\n)\nprint(project_user.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tprojectUser, err := client.Admin.Organization.Projects.Users.New(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\topenai.AdminOrganizationProjectUserNewParams{\n\t\t\tRole: \"role\",\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", projectUser.ID)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.users.ProjectUser;\nimport com.openai.models.admin.organization.projects.users.UserCreateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        UserCreateParams params = UserCreateParams.builder()\n            .projectId(\"project_id\")\n            .role(\"role\")\n            .build();\n        ProjectUser projectUser = client.admin().organization().projects().users().create(params);\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
-
-
-              project_user = openai.admin.organization.projects.users.create("project_id", role: "role")
-
-
-              puts(project_user)'
           response: "{\n    \"object\": \"organization.project.user\",\n    \"id\": \"user_abc\",\n    \"email\": \"user@example.com\",\n    \"role\": \"owner\",\n    \"added_at\": 1711471533\n}\n"
   /organization/projects/{project_id}/users/{user_id}:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Retrieves a user in the project
+      summary: Retrieve project user
+      description: Retrieves a user in the project.
       operationId: retrieve-project-user
       tags:
       - Projects
@@ -906,30 +916,16 @@ paths:
               schema:
                 $ref: '#/components/schemas/ProjectUser'
       x-oaiMeta:
-        name: Retrieve project user
         group: administration
         examples:
           request:
             curl: "curl https://api.openai.com/v1/organization/projects/proj_abc/users/user_abc \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst projectUser = await client.admin.organization.projects.users.retrieve('user_id', {\n  project_id: 'project_id',\n});\n\nconsole.log(projectUser.id);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\nproject_user = client.admin.organization.projects.users.retrieve(\n    user_id=\"user_id\",\n    project_id=\"project_id\",\n)\nprint(project_user.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tprojectUser, err := client.Admin.Organization.Projects.Users.Get(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\t\"user_id\",\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", projectUser.ID)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.users.ProjectUser;\nimport com.openai.models.admin.organization.projects.users.UserRetrieveParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        UserRetrieveParams params = UserRetrieveParams.builder()\n            .projectId(\"project_id\")\n            .userId(\"user_id\")\n            .build();\n        ProjectUser projectUser = client.admin().organization().projects().users().retrieve(params);\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
-
-
-              project_user = openai.admin.organization.projects.users.retrieve("user_id", project_id: "project_id")
-
-
-              puts(project_user)'
           response: "{\n    \"object\": \"organization.project.user\",\n    \"id\": \"user_abc\",\n    \"name\": \"First Last\",\n    \"email\": \"user@example.com\",\n    \"role\": \"owner\",\n    \"added_at\": 1711471533\n}\n"
     post:
       security:
       - AdminApiKeyAuth: []
-      summary: Modifies a user's role in the project
+      summary: Modify project user
+      description: Modifies a user's role in the project.
       operationId: modify-project-user
       tags:
       - Projects
@@ -967,30 +963,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       x-oaiMeta:
-        name: Modify project user
         group: administration
         examples:
           request:
             curl: "curl -X POST https://api.openai.com/v1/organization/projects/proj_abc/users/user_abc \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n      \"role\": \"owner\"\n  }'\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst projectUser = await client.admin.organization.projects.users.update('user_id', {\n  project_id: 'project_id',\n});\n\nconsole.log(projectUser.id);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\nproject_user = client.admin.organization.projects.users.update(\n    user_id=\"user_id\",\n    project_id=\"project_id\",\n)\nprint(project_user.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tprojectUser, err := client.Admin.Organization.Projects.Users.Update(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\t\"user_id\",\n\t\topenai.AdminOrganizationProjectUserUpdateParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", projectUser.ID)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.users.ProjectUser;\nimport com.openai.models.admin.organization.projects.users.UserUpdateParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        UserUpdateParams params = UserUpdateParams.builder()\n            .projectId(\"project_id\")\n            .userId(\"user_id\")\n            .build();\n        ProjectUser projectUser = client.admin().organization().projects().users().update(params);\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
-
-
-              project_user = openai.admin.organization.projects.users.update("user_id", project_id: "project_id")
-
-
-              puts(project_user)'
           response: "{\n    \"object\": \"organization.project.user\",\n    \"id\": \"user_abc\",\n    \"name\": \"First Last\",\n    \"email\": \"user@example.com\",\n    \"role\": \"owner\",\n    \"added_at\": 1711471533\n}\n"
     delete:
       security:
       - AdminApiKeyAuth: []
-      summary: Deletes a user from the project.
+      summary: Delete project user
+      description: 'Deletes a user from the project.
+
+
+        Returns confirmation of project user deletion, or an error if the project is
+
+        archived (archived projects have no users).'
       operationId: delete-project-user
       tags:
       - Projects
@@ -1021,81 +1008,42 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
       x-oaiMeta:
-        name: Delete project user
         group: administration
         examples:
           request:
             curl: "curl -X DELETE https://api.openai.com/v1/organization/projects/proj_abc/users/user_abc \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst user = await client.admin.organization.projects.users.delete('user_id', {\n  project_id: 'project_id',\n});\n\nconsole.log(user.id);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\nuser = client.admin.organization.projects.users.delete(\n    user_id=\"user_id\",\n    project_id=\"project_id\",\n)\nprint(user.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tuser, err := client.Admin.Organization.Projects.Users.Delete(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\t\"user_id\",\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", user.ID)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.users.UserDeleteParams;\nimport com.openai.models.admin.organization.projects.users.UserDeleteResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        UserDeleteParams params = UserDeleteParams.builder()\n            .projectId(\"project_id\")\n            .userId(\"user_id\")\n            .build();\n        UserDeleteResponse user = client.admin().organization().projects().users().delete(params);\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
-
-
-              user = openai.admin.organization.projects.users.delete("user_id", project_id: "project_id")
-
-
-              puts(user)'
           response: "{\n    \"object\": \"organization.project.user.deleted\",\n    \"id\": \"user_abc\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
-    ProjectApiKeyOwnerServiceAccount:
+    Error:
       type: object
-      description: The service account that owns a project API key.
       properties:
-        id:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
           type: string
-          description: The identifier, which can be referenced in API endpoints
-        name:
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
           type: string
-          description: The name of the service account.
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) of when the service account was created.
-        role:
-          type: string
-          description: The service account's project role.
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
       required:
-      - id
-      - name
-      - created_at
-      - role
-    ProjectServiceAccountApiKey:
+      - type
+      - message
+      - param
+      - code
+    ProjectApiKeyDeleteResponse:
       type: object
       properties:
         object:
           type: string
           enum:
-          - organization.project.service_account.api_key
-          description: The object type, which is always `organization.project.service_account.api_key`
-          x-stainless-const: true
-        value:
-          type: string
-        name:
-          type: string
-        created_at:
-          type: integer
-          format: unixtime
-        id:
-          type: string
-      required:
-      - object
-      - value
-      - name
-      - created_at
-      - id
-    ProjectServiceAccountDeleteResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.service_account.deleted
+          - organization.project.api_key.deleted
           x-stainless-const: true
         id:
           type: string
@@ -1105,44 +1053,6 @@ components:
       - object
       - id
       - deleted
-    ProjectUser:
-      type: object
-      description: Represents an individual user in a project.
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.user
-          description: The object type, which is always `organization.project.user`
-          x-stainless-const: true
-        id:
-          type: string
-          description: The identifier, which can be referenced in API endpoints
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The name of the user
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The email address of the user
-        role:
-          type: string
-          description: '`owner` or `member`'
-        added_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) of when the project was added.
-      required:
-      - object
-      - id
-      - role
-      - added_at
-      x-oaiMeta:
-        name: The project user object
-        example: "{\n    \"object\": \"organization.project.user\",\n    \"id\": \"user_abc\",\n    \"name\": \"First Last\",\n    \"email\": \"user@example.com\",\n    \"role\": \"owner\",\n    \"added_at\": 1711471533\n}\n"
     ProjectListResponse:
       type: object
       properties:
@@ -1169,200 +1079,30 @@ components:
       - object
       - data
       - has_more
-    Project:
+    ProjectModelPermissionsUpdateRequest:
       type: object
-      description: Represents an individual project.
       properties:
-        id:
-          type: string
-          description: The identifier, which can be referenced in API endpoints
-        object:
+        mode:
           type: string
           enum:
-          - organization.project
-          description: The object type, which is always `organization.project`
-          x-stainless-const: true
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The name of the project. This appears in reporting.
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) of when the project was created.
-        archived_at:
-          anyOf:
-          - type: integer
-            format: unixtime
-            description: The Unix timestamp (in seconds) of when the project was archived or `null`.
-          - type: 'null'
-        status:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: '`active` or `archived`'
-        external_key_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The external key associated with the project.
+          - allow_list
+          - deny_list
+          description: The model permissions mode to apply.
+        model_ids:
+          type: array
+          items:
+            type: string
+          description: The model IDs included in this permissions policy.
       required:
-      - id
-      - object
-      - created_at
-      x-oaiMeta:
-        name: The project object
-        example: "{\n    \"id\": \"proj_abc\",\n    \"object\": \"organization.project\",\n    \"name\": \"Project example\",\n    \"created_at\": 1711471533,\n    \"archived_at\": null,\n    \"status\": \"active\",\n    \"external_key_id\": null\n}\n"
-    ProjectServiceAccount:
-      type: object
-      description: Represents an individual service account in a project.
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.service_account
-          description: The object type, which is always `organization.project.service_account`
-          x-stainless-const: true
-        id:
-          type: string
-          description: The identifier, which can be referenced in API endpoints
-        name:
-          type: string
-          description: The name of the service account
-        role:
-          type: string
-          enum:
-          - owner
-          - member
-          description: '`owner` or `member`'
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) of when the service account was created
-      required:
-      - object
-      - id
-      - name
-      - role
-      - created_at
-      x-oaiMeta:
-        name: The project service account object
-        example: "{\n    \"object\": \"organization.project.service_account\",\n    \"id\": \"svc_acct_abc\",\n    \"name\": \"Service Account\",\n    \"role\": \"owner\",\n    \"created_at\": 1711471533\n}\n"
-    ProjectServiceAccountCreateRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the service account being created.
-      required:
-      - name
-    ProjectUpdateRequest:
-      type: object
-      properties:
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The updated name of the project, this name appears in reports.
-        external_key_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: External key ID to associate with the project.
-        geography:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: Geography for the project.
-    ProjectRateLimitUpdateRequest:
-      type: object
-      properties:
-        max_requests_per_1_minute:
-          type: integer
-          description: The maximum requests per minute.
-        max_tokens_per_1_minute:
-          type: integer
-          description: The maximum tokens per minute.
-        max_images_per_1_minute:
-          type: integer
-          description: The maximum images per minute. Only relevant for certain models.
-        max_audio_megabytes_per_1_minute:
-          type: integer
-          description: The maximum audio megabytes per minute. Only relevant for certain models.
-        max_requests_per_1_day:
-          type: integer
-          description: The maximum requests per day. Only relevant for certain models.
-        batch_1_day_max_input_tokens:
-          type: integer
-          description: The maximum batch input tokens per day. Only relevant for certain models.
-    ProjectUserUpdateRequest:
-      type: object
-      properties:
-        role:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: '`owner` or `member`'
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-      required:
-      - type
-      - message
-      - param
-      - code
-    ProjectServiceAccountCreateResponse:
+      - mode
+      - model_ids
+    ProjectServiceAccountDeleteResponse:
       type: object
       properties:
         object:
           type: string
           enum:
-          - organization.project.service_account
-          x-stainless-const: true
-        id:
-          type: string
-        name:
-          type: string
-        role:
-          type: string
-          enum:
-          - member
-          description: Service accounts can only have one role of type `member`
-          x-stainless-const: true
-        created_at:
-          type: integer
-          format: unixtime
-        api_key:
-          anyOf:
-          - $ref: '#/components/schemas/ProjectServiceAccountApiKey'
-          - type: 'null'
-      required:
-      - object
-      - id
-      - name
-      - role
-      - created_at
-      - api_key
-    ProjectUserDeleteResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.user.deleted
+          - organization.project.service_account.deleted
           x-stainless-const: true
         id:
           type: string
@@ -1372,6 +1112,21 @@ components:
       - object
       - id
       - deleted
+    PublicProjectResidency:
+      type: string
+      enum:
+      - GLOBAL
+      - US_STORAGE_PROCESSING
+      - EU_STORAGE_PROCESSING
+      - JP_STORAGE
+      - KR_STORAGE
+      - CA_STORAGE
+      - SG_STORAGE
+      - IN_STORAGE
+      - AU_STORAGE
+      - GB_STORAGE
+      - AE_STORAGE
+      - AE_STORAGE_PROCESSING
     ProjectServiceAccountListResponse:
       type: object
       properties:
@@ -1424,6 +1179,244 @@ components:
       - name
       - created_at
       - role
+    ProjectUserDeleteResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.user.deleted
+          x-stainless-const: true
+        id:
+          type: string
+        deleted:
+          type: boolean
+      required:
+      - object
+      - id
+      - deleted
+    ProjectServiceAccount:
+      type: object
+      description: Represents an individual service account in a project.
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.service_account
+          description: The object type, which is always `organization.project.service_account`
+          x-stainless-const: true
+        id:
+          type: string
+          description: The identifier, which can be referenced in API endpoints
+        name:
+          type: string
+          description: The name of the service account
+        role:
+          type: string
+          enum:
+          - owner
+          - member
+          - none
+          description: '`owner`, `member`, or `none`'
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) of when the service account was created
+      required:
+      - object
+      - id
+      - name
+      - role
+      - created_at
+      x-oaiMeta:
+        name: The project service account object
+        example: "{\n    \"object\": \"organization.project.service_account\",\n    \"id\": \"svc_acct_abc\",\n    \"name\": \"Service Account\",\n    \"role\": \"owner\",\n    \"created_at\": 1711471533\n}\n"
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    ProjectModelPermissions:
+      type: object
+      description: Represents the model allowlist or denylist policy for a project.
+      properties:
+        object:
+          type: string
+          enum:
+          - project.model_permissions
+          description: The object type, which is always `project.model_permissions`.
+          x-stainless-const: true
+        mode:
+          type: string
+          enum:
+          - allow_list
+          - deny_list
+          description: Whether the project uses an allowlist or a denylist.
+        model_ids:
+          type: array
+          items:
+            type: string
+          description: The model IDs included in the model permissions policy.
+      required:
+      - object
+      - mode
+      - model_ids
+      x-oaiMeta:
+        name: The project model permissions object
+        example: "{\n    \"object\": \"project.model_permissions\",\n    \"mode\": \"allow_list\",\n    \"model_ids\": [\n        \"gpt-6-astra\",\n        \"o3\"\n    ]\n}\n"
+    PermissionErrorResponse:
+      type: object
+      properties:
+        error:
+          description: Details about the permission error.
+          anyOf:
+          - $ref: '#/components/schemas/Error'
+          - type: string
+            description: An explanation of the missing API permissions.
+      required:
+      - error
+    Project:
+      type: object
+      description: Represents an individual project.
+      properties:
+        id:
+          type: string
+          description: The identifier, which can be referenced in API endpoints
+        object:
+          type: string
+          enum:
+          - organization.project
+          description: The object type, which is always `organization.project`
+          x-stainless-const: true
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The name of the project. This appears in reporting.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) of when the project was created.
+        archived_at:
+          anyOf:
+          - type: integer
+            format: unixtime
+            description: The Unix timestamp (in seconds) of when the project was archived or `null`.
+          - type: 'null'
+        status:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: '`active` or `archived`'
+        external_key_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The external key associated with the project.
+        residency:
+          $ref: '#/components/schemas/PublicProjectResidency'
+          description: The residency configuration for the project.
+      required:
+      - id
+      - object
+      - created_at
+      x-oaiMeta:
+        name: The project object
+        example: "{\n    \"id\": \"proj_abc\",\n    \"object\": \"organization.project\",\n    \"name\": \"Project example\",\n    \"created_at\": 1711471533,\n    \"archived_at\": null,\n    \"status\": \"active\",\n    \"external_key_id\": null\n}\n"
+    ProjectCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The friendly name of the project, this name appears in reports.
+        geography:
+          anyOf:
+          - type: string
+          - type: 'null'
+          deprecated: true
+          description: 'Create the project with the specified data residency region. Your organization must have access to Data residency functionality in order to use. See [data residency controls](https://developers.openai.com/api/docs/guides/your-data#data-residency-controls) to review the functionality and limitations of setting this field.
+
+            Deprecated: use `residency` instead. Do not provide both `geography` and `residency`.'
+        residency:
+          anyOf:
+          - $ref: '#/components/schemas/PublicProjectResidency'
+          - type: 'null'
+          description: Create the project with the specified residency configuration. Your organization must have access to the requested residency configuration in order to use it. See [data residency controls](https://developers.openai.com/api/docs/guides/your-data#data-residency-controls) to review the functionality and limitations of setting this field.
+        external_key_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: External key ID to associate with the project.
+      required:
+      - name
+    ProjectRateLimitUpdateRequest:
+      type: object
+      properties:
+        max_requests_per_1_minute:
+          type: integer
+          description: The maximum requests per minute.
+        max_tokens_per_1_minute:
+          type: integer
+          description: The maximum tokens per minute.
+        max_images_per_1_minute:
+          type: integer
+          description: The maximum images per minute. Only relevant for certain models.
+        max_audio_megabytes_per_1_minute:
+          type: integer
+          description: The maximum audio megabytes per minute. Only relevant for certain models.
+        max_requests_per_1_day:
+          type: integer
+          description: The maximum requests per day. Only relevant for certain models.
+        batch_1_day_max_input_tokens:
+          type: integer
+          description: The maximum batch input tokens per day. Only relevant for certain models.
+    ProjectModelPermissionsDeleteResponse:
+      type: object
+      description: Confirmation payload returned after deleting project model permissions.
+      properties:
+        object:
+          type: string
+          enum:
+          - project.model_permissions.deleted
+          description: The object type, which is always `project.model_permissions.deleted`.
+          x-stainless-const: true
+        deleted:
+          type: boolean
+          description: Whether the project model permissions were deleted.
+      required:
+      - object
+      - deleted
+      x-oaiMeta:
+        name: Project model permissions deletion confirmation
+        example: "{\n    \"object\": \"project.model_permissions.deleted\",\n    \"deleted\": true\n}\n"
+    ProjectApiKeyListResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectApiKey'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
     ProjectRateLimit:
       type: object
       description: Represents a project rate limit config.
@@ -1467,15 +1460,74 @@ components:
       x-oaiMeta:
         name: The project rate limit object
         example: "{\n    \"object\": \"project.rate_limit\",\n    \"id\": \"rl_ada\",\n    \"model\": \"ada\",\n    \"max_requests_per_1_minute\": 600,\n    \"max_tokens_per_1_minute\": 150000,\n    \"max_images_per_1_minute\": 10\n}\n"
-    ProjectUserListResponse:
+    ProjectApiKeyOwnerServiceAccount:
+      type: object
+      description: The service account that owns a project API key.
+      properties:
+        id:
+          type: string
+          description: The identifier, which can be referenced in API endpoints
+        name:
+          type: string
+          description: The name of the service account.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) of when the service account was created.
+        role:
+          type: string
+          description: The service account's project role.
+      required:
+      - id
+      - name
+      - created_at
+      - role
+    UpdateProjectServiceAccountBody:
+      type: object
+      description: Parameters for updating a project service account.
+      properties:
+        name:
+          type: string
+          description: The updated service account name.
+        role:
+          type: string
+          enum:
+          - member
+          - owner
+          description: The updated service account role.
+    ProjectUpdateRequest:
+      type: object
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The updated name of the project, this name appears in reports.
+        external_key_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: External key ID to associate with the project.
+        geography:
+          anyOf:
+          - type: string
+          - type: 'null'
+          deprecated: true
+          description: 'Geography for the project.
+
+            Deprecated: use `residency` when creating a project to configure data residency. This field is retained for backward compatibility.'
+    ProjectRateLimitListResponse:
       type: object
       properties:
         object:
           type: string
+          enum:
+          - list
+          x-stainless-const: true
         data:
           type: array
           items:
-            $ref: '#/components/schemas/ProjectUser'
+            $ref: '#/components/schemas/ProjectRateLimit'
         first_id:
           anyOf:
           - type: string
@@ -1490,59 +1542,44 @@ components:
       - object
       - data
       - has_more
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    ProjectApiKeyDeleteResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.api_key.deleted
-          x-stainless-const: true
-        id:
-          type: string
-        deleted:
-          type: boolean
-      required:
-      - object
-      - id
-      - deleted
-    ProjectCreateRequest:
+    ProjectServiceAccountCreateRequest:
       type: object
       properties:
         name:
           type: string
-          description: The friendly name of the project, this name appears in reports.
-        geography:
+          description: The name of the service account being created.
+        create_service_account_only:
           anyOf:
-          - type: string
+          - type: boolean
+            description: Create the service account without default roles or an API key.
           - type: 'null'
-          description: Create the project with the specified data residency region. Your organization must have access to Data residency functionality in order to use. See [data residency controls](/docs/guides/your-data#data-residency-controls) to review the functionality and limitations of setting this field.
-        external_key_id:
+        expires_in_seconds:
           anyOf:
-          - type: string
+          - type: integer
+            minimum: 1
+            maximum: 31536000
           - type: 'null'
-          description: External key ID to associate with the project.
+          description: Number of seconds until the initial API key expires. If omitted or null, the key does not expire unless the effective organization or project policy requires an expiration. When a policy sets a maximum lifetime, this value must be provided and must not exceed that limit. A non-null value cannot be used when `create_service_account_only` is true.
       required:
       - name
-    ProjectApiKeyListResponse:
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    ProjectUserListResponse:
       type: object
       properties:
         object:
           type: string
-          enum:
-          - list
-          x-stainless-const: true
         data:
           type: array
           items:
-            $ref: '#/components/schemas/ProjectApiKey'
+            $ref: '#/components/schemas/ProjectUser'
         first_id:
           anyOf:
           - type: string
@@ -1577,6 +1614,12 @@ components:
           type: integer
           format: unixtime
           description: The Unix timestamp (in seconds) of when the API key was created
+        expires_at:
+          anyOf:
+          - type: integer
+            format: unixtime
+          - type: 'null'
+          description: The Unix timestamp (in seconds) when the API key expires, or null if it does not expire.
         last_used_at:
           anyOf:
           - type: integer
@@ -1586,6 +1629,12 @@ components:
         id:
           type: string
           description: The identifier, which can be referenced in API endpoints
+        owner_project_access:
+          type: string
+          enum:
+          - active
+          - inactive
+          description: Whether the API key's owner currently has effective access to the project.
         owner:
           type: object
           properties:
@@ -1606,10 +1655,134 @@ components:
       - created_at
       - last_used_at
       - id
+      - owner_project_access
       - owner
       x-oaiMeta:
         name: The project API key object
-        example: "{\n    \"object\": \"organization.project.api_key\",\n    \"redacted_value\": \"sk-abc...def\",\n    \"name\": \"My API Key\",\n    \"created_at\": 1711471533,\n    \"last_used_at\": 1711471534,\n    \"id\": \"key_abc\",\n    \"owner\": {\n        \"type\": \"user\",\n        \"user\": {\n            \"id\": \"user_abc\",\n            \"name\": \"First Last\",\n            \"email\": \"user@example.com\",\n            \"role\": \"owner\",\n            \"created_at\": 1711471533\n        }\n    }\n}\n"
+        example: "{\n    \"object\": \"organization.project.api_key\",\n    \"redacted_value\": \"sk-abc...def\",\n    \"name\": \"My API Key\",\n    \"created_at\": 1711471533,\n    \"expires_at\": 1714063533,\n    \"last_used_at\": 1711471534,\n    \"id\": \"key_abc\",\n    \"owner_project_access\": \"active\",\n    \"owner\": {\n        \"type\": \"user\",\n        \"user\": {\n            \"id\": \"user_abc\",\n            \"name\": \"First Last\",\n            \"email\": \"user@example.com\",\n            \"role\": \"owner\",\n            \"created_at\": 1711471533\n        }\n    }\n}\n"
+    ProjectUser:
+      type: object
+      description: Represents an individual user in a project.
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.user
+          description: The object type, which is always `organization.project.user`
+          x-stainless-const: true
+        id:
+          type: string
+          description: The identifier, which can be referenced in API endpoints
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The name of the user
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The email address of the user
+        role:
+          type: string
+          description: '`owner` or `member`'
+        added_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) of when the project was added.
+      required:
+      - object
+      - id
+      - role
+      - added_at
+      x-oaiMeta:
+        name: The project user object
+        example: "{\n    \"object\": \"organization.project.user\",\n    \"id\": \"user_abc\",\n    \"name\": \"First Last\",\n    \"email\": \"user@example.com\",\n    \"role\": \"owner\",\n    \"added_at\": 1711471533\n}\n"
+    ProjectUserUpdateRequest:
+      type: object
+      properties:
+        role:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: '`owner` or `member`'
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
+    ProjectServiceAccountCreateResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.service_account
+          x-stainless-const: true
+        id:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+          enum:
+          - member
+          - none
+          description: 'Service accounts created with default project membership have role `member`. Accounts created with `create_service_account_only` have role `none`.
+
+            '
+        created_at:
+          type: integer
+          format: unixtime
+        api_key:
+          anyOf:
+          - $ref: '#/components/schemas/ProjectServiceAccountApiKey'
+          - type: 'null'
+      required:
+      - object
+      - id
+      - name
+      - role
+      - created_at
+      - api_key
+    ProjectServiceAccountApiKey:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.service_account.api_key
+          description: The object type, which is always `organization.project.service_account.api_key`
+          x-stainless-const: true
+        value:
+          type: string
+        name:
+          type: string
+        created_at:
+          type: integer
+          format: unixtime
+        expires_at:
+          anyOf:
+          - type: integer
+            format: unixtime
+          - type: 'null'
+          description: The Unix timestamp (in seconds) when the API key expires, or null if it does not expire.
+        id:
+          type: string
+      required:
+      - object
+      - value
+      - name
+      - created_at
+      - id
     ProjectUserCreateRequest:
       type: object
       properties:
@@ -1628,32 +1801,14 @@ components:
           description: '`owner` or `member`'
       required:
       - role
-    ProjectRateLimitListResponse:
-      type: object
+    _MisalignmentSteer:
       properties:
-        object:
+        message:
           type: string
-          enum:
-          - list
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectRateLimit'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        has_more:
-          type: boolean
+          description: The public continuation instruction.
+      type: object
       required:
-      - object
-      - data
-      - has_more
+      - message
   securitySchemes:
     ApiKeyAuth:
       type: http
@@ -1676,6 +1831,8 @@ x-oaiMeta:
     beta: true
   - id: containers
     title: Containers
+  - id: live
+    title: Live (alpha)
   - id: realtime
     title: Realtime
   - id: chat
@@ -1690,7 +1847,7 @@ x-oaiMeta:
   groups:
   - id: responses-streaming
     title: Streaming events
-    description: 'When you [create a Response](/docs/api-reference/responses/create) with
+    description: 'When you [create a Response](https://developers.openai.com/api/reference/resources/responses/methods/create) with
 
       `stream` set to `true`, the server will emit server-sent events to the
 
@@ -1699,7 +1856,22 @@ x-oaiMeta:
       are emitted by the server.
 
 
-      [Learn more about streaming responses](/docs/guides/streaming-responses?api-mode=responses).
+      When processing a `compaction_trigger`, `response.compaction.compacting`
+
+      reports newly sampled summary output at most once every 30 seconds. It
+
+      carries no summary content and does not modify the compaction output item.
+
+      The existing `response.output_item.added` and `response.output_item.done`
+
+      events mark that item''s lifecycle; `response.output_item.done` carries its
+
+      final encrypted content. A short compaction may finish without emitting a
+
+      progress event.
+
+
+      [Learn more about streaming responses](https://developers.openai.com/api/docs/guides/streaming-responses).
 
       '
     navigationGroup: responses
@@ -1724,6 +1896,9 @@ x-oaiMeta:
       path: <auto>
     - type: object
       key: ResponseOutputItemDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseCompactionCompactingEvent
       path: <auto>
     - type: object
       key: ResponseContentPartAddedEvent
@@ -1851,6 +2026,230 @@ x-oaiMeta:
     - type: object
       key: ResponseErrorEvent
       path: <auto>
+  - id: responses-websocket-client-events
+    title: Client events
+    description: 'Events sent by the client over a Responses API WebSocket connection.
+
+      '
+    navigationGroup: responses
+    sections:
+    - type: object
+      key: ResponsesClientEventResponseCreate
+      path: <auto>
+    - type: object
+      key: ResponseSteerEvent
+      path: <auto>
+  - id: responses-websocket-server-events
+    title: Server events (WebSocket only)
+    description: 'Events emitted only over a Responses API WebSocket connection.
+
+      '
+    navigationGroup: responses
+    sections:
+    - type: object
+      key: ResponseSteerAcceptedEvent
+      path: <auto>
+    - type: object
+      key: ResponseSteerPendingEvent
+      path: <auto>
+    - type: object
+      key: ResponseSteerFailedEvent
+      path: <auto>
+  - id: responses-websocket-shared-events
+    title: Server events
+    description: 'These events use the same payloads over WebSocket and
+
+      [HTTP streaming](https://developers.openai.com/api/reference/resources/responses/streaming-events).
+
+      Compaction progress follows the same cadence and output-item lifecycle
+
+      described in HTTP streaming.
+
+      '
+    navigationGroup: responses
+    sections:
+    - type: object
+      key: ResponseCreatedEvent
+      path: <auto>
+    - type: object
+      key: ResponseInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseIncompleteEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputItemAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputItemDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseCompactionCompactingEvent
+      path: <auto>
+    - type: object
+      key: ResponseContentPartAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseContentPartDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseTextDeltaEvent
+      path: response/output_text/delta
+    - type: object
+      key: ResponseTextDoneEvent
+      path: response/output_text/done
+    - type: object
+      key: ResponseRefusalDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseRefusalDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseFunctionCallArgumentsDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseFunctionCallArgumentsDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallSearchingEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallSearchingEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryPartAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryPartDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryTextDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryTextDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningTextDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningTextDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallGeneratingEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallPartialImageEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallArgumentsDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallArgumentsDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallInterpretingEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCodeDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCodeDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputTextAnnotationAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseQueuedEvent
+      path: <auto>
+    - type: object
+      key: ResponseCustomToolCallInputDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseCustomToolCallInputDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseErrorEvent
+      path: <auto>
+  - id: safety-cases
+    title: Safety Cases
+    description: 'Retrieve details about a safety warning or deactivation using the case ID
+
+      from a `safety.warning_issued` or `safety.deactivation_issued` webhook event.
+
+      Cases belong to an organization and require an API key with `api.safety.read`.
+
+      '
+    navigationGroup: endpoints
+    sections:
+    - type: endpoint
+      key: Getsafetycase
+      path: retrieve
+    - type: object
+      key: SafetyCaseResource
+      path: object
+  - id: safety-alerts
+    title: Safety Alerts
+    description: 'Retrieve approved safety alerts with an API key. Project keys require
+
+      `api.safety.alerts.read` and can read alerts from their project.
+
+      '
+    navigationGroup: endpoints
+    sections:
+    - type: endpoint
+      key: Getprojectsafetyalert
+      path: retrieve
+    - type: object
+      key: SafetyAlertResource
+      path: object
   - id: webhook-events
     title: Webhook Events
     description: 'Webhooks are HTTP requests sent by OpenAI to a URL you specify when certain
@@ -1858,7 +2257,7 @@ x-oaiMeta:
       events happen during the course of API usage.
 
 
-      [Learn more about webhooks](/docs/guides/webhooks).
+      [Learn more about webhooks](https://developers.openai.com/api/docs/guides/webhooks).
 
       '
     navigationGroup: webhooks
@@ -1908,11 +2307,29 @@ x-oaiMeta:
     - type: object
       key: WebhookRealtimeCallIncoming
       path: <auto>
+    - type: object
+      key: WebhookLiveCallIncoming
+      path: <auto>
+    - type: object
+      key: WebhookLiveTransportIncoming
+      path: <auto>
+    - type: object
+      key: WebhookSafetyWarningIssued
+      path: <auto>
+    - type: object
+      key: WebhookSafetyDeactivationIssued
+      path: <auto>
+    - type: object
+      key: WebhookSafetyAlertCreated
+      path: <auto>
+    - type: object
+      key: WebhookSafetyOrgAlertCreated
+      path: <auto>
   - id: images-streaming
     title: Image Streaming
     description: 'Stream image generation and editing in real time with server-sent events.
 
-      [Learn more about image streaming](/docs/guides/image-generation).
+      [Learn more about image streaming](https://developers.openai.com/api/docs/guides/image-generation).
 
       '
     navigationGroup: endpoints
@@ -2158,7 +2575,7 @@ x-oaiMeta:
 
       returned from the model using server-sent events.
 
-      [Learn more](/docs/guides/streaming-responses?api-mode=chat).
+      [Learn more](https://developers.openai.com/api/docs/guides/streaming-responses).
 
       '
     navigationGroup: chat
@@ -2171,15 +2588,15 @@ x-oaiMeta:
     beta: true
     description: 'Stream the result of executing a Run or resuming a Run after submitting tool outputs.
 
-      You can stream events from the [Create Thread and Run](/docs/api-reference/runs/createThreadAndRun),
+      You can stream events from the [Create Thread and Run](https://developers.openai.com/api/docs/assistants/migration),
 
-      [Create Run](/docs/api-reference/runs/createRun), and [Submit Tool Outputs](/docs/api-reference/runs/submitToolOutputs)
+      [Create Run](https://developers.openai.com/api/docs/assistants/migration), and [Submit Tool Outputs](https://developers.openai.com/api/docs/assistants/migration)
 
       endpoints by passing `"stream": true`. The response will be a [Server-Sent events](https://html.spec.whatwg.org/multipage/server-sent-events.html#server-sent-events) stream.
 
       Our Node and Python SDKs provide helpful utilities to make streaming easy. Reference the
 
-      [Assistants API quickstart](/docs/assistants/overview) to learn more.
+      [Assistants API quickstart](https://developers.openai.com/api/docs/assistants/migration) to learn more.
 
       '
     navigationGroup: assistants
@@ -2359,4 +2776,98 @@ x-oaiMeta:
       path: <auto>
     - type: object
       key: RealtimeBetaServerEventRateLimitsUpdated
+      path: <auto>
+  - id: live-client-events
+    title: Client events
+    description: Initialize a primary WebSocket with session.start and wait for session.started before sending other events. WebRTC creation starts the session for you. Start with the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) to design frontend instructions and delegation policy; see [backend prompting](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt) for tools and business rules.
+    navigationGroup: live
+    sections:
+    - type: object
+      key: LiveSessionStartEvent
+      path: <auto>
+    - type: object
+      key: LiveForkSessionStartEvent
+      path: <auto>
+    - type: object
+      key: LiveSessionUpdateParam
+      path: <auto>
+    - type: object
+      key: LiveInputAudioAppendEvent
+      path: <auto>
+    - type: object
+      key: LiveInputAudioMuteParam
+      path: <auto>
+    - type: object
+      key: LiveInputAudioUnmuteParam
+      path: <auto>
+    - type: object
+      key: LiveInstructionsAppendParam
+      path: <auto>
+    - type: object
+      key: LiveThinkingAppendParam
+      path: <auto>
+    - type: object
+      key: LiveCommentaryAppendParam
+      path: <auto>
+    - type: object
+      key: LiveResponseItemCreateParam
+      path: <auto>
+    - type: object
+      key: LiveResponseCreateParam
+      path: <auto>
+    - type: object
+      key: LiveSessionCloseParam
+      path: <auto>
+  - id: live-server-events
+    title: Server events
+    description: Live server events. Responses delegation lifecycle events arrive inside response.event, not as top-level response events. Start with the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) to design frontend instructions and delegation policy; see [backend prompting](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt) for tools and business rules.
+    navigationGroup: live
+    sections:
+    - type: object
+      key: LiveSessionStarted
+      path: <auto>
+    - type: object
+      key: LiveSessionUpdated
+      path: <auto>
+    - type: object
+      key: LiveInputAudioMuted
+      path: <auto>
+    - type: object
+      key: LiveInputAudioUnmuted
+      path: <auto>
+    - type: object
+      key: LiveInstructionsAppended
+      path: <auto>
+    - type: object
+      key: LiveThinkingAppended
+      path: <auto>
+    - type: object
+      key: LiveCommentaryAppended
+      path: <auto>
+    - type: object
+      key: LiveOutputAudioDelta
+      path: <auto>
+    - type: object
+      key: LiveInputTranscriptDelta
+      path: <auto>
+    - type: object
+      key: LiveOutputTranscriptDelta
+      path: <auto>
+    - type: object
+      key: LiveDelegationCreated
+      path: <auto>
+    - type: object
+      key: LiveResponseEvent
+      path: <auto>
+    - type: object
+      key: LiveSessionUsageUpdated
+      path: <auto>
+    - type: object
+      key: LiveSessionClosed
+      path: <auto>
+    - type: object
+      key: LiveErrorEvent
+      path: <auto>
+    - type: object
+      key: LiveInfoEvent
       path: <auto>

@@ -1,11 +1,16 @@
-generated: '2026-08-27'
+generated: '2026-09-23'
 method: probed
 source: live DNS/TLS/HTTP probes of apis.yml + OpenAPI hosts
 hosts:
+- host: openai.com
+  https: true
+  tls_version: TLSv1.3
+  cert_expires: Dec 15 05:59:47 2026 GMT
+  hsts: null
 - host: platform.openai.com
   https: true
   tls_version: TLSv1.3
-  cert_expires: Oct  6 21:51:17 2026 GMT
+  cert_expires: Dec  4 22:31:50 2026 GMT
   hsts: true
   hsts_max_age: 31536000
 - host: developers.openai.com
@@ -14,21 +19,16 @@ hosts:
   cert_expires: Nov 13 16:25:38 2026 GMT
   hsts: true
   hsts_max_age: 63072000
-- host: api.openai.com
-  https: true
-  tls_version: TLSv1.3
-  cert_expires: Oct  6 03:04:17 2026 GMT
-  hsts: null
 domains:
 - domain: openai.com
   dnssec: false
   caa:
-  - 0 issuewild "digicert.com; cansignhttpexchanges=yes"
-  - 0 issuewild "amazon.com"
-  - 0 issuewild "letsencrypt.org"
   - 0 issue "amazon.com"
   - 0 issue "digicert.com; cansignhttpexchanges=yes"
   - 0 issue "godaddy.com"
+  - 0 issue "letsencrypt.org"
+  - 0 issue "pki.goog; cansignhttpexchanges=yes"
+  - 0 issue "sectigo.com"
   spf: true
   dmarc: true
   dmarc_policy: reject

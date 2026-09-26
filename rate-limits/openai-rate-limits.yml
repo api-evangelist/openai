@@ -1,3 +1,4 @@
+name: OpenAI API Rate Limits
 specification: API Commons Rate Limits
 specificationVersion: '0.1'
 schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/RateLimits
@@ -5,11 +6,12 @@ provider: OpenAI
 providerId: openai
 created: '2026-05-04'
 modified: '2026-08-27'
-generated: '2026-08-27'
+generated: '2026-09-23'
 method: searched
-source: https://developers.openai.com/api/docs/guides/rate-limits
+source: https://developers.openai.com/api/docs/guides/rate-limits.md
 sources:
   - https://developers.openai.com/api/docs/guides/rate-limits
+  - https://developers.openai.com/api/docs/guides/rate-limits.md
   - https://platform.openai.com/docs/guides/rate-limits
   - https://developers.openai.com/api/docs/guides/error-codes
 supersedes: >-
@@ -64,6 +66,7 @@ limits:
     limit: 100
     timeFrame: month
     currency: USD
+    limit_text: 'free | user must be in an [allowed geography](https://developers.openai.com/api/docs/supported-countries) | $100 / month'
   - name: Tier 1 monthly usage limit
     scope: organization
     tier: Tier 1
@@ -72,6 +75,7 @@ limits:
     limit: 100
     timeFrame: month
     currency: USD
+    limit_text: 'tier 1 | $5 paid | $100 / month'
   - name: Tier 2 monthly usage limit
     scope: organization
     tier: Tier 2
@@ -80,6 +84,7 @@ limits:
     limit: 500
     timeFrame: month
     currency: USD
+    limit_text: 'tier 2 | $50 paid | $500 / month'
   - name: Tier 3 monthly usage limit
     scope: organization
     tier: Tier 3
@@ -88,6 +93,7 @@ limits:
     limit: 1000
     timeFrame: month
     currency: USD
+    limit_text: 'tier 3 | $100 paid | $1,000 / month'
   - name: Tier 4 monthly usage limit
     scope: organization
     tier: Tier 4
@@ -96,6 +102,7 @@ limits:
     limit: 5000
     timeFrame: month
     currency: USD
+    limit_text: 'tier 4 | $250 paid | $5,000 / month'
   - name: Tier 5 monthly usage limit
     scope: organization
     tier: Tier 5
@@ -104,6 +111,8 @@ limits:
     limit: 200000
     timeFrame: month
     currency: USD
+    limit_text: 'tier 5 | $1,000 paid | $200,000 / month'
+connection_limits:
   - name: Realtime WebSocket connection duration
     scope: connection
     metric: minutes_per_connection
@@ -112,7 +121,10 @@ limits:
     source: >-
       openapi/_original/openai-openapi-master.yml — the Realtime error code
       websocket_connection_limit_reached documents a 60-minute connection ceiling.
-    note: A hard cap rather than a throttle; reconnect to continue.
+    note: >-
+      A hard cap rather than a throttle; reconnect to continue. Moved out of
+      `limits:` because its evidence lives in the OpenAPI spec, not the
+      rate-limits guide named as this file's `source`.
 tiers:
   - {name: Free, qualification: User in an allowed geography, monthly_usage_limit_usd: 100}
   - {name: Tier 1, qualification: $5 paid, monthly_usage_limit_usd: 100}

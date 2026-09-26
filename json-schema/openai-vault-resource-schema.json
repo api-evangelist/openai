@@ -1,0 +1,61 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/openai/main/json-schema/openai-vault-resource-schema.json",
+  "title": "VaultResource",
+  "description": "A collection of credentials for MCP servers and OpenAI-hosted environments.",
+  "x-generated": "2026-09-23",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/openai-vaults-api-openapi.yml#/components/schemas/VaultResource",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 0,
+      "description": "The ID of the vault."
+    },
+    "object": {
+      "type": "string",
+      "enum": [
+        "vault"
+      ],
+      "default": "vault",
+      "x-stainless-const": true,
+      "description": "The object type. Always `vault`."
+    },
+    "name": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 0,
+      "description": "The human-readable name of the vault, if set."
+    },
+    "metadata": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 0
+      },
+      "propertyNames": {
+        "type": "string",
+        "minLength": 0
+      },
+      "minProperties": 0,
+      "description": "Key-value pairs associated with the vault, such as an application or team identifier."
+    },
+    "created_at": {
+      "type": "integer",
+      "format": "int64",
+      "description": "The Unix timestamp, in seconds, when the vault was created."
+    }
+  },
+  "required": [
+    "id",
+    "object",
+    "name",
+    "metadata",
+    "created_at"
+  ],
+  "additionalProperties": false
+}

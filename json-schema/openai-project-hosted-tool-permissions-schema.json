@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/openai/main/json-schema/openai-project-hosted-tool-permissions-schema.json",
+  "title": "ProjectHostedToolPermissions",
+  "description": "Represents hosted tool permissions for a project.",
+  "x-generated": "2026-09-23",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/openai-hosted-tools-api-openapi.yml#/components/schemas/ProjectHostedToolPermissions",
+  "type": "object",
+  "properties": {
+    "file_search": {
+      "$ref": "#/$defs/HostedToolPermission"
+    },
+    "web_search": {
+      "$ref": "#/$defs/HostedToolPermission"
+    },
+    "image_generation": {
+      "$ref": "#/$defs/HostedToolPermission"
+    },
+    "mcp": {
+      "$ref": "#/$defs/HostedToolPermission"
+    },
+    "code_interpreter": {
+      "$ref": "#/$defs/HostedToolPermission"
+    }
+  },
+  "required": [
+    "file_search",
+    "web_search",
+    "image_generation",
+    "mcp",
+    "code_interpreter"
+  ],
+  "x-oaiMeta": {
+    "name": "The project hosted tool permissions object"
+  },
+  "$defs": {
+    "HostedToolPermission": {
+      "type": "object",
+      "description": "Permission state for a single hosted tool on a project.",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether the hosted tool is enabled for the project."
+        }
+      },
+      "required": [
+        "enabled"
+      ]
+    }
+  }
+}

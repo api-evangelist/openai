@@ -9,7 +9,7 @@ info:
     url: https://help.openai.com/
   license:
     name: MIT
-    url: https://github.com/openai/openai-openapi/blob/master/LICENSE
+    identifier: MIT
 servers:
 - url: https://api.openai.com/v1
 security:
@@ -178,9 +178,52 @@ webhooks:
       - OpenAI API
       summary: Create fine tuning job succeeded
       x-summary-source: derived
+  live_call_incoming:
+    post:
+      deprecated: true
+      description: 'Deprecated: use `live.transport.incoming`. Retained only for existing subscriptions.
+
+        Sent when an incoming API SIP session is available for Live acceptance.'
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookLiveCallIncoming'
+      responses:
+        '200':
+          description: 'Return a 200 status code to acknowledge receipt of the event. Non-200
+
+            status codes will be retried.
+
+            '
+      tags:
+      - OpenAI API
+      summary: Create live call incoming
+      x-summary-source: derived
+  live_transport_incoming:
+    post:
+      description: Sent when an incoming API SIP session is available for Live acceptance.
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookLiveTransportIncoming'
+      responses:
+        '200':
+          description: 'Return a 200 status code to acknowledge receipt of the event. Non-200
+
+            status codes will be retried.
+
+            '
+      tags:
+      - OpenAI API
+      summary: Create live transport incoming
+      x-summary-source: derived
   realtime_call_incoming:
     post:
-      description: Sent when Realtime API Receives a incoming SIP call.
+      description: Sent when an incoming API SIP session is available for Realtime acceptance.
       requestBody:
         description: The event payload sent by the API.
         content:
@@ -262,176 +305,127 @@ webhooks:
       - OpenAI API
       summary: Create response incomplete
       x-summary-source: derived
+  safety_alert_created:
+    post:
+      description: 'Sent when an approved safety alert is available for an API project.
+
+        Retrieve the alert with a project API key granted `api.safety.alerts.read`.'
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookSafetyAlertCreated'
+      responses:
+        '200':
+          description: Return any 2xx status code to acknowledge receipt. A 410 Gone response also stops retries; other non-2xx responses are retried.
+      tags:
+      - OpenAI API
+      summary: Create safety alert created
+      x-summary-source: derived
+  safety_deactivation_issued:
+    post:
+      description: 'Sent when a deactivation is issued for a safety identifier in your organization.
+
+        Retrieve the case details with `GET /v1/safety/cases/{id}` using `data.id`.'
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookSafetyDeactivationIssued'
+      responses:
+        '200':
+          description: Return any 2xx status code to acknowledge receipt. A 410 Gone response also stops retries; other non-2xx responses are retried.
+      tags:
+      - OpenAI API
+      summary: Create safety deactivation issued
+      x-summary-source: derived
+  safety_org_alert_created:
+    post:
+      description: 'Sent when an approved safety alert is available for an enterprise workspace.
+
+        Retrieve the alert from `https://api.chatgpt.com/v1/safety/alerts/{id}` with
+
+        an administrator API key for the workspace''s backing organization granted
+
+        `chatgpt.enterprise.safety_alerts.read`.'
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookSafetyOrgAlertCreated'
+      responses:
+        '200':
+          description: Return any 2xx status code to acknowledge receipt. A 410 Gone response also stops retries; other non-2xx responses are retried.
+      tags:
+      - OpenAI API
+      summary: Create safety org alert created
+      x-summary-source: derived
+  safety_warning_issued:
+    post:
+      description: 'Sent when a warning is issued for a safety identifier in your organization.
+
+        Retrieve the case details with `GET /v1/safety/cases/{id}` using `data.id`.'
+      requestBody:
+        description: The event payload sent by the API.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WebhookSafetyWarningIssued'
+      responses:
+        '200':
+          description: Return any 2xx status code to acknowledge receipt. A 410 Gone response also stops retries; other non-2xx responses are retried.
+      tags:
+      - OpenAI API
+      summary: Create safety warning issued
+      x-summary-source: derived
 components:
   schemas:
-    WebhookResponseFailed:
+    WebhookSafetyDeactivationIssued:
       type: object
-      title: response.failed
-      description: 'Sent when a background response has failed.
-
-        '
+      title: safety.deactivation_issued
+      description: Sent when a deactivation is issued for a safety identifier in your organization.
       required:
-      - created_at
       - id
-      - data
+      - object
+      - created_at
       - type
+      - data
       properties:
+        id:
+          type: string
+          description: The unique ID of the webhook event.
+        object:
+          type: string
+          enum:
+          - event
+          x-stainless-const: true
+          description: Always `event`.
         created_at:
           type: integer
           format: unixtime
-          description: 'The Unix timestamp (in seconds) of when the model response failed.
-
-            '
-        id:
+          description: The Unix timestamp in seconds when the event was created.
+        type:
           type: string
-          description: 'The unique ID of the event.
-
-            '
+          enum:
+          - safety.deactivation_issued
+          x-stainless-const: true
+          description: Always `safety.deactivation_issued`.
         data:
           type: object
-          description: 'Event data payload.
-
-            '
+          additionalProperties: false
           required:
           - id
           properties:
             id:
               type: string
-              description: 'The unique ID of the model response.
-
-                '
-        object:
-          type: string
-          description: 'The object of the event. Always `event`.
-
-            '
-          enum:
-          - event
-          x-stainless-const: true
-        type:
-          type: string
-          description: 'The type of the event. Always `response.failed`.
-
-            '
-          enum:
-          - response.failed
-          x-stainless-const: true
+              description: The safety case ID to pass to `GET /v1/safety/cases/{id}`.
       x-oaiMeta:
-        name: response.failed
+        name: safety.deactivation_issued
         group: webhook-events
-        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"response.failed\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"resp_abc123\"\n  }\n}\n"
-    WebhookBatchCompleted:
-      type: object
-      title: batch.completed
-      description: 'Sent when a batch API request has been completed.
-
-        '
-      required:
-      - created_at
-      - id
-      - data
-      - type
-      properties:
-        created_at:
-          type: integer
-          format: unixtime
-          description: 'The Unix timestamp (in seconds) of when the batch API request was completed.
-
-            '
-        id:
-          type: string
-          description: 'The unique ID of the event.
-
-            '
-        data:
-          type: object
-          description: 'Event data payload.
-
-            '
-          required:
-          - id
-          properties:
-            id:
-              type: string
-              description: 'The unique ID of the batch API request.
-
-                '
-        object:
-          type: string
-          description: 'The object of the event. Always `event`.
-
-            '
-          enum:
-          - event
-          x-stainless-const: true
-        type:
-          type: string
-          description: 'The type of the event. Always `batch.completed`.
-
-            '
-          enum:
-          - batch.completed
-          x-stainless-const: true
-      x-oaiMeta:
-        name: batch.completed
-        group: webhook-events
-        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"batch.completed\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"batch_abc123\"\n  }\n}\n"
-    WebhookResponseCancelled:
-      type: object
-      title: response.cancelled
-      description: 'Sent when a background response has been cancelled.
-
-        '
-      required:
-      - created_at
-      - id
-      - data
-      - type
-      properties:
-        created_at:
-          type: integer
-          format: unixtime
-          description: 'The Unix timestamp (in seconds) of when the model response was cancelled.
-
-            '
-        id:
-          type: string
-          description: 'The unique ID of the event.
-
-            '
-        data:
-          type: object
-          description: 'Event data payload.
-
-            '
-          required:
-          - id
-          properties:
-            id:
-              type: string
-              description: 'The unique ID of the model response.
-
-                '
-        object:
-          type: string
-          description: 'The object of the event. Always `event`.
-
-            '
-          enum:
-          - event
-          x-stainless-const: true
-        type:
-          type: string
-          description: 'The type of the event. Always `response.cancelled`.
-
-            '
-          enum:
-          - response.cancelled
-          x-stainless-const: true
-      x-oaiMeta:
-        name: response.cancelled
-        group: webhook-events
-        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"response.cancelled\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"resp_abc123\"\n  }\n}\n"
+        example: "{\n  \"id\": \"evt_123\",\n  \"object\": \"event\",\n  \"created_at\": 1787659200,\n  \"type\": \"safety.deactivation_issued\",\n  \"data\": {\"id\": \"C-abc123\"}\n}\n"
     WebhookFineTuningJobCancelled:
       type: object
       title: fine_tuning.job.cancelled
@@ -488,10 +482,10 @@ components:
         name: fine_tuning.job.cancelled
         group: webhook-events
         example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"fine_tuning.job.cancelled\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"ftjob_abc123\"\n  }\n} \n"
-    WebhookRealtimeCallIncoming:
+    WebhookResponseCancelled:
       type: object
-      title: realtime.call.incoming
-      description: 'Sent when Realtime API Receives a incoming SIP call.
+      title: response.cancelled
+      description: 'Sent when a background response has been cancelled.
 
         '
       required:
@@ -503,7 +497,7 @@ components:
         created_at:
           type: integer
           format: unixtime
-          description: 'The Unix timestamp (in seconds) of when the model response was completed.
+          description: 'The Unix timestamp (in seconds) of when the model response was cancelled.
 
             '
         id:
@@ -517,17 +511,106 @@ components:
 
             '
           required:
-          - call_id
-          - sip_headers
+          - id
           properties:
-            call_id:
+            id:
               type: string
-              description: 'The unique ID of this call.
+              description: 'The unique ID of the model response.
 
                 '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `response.cancelled`.
+
+            '
+          enum:
+          - response.cancelled
+          x-stainless-const: true
+      x-oaiMeta:
+        name: response.cancelled
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"response.cancelled\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"resp_abc123\"\n  }\n}\n"
+    WebhookLiveCallIncoming:
+      type: object
+      title: live.call.incoming
+      deprecated: true
+      description: 'Deprecated: use `live.transport.incoming`. Retained for existing subscriptions
+
+        during migration; new subscriptions to this event are not allowed.
+
+        Sent when an incoming API SIP session is available for Live acceptance. The
+
+        same pending session can also emit `realtime.call.incoming`; the first
+
+        successful Realtime or Live accept endpoint selects the runtime surface.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the event was created.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - session_id
+          - sip_headers
+          properties:
+            session_id:
+              type: string
+              description: 'The `live_...` ID of the pending SIP session. Pass this value unchanged
+
+                to Live call controls and sideband connections. The corresponding
+
+                `realtime.call.incoming` event uses a separate `rtc_...` call ID.
+
+                '
+            sip_media_security:
+              description: 'Media protection selected on the SIP leg during SDP negotiation. `srtp`
+
+                indicates SRTP; `rtp` indicates unencrypted RTP. Omitted when unknown.
+
+                This does not describe SIP signaling security or confirm that media has
+
+                flowed. Clients should handle unrecognized values as unknown.
+
+                '
+              anyOf:
+              - type: string
+                enum:
+                - rtp
+                - srtp
+              - type: string
             sip_headers:
               type: array
-              description: 'Headers from the SIP Invite.
+              description: 'Headers from the SIP INVITE, excluding SIP authorization headers.
+
+                Retained names, values, repeated entries, and order are preserved.
+
+                Treat these values as untrusted call metadata.
 
                 '
               items:
@@ -559,16 +642,16 @@ components:
           x-stainless-const: true
         type:
           type: string
-          description: 'The type of the event. Always `realtime.call.incoming`.
+          description: 'The type of the event. Always `live.call.incoming`.
 
             '
           enum:
-          - realtime.call.incoming
+          - live.call.incoming
           x-stainless-const: true
       x-oaiMeta:
-        name: realtime.call.incoming
+        name: live.call.incoming
         group: webhook-events
-        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"realtime.call.incoming\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"call_id\": \"rtc_479a275623b54bdb9b6fbae2f7cbd408\",\n    \"sip_headers\": [\n      {\"name\": \"Max-Forwards\", \"value\": \"63\"},\n      {\"name\": \"CSeq\", \"value\": \"851287 INVITE\"},\n      {\"name\": \"Content-Type\", \"value\": \"application/sdp\"},\n    ]\n  }\n}\n"
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"live.call.incoming\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"session_id\": \"live_u0_479a275623b54bdb9b6fbae2f7cbd408\",\n    \"sip_media_security\": \"srtp\",\n    \"sip_headers\": [\n      {\"name\": \"From\", \"value\": \"<sip:alice@example.com>;tag=abc123\"},\n      {\"name\": \"To\", \"value\": \"<sip:recipient@example.com>\"},\n      {\"name\": \"Call-ID\", \"value\": \"call-123@example.com\"}\n    ]\n  }\n}\n"
     WebhookEvalRunCanceled:
       type: object
       title: eval.run.canceled
@@ -625,230 +708,6 @@ components:
         name: eval.run.canceled
         group: webhook-events
         example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"eval.run.canceled\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"evalrun_abc123\"\n  }\n} \n"
-    WebhookResponseIncomplete:
-      type: object
-      title: response.incomplete
-      description: 'Sent when a background response has been interrupted.
-
-        '
-      required:
-      - created_at
-      - id
-      - data
-      - type
-      properties:
-        created_at:
-          type: integer
-          format: unixtime
-          description: 'The Unix timestamp (in seconds) of when the model response was interrupted.
-
-            '
-        id:
-          type: string
-          description: 'The unique ID of the event.
-
-            '
-        data:
-          type: object
-          description: 'Event data payload.
-
-            '
-          required:
-          - id
-          properties:
-            id:
-              type: string
-              description: 'The unique ID of the model response.
-
-                '
-        object:
-          type: string
-          description: 'The object of the event. Always `event`.
-
-            '
-          enum:
-          - event
-          x-stainless-const: true
-        type:
-          type: string
-          description: 'The type of the event. Always `response.incomplete`.
-
-            '
-          enum:
-          - response.incomplete
-          x-stainless-const: true
-      x-oaiMeta:
-        name: response.incomplete
-        group: webhook-events
-        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"response.incomplete\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"resp_abc123\"\n  }\n}\n"
-    WebhookResponseCompleted:
-      type: object
-      title: response.completed
-      description: 'Sent when a background response has been completed.
-
-        '
-      required:
-      - created_at
-      - id
-      - data
-      - type
-      properties:
-        created_at:
-          type: integer
-          format: unixtime
-          description: 'The Unix timestamp (in seconds) of when the model response was completed.
-
-            '
-        id:
-          type: string
-          description: 'The unique ID of the event.
-
-            '
-        data:
-          type: object
-          description: 'Event data payload.
-
-            '
-          required:
-          - id
-          properties:
-            id:
-              type: string
-              description: 'The unique ID of the model response.
-
-                '
-        object:
-          type: string
-          description: 'The object of the event. Always `event`.
-
-            '
-          enum:
-          - event
-          x-stainless-const: true
-        type:
-          type: string
-          description: 'The type of the event. Always `response.completed`.
-
-            '
-          enum:
-          - response.completed
-          x-stainless-const: true
-      x-oaiMeta:
-        name: response.completed
-        group: webhook-events
-        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"response.completed\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"resp_abc123\"\n  }\n}\n"
-    WebhookEvalRunFailed:
-      type: object
-      title: eval.run.failed
-      description: 'Sent when an eval run has failed.
-
-        '
-      required:
-      - created_at
-      - id
-      - data
-      - type
-      properties:
-        created_at:
-          type: integer
-          format: unixtime
-          description: 'The Unix timestamp (in seconds) of when the eval run failed.
-
-            '
-        id:
-          type: string
-          description: 'The unique ID of the event.
-
-            '
-        data:
-          type: object
-          description: 'Event data payload.
-
-            '
-          required:
-          - id
-          properties:
-            id:
-              type: string
-              description: 'The unique ID of the eval run.
-
-                '
-        object:
-          type: string
-          description: 'The object of the event. Always `event`.
-
-            '
-          enum:
-          - event
-          x-stainless-const: true
-        type:
-          type: string
-          description: 'The type of the event. Always `eval.run.failed`.
-
-            '
-          enum:
-          - eval.run.failed
-          x-stainless-const: true
-      x-oaiMeta:
-        name: eval.run.failed
-        group: webhook-events
-        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"eval.run.failed\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"evalrun_abc123\"\n  }\n} \n"
-    WebhookFineTuningJobFailed:
-      type: object
-      title: fine_tuning.job.failed
-      description: 'Sent when a fine-tuning job has failed.
-
-        '
-      required:
-      - created_at
-      - id
-      - data
-      - type
-      properties:
-        created_at:
-          type: integer
-          format: unixtime
-          description: 'The Unix timestamp (in seconds) of when the fine-tuning job failed.
-
-            '
-        id:
-          type: string
-          description: 'The unique ID of the event.
-
-            '
-        data:
-          type: object
-          description: 'Event data payload.
-
-            '
-          required:
-          - id
-          properties:
-            id:
-              type: string
-              description: 'The unique ID of the fine-tuning job.
-
-                '
-        object:
-          type: string
-          description: 'The object of the event. Always `event`.
-
-            '
-          enum:
-          - event
-          x-stainless-const: true
-        type:
-          type: string
-          description: 'The type of the event. Always `fine_tuning.job.failed`.
-
-            '
-          enum:
-          - fine_tuning.job.failed
-          x-stainless-const: true
-      x-oaiMeta:
-        name: fine_tuning.job.failed
-        group: webhook-events
-        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"fine_tuning.job.failed\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"ftjob_abc123\"\n  }\n} \n"
     WebhookBatchCancelled:
       type: object
       title: batch.cancelled
@@ -905,62 +764,6 @@ components:
         name: batch.cancelled
         group: webhook-events
         example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"batch.cancelled\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"batch_abc123\"\n  }\n}\n"
-    WebhookFineTuningJobSucceeded:
-      type: object
-      title: fine_tuning.job.succeeded
-      description: 'Sent when a fine-tuning job has succeeded.
-
-        '
-      required:
-      - created_at
-      - id
-      - data
-      - type
-      properties:
-        created_at:
-          type: integer
-          format: unixtime
-          description: 'The Unix timestamp (in seconds) of when the fine-tuning job succeeded.
-
-            '
-        id:
-          type: string
-          description: 'The unique ID of the event.
-
-            '
-        data:
-          type: object
-          description: 'Event data payload.
-
-            '
-          required:
-          - id
-          properties:
-            id:
-              type: string
-              description: 'The unique ID of the fine-tuning job.
-
-                '
-        object:
-          type: string
-          description: 'The object of the event. Always `event`.
-
-            '
-          enum:
-          - event
-          x-stainless-const: true
-        type:
-          type: string
-          description: 'The type of the event. Always `fine_tuning.job.succeeded`.
-
-            '
-          enum:
-          - fine_tuning.job.succeeded
-          x-stainless-const: true
-      x-oaiMeta:
-        name: fine_tuning.job.succeeded
-        group: webhook-events
-        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"fine_tuning.job.succeeded\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"ftjob_abc123\"\n  }\n} \n"
     WebhookBatchFailed:
       type: object
       title: batch.failed
@@ -1017,6 +820,426 @@ components:
         name: batch.failed
         group: webhook-events
         example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"batch.failed\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"batch_abc123\"\n  }\n}\n"
+    WebhookEvalRunFailed:
+      type: object
+      title: eval.run.failed
+      description: 'Sent when an eval run has failed.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the eval run failed.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the eval run.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `eval.run.failed`.
+
+            '
+          enum:
+          - eval.run.failed
+          x-stainless-const: true
+      x-oaiMeta:
+        name: eval.run.failed
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"eval.run.failed\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"evalrun_abc123\"\n  }\n} \n"
+    WebhookRealtimeCallIncoming:
+      type: object
+      title: realtime.call.incoming
+      description: 'Sent when an incoming API SIP session is available for Realtime acceptance.
+
+        The same pending session can also emit `live.transport.incoming`; the first
+
+        successful Realtime or Live accept endpoint selects the runtime surface.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the model response was completed.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - call_id
+          - sip_headers
+          properties:
+            call_id:
+              type: string
+              description: 'The ID of the pending SIP call. Pass this value unchanged when
+
+                accepting or rejecting the call through the Realtime API. For the
+
+                Live API, use the `session_id` from `live.transport.incoming` instead.
+
+                '
+            sip_media_security:
+              description: 'Media protection selected on the SIP leg during SDP negotiation. `srtp`
+
+                indicates SRTP; `rtp` indicates unencrypted RTP. Omitted when unknown.
+
+                This does not describe SIP signaling security or confirm that media has
+
+                flowed. Clients should handle unrecognized values as unknown.
+
+                '
+              anyOf:
+              - type: string
+                enum:
+                - rtp
+                - srtp
+              - type: string
+            sip_headers:
+              type: array
+              description: 'Headers from the SIP INVITE, excluding SIP authorization headers.
+
+                Retained names, values, repeated entries, and order are preserved.
+
+                Treat these values as untrusted call metadata.
+
+                '
+              items:
+                type: object
+                description: 'A header from the SIP Invite.
+
+                  '
+                required:
+                - name
+                - value
+                properties:
+                  name:
+                    type: string
+                    description: 'Name of the SIP Header.
+
+                      '
+                  value:
+                    type: string
+                    description: 'Value of the SIP Header.
+
+                      '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `realtime.call.incoming`.
+
+            '
+          enum:
+          - realtime.call.incoming
+          x-stainless-const: true
+      x-oaiMeta:
+        name: realtime.call.incoming
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"realtime.call.incoming\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"call_id\": \"rtc_u0_479a275623b54bdb9b6fbae2f7cbd408\",\n    \"sip_media_security\": \"srtp\",\n    \"sip_headers\": [\n      {\"name\": \"Max-Forwards\", \"value\": \"63\"},\n      {\"name\": \"CSeq\", \"value\": \"851287 INVITE\"},\n      {\"name\": \"Content-Type\", \"value\": \"application/sdp\"}\n    ]\n  }\n}\n"
+    WebhookBatchCompleted:
+      type: object
+      title: batch.completed
+      description: 'Sent when a batch API request has been completed.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the batch API request was completed.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the batch API request.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `batch.completed`.
+
+            '
+          enum:
+          - batch.completed
+          x-stainless-const: true
+      x-oaiMeta:
+        name: batch.completed
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"batch.completed\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"batch_abc123\"\n  }\n}\n"
+    WebhookSafetyOrgAlertCreated:
+      type: object
+      title: safety.org_alert.created
+      description: Sent when an approved safety alert is available for an enterprise workspace.
+      required:
+      - id
+      - object
+      - created_at
+      - type
+      - data
+      properties:
+        id:
+          type: string
+          description: The unique ID of the webhook event.
+        object:
+          type: string
+          enum:
+          - event
+          x-stainless-const: true
+          description: Always `event`.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp in seconds when the event was created.
+        type:
+          type: string
+          enum:
+          - safety.org_alert.created
+          x-stainless-const: true
+          description: Always `safety.org_alert.created`.
+        data:
+          type: object
+          additionalProperties: false
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              pattern: ^alert_[0-9a-f]{32}$
+              description: The safety alert ID to pass to `GET /v1/safety/alerts/{id}`.
+      x-oaiMeta:
+        name: safety.org_alert.created
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_123\",\n  \"object\": \"event\",\n  \"created_at\": 1787659200,\n  \"type\": \"safety.org_alert.created\",\n  \"data\": {\"id\": \"alert_0123456789abcdef0123456789abcdef\"}\n}\n"
+    WebhookSafetyWarningIssued:
+      type: object
+      title: safety.warning_issued
+      description: Sent when a warning is issued for a safety identifier in your organization.
+      required:
+      - id
+      - object
+      - created_at
+      - type
+      - data
+      properties:
+        id:
+          type: string
+          description: The unique ID of the webhook event.
+        object:
+          type: string
+          enum:
+          - event
+          x-stainless-const: true
+          description: Always `event`.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp in seconds when the event was created.
+        type:
+          type: string
+          enum:
+          - safety.warning_issued
+          x-stainless-const: true
+          description: Always `safety.warning_issued`.
+        data:
+          type: object
+          additionalProperties: false
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: The safety case ID to pass to `GET /v1/safety/cases/{id}`.
+      x-oaiMeta:
+        name: safety.warning_issued
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_123\",\n  \"object\": \"event\",\n  \"created_at\": 1787659200,\n  \"type\": \"safety.warning_issued\",\n  \"data\": {\"id\": \"C-abc123\"}\n}\n"
+    WebhookResponseFailed:
+      type: object
+      title: response.failed
+      description: 'Sent when a background response has failed.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the model response failed.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the model response.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `response.failed`.
+
+            '
+          enum:
+          - response.failed
+          x-stainless-const: true
+      x-oaiMeta:
+        name: response.failed
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"response.failed\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"resp_abc123\"\n  }\n}\n"
+    WebhookResponseCompleted:
+      type: object
+      title: response.completed
+      description: 'Sent when a background response has been completed.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the model response was completed.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the model response.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `response.completed`.
+
+            '
+          enum:
+          - response.completed
+          x-stainless-const: true
+      x-oaiMeta:
+        name: response.completed
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"response.completed\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"resp_abc123\"\n  }\n}\n"
     WebhookEvalRunSucceeded:
       type: object
       title: eval.run.succeeded
@@ -1073,6 +1296,176 @@ components:
         name: eval.run.succeeded
         group: webhook-events
         example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"eval.run.succeeded\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"evalrun_abc123\"\n  }\n} \n"
+    WebhookLiveTransportIncoming:
+      type: object
+      title: live.transport.incoming
+      description: 'Sent when an incoming API SIP session is available for Live acceptance. The
+
+        same pending session can also emit `realtime.call.incoming`; the first
+
+        successful Realtime or Live accept endpoint selects the runtime surface.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the event was created.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - type
+          - session_id
+          - sip_headers
+          properties:
+            type:
+              type: string
+              description: The incoming transport type. Always `sip`.
+              enum:
+              - sip
+              x-stainless-const: true
+            session_id:
+              type: string
+              description: 'The `live_...` ID of the pending SIP session. Forward this value
+
+                unchanged when accepting or rejecting the call through the Live API.
+
+                '
+            sip_media_security:
+              description: 'Media protection selected on the SIP leg during SDP negotiation. `srtp`
+
+                indicates SRTP; `rtp` indicates unencrypted RTP. Omitted when unknown.
+
+                This does not describe SIP signaling security or confirm that media has
+
+                flowed. Clients should handle unrecognized values as unknown.
+
+                '
+              anyOf:
+              - type: string
+                enum:
+                - rtp
+                - srtp
+              - type: string
+            sip_headers:
+              type: array
+              description: 'Headers from the SIP INVITE, excluding SIP authorization headers.
+
+                Retained names, values, repeated entries, and order are preserved.
+
+                Treat these values as untrusted call metadata.
+
+                '
+              items:
+                type: object
+                description: 'A header from the SIP Invite.
+
+                  '
+                required:
+                - name
+                - value
+                properties:
+                  name:
+                    type: string
+                    description: 'Name of the SIP Header.
+
+                      '
+                  value:
+                    type: string
+                    description: 'Value of the SIP Header.
+
+                      '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `live.transport.incoming`.
+
+            '
+          enum:
+          - live.transport.incoming
+          x-stainless-const: true
+      x-oaiMeta:
+        name: live.transport.incoming
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"live.transport.incoming\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"type\": \"sip\",\n    \"session_id\": \"live_u0_479a275623b54bdb9b6fbae2f7cbd408\",\n    \"sip_media_security\": \"srtp\",\n    \"sip_headers\": [\n      {\"name\": \"From\", \"value\": \"<sip:alice@example.com>;tag=abc123\"},\n      {\"name\": \"To\", \"value\": \"<sip:recipient@example.com>\"},\n      {\"name\": \"Call-ID\", \"value\": \"call-123@example.com\"}\n    ]\n  }\n}\n"
+    WebhookFineTuningJobSucceeded:
+      type: object
+      title: fine_tuning.job.succeeded
+      description: 'Sent when a fine-tuning job has succeeded.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the fine-tuning job succeeded.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the fine-tuning job.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `fine_tuning.job.succeeded`.
+
+            '
+          enum:
+          - fine_tuning.job.succeeded
+          x-stainless-const: true
+      x-oaiMeta:
+        name: fine_tuning.job.succeeded
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"fine_tuning.job.succeeded\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"ftjob_abc123\"\n  }\n} \n"
     WebhookBatchExpired:
       type: object
       title: batch.expired
@@ -1129,6 +1522,162 @@ components:
         name: batch.expired
         group: webhook-events
         example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"batch.expired\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"batch_abc123\"\n  }\n}\n"
+    WebhookResponseIncomplete:
+      type: object
+      title: response.incomplete
+      description: 'Sent when a background response has been interrupted.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the model response was interrupted.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the model response.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `response.incomplete`.
+
+            '
+          enum:
+          - response.incomplete
+          x-stainless-const: true
+      x-oaiMeta:
+        name: response.incomplete
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"response.incomplete\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"resp_abc123\"\n  }\n}\n"
+    WebhookSafetyAlertCreated:
+      type: object
+      title: safety.alert.created
+      description: Sent when an approved safety alert is available for an API project.
+      required:
+      - id
+      - object
+      - created_at
+      - type
+      - data
+      properties:
+        id:
+          type: string
+          description: The unique ID of the webhook event.
+        object:
+          type: string
+          enum:
+          - event
+          x-stainless-const: true
+          description: Always `event`.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp in seconds when the event was created.
+        type:
+          type: string
+          enum:
+          - safety.alert.created
+          x-stainless-const: true
+          description: Always `safety.alert.created`.
+        data:
+          type: object
+          additionalProperties: false
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              pattern: ^alert_[0-9a-f]{32}$
+              description: The safety alert ID to pass to `GET /v1/safety/alerts/{id}`.
+      x-oaiMeta:
+        name: safety.alert.created
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_123\",\n  \"object\": \"event\",\n  \"created_at\": 1787659200,\n  \"type\": \"safety.alert.created\",\n  \"data\": {\"id\": \"alert_0123456789abcdef0123456789abcdef\"}\n}\n"
+    WebhookFineTuningJobFailed:
+      type: object
+      title: fine_tuning.job.failed
+      description: 'Sent when a fine-tuning job has failed.
+
+        '
+      required:
+      - created_at
+      - id
+      - data
+      - type
+      properties:
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp (in seconds) of when the fine-tuning job failed.
+
+            '
+        id:
+          type: string
+          description: 'The unique ID of the event.
+
+            '
+        data:
+          type: object
+          description: 'Event data payload.
+
+            '
+          required:
+          - id
+          properties:
+            id:
+              type: string
+              description: 'The unique ID of the fine-tuning job.
+
+                '
+        object:
+          type: string
+          description: 'The object of the event. Always `event`.
+
+            '
+          enum:
+          - event
+          x-stainless-const: true
+        type:
+          type: string
+          description: 'The type of the event. Always `fine_tuning.job.failed`.
+
+            '
+          enum:
+          - fine_tuning.job.failed
+          x-stainless-const: true
+      x-oaiMeta:
+        name: fine_tuning.job.failed
+        group: webhook-events
+        example: "{\n  \"id\": \"evt_abc123\",\n  \"type\": \"fine_tuning.job.failed\",\n  \"created_at\": 1719168000,\n  \"data\": {\n    \"id\": \"ftjob_abc123\"\n  }\n} \n"
   securitySchemes:
     ApiKeyAuth:
       type: http
@@ -1151,6 +1700,8 @@ x-oaiMeta:
     beta: true
   - id: containers
     title: Containers
+  - id: live
+    title: Live (alpha)
   - id: realtime
     title: Realtime
   - id: chat
@@ -1165,7 +1716,7 @@ x-oaiMeta:
   groups:
   - id: responses-streaming
     title: Streaming events
-    description: 'When you [create a Response](/docs/api-reference/responses/create) with
+    description: 'When you [create a Response](https://developers.openai.com/api/reference/resources/responses/methods/create) with
 
       `stream` set to `true`, the server will emit server-sent events to the
 
@@ -1174,7 +1725,22 @@ x-oaiMeta:
       are emitted by the server.
 
 
-      [Learn more about streaming responses](/docs/guides/streaming-responses?api-mode=responses).
+      When processing a `compaction_trigger`, `response.compaction.compacting`
+
+      reports newly sampled summary output at most once every 30 seconds. It
+
+      carries no summary content and does not modify the compaction output item.
+
+      The existing `response.output_item.added` and `response.output_item.done`
+
+      events mark that item''s lifecycle; `response.output_item.done` carries its
+
+      final encrypted content. A short compaction may finish without emitting a
+
+      progress event.
+
+
+      [Learn more about streaming responses](https://developers.openai.com/api/docs/guides/streaming-responses).
 
       '
     navigationGroup: responses
@@ -1199,6 +1765,9 @@ x-oaiMeta:
       path: <auto>
     - type: object
       key: ResponseOutputItemDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseCompactionCompactingEvent
       path: <auto>
     - type: object
       key: ResponseContentPartAddedEvent
@@ -1326,6 +1895,230 @@ x-oaiMeta:
     - type: object
       key: ResponseErrorEvent
       path: <auto>
+  - id: responses-websocket-client-events
+    title: Client events
+    description: 'Events sent by the client over a Responses API WebSocket connection.
+
+      '
+    navigationGroup: responses
+    sections:
+    - type: object
+      key: ResponsesClientEventResponseCreate
+      path: <auto>
+    - type: object
+      key: ResponseSteerEvent
+      path: <auto>
+  - id: responses-websocket-server-events
+    title: Server events (WebSocket only)
+    description: 'Events emitted only over a Responses API WebSocket connection.
+
+      '
+    navigationGroup: responses
+    sections:
+    - type: object
+      key: ResponseSteerAcceptedEvent
+      path: <auto>
+    - type: object
+      key: ResponseSteerPendingEvent
+      path: <auto>
+    - type: object
+      key: ResponseSteerFailedEvent
+      path: <auto>
+  - id: responses-websocket-shared-events
+    title: Server events
+    description: 'These events use the same payloads over WebSocket and
+
+      [HTTP streaming](https://developers.openai.com/api/reference/resources/responses/streaming-events).
+
+      Compaction progress follows the same cadence and output-item lifecycle
+
+      described in HTTP streaming.
+
+      '
+    navigationGroup: responses
+    sections:
+    - type: object
+      key: ResponseCreatedEvent
+      path: <auto>
+    - type: object
+      key: ResponseInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseIncompleteEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputItemAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputItemDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseCompactionCompactingEvent
+      path: <auto>
+    - type: object
+      key: ResponseContentPartAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseContentPartDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseTextDeltaEvent
+      path: response/output_text/delta
+    - type: object
+      key: ResponseTextDoneEvent
+      path: response/output_text/done
+    - type: object
+      key: ResponseRefusalDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseRefusalDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseFunctionCallArgumentsDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseFunctionCallArgumentsDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallSearchingEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallSearchingEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryPartAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryPartDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryTextDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryTextDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningTextDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningTextDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallGeneratingEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallPartialImageEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallArgumentsDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallArgumentsDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallInterpretingEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCodeDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCodeDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputTextAnnotationAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseQueuedEvent
+      path: <auto>
+    - type: object
+      key: ResponseCustomToolCallInputDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseCustomToolCallInputDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseErrorEvent
+      path: <auto>
+  - id: safety-cases
+    title: Safety Cases
+    description: 'Retrieve details about a safety warning or deactivation using the case ID
+
+      from a `safety.warning_issued` or `safety.deactivation_issued` webhook event.
+
+      Cases belong to an organization and require an API key with `api.safety.read`.
+
+      '
+    navigationGroup: endpoints
+    sections:
+    - type: endpoint
+      key: Getsafetycase
+      path: retrieve
+    - type: object
+      key: SafetyCaseResource
+      path: object
+  - id: safety-alerts
+    title: Safety Alerts
+    description: 'Retrieve approved safety alerts with an API key. Project keys require
+
+      `api.safety.alerts.read` and can read alerts from their project.
+
+      '
+    navigationGroup: endpoints
+    sections:
+    - type: endpoint
+      key: Getprojectsafetyalert
+      path: retrieve
+    - type: object
+      key: SafetyAlertResource
+      path: object
   - id: webhook-events
     title: Webhook Events
     description: 'Webhooks are HTTP requests sent by OpenAI to a URL you specify when certain
@@ -1333,7 +2126,7 @@ x-oaiMeta:
       events happen during the course of API usage.
 
 
-      [Learn more about webhooks](/docs/guides/webhooks).
+      [Learn more about webhooks](https://developers.openai.com/api/docs/guides/webhooks).
 
       '
     navigationGroup: webhooks
@@ -1383,11 +2176,29 @@ x-oaiMeta:
     - type: object
       key: WebhookRealtimeCallIncoming
       path: <auto>
+    - type: object
+      key: WebhookLiveCallIncoming
+      path: <auto>
+    - type: object
+      key: WebhookLiveTransportIncoming
+      path: <auto>
+    - type: object
+      key: WebhookSafetyWarningIssued
+      path: <auto>
+    - type: object
+      key: WebhookSafetyDeactivationIssued
+      path: <auto>
+    - type: object
+      key: WebhookSafetyAlertCreated
+      path: <auto>
+    - type: object
+      key: WebhookSafetyOrgAlertCreated
+      path: <auto>
   - id: images-streaming
     title: Image Streaming
     description: 'Stream image generation and editing in real time with server-sent events.
 
-      [Learn more about image streaming](/docs/guides/image-generation).
+      [Learn more about image streaming](https://developers.openai.com/api/docs/guides/image-generation).
 
       '
     navigationGroup: endpoints
@@ -1633,7 +2444,7 @@ x-oaiMeta:
 
       returned from the model using server-sent events.
 
-      [Learn more](/docs/guides/streaming-responses?api-mode=chat).
+      [Learn more](https://developers.openai.com/api/docs/guides/streaming-responses).
 
       '
     navigationGroup: chat
@@ -1646,15 +2457,15 @@ x-oaiMeta:
     beta: true
     description: 'Stream the result of executing a Run or resuming a Run after submitting tool outputs.
 
-      You can stream events from the [Create Thread and Run](/docs/api-reference/runs/createThreadAndRun),
+      You can stream events from the [Create Thread and Run](https://developers.openai.com/api/docs/assistants/migration),
 
-      [Create Run](/docs/api-reference/runs/createRun), and [Submit Tool Outputs](/docs/api-reference/runs/submitToolOutputs)
+      [Create Run](https://developers.openai.com/api/docs/assistants/migration), and [Submit Tool Outputs](https://developers.openai.com/api/docs/assistants/migration)
 
       endpoints by passing `"stream": true`. The response will be a [Server-Sent events](https://html.spec.whatwg.org/multipage/server-sent-events.html#server-sent-events) stream.
 
       Our Node and Python SDKs provide helpful utilities to make streaming easy. Reference the
 
-      [Assistants API quickstart](/docs/assistants/overview) to learn more.
+      [Assistants API quickstart](https://developers.openai.com/api/docs/assistants/migration) to learn more.
 
       '
     navigationGroup: assistants
@@ -1834,4 +2645,98 @@ x-oaiMeta:
       path: <auto>
     - type: object
       key: RealtimeBetaServerEventRateLimitsUpdated
+      path: <auto>
+  - id: live-client-events
+    title: Client events
+    description: Initialize a primary WebSocket with session.start and wait for session.started before sending other events. WebRTC creation starts the session for you. Start with the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) to design frontend instructions and delegation policy; see [backend prompting](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt) for tools and business rules.
+    navigationGroup: live
+    sections:
+    - type: object
+      key: LiveSessionStartEvent
+      path: <auto>
+    - type: object
+      key: LiveForkSessionStartEvent
+      path: <auto>
+    - type: object
+      key: LiveSessionUpdateParam
+      path: <auto>
+    - type: object
+      key: LiveInputAudioAppendEvent
+      path: <auto>
+    - type: object
+      key: LiveInputAudioMuteParam
+      path: <auto>
+    - type: object
+      key: LiveInputAudioUnmuteParam
+      path: <auto>
+    - type: object
+      key: LiveInstructionsAppendParam
+      path: <auto>
+    - type: object
+      key: LiveThinkingAppendParam
+      path: <auto>
+    - type: object
+      key: LiveCommentaryAppendParam
+      path: <auto>
+    - type: object
+      key: LiveResponseItemCreateParam
+      path: <auto>
+    - type: object
+      key: LiveResponseCreateParam
+      path: <auto>
+    - type: object
+      key: LiveSessionCloseParam
+      path: <auto>
+  - id: live-server-events
+    title: Server events
+    description: Live server events. Responses delegation lifecycle events arrive inside response.event, not as top-level response events. Start with the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) to design frontend instructions and delegation policy; see [backend prompting](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt) for tools and business rules.
+    navigationGroup: live
+    sections:
+    - type: object
+      key: LiveSessionStarted
+      path: <auto>
+    - type: object
+      key: LiveSessionUpdated
+      path: <auto>
+    - type: object
+      key: LiveInputAudioMuted
+      path: <auto>
+    - type: object
+      key: LiveInputAudioUnmuted
+      path: <auto>
+    - type: object
+      key: LiveInstructionsAppended
+      path: <auto>
+    - type: object
+      key: LiveThinkingAppended
+      path: <auto>
+    - type: object
+      key: LiveCommentaryAppended
+      path: <auto>
+    - type: object
+      key: LiveOutputAudioDelta
+      path: <auto>
+    - type: object
+      key: LiveInputTranscriptDelta
+      path: <auto>
+    - type: object
+      key: LiveOutputTranscriptDelta
+      path: <auto>
+    - type: object
+      key: LiveDelegationCreated
+      path: <auto>
+    - type: object
+      key: LiveResponseEvent
+      path: <auto>
+    - type: object
+      key: LiveSessionUsageUpdated
+      path: <auto>
+    - type: object
+      key: LiveSessionClosed
+      path: <auto>
+    - type: object
+      key: LiveErrorEvent
+      path: <auto>
+    - type: object
+      key: LiveInfoEvent
       path: <auto>

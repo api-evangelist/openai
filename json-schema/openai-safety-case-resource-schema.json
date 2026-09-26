@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/openai/main/json-schema/openai-safety-case-resource-schema.json",
+  "title": "SafetyCaseResource",
+  "x-generated": "2026-09-23",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/openai-safety-api-openapi.yml#/components/schemas/SafetyCaseResource",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "object": {
+      "type": "string",
+      "enum": [
+        "safety.case"
+      ],
+      "default": "safety.case",
+      "x-stainless-const": true
+    },
+    "created_at": {
+      "type": "integer",
+      "format": "unixtime"
+    },
+    "entity_identifier": {
+      "type": "string"
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "notice": {
+      "$ref": "#/$defs/SafetyCaseNotice"
+    }
+  },
+  "type": "object",
+  "required": [
+    "id",
+    "object",
+    "created_at",
+    "entity_identifier",
+    "reason",
+    "notice"
+  ],
+  "$defs": {
+    "SafetyCaseNotice": {
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/SafetyCaseNoticeType"
+        }
+      },
+      "type": "object",
+      "required": [
+        "type"
+      ]
+    },
+    "SafetyCaseNoticeType": {
+      "type": "string",
+      "enum": [
+        "warning",
+        "deactivation"
+      ]
+    }
+  }
+}

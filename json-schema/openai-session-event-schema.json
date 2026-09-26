@@ -1,0 +1,4934 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/openai/main/json-schema/openai-session-event-schema.json",
+  "title": "SessionEvent",
+  "description": "An event emitted by a Managed Agents session.",
+  "x-generated": "2026-09-23",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/openai-agents-api-openapi.yml#/components/schemas/SessionEvent",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/SessionEventError"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionEnvironmentReady"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionEnvironmentReset"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentOutputCommandExecutionOutputDelta"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionCreated"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionTurnCreated"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionTurnInProgress"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionTurnCompleted"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionTurnFailed"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionTurnCancelled"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionTurnItemAdded"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionIdle"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionInProgress"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionRequiresAction"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionFailed"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionEnvironmentPending"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionEnvironmentConnected"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionEnvironmentDisconnected"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionEnvironmentFailed"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionSubagentCreated"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionSubagentActive"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionSubagentClosed"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionTurnItemDone"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionTurnContentPartAdded"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionTurnContentPartDone"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionTurnOutputTextDelta"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionTurnOutputTextDone"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionTurnReasoningSummaryPartAdded"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionTurnReasoningSummaryPartDone"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionTurnReasoningSummaryTextDelta"
+    },
+    {
+      "$ref": "#/$defs/SessionEventAgentSessionTurnReasoningSummaryTextDone"
+    }
+  ],
+  "x-oai-discriminator-values": [
+    "error",
+    "agent.session.environment.ready",
+    "agent.session.environment.reset",
+    "agent.output.command_execution_output.delta",
+    "agent.session.created",
+    "agent.session.turn.created",
+    "agent.session.turn.in_progress",
+    "agent.session.turn.completed",
+    "agent.session.turn.failed",
+    "agent.session.turn.cancelled",
+    "agent.session.turn.item.added",
+    "agent.session.idle",
+    "agent.session.in_progress",
+    "agent.session.requires_action",
+    "agent.session.failed",
+    "agent.session.environment.pending",
+    "agent.session.environment.connected",
+    "agent.session.environment.disconnected",
+    "agent.session.environment.failed",
+    "agent.session.subagent.created",
+    "agent.session.subagent.active",
+    "agent.session.subagent.closed",
+    "agent.session.turn.item.done",
+    "agent.session.turn.content_part.added",
+    "agent.session.turn.content_part.done",
+    "agent.session.turn.output_text.delta",
+    "agent.session.turn.output_text.done",
+    "agent.session.turn.reasoning_summary_part.added",
+    "agent.session.turn.reasoning_summary_part.done",
+    "agent.session.turn.reasoning_summary_text.delta",
+    "agent.session.turn.reasoning_summary_text.done"
+  ],
+  "$defs": {
+    "AgentContentResource": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/OutputTextResource"
+        },
+        {
+          "$ref": "#/$defs/EncryptedContentResource"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "output_text",
+        "encrypted_content"
+      ],
+      "description": "A plaintext or encrypted content part exchanged between agents."
+    },
+    "AgentMessageItemResource": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the message."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn that contains this item."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent_message"
+          ],
+          "default": "agent_message",
+          "x-stainless-const": true,
+          "description": "The item type. Always `agent_message`."
+        },
+        "sender_agent_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID or name of the sending agent."
+        },
+        "recipient_agent_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID or name of the receiving agent."
+        },
+        "content": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AgentContentResource"
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "The content exchanged between the agents."
+        }
+      },
+      "required": [
+        "id",
+        "turn_id",
+        "type",
+        "sender_agent_id",
+        "recipient_agent_id",
+        "content"
+      ],
+      "additionalProperties": false,
+      "description": "A message exchanged between agent threads."
+    },
+    "AgentOutputItemResource": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/AssistantMessageItemResource"
+        },
+        {
+          "$ref": "#/$defs/ReasoningItemResource"
+        },
+        {
+          "$ref": "#/$defs/FunctionCallItemResource"
+        },
+        {
+          "$ref": "#/$defs/McpCallItemResource"
+        },
+        {
+          "$ref": "#/$defs/WebSearchCallItemResource"
+        },
+        {
+          "$ref": "#/$defs/CommandExecutionItemResource"
+        },
+        {
+          "$ref": "#/$defs/CreateSubagentCallItemResource"
+        },
+        {
+          "$ref": "#/$defs/SendSubagentInputCallItemResource"
+        },
+        {
+          "$ref": "#/$defs/ResumeSubagentCallItemResource"
+        },
+        {
+          "$ref": "#/$defs/WaitForSubagentsCallItemResource"
+        },
+        {
+          "$ref": "#/$defs/InterruptSubagentCallItemResource"
+        },
+        {
+          "$ref": "#/$defs/CloseSubagentCallItemResource"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "message",
+        "reasoning",
+        "function_call",
+        "mcp_call",
+        "web_search_call",
+        "command_execution",
+        "create_subagent_call",
+        "send_subagent_input_call",
+        "resume_subagent_call",
+        "wait_for_subagents_call",
+        "interrupt_subagent_call",
+        "close_subagent_call"
+      ],
+      "description": "An output item produced by an agent."
+    },
+    "AgentToolResource": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/AgentToolResourceFunction"
+        },
+        {
+          "$ref": "#/$defs/AgentToolResourceProgrammaticToolCalling"
+        },
+        {
+          "$ref": "#/$defs/AgentToolResourceMcp"
+        },
+        {
+          "$ref": "#/$defs/AgentToolResourceWebSearch"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "function",
+        "programmatic_tool_calling",
+        "mcp",
+        "web_search"
+      ],
+      "description": "A tool available to the agent."
+    },
+    "AgentToolResourceFunction": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "function"
+          ],
+          "default": "function",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `function`."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The name of the function."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 0,
+          "description": "A description of what the function does."
+        },
+        "parameters": {
+          "type": "object",
+          "additionalProperties": {},
+          "propertyNames": {
+            "type": "string",
+            "minLength": 0
+          },
+          "minProperties": 0,
+          "description": "A JSON Schema object describing the function's arguments."
+        },
+        "defer_loading": {
+          "type": "boolean",
+          "description": "Whether the function is deferred and discovered through tool search."
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "description",
+        "parameters",
+        "defer_loading"
+      ],
+      "additionalProperties": false,
+      "description": "A function defined by the application."
+    },
+    "AgentToolResourceMcp": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "mcp"
+          ],
+          "default": "mcp",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `mcp`."
+        },
+        "server_label": {
+          "type": "string",
+          "minLength": 0,
+          "description": "A label used to identify the MCP server in tool calls."
+        },
+        "credential_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The attached vault credential selected for this MCP server, if any. Optional when exactly one attached credential matches the server URL."
+        },
+        "transport": {
+          "$ref": "#/$defs/McpTransportResource",
+          "description": "The transport used to connect to the MCP server."
+        },
+        "request_metadata": {
+          "type": "object",
+          "additionalProperties": {},
+          "propertyNames": {
+            "type": "string",
+            "minLength": 0
+          },
+          "minProperties": 0,
+          "description": "Metadata included with requests to this MCP server."
+        },
+        "allowed_tools": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string",
+            "minLength": 0
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "The MCP tools the agent may call."
+        },
+        "required": {
+          "type": "boolean",
+          "description": "Whether this MCP server must initialize before the first turn."
+        },
+        "connection_origin": {
+          "$ref": "#/$defs/McpConnectionOriginResource",
+          "description": "Where outbound MCP HTTP connections originate."
+        }
+      },
+      "required": [
+        "type",
+        "server_label",
+        "credential_id",
+        "transport",
+        "request_metadata",
+        "allowed_tools",
+        "required",
+        "connection_origin"
+      ],
+      "additionalProperties": false,
+      "description": "Tools provided by a remote MCP server."
+    },
+    "AgentToolResourceProgrammaticToolCalling": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "programmatic_tool_calling"
+          ],
+          "default": "programmatic_tool_calling",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `programmatic_tool_calling`."
+        },
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether tools can be called from model-generated code."
+        }
+      },
+      "required": [
+        "type",
+        "enabled"
+      ],
+      "additionalProperties": false,
+      "description": "Enables calling tools from model-generated code."
+    },
+    "AgentToolResourceWebSearch": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "web_search"
+          ],
+          "default": "web_search",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `web_search`."
+        },
+        "mode": {
+          "$ref": "#/$defs/WebSearchModeResource",
+          "description": "The source used for web search results."
+        },
+        "context_size": {
+          "$ref": "#/$defs/WebSearchContextSizeResource",
+          "description": "The amount of search context made available to the model. Defaults to `medium`."
+        },
+        "allowed_domains": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string",
+            "minLength": 0
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "Allowed search domains, or `null` when the search is unrestricted."
+        },
+        "location": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WebSearchLocationResource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Approximate location used to localize search results, if provided."
+        }
+      },
+      "required": [
+        "type",
+        "mode",
+        "context_size",
+        "allowed_domains",
+        "location"
+      ],
+      "additionalProperties": false,
+      "description": "Web search."
+    },
+    "AssistantMessageItemResource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "message"
+          ],
+          "default": "message",
+          "x-stainless-const": true,
+          "description": "The item type. Always `message`."
+        },
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the message."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn that contains this item."
+        },
+        "role": {
+          "type": "string",
+          "enum": [
+            "assistant"
+          ],
+          "default": "assistant",
+          "x-stainless-const": true,
+          "description": "The role of the message author. Always `assistant`."
+        },
+        "status": {
+          "$ref": "#/$defs/OutputItemStatusResource",
+          "description": "The status of the message."
+        },
+        "content": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/OutputTextResource"
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "The content of the message."
+        },
+        "phase": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MessagePhaseResource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The phase of the assistant message."
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "turn_id",
+        "role",
+        "status",
+        "content",
+        "phase"
+      ],
+      "additionalProperties": false,
+      "description": "An assistant message produced by the agent."
+    },
+    "CloseSubagentCallItemResource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "close_subagent_call"
+          ],
+          "default": "close_subagent_call",
+          "x-stainless-const": true,
+          "x-enumDescriptions": [
+            "The current public item type."
+          ],
+          "description": "The item type. Always `close_subagent_call`."
+        },
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the tool call item."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn that contains this item."
+        },
+        "status": {
+          "$ref": "#/$defs/FunctionCallStatusResource",
+          "description": "The status of the tool call."
+        },
+        "sender_agent_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the agent requesting the close."
+        },
+        "recipient_agent_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the agent to close."
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "turn_id",
+        "status",
+        "sender_agent_id",
+        "recipient_agent_id"
+      ],
+      "additionalProperties": false,
+      "description": "A request to close a subagent."
+    },
+    "CommandExecutionItemResource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "command_execution"
+          ],
+          "default": "command_execution",
+          "x-stainless-const": true,
+          "description": "The item type. Always `command_execution`."
+        },
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the command execution item."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn that contains this item."
+        },
+        "command": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The command that was executed."
+        },
+        "cwd": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The working directory used to execute the command."
+        },
+        "status": {
+          "$ref": "#/$defs/FunctionCallStatusResource",
+          "description": "The status of the command execution."
+        },
+        "output": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The command output, if available."
+        },
+        "exit_code": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64",
+          "description": "The process exit code, if the command completed."
+        },
+        "duration_ms": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64",
+          "description": "The command duration in milliseconds."
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "turn_id",
+        "command",
+        "cwd",
+        "status",
+        "output",
+        "exit_code",
+        "duration_ms"
+      ],
+      "additionalProperties": false,
+      "description": "A command execution produced by the agent."
+    },
+    "CreateSubagentCallItemResource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "create_subagent_call"
+          ],
+          "default": "create_subagent_call",
+          "x-stainless-const": true,
+          "x-enumDescriptions": [
+            "The current public item type."
+          ],
+          "description": "The item type. Always `create_subagent_call`."
+        },
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the tool call item."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn that contains this item."
+        },
+        "status": {
+          "$ref": "#/$defs/FunctionCallStatusResource",
+          "description": "The status of the tool call."
+        },
+        "agent_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the agent that requested the subagent."
+        },
+        "content": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AgentContentResource"
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "The task given to the spawned agent."
+        },
+        "model": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The model requested for the spawned agent."
+        },
+        "reasoning_effort": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The reasoning effort requested for the spawned agent."
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "turn_id",
+        "status",
+        "agent_id",
+        "content",
+        "model",
+        "reasoning_effort"
+      ],
+      "additionalProperties": false,
+      "description": "A request to spawn a subagent."
+    },
+    "EncryptedContentResource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "encrypted_content"
+          ],
+          "default": "encrypted_content",
+          "x-stainless-const": true,
+          "description": "The content type. Always `encrypted_content`."
+        },
+        "encrypted_content": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The encrypted content payload."
+        }
+      },
+      "required": [
+        "type",
+        "encrypted_content"
+      ],
+      "additionalProperties": false,
+      "description": "Encrypted content exchanged between agents."
+    },
+    "EnvironmentPackagesResource": {
+      "type": "object",
+      "properties": {
+        "python": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 1048576
+          },
+          "minItems": 0,
+          "maxItems": 16384,
+          "description": "Python packages installed in the environment."
+        },
+        "system": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 1048576
+          },
+          "minItems": 0,
+          "maxItems": 16384,
+          "description": "System packages installed in the environment."
+        },
+        "npm": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 1048576
+          },
+          "minItems": 0,
+          "maxItems": 16384,
+          "description": "npm packages installed globally in the environment."
+        }
+      },
+      "required": [
+        "python",
+        "system",
+        "npm"
+      ],
+      "additionalProperties": false,
+      "description": "Packages installed in an OpenAI-hosted environment."
+    },
+    "EnvironmentResource": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/EnvironmentResourceNone"
+        },
+        {
+          "$ref": "#/$defs/EnvironmentResourceOpenaiHosted"
+        },
+        {
+          "$ref": "#/$defs/EnvironmentResourceSelfHosted"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "none",
+        "openai_hosted",
+        "self_hosted"
+      ],
+      "description": "The execution environment for a session."
+    },
+    "EnvironmentResourceNone": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "none"
+          ],
+          "default": "none",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `none`."
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "description": "The session talks to CCA without selecting or provisioning an execution environment."
+    },
+    "EnvironmentResourceOpenaiHosted": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "openai_hosted"
+          ],
+          "default": "openai_hosted",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `openai_hosted`."
+        },
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The public ID of the environment."
+        },
+        "packages": {
+          "$ref": "#/$defs/EnvironmentPackagesResource",
+          "description": "Packages installed in the environment."
+        },
+        "network": {
+          "$ref": "#/$defs/NetworkPolicyResource",
+          "description": "The effective network access policy for the environment."
+        },
+        "capability_directories": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "Directories that contain capabilities exposed to the agent."
+        },
+        "skills": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HostedSkillResource"
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "Skills installed in the environment, excluding their archive contents."
+        },
+        "plugins": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HostedPluginResource"
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "Plugins installed in the environment, excluding their archive contents."
+        },
+        "files": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/HostedEnvironmentFileResource"
+          },
+          "minItems": 0,
+          "maxItems": 50,
+          "description": "Files available in the environment, excluding their contents."
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "packages",
+        "network",
+        "capability_directories",
+        "skills",
+        "plugins",
+        "files"
+      ],
+      "additionalProperties": false,
+      "description": "An environment hosted by OpenAI."
+    },
+    "EnvironmentResourceSelfHosted": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "self_hosted"
+          ],
+          "default": "self_hosted",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `self_hosted`."
+        },
+        "remote_url": {
+          "type": "string",
+          "minLength": 0,
+          "description": "Pass this URL unchanged to `codex exec-server --remote` when connecting this environment."
+        },
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The public ID of the environment."
+        },
+        "workspace_directory": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The absolute project directory inside the environment. Defaults to `/workspace`."
+        },
+        "capability_directories": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "Directories that contain capabilities exposed to the agent."
+        }
+      },
+      "required": [
+        "type",
+        "remote_url",
+        "id",
+        "workspace_directory",
+        "capability_directories"
+      ],
+      "additionalProperties": false,
+      "description": "An environment hosted by the application."
+    },
+    "FunctionCallItemResource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "function_call"
+          ],
+          "default": "function_call",
+          "x-stainless-const": true,
+          "description": "The item type. Always `function_call`."
+        },
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the function call item."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn that contains this item."
+        },
+        "call_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID used to submit the function result."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The name of the function to call."
+        },
+        "arguments": {
+          "description": "The arguments to pass to the function."
+        },
+        "status": {
+          "$ref": "#/$defs/FunctionCallStatusResource",
+          "description": "The status of the function call."
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "turn_id",
+        "call_id",
+        "name",
+        "arguments",
+        "status"
+      ],
+      "additionalProperties": false,
+      "description": "A function call produced by the agent."
+    },
+    "FunctionCallOutputItemResource": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the function call output item."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn that contains this item."
+        },
+        "type": {
+          "type": "string",
+          "enum": [
+            "function_call_output"
+          ],
+          "default": "function_call_output",
+          "x-stainless-const": true,
+          "description": "The item type. Always `function_call_output`."
+        },
+        "call_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the function call that produced this output."
+        },
+        "status": {
+          "$ref": "#/$defs/FunctionCallStatusResource",
+          "description": "The status of the function call."
+        },
+        "output": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/FunctionCallOutputResource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The function result, if the call succeeded."
+        },
+        "error": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The error message, if the call failed."
+        }
+      },
+      "required": [
+        "id",
+        "turn_id",
+        "type",
+        "call_id",
+        "status",
+        "output",
+        "error"
+      ],
+      "additionalProperties": false,
+      "description": "The result supplied for a function call."
+    },
+    "FunctionCallOutputResource": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0
+        },
+        {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/InputContentResource"
+          },
+          "minItems": 0,
+          "maxItems": 2000
+        }
+      ],
+      "description": "The text or model-input content supplied as a function result."
+    },
+    "FunctionCallStatusResource": {
+      "type": "string",
+      "enum": [
+        "in_progress",
+        "completed",
+        "failed",
+        "incomplete"
+      ],
+      "x-enumDescriptions": [
+        "The call is in progress.",
+        "The call completed successfully.",
+        "The call failed.",
+        "The call stopped before completing."
+      ],
+      "description": "The status of a tool call."
+    },
+    "HostedEnvironmentFileResource": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/HostedEnvironmentFileResourceFileId"
+        },
+        {
+          "$ref": "#/$defs/HostedEnvironmentFileResourceInline"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "file_id",
+        "inline"
+      ],
+      "description": "Metadata for a file materialized in an OpenAI-hosted execution environment."
+    },
+    "HostedEnvironmentFileResourceFileId": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "file_id"
+          ],
+          "default": "file_id",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `file_id`."
+        },
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The session-scoped ID of the file in the execution environment."
+        },
+        "file_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the uploaded file."
+        },
+        "path": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The file's absolute path inside the environment."
+        },
+        "size_bytes": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "description": "The decoded file size in bytes."
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "file_id",
+        "path",
+        "size_bytes"
+      ],
+      "additionalProperties": false,
+      "description": "A file copied from the OpenAI Files API."
+    },
+    "HostedEnvironmentFileResourceInline": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "inline"
+          ],
+          "default": "inline",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `inline`."
+        },
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The session-scoped ID of the file in the execution environment."
+        },
+        "path": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The file's absolute path inside the environment."
+        },
+        "size_bytes": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "description": "The decoded file size in bytes."
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "path",
+        "size_bytes"
+      ],
+      "additionalProperties": false,
+      "description": "A file supplied inline when the session was created."
+    },
+    "HostedPluginResource": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/HostedPluginResourceInline"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "inline"
+      ],
+      "description": "A plugin installed in an OpenAI-hosted environment."
+    },
+    "HostedPluginResourceInline": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "inline"
+          ],
+          "default": "inline",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `inline`."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The installed plugin name."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The installed plugin description."
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "description"
+      ],
+      "additionalProperties": false,
+      "description": "A plugin installed from an inline ZIP archive."
+    },
+    "HostedSkillResource": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/HostedSkillResourceSkillReference"
+        },
+        {
+          "$ref": "#/$defs/HostedSkillResourceInline"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "skill_reference",
+        "inline"
+      ],
+      "description": "A skill installed in an OpenAI-hosted environment."
+    },
+    "HostedSkillResourceInline": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "inline"
+          ],
+          "default": "inline",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `inline`."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The installed skill name."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The installed skill description."
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "description"
+      ],
+      "additionalProperties": false,
+      "description": "A skill installed from an inline ZIP archive."
+    },
+    "HostedSkillResourceSkillReference": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "skill_reference"
+          ],
+          "default": "skill_reference",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `skill_reference`."
+        },
+        "skill_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The referenced skill ID."
+        },
+        "version": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The concrete skill version installed for this session."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The installed skill name."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The installed skill description."
+        }
+      },
+      "required": [
+        "type",
+        "skill_id",
+        "version",
+        "name",
+        "description"
+      ],
+      "additionalProperties": false,
+      "description": "A skill installed from the Skills API."
+    },
+    "InputContentResource": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/InputContentResourceInputText"
+        },
+        {
+          "$ref": "#/$defs/InputContentResourceInputImage"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "input_text",
+        "input_image"
+      ],
+      "description": "User-provided content recorded in a session item."
+    },
+    "InputContentResourceInputImage": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "input_image"
+          ],
+          "default": "input_image",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `input_image`."
+        },
+        "image_url": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The URL of the image supplied to the agent, which may be a base64-encoded data URL."
+        }
+      },
+      "required": [
+        "type",
+        "image_url"
+      ],
+      "additionalProperties": false,
+      "description": "Image input recorded in a session item."
+    },
+    "InputContentResourceInputText": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "input_text"
+          ],
+          "default": "input_text",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `input_text`."
+        },
+        "text": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The text supplied to the agent."
+        }
+      },
+      "required": [
+        "type",
+        "text"
+      ],
+      "additionalProperties": false,
+      "description": "Text input recorded in a session item."
+    },
+    "InputTokensDetailsResource": {
+      "type": "object",
+      "properties": {
+        "cached_tokens": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The number of input tokens retrieved from the prompt cache."
+        }
+      },
+      "required": [
+        "cached_tokens"
+      ],
+      "additionalProperties": false,
+      "description": "A breakdown of input token usage for a session or turn."
+    },
+    "InterruptSubagentCallItemResource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "interrupt_subagent_call"
+          ],
+          "default": "interrupt_subagent_call",
+          "x-stainless-const": true,
+          "x-enumDescriptions": [
+            "The current public item type."
+          ],
+          "description": "The item type. Always `interrupt_subagent_call`."
+        },
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the tool call item."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn that contains this item."
+        },
+        "status": {
+          "$ref": "#/$defs/FunctionCallStatusResource",
+          "description": "The status of the tool call."
+        },
+        "sender_agent_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the agent requesting the interrupt."
+        },
+        "recipient_agent_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the agent to interrupt."
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "turn_id",
+        "status",
+        "sender_agent_id",
+        "recipient_agent_id"
+      ],
+      "additionalProperties": false,
+      "description": "A request to interrupt a subagent's current turn. The subagent remains available."
+    },
+    "McpCallItemResource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "mcp_call"
+          ],
+          "default": "mcp_call",
+          "x-stainless-const": true,
+          "description": "The item type. Always `mcp_call`."
+        },
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the MCP call item."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn that contains this item."
+        },
+        "server_label": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The label of the MCP server."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The name of the MCP tool."
+        },
+        "arguments": {
+          "description": "The arguments passed to the MCP tool."
+        },
+        "status": {
+          "$ref": "#/$defs/FunctionCallStatusResource",
+          "description": "The status of the MCP tool call."
+        },
+        "output": {
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The output returned by the MCP tool, if any."
+        },
+        "error": {
+          "anyOf": [
+            {},
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The error returned by the MCP tool, if any."
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "turn_id",
+        "server_label",
+        "name",
+        "arguments",
+        "status",
+        "output",
+        "error"
+      ],
+      "additionalProperties": false,
+      "description": "A call to a tool on an MCP server."
+    },
+    "McpConnectionOriginResource": {
+      "type": "string",
+      "enum": [
+        "service",
+        "environment"
+      ],
+      "description": "Where outbound MCP HTTP connections originate."
+    },
+    "McpTransportResource": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/McpTransportResourceHttp"
+        },
+        {
+          "$ref": "#/$defs/McpTransportResourceStdio"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "http",
+        "stdio"
+      ],
+      "description": "The transport used to connect to an MCP server."
+    },
+    "McpTransportResourceHttp": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "http"
+          ],
+          "default": "http",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `http`."
+        },
+        "server_url": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The URL of the MCP server."
+        }
+      },
+      "required": [
+        "type",
+        "server_url"
+      ],
+      "additionalProperties": false,
+      "description": "Connects to an MCP server over HTTP."
+    },
+    "McpTransportResourceStdio": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "stdio"
+          ],
+          "default": "stdio",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `stdio`."
+        },
+        "command": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The command used to start the MCP server."
+        },
+        "args": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "Arguments passed to the MCP server command."
+        },
+        "cwd": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The working directory used to start the MCP server."
+        },
+        "env_vars": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "Environment variable names inherited from the execution environment."
+        }
+      },
+      "required": [
+        "type",
+        "command",
+        "args",
+        "cwd",
+        "env_vars"
+      ],
+      "additionalProperties": false,
+      "description": "Starts an MCP server as a local process."
+    },
+    "MessageContentResource": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/MessageContentResourceInputText"
+        },
+        {
+          "$ref": "#/$defs/MessageContentResourceInputImage"
+        },
+        {
+          "$ref": "#/$defs/MessageContentResourceOutputText"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "input_text",
+        "input_image",
+        "output_text"
+      ],
+      "description": "A content part in a session message."
+    },
+    "MessageContentResourceInputImage": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "input_image"
+          ],
+          "default": "input_image",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `input_image`."
+        },
+        "image_url": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The URL of the image supplied by the user, which may be a base64-encoded data URL."
+        }
+      },
+      "required": [
+        "type",
+        "image_url"
+      ],
+      "additionalProperties": false,
+      "description": "An image supplied by the user."
+    },
+    "MessageContentResourceInputText": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "input_text"
+          ],
+          "default": "input_text",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `input_text`."
+        },
+        "text": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The text supplied by the user."
+        }
+      },
+      "required": [
+        "type",
+        "text"
+      ],
+      "additionalProperties": false,
+      "description": "Text supplied by the user."
+    },
+    "MessageContentResourceOutputText": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "output_text"
+          ],
+          "default": "output_text",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `output_text`."
+        },
+        "text": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The text produced by the assistant."
+        }
+      },
+      "required": [
+        "type",
+        "text"
+      ],
+      "additionalProperties": false,
+      "description": "Text produced by the assistant."
+    },
+    "MessageItemResource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "message"
+          ],
+          "default": "message",
+          "x-stainless-const": true,
+          "description": "The item type. Always `message`."
+        },
+        "id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The ID of this item, or null for legacy user messages whose ID was not recorded."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn that contains this item."
+        },
+        "role": {
+          "$ref": "#/$defs/SessionMessageRoleResource",
+          "description": "The role of the message author."
+        },
+        "content": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/MessageContentResource"
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "The content of the message. User messages contain input text or images; assistant messages contain output text."
+        },
+        "status": {
+          "$ref": "#/$defs/OutputItemStatusResource",
+          "description": "The status of the message. User messages are always `completed`."
+        },
+        "phase": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/MessagePhaseResource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The phase of an assistant message. Null for user messages."
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "turn_id",
+        "role",
+        "content",
+        "status",
+        "phase"
+      ],
+      "additionalProperties": false,
+      "description": "A user or assistant message recorded in a session."
+    },
+    "MessagePhaseResource": {
+      "type": "string",
+      "enum": [
+        "commentary",
+        "final_answer"
+      ],
+      "x-enumDescriptions": [
+        "Commentary produced while the agent works.",
+        "The agent's final answer."
+      ],
+      "description": "The phase of an assistant message."
+    },
+    "MultiAgentConfigResource": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether subagent tools are enabled. Defaults to false."
+        },
+        "max_concurrent_subagents": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64",
+          "minimum": 1,
+          "maximum": 4294967295,
+          "description": "Maximum number of subagents that may run concurrently, or null when disabled. Defaults to 6 when enabled."
+        }
+      },
+      "required": [
+        "enabled",
+        "max_concurrent_subagents"
+      ],
+      "additionalProperties": false,
+      "description": "The resolved configuration for creating and coordinating subagents."
+    },
+    "NetworkAccessResource": {
+      "type": "string",
+      "enum": [
+        "enabled",
+        "disabled",
+        "restricted"
+      ],
+      "x-enumDescriptions": [
+        "Allows unrestricted network access.",
+        "Disables network access.",
+        "Allows access only to configured domains."
+      ],
+      "description": "The network access mode for an OpenAI-hosted environment."
+    },
+    "NetworkPolicyResource": {
+      "type": "object",
+      "properties": {
+        "access": {
+          "$ref": "#/$defs/NetworkAccessResource",
+          "description": "The environment's network access mode."
+        },
+        "allowed_domains": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "Domains the environment may access when network access is restricted."
+        }
+      },
+      "required": [
+        "access",
+        "allowed_domains"
+      ],
+      "additionalProperties": false,
+      "description": "Network access for an OpenAI-hosted environment."
+    },
+    "OutputItemStatusResource": {
+      "type": "string",
+      "enum": [
+        "in_progress",
+        "completed",
+        "incomplete"
+      ],
+      "x-enumDescriptions": [
+        "The item is in progress.",
+        "The item is complete.",
+        "The item stopped before completing."
+      ],
+      "description": "The status of an agent output item."
+    },
+    "OutputTextResource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "output_text"
+          ],
+          "default": "output_text",
+          "x-stainless-const": true,
+          "description": "The content type. Always `output_text`."
+        },
+        "text": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The text produced by the agent."
+        }
+      },
+      "required": [
+        "type",
+        "text"
+      ],
+      "additionalProperties": false,
+      "description": "A text content part produced by the agent."
+    },
+    "OutputTokensDetailsResource": {
+      "type": "object",
+      "properties": {
+        "reasoning_tokens": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The number of output tokens used for reasoning."
+        }
+      },
+      "required": [
+        "reasoning_tokens"
+      ],
+      "additionalProperties": false,
+      "description": "A breakdown of output token usage for a session or turn."
+    },
+    "ReasoningEffortResource": {
+      "type": "string",
+      "enum": [
+        "none",
+        "minimal",
+        "low",
+        "medium",
+        "high",
+        "xhigh",
+        "max"
+      ],
+      "description": "The amount of reasoning effort used by an agent."
+    },
+    "ReasoningItemResource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "reasoning"
+          ],
+          "default": "reasoning",
+          "x-stainless-const": true,
+          "description": "The item type. Always `reasoning`."
+        },
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the reasoning item."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn that contains this item."
+        },
+        "summary": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SummaryTextResource"
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "The reasoning summaries produced by the agent."
+        },
+        "status": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OutputItemStatusResource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The status of the reasoning item."
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "turn_id",
+        "summary",
+        "status"
+      ],
+      "additionalProperties": false,
+      "description": "A reasoning item produced by the agent."
+    },
+    "ReasoningResource": {
+      "type": "object",
+      "properties": {
+        "effort": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ReasoningEffortResource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The requested reasoning effort, or `null` when the model selects its own default."
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ReasoningSummaryResource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The requested reasoning summary format, or `null` when summaries are disabled."
+        }
+      },
+      "required": [
+        "effort",
+        "summary"
+      ],
+      "additionalProperties": false,
+      "description": "The reasoning configuration used by an agent."
+    },
+    "ReasoningSummaryResource": {
+      "type": "string",
+      "enum": [
+        "concise",
+        "detailed",
+        "auto"
+      ],
+      "x-enumDescriptions": [
+        "Returns a concise reasoning summary when supported.",
+        "Returns a detailed reasoning summary when supported.",
+        "Automatically selects the most detailed summary supported by the model."
+      ],
+      "description": "The reasoning summary format requested from an agent."
+    },
+    "ResumeSubagentCallItemResource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "resume_subagent_call"
+          ],
+          "default": "resume_subagent_call",
+          "x-stainless-const": true,
+          "x-enumDescriptions": [
+            "The current public item type."
+          ],
+          "description": "The item type. Always `resume_subagent_call`."
+        },
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the tool call item."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn that contains this item."
+        },
+        "status": {
+          "$ref": "#/$defs/FunctionCallStatusResource",
+          "description": "The status of the tool call."
+        },
+        "sender_agent_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the agent requesting the resume."
+        },
+        "recipient_agent_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the agent to resume."
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "turn_id",
+        "status",
+        "sender_agent_id",
+        "recipient_agent_id"
+      ],
+      "additionalProperties": false,
+      "description": "A request to resume a subagent."
+    },
+    "SendSubagentInputCallItemResource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "send_subagent_input_call"
+          ],
+          "default": "send_subagent_input_call",
+          "x-stainless-const": true,
+          "x-enumDescriptions": [
+            "The current public item type."
+          ],
+          "description": "The item type. Always `send_subagent_input_call`."
+        },
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the tool call item."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn that contains this item."
+        },
+        "status": {
+          "$ref": "#/$defs/FunctionCallStatusResource",
+          "description": "The status of the tool call."
+        },
+        "sender_agent_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the agent sending the input."
+        },
+        "recipient_agent_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the agent receiving the input."
+        },
+        "content": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AgentContentResource"
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "The input sent to the receiving agent."
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "turn_id",
+        "status",
+        "sender_agent_id",
+        "recipient_agent_id",
+        "content"
+      ],
+      "additionalProperties": false,
+      "description": "A request to send input to another agent."
+    },
+    "ServiceTierResource": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "default",
+        "flex",
+        "priority",
+        "fast"
+      ],
+      "description": "The service-tier policy configured for an agent."
+    },
+    "SessionAgentResource": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the agent."
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The reusable agent's name when the session was created, or null if no name was saved. Later changes to the agent's name do not affect this value."
+        },
+        "model": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The model used by the agent."
+        },
+        "reasoning": {
+          "$ref": "#/$defs/ReasoningResource",
+          "description": "The agent's reasoning configuration."
+        },
+        "text": {
+          "$ref": "#/$defs/TextResource",
+          "description": "Configuration for text generated by the agent."
+        },
+        "service_tier": {
+          "$ref": "#/$defs/ServiceTierResource",
+          "description": "The effective service-tier policy for model requests. Defaults to `auto`."
+        },
+        "instructions": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "Custom instructions appended to the agent's default base instructions."
+        },
+        "tools": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/AgentToolResource"
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "Tools available to the agent."
+        },
+        "multi_agent": {
+          "$ref": "#/$defs/MultiAgentConfigResource",
+          "description": "Configuration for creating and coordinating subagents."
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "model",
+        "reasoning",
+        "text",
+        "service_tier",
+        "instructions",
+        "tools",
+        "multi_agent"
+      ],
+      "additionalProperties": false,
+      "description": "The effective agent configuration for a session."
+    },
+    "SessionEnvironmentErrorResource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The error type."
+        },
+        "code": {
+          "type": "string",
+          "minLength": 0,
+          "description": "A machine-readable error code."
+        },
+        "message": {
+          "type": "string",
+          "minLength": 0,
+          "description": "A human-readable error message."
+        }
+      },
+      "required": [
+        "type",
+        "code",
+        "message"
+      ],
+      "additionalProperties": false,
+      "description": "An error reported while preparing a session environment."
+    },
+    "SessionEnvironmentStateResource": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The public ID of the environment."
+        },
+        "type": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The environment type."
+        },
+        "status": {
+          "$ref": "#/$defs/SessionEnvironmentStatusResource",
+          "description": "The environment's connection status."
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SessionEnvironmentErrorResource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The error reported while preparing the environment, if any."
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "status",
+        "error"
+      ],
+      "additionalProperties": false,
+      "description": "The current state of a session environment."
+    },
+    "SessionEnvironmentStatusResource": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "ready",
+        "connected",
+        "disconnected",
+        "failed"
+      ],
+      "x-enumDescriptions": [
+        "The environment is being prepared.",
+        "The environment is ready to connect.",
+        "The environment is connected.",
+        "The environment is disconnected.",
+        "The environment failed to connect."
+      ],
+      "description": "The connection status of a session environment."
+    },
+    "SessionErrorResource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The error type."
+        },
+        "code": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The machine-readable error code, if any."
+        },
+        "message": {
+          "type": "string",
+          "minLength": 0,
+          "description": "A customer-safe explanation of the error."
+        },
+        "param": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The request parameter associated with the error, if any."
+        }
+      },
+      "required": [
+        "type",
+        "code",
+        "message",
+        "param"
+      ],
+      "additionalProperties": false,
+      "description": "An error payload with the same public fields as Responses API streaming errors."
+    },
+    "SessionEventAgentOutputCommandExecutionOutputDelta": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.output.command_execution_output.delta"
+          ],
+          "default": "agent.output.command_execution_output.delta",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.output.command_execution_output.delta`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event, when applicable."
+        },
+        "item_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the command execution item."
+        },
+        "output_index": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "The index of the item in the turn output."
+        },
+        "delta": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The output text that was appended."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "item_id",
+        "output_index",
+        "delta"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when command execution produces an output delta."
+    },
+    "SessionEventAgentSessionCreated": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.created"
+          ],
+          "default": "agent.session.created",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.created`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session": {
+          "$ref": "#/$defs/SessionResource",
+          "description": "The session that was created."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a session is created."
+    },
+    "SessionEventAgentSessionEnvironmentConnected": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.environment.connected"
+          ],
+          "default": "agent.session.environment.connected",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.environment.connected`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event, when applicable."
+        },
+        "environment": {
+          "$ref": "#/$defs/SessionEnvironmentStateResource",
+          "description": "The current environment state."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "environment"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a session environment connects."
+    },
+    "SessionEventAgentSessionEnvironmentDisconnected": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.environment.disconnected"
+          ],
+          "default": "agent.session.environment.disconnected",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.environment.disconnected`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event, when applicable."
+        },
+        "environment": {
+          "$ref": "#/$defs/SessionEnvironmentStateResource",
+          "description": "The current environment state."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "environment"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a session environment disconnects."
+    },
+    "SessionEventAgentSessionEnvironmentFailed": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.environment.failed"
+          ],
+          "default": "agent.session.environment.failed",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.environment.failed`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event, when applicable."
+        },
+        "environment": {
+          "$ref": "#/$defs/SessionEnvironmentStateResource",
+          "description": "The current environment state."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "environment"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a session environment fails."
+    },
+    "SessionEventAgentSessionEnvironmentPending": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.environment.pending"
+          ],
+          "default": "agent.session.environment.pending",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.environment.pending`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event, when applicable."
+        },
+        "environment": {
+          "$ref": "#/$defs/SessionEnvironmentStateResource",
+          "description": "The current environment state."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "environment"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted while a session environment is being prepared."
+    },
+    "SessionEventAgentSessionEnvironmentReady": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.environment.ready"
+          ],
+          "default": "agent.session.environment.ready",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.environment.ready`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event, when applicable."
+        },
+        "environment": {
+          "$ref": "#/$defs/SessionEnvironmentStateResource",
+          "description": "The current environment state."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "environment"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a hosted session environment is ready to connect."
+    },
+    "SessionEventAgentSessionEnvironmentReset": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.environment.reset"
+          ],
+          "default": "agent.session.environment.reset",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.environment.reset`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The associated turn, when applicable."
+        },
+        "environment_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The stable environment ID, retained across sandbox replacements."
+        },
+        "reset_count": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "description": "Monotonically increasing reset number. Repeated notifications share this number."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "environment_id",
+        "reset_count"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted after a hosted sandbox is replaced. Conversation history survives; changes to the previous sandbox's files and processes do not."
+    },
+    "SessionEventAgentSessionFailed": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.failed"
+          ],
+          "default": "agent.session.failed",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.failed`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session": {
+          "$ref": "#/$defs/SessionResource",
+          "description": "The failed session."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a session fails."
+    },
+    "SessionEventAgentSessionIdle": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.idle"
+          ],
+          "default": "agent.session.idle",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.idle`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session": {
+          "$ref": "#/$defs/SessionResource",
+          "description": "The session that became idle."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a session becomes idle."
+    },
+    "SessionEventAgentSessionInProgress": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.in_progress"
+          ],
+          "default": "agent.session.in_progress",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.in_progress`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session": {
+          "$ref": "#/$defs/SessionResource",
+          "description": "The session that started processing."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a session starts processing a turn."
+    },
+    "SessionEventAgentSessionRequiresAction": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.requires_action"
+          ],
+          "default": "agent.session.requires_action",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.requires_action`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session": {
+          "$ref": "#/$defs/SessionResource",
+          "description": "The session and its current required actions."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a session is waiting for one or more required actions."
+    },
+    "SessionEventAgentSessionSubagentActive": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.subagent.active"
+          ],
+          "default": "agent.session.subagent.active",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.subagent.active`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "subagent": {
+          "$ref": "#/$defs/SubagentResource",
+          "description": "The subagent that resumed."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "subagent"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a closed subagent successfully resumes."
+    },
+    "SessionEventAgentSessionSubagentClosed": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.subagent.closed"
+          ],
+          "default": "agent.session.subagent.closed",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.subagent.closed`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "subagent": {
+          "$ref": "#/$defs/SubagentResource",
+          "description": "The subagent that was closed."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "subagent"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a subagent is closed."
+    },
+    "SessionEventAgentSessionSubagentCreated": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.subagent.created"
+          ],
+          "default": "agent.session.subagent.created",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.subagent.created`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "subagent": {
+          "$ref": "#/$defs/SubagentResource",
+          "description": "The subagent that was created."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "subagent"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a subagent is created."
+    },
+    "SessionEventAgentSessionTurnCancelled": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.turn.cancelled"
+          ],
+          "default": "agent.session.turn.cancelled",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.turn.cancelled`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event."
+        },
+        "turn": {
+          "$ref": "#/$defs/TurnResource",
+          "description": "The cancelled turn."
+        },
+        "usage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TokenUsageResource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Token usage by the root agent during the turn, when available."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "turn",
+        "usage"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a turn is cancelled."
+    },
+    "SessionEventAgentSessionTurnCompleted": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.turn.completed"
+          ],
+          "default": "agent.session.turn.completed",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.turn.completed`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event."
+        },
+        "turn": {
+          "$ref": "#/$defs/TurnResource",
+          "description": "The completed turn."
+        },
+        "usage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TokenUsageResource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Token usage by the root agent during the turn, when available."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "turn",
+        "usage"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a turn completes."
+    },
+    "SessionEventAgentSessionTurnContentPartAdded": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.turn.content_part.added"
+          ],
+          "default": "agent.session.turn.content_part.added",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.turn.content_part.added`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event, when applicable."
+        },
+        "item_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the message item."
+        },
+        "output_index": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "The index of the item in the turn output."
+        },
+        "content_index": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "The index of the content part in the message."
+        },
+        "part": {
+          "$ref": "#/$defs/OutputTextResource",
+          "description": "The initial content part."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "item_id",
+        "output_index",
+        "content_index",
+        "part"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when an output text content part is added."
+    },
+    "SessionEventAgentSessionTurnContentPartDone": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.turn.content_part.done"
+          ],
+          "default": "agent.session.turn.content_part.done",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.turn.content_part.done`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event, when applicable."
+        },
+        "item_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the message item."
+        },
+        "output_index": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "The index of the item in the turn output."
+        },
+        "content_index": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "The index of the content part in the message."
+        },
+        "part": {
+          "$ref": "#/$defs/OutputTextResource",
+          "description": "The completed content part."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "item_id",
+        "output_index",
+        "content_index",
+        "part"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when an output content part is complete."
+    },
+    "SessionEventAgentSessionTurnCreated": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.turn.created"
+          ],
+          "default": "agent.session.turn.created",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.turn.created`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event."
+        },
+        "turn": {
+          "$ref": "#/$defs/TurnResource",
+          "description": "The turn at the time it was created."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "turn"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a turn is created."
+    },
+    "SessionEventAgentSessionTurnFailed": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.turn.failed"
+          ],
+          "default": "agent.session.turn.failed",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.turn.failed`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event."
+        },
+        "turn": {
+          "$ref": "#/$defs/TurnResource",
+          "description": "The failed turn."
+        },
+        "usage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TokenUsageResource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Token usage by the root agent during the turn, when available."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "turn",
+        "usage"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a turn fails."
+    },
+    "SessionEventAgentSessionTurnInProgress": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.turn.in_progress"
+          ],
+          "default": "agent.session.turn.in_progress",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.turn.in_progress`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event."
+        },
+        "turn": {
+          "$ref": "#/$defs/TurnResource",
+          "description": "The turn at the time it started running."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "turn"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a turn starts running."
+    },
+    "SessionEventAgentSessionTurnItemAdded": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.turn.item.added"
+          ],
+          "default": "agent.session.turn.item.added",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.turn.item.added`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event, when applicable."
+        },
+        "output_index": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "The index of the item in the turn output, when the item is agent output."
+        },
+        "item": {
+          "$ref": "#/$defs/SessionTurnItemResource",
+          "description": "The item that was added."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "output_index",
+        "item"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when an item is added to a turn."
+    },
+    "SessionEventAgentSessionTurnItemDone": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.turn.item.done"
+          ],
+          "default": "agent.session.turn.item.done",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.turn.item.done`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event, when applicable."
+        },
+        "output_index": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "The index of the output item in the turn output."
+        },
+        "item": {
+          "$ref": "#/$defs/AgentOutputItemResource",
+          "description": "The completed output item."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "output_index",
+        "item"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when an output item is complete."
+    },
+    "SessionEventAgentSessionTurnOutputTextDelta": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.turn.output_text.delta"
+          ],
+          "default": "agent.session.turn.output_text.delta",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.turn.output_text.delta`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event, when applicable."
+        },
+        "item_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the message item."
+        },
+        "output_index": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "The index of the item in the turn output."
+        },
+        "content_index": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "The index of the content part in the message."
+        },
+        "delta": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The text that was appended."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "item_id",
+        "output_index",
+        "content_index",
+        "delta"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when text is appended to an output text content part."
+    },
+    "SessionEventAgentSessionTurnOutputTextDone": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.turn.output_text.done"
+          ],
+          "default": "agent.session.turn.output_text.done",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.turn.output_text.done`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event, when applicable."
+        },
+        "item_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the message item."
+        },
+        "output_index": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "The index of the item in the turn output."
+        },
+        "content_index": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "The index of the content part in the message."
+        },
+        "text": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The complete output text."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "item_id",
+        "output_index",
+        "content_index",
+        "text"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when an output text content part is complete."
+    },
+    "SessionEventAgentSessionTurnReasoningSummaryPartAdded": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.turn.reasoning_summary_part.added"
+          ],
+          "default": "agent.session.turn.reasoning_summary_part.added",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.turn.reasoning_summary_part.added`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event, when applicable."
+        },
+        "item_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the reasoning item."
+        },
+        "output_index": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "The index of the item in the turn output."
+        },
+        "summary_index": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "The index of the summary content part."
+        },
+        "part": {
+          "$ref": "#/$defs/SummaryTextResource",
+          "description": "The initial summary part."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "item_id",
+        "output_index",
+        "summary_index",
+        "part"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a reasoning summary content part is added."
+    },
+    "SessionEventAgentSessionTurnReasoningSummaryPartDone": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.turn.reasoning_summary_part.done"
+          ],
+          "default": "agent.session.turn.reasoning_summary_part.done",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.turn.reasoning_summary_part.done`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event, when applicable."
+        },
+        "item_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the reasoning item."
+        },
+        "output_index": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "The index of the item in the turn output."
+        },
+        "summary_index": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "The index of the summary part."
+        },
+        "part": {
+          "$ref": "#/$defs/SummaryTextResource",
+          "description": "The completed summary part."
+        },
+        "status": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "enum": [
+            "incomplete",
+            null
+          ],
+          "description": "Present as `incomplete` when summary generation was interrupted.",
+          "x-stainless-const": true
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "item_id",
+        "output_index",
+        "summary_index",
+        "part",
+        "status"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a reasoning summary part is complete."
+    },
+    "SessionEventAgentSessionTurnReasoningSummaryTextDelta": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.turn.reasoning_summary_text.delta"
+          ],
+          "default": "agent.session.turn.reasoning_summary_text.delta",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.turn.reasoning_summary_text.delta`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event, when applicable."
+        },
+        "item_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the reasoning item."
+        },
+        "output_index": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "The index of the item in the turn output."
+        },
+        "summary_index": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "The index of the summary content part."
+        },
+        "delta": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The summary text that was appended."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "item_id",
+        "output_index",
+        "summary_index",
+        "delta"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when text is appended to a reasoning summary."
+    },
+    "SessionEventAgentSessionTurnReasoningSummaryTextDone": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "agent.session.turn.reasoning_summary_text.done"
+          ],
+          "default": "agent.session.turn.reasoning_summary_text.done",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `agent.session.turn.reasoning_summary_text.done`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "turn_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The ID of the turn associated with the event, when applicable."
+        },
+        "item_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the reasoning item."
+        },
+        "output_index": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "The index of the item in the turn output."
+        },
+        "summary_index": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "maximum": 4294967295,
+          "description": "The index of the summary content part."
+        },
+        "text": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The complete reasoning summary text."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "turn_id",
+        "item_id",
+        "output_index",
+        "summary_index",
+        "text"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a reasoning summary content part is complete."
+    },
+    "SessionEventError": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "error"
+          ],
+          "default": "error",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `error`."
+        },
+        "event_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The unique ID of the event."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session associated with the event."
+        },
+        "error": {
+          "$ref": "#/$defs/SessionErrorResource",
+          "description": "The error that occurred."
+        }
+      },
+      "required": [
+        "type",
+        "event_id",
+        "session_id",
+        "error"
+      ],
+      "additionalProperties": false,
+      "description": "Emitted when a turn or session fails.",
+      "x-oaiMeta": {}
+    },
+    "SessionMessageRoleResource": {
+      "type": "string",
+      "enum": [
+        "user",
+        "assistant"
+      ],
+      "description": "The author of a session message."
+    },
+    "SessionRequiredActionResource": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/SessionRequiredActionResourceFunctionCall"
+        },
+        {
+          "$ref": "#/$defs/SessionRequiredActionResourceEnvironmentConnection"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "function_call",
+        "environment_connection"
+      ],
+      "description": "An action that must be completed before a session can continue."
+    },
+    "SessionRequiredActionResourceEnvironmentConnection": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "environment_connection"
+          ],
+          "default": "environment_connection",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `environment_connection`."
+        },
+        "environment_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the environment to reconnect."
+        }
+      },
+      "required": [
+        "type",
+        "environment_id"
+      ],
+      "additionalProperties": false,
+      "description": "Reconnect a session environment."
+    },
+    "SessionRequiredActionResourceFunctionCall": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "function_call"
+          ],
+          "default": "function_call",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `function_call`."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn that requested the function call."
+        },
+        "call_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID to include when submitting the function result."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The function name."
+        },
+        "arguments": {
+          "description": "The arguments supplied by the model."
+        }
+      },
+      "required": [
+        "type",
+        "turn_id",
+        "call_id",
+        "name",
+        "arguments"
+      ],
+      "additionalProperties": false,
+      "description": "Run a function tool and submit its result."
+    },
+    "SessionResource": {
+      "type": "object",
+      "properties": {
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 0
+          },
+          "propertyNames": {
+            "type": "string",
+            "minLength": 0
+          },
+          "minProperties": 0,
+          "description": "Custom string key-value pairs attached to the session."
+        },
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session."
+        },
+        "object": {
+          "type": "string",
+          "enum": [
+            "agent.session"
+          ],
+          "default": "agent.session",
+          "x-stainless-const": true,
+          "description": "The object type. Always `agent.session`."
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The Unix timestamp, in seconds, when the session was created."
+        },
+        "last_active_at": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The Unix timestamp, in seconds, when the session was last active."
+        },
+        "status": {
+          "$ref": "#/$defs/SessionStatusResource",
+          "description": "The current status of the session."
+        },
+        "required_actions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/SessionRequiredActionResource"
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "Actions that must be completed before the session can continue."
+        },
+        "error": {
+          "description": "The error that caused the session to fail, if any.",
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0
+        },
+        "agent": {
+          "$ref": "#/$defs/SessionAgentResource",
+          "description": "The agent running in the session."
+        },
+        "environment": {
+          "$ref": "#/$defs/EnvironmentResource",
+          "description": "The execution environment for the session."
+        },
+        "vault_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "The IDs of vaults made available to the session."
+        },
+        "usage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TokenUsageResource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Best-effort token usage for the session, or null if unknown. Recorded usage may change."
+        }
+      },
+      "required": [
+        "metadata",
+        "id",
+        "object",
+        "created_at",
+        "last_active_at",
+        "status",
+        "required_actions",
+        "error",
+        "agent",
+        "environment",
+        "vault_ids",
+        "usage"
+      ],
+      "additionalProperties": false,
+      "description": "A Managed Agents session."
+    },
+    "SessionStatusResource": {
+      "type": "string",
+      "enum": [
+        "idle",
+        "in_progress",
+        "requires_action",
+        "failed"
+      ],
+      "x-enumDescriptions": [
+        "The session has no turn in progress and is ready for input. A hosted environment may still be provisioning.",
+        "The session is processing a turn.",
+        "The session is waiting for one or more required actions.",
+        "The session failed."
+      ],
+      "description": "The current status of a session."
+    },
+    "SessionTurnErrorCodeResource": {
+      "type": "string",
+      "enum": [
+        "context_length_exceeded",
+        "session_budget_exceeded",
+        "usage_limit_exceeded",
+        "credit_balance_exhausted",
+        "rate_limit_exceeded",
+        "server_overloaded",
+        "cyber_policy",
+        "connection_failed",
+        "server_error",
+        "authentication_error",
+        "invalid_request",
+        "resource_not_found",
+        "sandbox_error",
+        "executor_version_incompatible",
+        "active_turn_not_steerable",
+        "request_timeout",
+        "internal_error"
+      ],
+      "x-enumDescriptions": [
+        "The request exceeds the model's context window.",
+        "The session has reached its usage budget.",
+        "The organization has reached a usage, plan, or billing limit.",
+        "The organization has no API credits remaining.",
+        "The request exceeds the available rate limit.",
+        "The model service is temporarily overloaded.",
+        "The request was rejected by a safety policy.",
+        "The request could not connect to the model service.",
+        "The model service encountered an unexpected error.",
+        "The API credentials are invalid or lack the required access.",
+        "The request contains invalid input or configuration.",
+        "The requested model or resource is unavailable.",
+        "The request could not complete in its execution environment.",
+        "The executor must be upgraded before it can run this turn.",
+        "The session cannot accept additional input while a request is running.",
+        "The request timed out before the model service responded.",
+        "An unexpected internal error prevented the session request from completing."
+      ],
+      "description": "Stable public categories for session request failures."
+    },
+    "SessionTurnErrorResource": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "$ref": "#/$defs/SessionTurnErrorCodeResource",
+          "description": "A stable, machine-readable failure category."
+        },
+        "message": {
+          "type": "string",
+          "minLength": 0,
+          "description": "A customer-safe explanation of the failure."
+        }
+      },
+      "required": [
+        "code",
+        "message"
+      ],
+      "additionalProperties": false,
+      "description": "A customer-safe error describing why a session request failed."
+    },
+    "SessionTurnItemResource": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/MessageItemResource"
+        },
+        {
+          "$ref": "#/$defs/ReasoningItemResource"
+        },
+        {
+          "$ref": "#/$defs/FunctionCallItemResource"
+        },
+        {
+          "$ref": "#/$defs/FunctionCallOutputItemResource"
+        },
+        {
+          "$ref": "#/$defs/AgentMessageItemResource"
+        },
+        {
+          "$ref": "#/$defs/McpCallItemResource"
+        },
+        {
+          "$ref": "#/$defs/WebSearchCallItemResource"
+        },
+        {
+          "$ref": "#/$defs/CommandExecutionItemResource"
+        },
+        {
+          "$ref": "#/$defs/CreateSubagentCallItemResource"
+        },
+        {
+          "$ref": "#/$defs/SendSubagentInputCallItemResource"
+        },
+        {
+          "$ref": "#/$defs/ResumeSubagentCallItemResource"
+        },
+        {
+          "$ref": "#/$defs/WaitForSubagentsCallItemResource"
+        },
+        {
+          "$ref": "#/$defs/InterruptSubagentCallItemResource"
+        },
+        {
+          "$ref": "#/$defs/CloseSubagentCallItemResource"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "message",
+        "reasoning",
+        "function_call",
+        "function_call_output",
+        "agent_message",
+        "mcp_call",
+        "web_search_call",
+        "command_execution",
+        "create_subagent_call",
+        "send_subagent_input_call",
+        "resume_subagent_call",
+        "wait_for_subagents_call",
+        "interrupt_subagent_call",
+        "close_subagent_call"
+      ],
+      "description": "An item associated with a session turn."
+    },
+    "SubagentObjectResource": {
+      "type": "string",
+      "enum": [
+        "agent.session.subagent"
+      ],
+      "default": "agent.session.subagent",
+      "x-stainless-const": true,
+      "description": "The object type for a subagent."
+    },
+    "SubagentResource": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the subagent."
+        },
+        "object": {
+          "$ref": "#/$defs/SubagentObjectResource",
+          "description": "The object type. Always `agent.session.subagent`."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session that owns the subagent."
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The runner-assigned nickname, or null when unavailable."
+        },
+        "instructions": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "$ref": "#/$defs/AgentContentResource"
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "Initial task content, or null when unavailable. Text may contain placeholders for images or audio when only a preview is available."
+        },
+        "parent_agent_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the agent that created this subagent."
+        },
+        "status": {
+          "$ref": "#/$defs/SubagentStatusResource",
+          "description": "The current status of the subagent."
+        },
+        "opened_at": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The Unix timestamp, in seconds, when the subagent was first opened. Resuming does not change it."
+        },
+        "closed_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64",
+          "description": "The Unix timestamp, in seconds, when the subagent was closed. Null while active, including after resume."
+        }
+      },
+      "required": [
+        "id",
+        "object",
+        "session_id",
+        "name",
+        "instructions",
+        "parent_agent_id",
+        "status",
+        "opened_at",
+        "closed_at"
+      ],
+      "additionalProperties": false,
+      "description": "A subagent created within a session."
+    },
+    "SubagentStatusResource": {
+      "type": "string",
+      "enum": [
+        "active",
+        "closed"
+      ],
+      "x-enumDescriptions": [
+        "The subagent remains available, including while idle between turns.",
+        "The subagent is closed."
+      ],
+      "description": "The current status of a subagent."
+    },
+    "SummaryTextResource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "summary_text"
+          ],
+          "default": "summary_text",
+          "x-stainless-const": true,
+          "description": "The content type. Always `summary_text`."
+        },
+        "text": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The reasoning summary text."
+        }
+      },
+      "required": [
+        "type",
+        "text"
+      ],
+      "additionalProperties": false,
+      "description": "A reasoning summary content part."
+    },
+    "TextFormatResource": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/TextFormatResourceText"
+        },
+        {
+          "$ref": "#/$defs/TextFormatResourceJsonSchema"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "text",
+        "json_schema"
+      ],
+      "description": "The effective output format for generated text."
+    },
+    "TextFormatResourceJsonSchema": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "json_schema"
+          ],
+          "default": "json_schema",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `json_schema`."
+        },
+        "schema": {
+          "type": "object",
+          "additionalProperties": {},
+          "propertyNames": {
+            "type": "string",
+            "minLength": 0
+          },
+          "minProperties": 0,
+          "description": "The JSON Schema that generated text must match."
+        }
+      },
+      "required": [
+        "type",
+        "schema"
+      ],
+      "additionalProperties": false,
+      "description": "Constrains generated text to a JSON Schema."
+    },
+    "TextFormatResourceText": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "text"
+          ],
+          "default": "text",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `text`."
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "description": "Generates ordinary text without a structured-output constraint."
+    },
+    "TextResource": {
+      "type": "object",
+      "properties": {
+        "format": {
+          "$ref": "#/$defs/TextFormatResource",
+          "description": "The effective output format. Defaults to ordinary text."
+        },
+        "verbosity": {
+          "$ref": "#/$defs/VerbosityResource",
+          "description": "The amount of text produced by the agent. Defaults to `medium`."
+        }
+      },
+      "required": [
+        "format",
+        "verbosity"
+      ],
+      "additionalProperties": false,
+      "description": "The text configuration used by an agent."
+    },
+    "TokenUsageResource": {
+      "type": "object",
+      "properties": {
+        "input_tokens": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The number of input tokens used by the agent."
+        },
+        "input_tokens_details": {
+          "$ref": "#/$defs/InputTokensDetailsResource",
+          "description": "A breakdown of the agent's input token usage."
+        },
+        "output_tokens": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The number of output tokens generated by the agent."
+        },
+        "output_tokens_details": {
+          "$ref": "#/$defs/OutputTokensDetailsResource",
+          "description": "A breakdown of the agent's output token usage."
+        },
+        "total_tokens": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The total number of input and output tokens used by the agent."
+        }
+      },
+      "required": [
+        "input_tokens",
+        "input_tokens_details",
+        "output_tokens",
+        "output_tokens_details",
+        "total_tokens"
+      ],
+      "additionalProperties": false,
+      "description": "Recorded token usage for a session or turn. Usage is best effort and may change."
+    },
+    "TurnObjectResource": {
+      "type": "string",
+      "enum": [
+        "agent.session.turn"
+      ],
+      "default": "agent.session.turn",
+      "x-stainless-const": true,
+      "description": "The object type for a turn."
+    },
+    "TurnResource": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn."
+        },
+        "object": {
+          "$ref": "#/$defs/TurnObjectResource",
+          "description": "The object type. Always `agent.session.turn`."
+        },
+        "session_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the session that owns the turn."
+        },
+        "agent_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the agent that ran the turn."
+        },
+        "subagent_id": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The ID of the subagent that ran the turn, if applicable."
+        },
+        "status": {
+          "$ref": "#/$defs/TurnStatusResource",
+          "description": "The current status of the turn."
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The Unix timestamp, in seconds, used to order the turn by creation time. Subagent turns use their start time, falling back to completion time or the subagent opening time when the preceding timestamps are unavailable."
+        },
+        "started_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64",
+          "description": "The Unix timestamp, in seconds, when the turn started."
+        },
+        "completed_at": {
+          "type": [
+            "integer",
+            "null"
+          ],
+          "format": "int64",
+          "description": "The Unix timestamp, in seconds, when the turn reached a terminal state."
+        },
+        "error": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/SessionTurnErrorResource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "A customer-safe error. Non-null only for a failed turn."
+        },
+        "usage": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/TokenUsageResource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Best-effort token usage for the turn, or null if unknown. Recorded usage may change."
+        }
+      },
+      "required": [
+        "id",
+        "object",
+        "session_id",
+        "agent_id",
+        "subagent_id",
+        "status",
+        "created_at",
+        "started_at",
+        "completed_at",
+        "error",
+        "usage"
+      ],
+      "additionalProperties": false,
+      "description": "The canonical public representation of a session turn."
+    },
+    "TurnStatusResource": {
+      "type": "string",
+      "enum": [
+        "queued",
+        "in_progress",
+        "waiting",
+        "completed",
+        "failed",
+        "cancelled"
+      ],
+      "x-enumDescriptions": [
+        "The turn is waiting to start.",
+        "The turn is in progress.",
+        "The turn is waiting for external input.",
+        "The turn completed successfully.",
+        "The turn failed.",
+        "The turn was cancelled."
+      ],
+      "description": "The current status of a turn."
+    },
+    "VerbosityResource": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "description": "The amount of text produced by an agent."
+    },
+    "WaitForSubagentsCallItemResource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "wait_for_subagents_call"
+          ],
+          "default": "wait_for_subagents_call",
+          "x-stainless-const": true,
+          "x-enumDescriptions": [
+            "The current public item type."
+          ],
+          "description": "The item type. Always `wait_for_subagents_call`."
+        },
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the tool call item."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn that contains this item."
+        },
+        "status": {
+          "$ref": "#/$defs/FunctionCallStatusResource",
+          "description": "The status of the tool call."
+        },
+        "sender_agent_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the agent waiting for results."
+        },
+        "recipient_agent_ids": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "The IDs of the agents to wait for."
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "turn_id",
+        "status",
+        "sender_agent_id",
+        "recipient_agent_ids"
+      ],
+      "additionalProperties": false,
+      "description": "A request to wait for one or more subagents."
+    },
+    "WebSearchActionResource": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/WebSearchActionResourceSearch"
+        },
+        {
+          "$ref": "#/$defs/WebSearchActionResourceOpenPage"
+        },
+        {
+          "$ref": "#/$defs/WebSearchActionResourceFindInPage"
+        },
+        {
+          "$ref": "#/$defs/WebSearchActionResourceOther"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "search",
+        "open_page",
+        "find_in_page",
+        "other"
+      ],
+      "description": "An action performed by the web search tool."
+    },
+    "WebSearchActionResourceFindInPage": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "find_in_page"
+          ],
+          "default": "find_in_page",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `find_in_page`."
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The URL of the page that was searched."
+        },
+        "pattern": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The text pattern that was searched for."
+        }
+      },
+      "required": [
+        "type",
+        "url",
+        "pattern"
+      ],
+      "additionalProperties": false,
+      "description": "Finds text within a web page."
+    },
+    "WebSearchActionResourceOpenPage": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "open_page"
+          ],
+          "default": "open_page",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `open_page`."
+        },
+        "url": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The URL of the page that was opened."
+        }
+      },
+      "required": [
+        "type",
+        "url"
+      ],
+      "additionalProperties": false,
+      "description": "Opens a web page."
+    },
+    "WebSearchActionResourceOther": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "other"
+          ],
+          "default": "other",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `other`."
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "description": "Another web search action."
+    },
+    "WebSearchActionResourceSearch": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "search"
+          ],
+          "default": "search",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `search`."
+        },
+        "query": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The search query, when a single query was used."
+        },
+        "queries": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string",
+            "minLength": 0
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "The search queries, when multiple queries were used."
+        }
+      },
+      "required": [
+        "type",
+        "query",
+        "queries"
+      ],
+      "additionalProperties": false,
+      "description": "A search query or group of search queries."
+    },
+    "WebSearchCallItemResource": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "web_search_call"
+          ],
+          "default": "web_search_call",
+          "x-stainless-const": true,
+          "description": "The item type. Always `web_search_call`."
+        },
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the web search call."
+        },
+        "turn_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the turn that contains this item."
+        },
+        "status": {
+          "$ref": "#/$defs/OutputItemStatusResource",
+          "description": "The status of the web search call."
+        },
+        "action": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/WebSearchActionResource"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "The action performed by the web search tool."
+        }
+      },
+      "required": [
+        "type",
+        "id",
+        "turn_id",
+        "status",
+        "action"
+      ],
+      "additionalProperties": false,
+      "description": "A web search call produced by the agent."
+    },
+    "WebSearchContextSizeResource": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ],
+      "description": "The amount of web search context made available to the model."
+    },
+    "WebSearchLocationResource": {
+      "type": "object",
+      "properties": {
+        "country": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The two-letter ISO country code, such as `US`."
+        },
+        "region": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The region or state name."
+        },
+        "city": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The city name."
+        },
+        "timezone": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The IANA timezone, such as `America/Los_Angeles`."
+        }
+      },
+      "required": [
+        "country",
+        "region",
+        "city",
+        "timezone"
+      ],
+      "additionalProperties": false,
+      "description": "Approximate user location used to localize web search results."
+    },
+    "WebSearchModeResource": {
+      "type": "string",
+      "enum": [
+        "disabled",
+        "cached",
+        "live"
+      ],
+      "description": "The source used for web search results."
+    }
+  }
+}

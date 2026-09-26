@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/openai/main/json-schema/openai-webhook-endpoint-list-resource-schema.json",
+  "title": "WebhookEndpointListResource",
+  "x-generated": "2026-09-23",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/openai-webhook-endpoints-api-openapi.yml#/components/schemas/WebhookEndpointListResource",
+  "properties": {
+    "object": {
+      "type": "string",
+      "enum": [
+        "list"
+      ],
+      "description": "The object type, which is always list.",
+      "default": "list",
+      "x-stainless-const": true
+    },
+    "data": {
+      "items": {
+        "$ref": "#/$defs/WebhookEndpointBody"
+      },
+      "type": "array",
+      "description": "The webhook endpoints in this page."
+    },
+    "first_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "description": "The ID of the first endpoint in this page."
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "last_id": {
+      "anyOf": [
+        {
+          "type": "string",
+          "description": "The ID of the last endpoint in this page."
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "has_more": {
+      "type": "boolean",
+      "description": "Whether more webhook endpoints are available."
+    }
+  },
+  "type": "object",
+  "required": [
+    "object",
+    "data",
+    "first_id",
+    "last_id",
+    "has_more"
+  ],
+  "$defs": {
+    "WebhookEndpointBody": {
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The unique ID of the webhook endpoint."
+        },
+        "object": {
+          "type": "string",
+          "enum": [
+            "webhook_endpoint"
+          ],
+          "description": "The object type, which is always webhook_endpoint.",
+          "default": "webhook_endpoint",
+          "x-stainless-const": true
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "unixtime",
+          "description": "The Unix timestamp when the endpoint was created."
+        },
+        "updated_at": {
+          "type": "integer",
+          "format": "unixtime",
+          "description": "The Unix timestamp of the last endpoint configuration or signing-secret change. Initialized at creation; tests and unchanged updates do not advance it."
+        },
+        "name": {
+          "type": "string",
+          "description": "The human-readable name of the endpoint."
+        },
+        "url": {
+          "type": "string",
+          "description": "The HTTPS URL that receives webhook deliveries."
+        },
+        "event_types": {
+          "items": {
+            "type": "string"
+          },
+          "type": "array",
+          "description": "The event types that trigger deliveries to this endpoint."
+        },
+        "signing_secret_hint": {
+          "anyOf": [
+            {
+              "type": "string",
+              "description": "A masked hint for the endpoint's signing secret."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "type": "object",
+      "required": [
+        "id",
+        "object",
+        "created_at",
+        "name",
+        "url",
+        "event_types",
+        "signing_secret_hint"
+      ]
+    }
+  }
+}

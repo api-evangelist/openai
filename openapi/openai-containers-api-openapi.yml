@@ -9,7 +9,7 @@ info:
     url: https://help.openai.com/
   license:
     name: MIT
-    url: https://github.com/openai/openai-openapi/blob/master/LICENSE
+    identifier: MIT
 servers:
 - url: https://api.openai.com/v1
 security:
@@ -19,8 +19,8 @@ tags:
 paths:
   /containers:
     get:
-      summary: List Containers
-      description: Lists containers.
+      summary: List containers
+      description: List Containers
       operationId: ListContainers
       parameters:
       - name: limit
@@ -63,33 +63,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ContainerListResource'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       x-oaiMeta:
-        name: List containers
         group: containers
         path: get
         examples:
           request:
             curl: "curl https://api.openai.com/v1/containers \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const containerListResponse of client.containers.list()) {\n  console.log(containerListResponse.id);\n}"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    api_key=os.environ.get(\"OPENAI_API_KEY\"),  # This is the default and can be omitted\n)\npage = client.containers.list()\npage = page.data[0]\nprint(page.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAPIKey(\"My API Key\"),\n\t)\n\tpage, err := client.Containers.List(context.TODO(), openai.ContainerListParams{})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", page)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.containers.ContainerListPage;\nimport com.openai.models.containers.ContainerListParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        ContainerListPage page = client.containers().list();\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(api_key: "My API Key")
-
-
-              page = openai.containers.list
-
-
-              puts(page)'
           response: "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n        \"id\": \"cntr_682dfebaacac8198bbfe9c2474fb6f4a085685cbe3cb5863\",\n        \"object\": \"container\",\n        \"created_at\": 1747844794,\n        \"status\": \"running\",\n        \"expires_after\": {\n            \"anchor\": \"last_active_at\",\n            \"minutes\": 20\n        },\n        \"last_active_at\": 1747844794,\n        \"memory_limit\": \"4g\",\n        \"name\": \"My Container\"\n    }\n  ],\n  \"first_id\": \"container_123\",\n  \"last_id\": \"container_123\",\n  \"has_more\": false\n}\n"
       tags:
       - Containers
     post:
-      summary: Create Container
-      description: Creates a container.
+      summary: Create container
+      description: Create Container
       operationId: CreateContainer
       parameters: []
       requestBody:
@@ -104,34 +91,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ContainerResource'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       x-oaiMeta:
-        name: Create container
         group: containers
         path: post
         examples:
           request:
             curl: "curl https://api.openai.com/v1/containers \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n        \"name\": \"My Container\",\n        \"memory_limit\": \"4g\",\n        \"skills\": [\n          {\n            \"type\": \"skill_reference\",\n            \"skill_id\": \"skill_4db6f1a2c9e73508b41f9da06e2c7b5f\"\n          },\n          {\n            \"type\": \"skill_reference\",\n            \"skill_id\": \"openai-spreadsheets\",\n            \"version\": \"latest\"\n          }\n        ],\n        \"network_policy\": {\n          \"type\": \"allowlist\",\n          \"allowed_domains\": [\"api.buildkite.com\"]\n        }\n      }'\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted\n});\n\nconst container = await client.containers.create({ name: 'name' });\n\nconsole.log(container.id);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    api_key=os.environ.get(\"OPENAI_API_KEY\"),  # This is the default and can be omitted\n)\ncontainer = client.containers.create(\n    name=\"name\",\n)\nprint(container.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAPIKey(\"My API Key\"),\n\t)\n\tcontainer, err := client.Containers.New(context.TODO(), openai.ContainerNewParams{\n\t\tName: \"name\",\n\t})\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", container.ID)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.containers.ContainerCreateParams;\nimport com.openai.models.containers.ContainerCreateResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        ContainerCreateParams params = ContainerCreateParams.builder()\n            .name(\"name\")\n            .build();\n        ContainerCreateResponse container = client.containers().create(params);\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(api_key: "My API Key")
-
-
-              container = openai.containers.create(name: "name")
-
-
-              puts(container)'
           response: "{\n    \"id\": \"cntr_682e30645a488191b6363a0cbefc0f0a025ec61b66250591\",\n    \"object\": \"container\",\n    \"created_at\": 1747857508,\n    \"status\": \"running\",\n    \"expires_after\": {\n        \"anchor\": \"last_active_at\",\n        \"minutes\": 20\n    },\n    \"last_active_at\": 1747857508,\n    \"network_policy\": {\n        \"type\": \"allowlist\",\n        \"allowed_domains\": [\"api.buildkite.com\"]\n    },\n    \"memory_limit\": \"4g\",\n    \"name\": \"My Container\"\n}\n"
       tags:
       - Containers
   /containers/{container_id}:
     get:
-      summary: Retrieve Container
-      description: Retrieves a container.
+      summary: Retrieve container
+      description: Retrieve Container
       operationId: RetrieveContainer
       parameters:
       - name: container_id
@@ -146,34 +120,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ContainerResource'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       x-oaiMeta:
-        name: Retrieve container
         group: containers
         path: get
         examples:
           request:
             curl: "curl https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a085685cbe3cb5863 \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted\n});\n\nconst container = await client.containers.retrieve('container_id');\n\nconsole.log(container.id);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    api_key=os.environ.get(\"OPENAI_API_KEY\"),  # This is the default and can be omitted\n)\ncontainer = client.containers.retrieve(\n    \"container_id\",\n)\nprint(container.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAPIKey(\"My API Key\"),\n\t)\n\tcontainer, err := client.Containers.Get(context.TODO(), \"container_id\")\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", container.ID)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.containers.ContainerRetrieveParams;\nimport com.openai.models.containers.ContainerRetrieveResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        ContainerRetrieveResponse container = client.containers().retrieve(\"container_id\");\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(api_key: "My API Key")
-
-
-              container = openai.containers.retrieve("container_id")
-
-
-              puts(container)'
           response: "{\n    \"id\": \"cntr_682dfebaacac8198bbfe9c2474fb6f4a085685cbe3cb5863\",\n    \"object\": \"container\",\n    \"created_at\": 1747844794,\n    \"status\": \"running\",\n    \"expires_after\": {\n        \"anchor\": \"last_active_at\",\n        \"minutes\": 20\n    },\n    \"last_active_at\": 1747844794,\n    \"memory_limit\": \"4g\",\n    \"name\": \"My Container\"\n}\n"
       tags:
       - Containers
     delete:
       operationId: DeleteContainer
-      summary: Delete Container
-      description: Delete a container.
+      summary: Delete a container
+      description: Delete Container
       parameters:
       - name: container_id
         in: path
@@ -184,34 +145,24 @@ paths:
       responses:
         '200':
           description: OK
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       x-oaiMeta:
-        name: Delete a container
         group: containers
         path: delete
         examples:
           request:
             curl: "curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a085685cbe3cb5863 \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.containers.delete('container_id');"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    api_key=os.environ.get(\"OPENAI_API_KEY\"),  # This is the default and can be omitted\n)\nclient.containers.delete(\n    \"container_id\",\n)"
-            go: "package main\n\nimport (\n\t\"context\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAPIKey(\"My API Key\"),\n\t)\n\terr := client.Containers.Delete(context.TODO(), \"container_id\")\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.containers.ContainerDeleteParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        client.containers().delete(\"container_id\");\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(api_key: "My API Key")
-
-
-              result = openai.containers.delete("container_id")
-
-
-              puts(result)'
           response: "{\n    \"id\": \"cntr_682dfebaacac8198bbfe9c2474fb6f4a085685cbe3cb5863\",\n    \"object\": \"container.deleted\",\n    \"deleted\": true\n}\n"
       tags:
       - Containers
   /containers/{container_id}/files:
     post:
-      summary: Create a Container File You can send either a multipart/form-data request with…
-      description: Creates a container file.
+      summary: Create container file
+      description: 'Create a Container File
+
+
+        You can send either a multipart/form-data request with the raw file content, or a JSON request with a file ID.'
       operationId: CreateContainerFile
       parameters:
       - name: container_id
@@ -235,33 +186,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ContainerFileResource'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       x-oaiMeta:
-        name: Create container file
         group: containers
         path: post
         examples:
           request:
             curl: "curl https://api.openai.com/v1/containers/cntr_682e0e7318108198aa783fd921ff305e08e78805b9fdbb04/files \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\" \\\n  -F file=\"@example.txt\"\n"
-            node.js: "import fs from 'fs';\nimport OpenAI from 'openai';\n\nconst client = new OpenAI({\n  apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted\n});\n\nconst file = await client.containers.files.create('container_id');\n\nconsole.log(file.id);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    api_key=os.environ.get(\"OPENAI_API_KEY\"),  # This is the default and can be omitted\n)\nfile = client.containers.files.create(\n    container_id=\"container_id\",\n)\nprint(file.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAPIKey(\"My API Key\"),\n\t)\n\tfile, err := client.Containers.Files.New(\n\t\tcontext.TODO(),\n\t\t\"container_id\",\n\t\topenai.ContainerFileNewParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", file.ID)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.containers.files.FileCreateParams;\nimport com.openai.models.containers.files.FileCreateResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        FileCreateResponse file = client.containers().files().create(\"container_id\");\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(api_key: "My API Key")
-
-
-              file = openai.containers.files.create("container_id")
-
-
-              puts(file)'
           response: "{\n  \"id\": \"cfile_682e0e8a43c88191a7978f477a09bdf5\",\n  \"object\": \"container.file\",\n  \"created_at\": 1747848842,\n  \"bytes\": 880,\n  \"container_id\": \"cntr_682e0e7318108198aa783fd921ff305e08e78805b9fdbb04\",\n  \"path\": \"/mnt/data/88e12fa445d32636f190a0b33daed6cb-tsconfig.json\",\n  \"source\": \"user\"\n}\n"
       tags:
       - Containers
     get:
-      summary: List Container files
-      description: Lists container files.
+      summary: List container files
+      description: List Container files
       operationId: ListContainerFiles
       parameters:
       - name: container_id
@@ -303,34 +241,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ContainerFileListResource'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       x-oaiMeta:
-        name: List container files
         group: containers
         path: get
         examples:
           request:
             curl: "curl https://api.openai.com/v1/containers/cntr_682e0e7318108198aa783fd921ff305e08e78805b9fdbb04/files \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const fileListResponse of client.containers.files.list('container_id')) {\n  console.log(fileListResponse.id);\n}"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    api_key=os.environ.get(\"OPENAI_API_KEY\"),  # This is the default and can be omitted\n)\npage = client.containers.files.list(\n    container_id=\"container_id\",\n)\npage = page.data[0]\nprint(page.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAPIKey(\"My API Key\"),\n\t)\n\tpage, err := client.Containers.Files.List(\n\t\tcontext.TODO(),\n\t\t\"container_id\",\n\t\topenai.ContainerFileListParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", page)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.containers.files.FileListPage;\nimport com.openai.models.containers.files.FileListParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        FileListPage page = client.containers().files().list(\"container_id\");\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(api_key: "My API Key")
-
-
-              page = openai.containers.files.list("container_id")
-
-
-              puts(page)'
           response: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"cfile_682e0e8a43c88191a7978f477a09bdf5\",\n            \"object\": \"container.file\",\n            \"created_at\": 1747848842,\n            \"bytes\": 880,\n            \"container_id\": \"cntr_682e0e7318108198aa783fd921ff305e08e78805b9fdbb04\",\n            \"path\": \"/mnt/data/88e12fa445d32636f190a0b33daed6cb-tsconfig.json\",\n            \"source\": \"user\"\n        }\n    ],\n    \"first_id\": \"cfile_682e0e8a43c88191a7978f477a09bdf5\",\n    \"has_more\": false,\n    \"last_id\": \"cfile_682e0e8a43c88191a7978f477a09bdf5\"\n}\n"
       tags:
       - Containers
   /containers/{container_id}/files/{file_id}:
     get:
-      summary: Retrieve Container File
-      description: Retrieves a container file.
+      summary: Retrieve container file
+      description: Retrieve Container File
       operationId: RetrieveContainerFile
       parameters:
       - name: container_id
@@ -350,34 +275,21 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ContainerFileResource'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       x-oaiMeta:
-        name: Retrieve container file
         group: containers
         path: get
         examples:
           request:
             curl: "curl https://api.openai.com/v1/containers/container_123/files/file_456 \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted\n});\n\nconst file = await client.containers.files.retrieve('file_id', { container_id: 'container_id' });\n\nconsole.log(file.id);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    api_key=os.environ.get(\"OPENAI_API_KEY\"),  # This is the default and can be omitted\n)\nfile = client.containers.files.retrieve(\n    file_id=\"file_id\",\n    container_id=\"container_id\",\n)\nprint(file.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAPIKey(\"My API Key\"),\n\t)\n\tfile, err := client.Containers.Files.Get(\n\t\tcontext.TODO(),\n\t\t\"container_id\",\n\t\t\"file_id\",\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", file.ID)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.containers.files.FileRetrieveParams;\nimport com.openai.models.containers.files.FileRetrieveResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        FileRetrieveParams params = FileRetrieveParams.builder()\n            .containerId(\"container_id\")\n            .fileId(\"file_id\")\n            .build();\n        FileRetrieveResponse file = client.containers().files().retrieve(params);\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(api_key: "My API Key")
-
-
-              file = openai.containers.files.retrieve("file_id", container_id: "container_id")
-
-
-              puts(file)'
           response: "{\n    \"id\": \"cfile_682e0e8a43c88191a7978f477a09bdf5\",\n    \"object\": \"container.file\",\n    \"created_at\": 1747848842,\n    \"bytes\": 880,\n    \"container_id\": \"cntr_682e0e7318108198aa783fd921ff305e08e78805b9fdbb04\",\n    \"path\": \"/mnt/data/88e12fa445d32636f190a0b33daed6cb-tsconfig.json\",\n    \"source\": \"user\"\n}\n"
       tags:
       - Containers
     delete:
       operationId: DeleteContainerFile
-      summary: Delete Container File
-      description: Delete a container file.
+      summary: Delete a container file
+      description: Delete Container File
       parameters:
       - name: container_id
         in: path
@@ -392,34 +304,21 @@ paths:
       responses:
         '200':
           description: OK
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       x-oaiMeta:
-        name: Delete a container file
         group: containers
         path: delete
         examples:
           request:
             curl: "curl -X DELETE https://api.openai.com/v1/containers/cntr_682dfebaacac8198bbfe9c2474fb6f4a085685cbe3cb5863/files/cfile_682e0e8a43c88191a7978f477a09bdf5 \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted\n});\n\nawait client.containers.files.delete('file_id', { container_id: 'container_id' });"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    api_key=os.environ.get(\"OPENAI_API_KEY\"),  # This is the default and can be omitted\n)\nclient.containers.files.delete(\n    file_id=\"file_id\",\n    container_id=\"container_id\",\n)"
-            go: "package main\n\nimport (\n\t\"context\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAPIKey(\"My API Key\"),\n\t)\n\terr := client.Containers.Files.Delete(\n\t\tcontext.TODO(),\n\t\t\"container_id\",\n\t\t\"file_id\",\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.containers.files.FileDeleteParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        FileDeleteParams params = FileDeleteParams.builder()\n            .containerId(\"container_id\")\n            .fileId(\"file_id\")\n            .build();\n        client.containers().files().delete(params);\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(api_key: "My API Key")
-
-
-              result = openai.containers.files.delete("file_id", container_id: "container_id")
-
-
-              puts(result)'
           response: "{\n    \"id\": \"cfile_682e0e8a43c88191a7978f477a09bdf5\",\n    \"object\": \"container.file.deleted\",\n    \"deleted\": true\n}\n"
       tags:
       - Containers
   /containers/{container_id}/files/{file_id}/content:
     get:
-      summary: Retrieve Container File Content
-      description: Retrieves a container file content.
+      summary: Retrieve container file content
+      description: Retrieve Container File Content
       operationId: RetrieveContainerFileContent
       parameters:
       - name: container_id
@@ -435,27 +334,14 @@ paths:
       responses:
         '200':
           description: Success
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       x-oaiMeta:
-        name: Retrieve container file content
         group: containers
         path: get
         examples:
           request:
             curl: "curl https://api.openai.com/v1/containers/container_123/files/cfile_456/content \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  apiKey: process.env['OPENAI_API_KEY'], // This is the default and can be omitted\n});\n\nconst content = await client.containers.files.content.retrieve('file_id', {\n  container_id: 'container_id',\n});\n\nconsole.log(content);\n\nconst data = await content.blob();\nconsole.log(data);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    api_key=os.environ.get(\"OPENAI_API_KEY\"),  # This is the default and can be omitted\n)\ncontent = client.containers.files.content.retrieve(\n    file_id=\"file_id\",\n    container_id=\"container_id\",\n)\nprint(content)\ndata = content.read()\nprint(data)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAPIKey(\"My API Key\"),\n\t)\n\tcontent, err := client.Containers.Files.Content.Get(\n\t\tcontext.TODO(),\n\t\t\"container_id\",\n\t\t\"file_id\",\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", content)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.core.http.HttpResponse;\nimport com.openai.models.containers.files.content.ContentRetrieveParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        ContentRetrieveParams params = ContentRetrieveParams.builder()\n            .containerId(\"container_id\")\n            .fileId(\"file_id\")\n            .build();\n        HttpResponse content = client.containers().files().content().retrieve(params);\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(api_key: "My API Key")
-
-
-              content = openai.containers.files.content.retrieve("file_id", container_id: "container_id")
-
-
-              puts(content)'
           response: '<binary content of the file>
 
             '
@@ -463,30 +349,53 @@ paths:
       - Containers
 components:
   schemas:
-    InlineSkillParam:
+    Error:
+      type: object
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
+    ContainerNetworkPolicyAllowlistParam:
       properties:
         type:
           type: string
           enum:
-          - inline
-          description: Defines an inline skill for this request.
-          default: inline
+          - allowlist
+          description: Allow outbound network access only to specified domains. Always `allowlist`.
+          default: allowlist
           x-stainless-const: true
-        name:
-          type: string
-          description: The name of the skill.
-        description:
-          type: string
-          description: The description of the skill.
-        source:
-          $ref: '#/components/schemas/InlineSkillSourceParam'
-          description: Inline skill payload
+        allowed_domains:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          description: A list of allowed domains when type is `allowlist`.
+        domain_secrets:
+          items:
+            $ref: '#/components/schemas/ContainerNetworkPolicyDomainSecretParam'
+          type: array
+          minItems: 1
+          description: Optional domain-scoped secrets for allowlisted domains.
       type: object
       required:
       - type
-      - name
-      - description
-      - source
+      - allowed_domains
     SkillReferenceParam:
       properties:
         type:
@@ -508,6 +417,150 @@ components:
       required:
       - type
       - skill_id
+    ContainerNetworkPolicyDisabledParam:
+      properties:
+        type:
+          type: string
+          enum:
+          - disabled
+          description: Disable outbound network access. Always `disabled`.
+          default: disabled
+          x-stainless-const: true
+      type: object
+      required:
+      - type
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    ContainerFileListResource:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: The type of object returned, must be 'list'.
+        data:
+          type: array
+          description: A list of container files.
+          items:
+            $ref: '#/components/schemas/ContainerFileResource'
+        first_id:
+          type: string
+          description: The ID of the first file in the list.
+        last_id:
+          type: string
+          description: The ID of the last file in the list.
+        has_more:
+          type: boolean
+          description: Whether there are more files available.
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    CreateContainerFileBody:
+      type: object
+      properties:
+        file_id:
+          type: string
+          description: Name of the file to create.
+        file:
+          description: 'The File object (not file name) to be uploaded.
+
+            '
+          type: string
+          format: binary
+      required: []
+    ContainerNetworkPolicyDomainSecretParam:
+      properties:
+        domain:
+          type: string
+          minLength: 1
+          description: The domain associated with the secret.
+        name:
+          type: string
+          minLength: 1
+          description: The name of the secret to inject for the domain.
+        value:
+          type: string
+          maxLength: 10485760
+          minLength: 1
+          description: The secret value to inject for the domain.
+      type: object
+      required:
+      - domain
+      - name
+      - value
+    CreateContainerBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the container to create.
+        file_ids:
+          type: array
+          description: IDs of files to copy to the container.
+          items:
+            type: string
+        expires_after:
+          type: object
+          description: Container expiration time in seconds relative to the 'anchor' time.
+          properties:
+            anchor:
+              type: string
+              enum:
+              - last_active_at
+              description: Time anchor for the expiration time. Currently only 'last_active_at' is supported.
+            minutes:
+              type: integer
+          required:
+          - anchor
+          - minutes
+        skills:
+          type: array
+          description: An optional list of skills referenced by id or inline data.
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/SkillReferenceParam'
+            - $ref: '#/components/schemas/InlineSkillParam'
+            discriminator:
+              propertyName: type
+        memory_limit:
+          type: string
+          enum:
+          - 1g
+          - 4g
+          - 16g
+          - 64g
+          description: Optional memory limit for the container. Defaults to "1g".
+        network_policy:
+          description: Network access policy for the container.
+          oneOf:
+          - $ref: '#/components/schemas/ContainerNetworkPolicyDisabledParam'
+          - $ref: '#/components/schemas/ContainerNetworkPolicyAllowlistParam'
+          discriminator:
+            propertyName: type
+      required:
+      - name
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
     ContainerResource:
       type: object
       title: The container object
@@ -588,26 +641,51 @@ components:
       x-oaiMeta:
         name: The container object
         example: "{\n   \"id\": \"cntr_682dfebaacac8198bbfe9c2474fb6f4a085685cbe3cb5863\",\n   \"object\": \"container\",\n   \"created_at\": 1747844794,\n   \"status\": \"running\",\n   \"expires_after\": {\n     \"anchor\": \"last_active_at\",\n     \"minutes\": 20\n   },\n   \"last_active_at\": 1747844794,\n   \"memory_limit\": \"1g\",\n   \"name\": \"My Container\"\n}\n"
-    ContainerNetworkPolicyDomainSecretParam:
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    ContainerListResource:
+      type: object
       properties:
-        domain:
+        object:
           type: string
-          minLength: 1
-          description: The domain associated with the secret.
-        name:
+          enum:
+          - list
+          description: The type of object returned, must be 'list'.
+        data:
+          type: array
+          description: A list of containers.
+          items:
+            $ref: '#/components/schemas/ContainerResource'
+        first_id:
           type: string
-          minLength: 1
-          description: The name of the secret to inject for the domain.
-        value:
+          description: The ID of the first container in the list.
+        last_id:
           type: string
-          maxLength: 10485760
-          minLength: 1
-          description: The secret value to inject for the domain.
+          description: The ID of the last container in the list.
+        has_more:
+          type: boolean
+          description: Whether there are more containers available.
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
       type: object
       required:
-      - domain
-      - name
-      - value
+      - message
     InlineSkillSourceParam:
       properties:
         type:
@@ -635,46 +713,6 @@ components:
       - media_type
       - data
       description: Inline skill payload
-    ContainerNetworkPolicyDisabledParam:
-      properties:
-        type:
-          type: string
-          enum:
-          - disabled
-          description: Disable outbound network access. Always `disabled`.
-          default: disabled
-          x-stainless-const: true
-      type: object
-      required:
-      - type
-    ContainerFileListResource:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: The type of object returned, must be 'list'.
-        data:
-          type: array
-          description: A list of container files.
-          items:
-            $ref: '#/components/schemas/ContainerFileResource'
-        first_id:
-          type: string
-          description: The ID of the first file in the list.
-        last_id:
-          type: string
-          description: The ID of the last file in the list.
-        has_more:
-          type: boolean
-          description: Whether there are more files available.
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
     ContainerFileResource:
       type: object
       title: The container file object
@@ -712,123 +750,43 @@ components:
       x-oaiMeta:
         name: The container file object
         example: "{\n    \"id\": \"cfile_682e0e8a43c88191a7978f477a09bdf5\",\n    \"object\": \"container.file\",\n    \"created_at\": 1747848842,\n    \"bytes\": 880,\n    \"container_id\": \"cntr_682e0e7318108198aa783fd921ff305e08e78805b9fdbb04\",\n    \"path\": \"/mnt/data/88e12fa445d32636f190a0b33daed6cb-tsconfig.json\",\n    \"source\": \"user\"\n}\n"
-    CreateContainerBody:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the container to create.
-        file_ids:
-          type: array
-          description: IDs of files to copy to the container.
-          items:
-            type: string
-        expires_after:
-          type: object
-          description: Container expiration time in seconds relative to the 'anchor' time.
-          properties:
-            anchor:
-              type: string
-              enum:
-              - last_active_at
-              description: Time anchor for the expiration time. Currently only 'last_active_at' is supported.
-            minutes:
-              type: integer
-          required:
-          - anchor
-          - minutes
-        skills:
-          type: array
-          description: An optional list of skills referenced by id or inline data.
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/SkillReferenceParam'
-            - $ref: '#/components/schemas/InlineSkillParam'
-            discriminator:
-              propertyName: type
-        memory_limit:
-          type: string
-          enum:
-          - 1g
-          - 4g
-          - 16g
-          - 64g
-          description: Optional memory limit for the container. Defaults to "1g".
-        network_policy:
-          description: Network access policy for the container.
-          oneOf:
-          - $ref: '#/components/schemas/ContainerNetworkPolicyDisabledParam'
-          - $ref: '#/components/schemas/ContainerNetworkPolicyAllowlistParam'
-          discriminator:
-            propertyName: type
-      required:
-      - name
-    CreateContainerFileBody:
-      type: object
-      properties:
-        file_id:
-          type: string
-          description: Name of the file to create.
-        file:
-          description: 'The File object (not file name) to be uploaded.
-
-            '
-          type: string
-          format: binary
-      required: []
-    ContainerListResource:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: The type of object returned, must be 'list'.
-        data:
-          type: array
-          description: A list of containers.
-          items:
-            $ref: '#/components/schemas/ContainerResource'
-        first_id:
-          type: string
-          description: The ID of the first container in the list.
-        last_id:
-          type: string
-          description: The ID of the last container in the list.
-        has_more:
-          type: boolean
-          description: Whether there are more containers available.
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
-    ContainerNetworkPolicyAllowlistParam:
+    InlineSkillParam:
       properties:
         type:
           type: string
           enum:
-          - allowlist
-          description: Allow outbound network access only to specified domains. Always `allowlist`.
-          default: allowlist
+          - inline
+          description: Defines an inline skill for this request.
+          default: inline
           x-stainless-const: true
-        allowed_domains:
-          items:
-            type: string
-          type: array
-          minItems: 1
-          description: A list of allowed domains when type is `allowlist`.
-        domain_secrets:
-          items:
-            $ref: '#/components/schemas/ContainerNetworkPolicyDomainSecretParam'
-          type: array
-          minItems: 1
-          description: Optional domain-scoped secrets for allowlisted domains.
+        name:
+          type: string
+          description: The name of the skill.
+        description:
+          type: string
+          description: The description of the skill.
+        source:
+          $ref: '#/components/schemas/InlineSkillSourceParam'
+          description: Inline skill payload
       type: object
       required:
       - type
-      - allowed_domains
+      - name
+      - description
+      - source
+  responses:
+    TooManyRequests:
+      description: The request was rejected because a rate limit was exceeded.
+      headers:
+        Retry-After:
+          description: The minimum number of seconds to wait before retrying. This header is returned when the server has computed a retry delay and may be omitted for 429 responses that require user action.
+          schema:
+            type: integer
+            minimum: 1
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   securitySchemes:
     ApiKeyAuth:
       type: http
@@ -851,6 +809,8 @@ x-oaiMeta:
     beta: true
   - id: containers
     title: Containers
+  - id: live
+    title: Live (alpha)
   - id: realtime
     title: Realtime
   - id: chat
@@ -865,7 +825,7 @@ x-oaiMeta:
   groups:
   - id: responses-streaming
     title: Streaming events
-    description: 'When you [create a Response](/docs/api-reference/responses/create) with
+    description: 'When you [create a Response](https://developers.openai.com/api/reference/resources/responses/methods/create) with
 
       `stream` set to `true`, the server will emit server-sent events to the
 
@@ -874,7 +834,22 @@ x-oaiMeta:
       are emitted by the server.
 
 
-      [Learn more about streaming responses](/docs/guides/streaming-responses?api-mode=responses).
+      When processing a `compaction_trigger`, `response.compaction.compacting`
+
+      reports newly sampled summary output at most once every 30 seconds. It
+
+      carries no summary content and does not modify the compaction output item.
+
+      The existing `response.output_item.added` and `response.output_item.done`
+
+      events mark that item''s lifecycle; `response.output_item.done` carries its
+
+      final encrypted content. A short compaction may finish without emitting a
+
+      progress event.
+
+
+      [Learn more about streaming responses](https://developers.openai.com/api/docs/guides/streaming-responses).
 
       '
     navigationGroup: responses
@@ -899,6 +874,9 @@ x-oaiMeta:
       path: <auto>
     - type: object
       key: ResponseOutputItemDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseCompactionCompactingEvent
       path: <auto>
     - type: object
       key: ResponseContentPartAddedEvent
@@ -1026,6 +1004,230 @@ x-oaiMeta:
     - type: object
       key: ResponseErrorEvent
       path: <auto>
+  - id: responses-websocket-client-events
+    title: Client events
+    description: 'Events sent by the client over a Responses API WebSocket connection.
+
+      '
+    navigationGroup: responses
+    sections:
+    - type: object
+      key: ResponsesClientEventResponseCreate
+      path: <auto>
+    - type: object
+      key: ResponseSteerEvent
+      path: <auto>
+  - id: responses-websocket-server-events
+    title: Server events (WebSocket only)
+    description: 'Events emitted only over a Responses API WebSocket connection.
+
+      '
+    navigationGroup: responses
+    sections:
+    - type: object
+      key: ResponseSteerAcceptedEvent
+      path: <auto>
+    - type: object
+      key: ResponseSteerPendingEvent
+      path: <auto>
+    - type: object
+      key: ResponseSteerFailedEvent
+      path: <auto>
+  - id: responses-websocket-shared-events
+    title: Server events
+    description: 'These events use the same payloads over WebSocket and
+
+      [HTTP streaming](https://developers.openai.com/api/reference/resources/responses/streaming-events).
+
+      Compaction progress follows the same cadence and output-item lifecycle
+
+      described in HTTP streaming.
+
+      '
+    navigationGroup: responses
+    sections:
+    - type: object
+      key: ResponseCreatedEvent
+      path: <auto>
+    - type: object
+      key: ResponseInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseIncompleteEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputItemAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputItemDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseCompactionCompactingEvent
+      path: <auto>
+    - type: object
+      key: ResponseContentPartAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseContentPartDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseTextDeltaEvent
+      path: response/output_text/delta
+    - type: object
+      key: ResponseTextDoneEvent
+      path: response/output_text/done
+    - type: object
+      key: ResponseRefusalDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseRefusalDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseFunctionCallArgumentsDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseFunctionCallArgumentsDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallSearchingEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallSearchingEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryPartAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryPartDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryTextDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryTextDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningTextDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningTextDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallGeneratingEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallPartialImageEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallArgumentsDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallArgumentsDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallInterpretingEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCodeDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCodeDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputTextAnnotationAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseQueuedEvent
+      path: <auto>
+    - type: object
+      key: ResponseCustomToolCallInputDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseCustomToolCallInputDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseErrorEvent
+      path: <auto>
+  - id: safety-cases
+    title: Safety Cases
+    description: 'Retrieve details about a safety warning or deactivation using the case ID
+
+      from a `safety.warning_issued` or `safety.deactivation_issued` webhook event.
+
+      Cases belong to an organization and require an API key with `api.safety.read`.
+
+      '
+    navigationGroup: endpoints
+    sections:
+    - type: endpoint
+      key: Getsafetycase
+      path: retrieve
+    - type: object
+      key: SafetyCaseResource
+      path: object
+  - id: safety-alerts
+    title: Safety Alerts
+    description: 'Retrieve approved safety alerts with an API key. Project keys require
+
+      `api.safety.alerts.read` and can read alerts from their project.
+
+      '
+    navigationGroup: endpoints
+    sections:
+    - type: endpoint
+      key: Getprojectsafetyalert
+      path: retrieve
+    - type: object
+      key: SafetyAlertResource
+      path: object
   - id: webhook-events
     title: Webhook Events
     description: 'Webhooks are HTTP requests sent by OpenAI to a URL you specify when certain
@@ -1033,7 +1235,7 @@ x-oaiMeta:
       events happen during the course of API usage.
 
 
-      [Learn more about webhooks](/docs/guides/webhooks).
+      [Learn more about webhooks](https://developers.openai.com/api/docs/guides/webhooks).
 
       '
     navigationGroup: webhooks
@@ -1083,11 +1285,29 @@ x-oaiMeta:
     - type: object
       key: WebhookRealtimeCallIncoming
       path: <auto>
+    - type: object
+      key: WebhookLiveCallIncoming
+      path: <auto>
+    - type: object
+      key: WebhookLiveTransportIncoming
+      path: <auto>
+    - type: object
+      key: WebhookSafetyWarningIssued
+      path: <auto>
+    - type: object
+      key: WebhookSafetyDeactivationIssued
+      path: <auto>
+    - type: object
+      key: WebhookSafetyAlertCreated
+      path: <auto>
+    - type: object
+      key: WebhookSafetyOrgAlertCreated
+      path: <auto>
   - id: images-streaming
     title: Image Streaming
     description: 'Stream image generation and editing in real time with server-sent events.
 
-      [Learn more about image streaming](/docs/guides/image-generation).
+      [Learn more about image streaming](https://developers.openai.com/api/docs/guides/image-generation).
 
       '
     navigationGroup: endpoints
@@ -1333,7 +1553,7 @@ x-oaiMeta:
 
       returned from the model using server-sent events.
 
-      [Learn more](/docs/guides/streaming-responses?api-mode=chat).
+      [Learn more](https://developers.openai.com/api/docs/guides/streaming-responses).
 
       '
     navigationGroup: chat
@@ -1346,15 +1566,15 @@ x-oaiMeta:
     beta: true
     description: 'Stream the result of executing a Run or resuming a Run after submitting tool outputs.
 
-      You can stream events from the [Create Thread and Run](/docs/api-reference/runs/createThreadAndRun),
+      You can stream events from the [Create Thread and Run](https://developers.openai.com/api/docs/assistants/migration),
 
-      [Create Run](/docs/api-reference/runs/createRun), and [Submit Tool Outputs](/docs/api-reference/runs/submitToolOutputs)
+      [Create Run](https://developers.openai.com/api/docs/assistants/migration), and [Submit Tool Outputs](https://developers.openai.com/api/docs/assistants/migration)
 
       endpoints by passing `"stream": true`. The response will be a [Server-Sent events](https://html.spec.whatwg.org/multipage/server-sent-events.html#server-sent-events) stream.
 
       Our Node and Python SDKs provide helpful utilities to make streaming easy. Reference the
 
-      [Assistants API quickstart](/docs/assistants/overview) to learn more.
+      [Assistants API quickstart](https://developers.openai.com/api/docs/assistants/migration) to learn more.
 
       '
     navigationGroup: assistants
@@ -1534,4 +1754,98 @@ x-oaiMeta:
       path: <auto>
     - type: object
       key: RealtimeBetaServerEventRateLimitsUpdated
+      path: <auto>
+  - id: live-client-events
+    title: Client events
+    description: Initialize a primary WebSocket with session.start and wait for session.started before sending other events. WebRTC creation starts the session for you. Start with the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) to design frontend instructions and delegation policy; see [backend prompting](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt) for tools and business rules.
+    navigationGroup: live
+    sections:
+    - type: object
+      key: LiveSessionStartEvent
+      path: <auto>
+    - type: object
+      key: LiveForkSessionStartEvent
+      path: <auto>
+    - type: object
+      key: LiveSessionUpdateParam
+      path: <auto>
+    - type: object
+      key: LiveInputAudioAppendEvent
+      path: <auto>
+    - type: object
+      key: LiveInputAudioMuteParam
+      path: <auto>
+    - type: object
+      key: LiveInputAudioUnmuteParam
+      path: <auto>
+    - type: object
+      key: LiveInstructionsAppendParam
+      path: <auto>
+    - type: object
+      key: LiveThinkingAppendParam
+      path: <auto>
+    - type: object
+      key: LiveCommentaryAppendParam
+      path: <auto>
+    - type: object
+      key: LiveResponseItemCreateParam
+      path: <auto>
+    - type: object
+      key: LiveResponseCreateParam
+      path: <auto>
+    - type: object
+      key: LiveSessionCloseParam
+      path: <auto>
+  - id: live-server-events
+    title: Server events
+    description: Live server events. Responses delegation lifecycle events arrive inside response.event, not as top-level response events. Start with the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) to design frontend instructions and delegation policy; see [backend prompting](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt) for tools and business rules.
+    navigationGroup: live
+    sections:
+    - type: object
+      key: LiveSessionStarted
+      path: <auto>
+    - type: object
+      key: LiveSessionUpdated
+      path: <auto>
+    - type: object
+      key: LiveInputAudioMuted
+      path: <auto>
+    - type: object
+      key: LiveInputAudioUnmuted
+      path: <auto>
+    - type: object
+      key: LiveInstructionsAppended
+      path: <auto>
+    - type: object
+      key: LiveThinkingAppended
+      path: <auto>
+    - type: object
+      key: LiveCommentaryAppended
+      path: <auto>
+    - type: object
+      key: LiveOutputAudioDelta
+      path: <auto>
+    - type: object
+      key: LiveInputTranscriptDelta
+      path: <auto>
+    - type: object
+      key: LiveOutputTranscriptDelta
+      path: <auto>
+    - type: object
+      key: LiveDelegationCreated
+      path: <auto>
+    - type: object
+      key: LiveResponseEvent
+      path: <auto>
+    - type: object
+      key: LiveSessionUsageUpdated
+      path: <auto>
+    - type: object
+      key: LiveSessionClosed
+      path: <auto>
+    - type: object
+      key: LiveErrorEvent
+      path: <auto>
+    - type: object
+      key: LiveInfoEvent
       path: <auto>

@@ -1,0 +1,81 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/openai/main/json-schema/openai-project-hosted-tool-permissions-update-request-schema.json",
+  "title": "ProjectHostedToolPermissionsUpdateRequest",
+  "x-generated": "2026-09-23",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/openai-hosted-tools-api-openapi.yml#/components/schemas/ProjectHostedToolPermissionsUpdateRequest",
+  "type": "object",
+  "properties": {
+    "file_search": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/HostedToolPermissionUpdate"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "The file search permission update."
+    },
+    "web_search": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/HostedToolPermissionUpdate"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "The web search permission update."
+    },
+    "image_generation": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/HostedToolPermissionUpdate"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "The image generation permission update."
+    },
+    "mcp": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/HostedToolPermissionUpdate"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "The MCP permission update."
+    },
+    "code_interpreter": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/HostedToolPermissionUpdate"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "The code interpreter permission update."
+    }
+  },
+  "$defs": {
+    "HostedToolPermissionUpdate": {
+      "type": "object",
+      "properties": {
+        "enabled": {
+          "type": "boolean",
+          "description": "Whether to enable the hosted tool for the project."
+        }
+      },
+      "required": [
+        "enabled"
+      ]
+    }
+  }
+}

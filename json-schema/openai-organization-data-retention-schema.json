@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/openai/main/json-schema/openai-organization-data-retention-schema.json",
+  "title": "OrganizationDataRetention",
+  "description": "Represents the organization's data retention control setting.",
+  "x-generated": "2026-09-23",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/openai-data-retention-api-openapi.yml#/components/schemas/OrganizationDataRetention",
+  "type": "object",
+  "properties": {
+    "object": {
+      "type": "string",
+      "enum": [
+        "organization.data_retention"
+      ],
+      "description": "The object type, which is always `organization.data_retention`.",
+      "x-stainless-const": true
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "zero_data_retention",
+        "modified_abuse_monitoring",
+        "enhanced_zero_data_retention",
+        "enhanced_modified_abuse_monitoring"
+      ],
+      "description": "The configured organization data retention type."
+    }
+  },
+  "required": [
+    "object",
+    "type"
+  ],
+  "x-oaiMeta": {
+    "name": "The organization data retention object"
+  }
+}

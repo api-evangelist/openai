@@ -1,5 +1,5 @@
 ---
-name: Generate a model response
+name: generate-a-response
 description: Call the Responses API for a single- or multi-turn model response, streaming or in the background, with correct retry and cancellation behaviour.
 api: openapi/openai-responses-api-openapi.yml
 operations: [createResponse, getResponse, cancelResponse, deleteResponse]

@@ -1,8 +1,8 @@
 ---
-name: Administer projects, users and API keys
+name: administer-projects-and-keys
 description: Provision an isolated project with its own key and spend limit — the only containment boundary OpenAI offers — and revoke credentials safely.
 api: openapi/openai-projects-api-openapi.yml
-operations: [create-project, list-projects, modify-project, archive-project, create-project-api-key, list-project-api-keys, delete-project-api-key, create-project-service-account, delete-project-service-account, list-users, delete-user]
+operations: [create-project, list-projects, modify-project, archive-project, list-project-api-keys, delete-project-api-key, create-project-service-account, delete-project-service-account, list-users, delete-user]
 generated: '2026-08-27'
 method: generated
 source: >-
@@ -30,7 +30,8 @@ radius, and it is the only automatic brake in the system.
 1. **`create-project`** — `POST /organization/projects`.
 2. Set a **project spend limit** in the console. When it is crossed, calls
    return 429 with `project_spend_limit_exceeded` instead of continuing to spend.
-3. **`create-project-api-key`** — issue a key scoped to that project only.
+3. Issue a key scoped to that project only. The Projects API exposes no
+   create operation for project API keys — they are provisioned in the console.
    For a non-human caller prefer **`create-project-service-account`**, which
    holds its own key and survives the departure of any individual.
 4. **`list-project-api-keys`** to audit what is live.

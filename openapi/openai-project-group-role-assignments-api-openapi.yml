@@ -9,7 +9,7 @@ info:
     url: https://help.openai.com/
   license:
     name: MIT
-    url: https://github.com/openai/openai-openapi/blob/master/LICENSE
+    identifier: MIT
 servers:
 - url: https://api.openai.com/v1
 security:
@@ -21,7 +21,8 @@ paths:
     get:
       security:
       - AdminApiKeyAuth: []
-      summary: Lists the project roles assigned to a group within a project
+      summary: List project group role assignments
+      description: Lists the project roles assigned to a group within a project.
       operationId: list-project-group-role-assignments
       tags:
       - Project group role assignments
@@ -68,31 +69,19 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/RoleListResource'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       x-oaiMeta:
-        name: List project group role assignments
         group: administration
         examples:
           request:
             curl: "curl https://api.openai.com/v1/projects/proj_abc123/groups/group_01J1F8ABCDXYZ/roles \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\n// Automatically fetches more pages as needed.\nfor await (const roleListResponse of client.admin.organization.projects.groups.roles.list(\n  'group_id',\n  { project_id: 'project_id' },\n)) {\n  console.log(roleListResponse.id);\n}"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\npage = client.admin.organization.projects.groups.roles.list(\n    group_id=\"group_id\",\n    project_id=\"project_id\",\n)\npage = page.data[0]\nprint(page.id)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\tpage, err := client.Admin.Organization.Projects.Groups.Roles.List(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\t\"group_id\",\n\t\topenai.AdminOrganizationProjectGroupRoleListParams{},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", page)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.groups.roles.RoleListPage;\nimport com.openai.models.admin.organization.projects.groups.roles.RoleListParams;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        RoleListParams params = RoleListParams.builder()\n            .projectId(\"project_id\")\n            .groupId(\"group_id\")\n            .build();\n        RoleListPage page = client.admin().organization().projects().groups().roles().list(params);\n    }\n}"
-            ruby: 'require "openai"
-
-
-              openai = OpenAI::Client.new(admin_api_key: "My Admin API Key")
-
-
-              page = openai.admin.organization.projects.groups.roles.list("group_id", project_id: "project_id")
-
-
-              puts(page)'
           response: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"role_01J1F8PROJ\",\n            \"name\": \"API Project Key Manager\",\n            \"permissions\": [\n                \"api.organization.projects.api_keys.read\",\n                \"api.organization.projects.api_keys.write\"\n            ],\n            \"resource_type\": \"api.project\",\n            \"predefined_role\": false,\n            \"description\": \"Allows managing API keys for the project\",\n            \"created_at\": 1711471533,\n            \"updated_at\": 1711472599,\n            \"created_by\": \"user_abc123\",\n            \"created_by_user_obj\": {\n                \"id\": \"user_abc123\",\n                \"name\": \"Ada Lovelace\",\n                \"email\": \"ada@example.com\"\n            },\n            \"metadata\": {}\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
     post:
       security:
       - AdminApiKeyAuth: []
-      summary: Assigns a project role to a group within a project
+      summary: Assign project role to group
+      description: Assigns a project role to a group within a project.
       operationId: assign-project-group-role
       tags:
       - Project group role assignments
@@ -123,23 +112,62 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/GroupRoleAssignment'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       x-oaiMeta:
-        name: Assign project role to group
         group: administration
         examples:
           request:
             curl: "curl -X POST https://api.openai.com/v1/projects/proj_abc123/groups/group_01J1F8ABCDXYZ/roles \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n      \"role_id\": \"role_01J1F8PROJ\"\n  }'\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst role = await client.admin.organization.projects.groups.roles.create('group_id', {\n  project_id: 'project_id',\n  role_id: 'role_id',\n});\n\nconsole.log(role.group);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\nrole = client.admin.organization.projects.groups.roles.create(\n    group_id=\"group_id\",\n    project_id=\"project_id\",\n    role_id=\"role_id\",\n)\nprint(role.group)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\trole, err := client.Admin.Organization.Projects.Groups.Roles.New(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\t\"group_id\",\n\t\topenai.AdminOrganizationProjectGroupRoleNewParams{\n\t\t\tRoleID: \"role_id\",\n\t\t},\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", role.Group)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.groups.roles.RoleCreateParams;\nimport com.openai.models.admin.organization.projects.groups.roles.RoleCreateResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        RoleCreateParams params = RoleCreateParams.builder()\n            .projectId(\"project_id\")\n            .groupId(\"group_id\")\n            .roleId(\"role_id\")\n            .build();\n        RoleCreateResponse role = client.admin().organization().projects().groups().roles().create(params);\n    }\n}"
-            ruby: "require \"openai\"\n\nopenai = OpenAI::Client.new(admin_api_key: \"My Admin API Key\")\n\nrole = openai.admin.organization.projects.groups.roles.create(\n  \"group_id\",\n  project_id: \"project_id\",\n  role_id: \"role_id\"\n)\n\nputs(role)"
           response: "{\n    \"object\": \"group.role\",\n    \"group\": {\n        \"object\": \"group\",\n        \"id\": \"group_01J1F8ABCDXYZ\",\n        \"name\": \"Support Team\",\n        \"created_at\": 1711471533,\n        \"scim_managed\": false\n    },\n    \"role\": {\n        \"object\": \"role\",\n        \"id\": \"role_01J1F8PROJ\",\n        \"name\": \"API Project Key Manager\",\n        \"description\": \"Allows managing API keys for the project\",\n        \"permissions\": [\n            \"api.organization.projects.api_keys.read\",\n            \"api.organization.projects.api_keys.write\"\n        ],\n        \"resource_type\": \"api.project\",\n        \"predefined_role\": false\n    }\n}\n"
   /projects/{project_id}/groups/{group_id}/roles/{role_id}:
+    get:
+      security:
+      - AdminApiKeyAuth: []
+      summary: Retrieve project group role
+      description: Retrieves a project role assigned to a group.
+      operationId: retrieve-project-group-role
+      tags:
+      - Project group role assignments
+      parameters:
+      - name: project_id
+        in: path
+        description: The ID of the project to inspect.
+        required: true
+        schema:
+          type: string
+      - name: group_id
+        in: path
+        description: The ID of the group to inspect.
+        required: true
+        schema:
+          type: string
+      - name: role_id
+        in: path
+        description: The ID of the project role to retrieve for the group.
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Project role retrieved for the group successfully.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AssignedRoleDetails'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
+      x-oaiMeta:
+        group: administration
+        examples:
+          request:
+            curl: "curl https://api.openai.com/v1/projects/proj_abc123/groups/group_01J1F8ABCDXYZ/roles/role_01J1F8PROJ \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\"\n"
+          response: "{\n    \"id\": \"role_01J1F8PROJ\",\n    \"name\": \"API Project Key Manager\",\n    \"permissions\": [\n        \"api.organization.projects.api_keys.read\",\n        \"api.organization.projects.api_keys.write\"\n    ],\n    \"resource_type\": \"api.project\",\n    \"predefined_role\": false,\n    \"description\": \"Allows managing API keys for the project\",\n    \"created_at\": 1711471533,\n    \"updated_at\": 1711472599,\n    \"created_by\": \"user_abc123\",\n    \"created_by_user_obj\": null,\n    \"metadata\": {},\n    \"assignment_sources\": null\n}\n"
     delete:
       security:
       - AdminApiKeyAuth: []
-      summary: Unassigns a project role from a group within a project
+      summary: Unassign project role from group
+      description: Unassigns a project role from a group within a project.
       operationId: unassign-project-group-role
       tags:
       - Project group role assignments
@@ -169,36 +197,38 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/DeletedRoleAssignmentResource'
+        '429':
+          $ref: '#/components/responses/TooManyRequests'
       x-oaiMeta:
-        name: Unassign project role from group
         group: administration
         examples:
           request:
             curl: "curl -X DELETE https://api.openai.com/v1/projects/proj_abc123/groups/group_01J1F8ABCDXYZ/roles/role_01J1F8PROJ \\\n  -H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n  -H \"Content-Type: application/json\"\n"
-            node.js: "import OpenAI from 'openai';\n\nconst client = new OpenAI({\n  adminAPIKey: process.env['OPENAI_ADMIN_KEY'], // This is the default and can be omitted\n});\n\nconst role = await client.admin.organization.projects.groups.roles.delete('role_id', {\n  project_id: 'project_id',\n  group_id: 'group_id',\n});\n\nconsole.log(role.deleted);"
-            python: "import os\nfrom openai import OpenAI\n\nclient = OpenAI(\n    admin_api_key=os.environ.get(\"OPENAI_ADMIN_KEY\"),  # This is the default and can be omitted\n)\nrole = client.admin.organization.projects.groups.roles.delete(\n    role_id=\"role_id\",\n    project_id=\"project_id\",\n    group_id=\"group_id\",\n)\nprint(role.deleted)"
-            go: "package main\n\nimport (\n\t\"context\"\n\t\"fmt\"\n\n\t\"github.com/openai/openai-go\"\n\t\"github.com/openai/openai-go/option\"\n)\n\nfunc main() {\n\tclient := openai.NewClient(\n\t\toption.WithAdminAPIKey(\"My Admin API Key\"),\n\t)\n\trole, err := client.Admin.Organization.Projects.Groups.Roles.Delete(\n\t\tcontext.TODO(),\n\t\t\"project_id\",\n\t\t\"group_id\",\n\t\t\"role_id\",\n\t)\n\tif err != nil {\n\t\tpanic(err.Error())\n\t}\n\tfmt.Printf(\"%+v\\n\", role.Deleted)\n}\n"
-            java: "package com.openai.example;\n\nimport com.openai.client.OpenAIClient;\nimport com.openai.client.okhttp.OpenAIOkHttpClient;\nimport com.openai.models.admin.organization.projects.groups.roles.RoleDeleteParams;\nimport com.openai.models.admin.organization.projects.groups.roles.RoleDeleteResponse;\n\npublic final class Main {\n    private Main() {}\n\n    public static void main(String[] args) {\n        OpenAIClient client = OpenAIOkHttpClient.fromEnv();\n\n        RoleDeleteParams params = RoleDeleteParams.builder()\n            .projectId(\"project_id\")\n            .groupId(\"group_id\")\n            .roleId(\"role_id\")\n            .build();\n        RoleDeleteResponse role = client.admin().organization().projects().groups().roles().delete(params);\n    }\n}"
-            ruby: "require \"openai\"\n\nopenai = OpenAI::Client.new(admin_api_key: \"My Admin API Key\")\n\nrole = openai.admin.organization.projects.groups.roles.delete(\n  \"role_id\",\n  project_id: \"project_id\",\n  group_id: \"group_id\"\n)\n\nputs(role)"
           response: "{\n    \"object\": \"group.role.deleted\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
-    DeletedRoleAssignmentResource:
+    Error:
       type: object
-      description: Confirmation payload returned after unassigning a role.
       properties:
-        object:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
           type: string
-          description: Identifier for the deleted assignment, such as `group.role.deleted` or `user.role.deleted`.
-        deleted:
-          type: boolean
-          description: Whether the assignment was removed.
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
       required:
-      - object
-      - deleted
-      x-oaiMeta:
-        name: Role assignment deletion confirmation
-        example: "{\n    \"object\": \"group.role.deleted\",\n    \"deleted\": true\n}\n"
+      - type
+      - message
+      - param
+      - code
     PublicAssignOrganizationGroupRoleBody:
       type: object
       description: Request payload for assigning a role to a group or user.
@@ -210,6 +240,44 @@ components:
       - role_id
       x-oaiMeta:
         example: "{\n    \"role_id\": \"role_01J1F8ROLE01\"\n}\n"
+    RoleListResource:
+      type: object
+      description: Paginated list of roles assigned to a principal.
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: Always `list`.
+          x-stainless-const: true
+        data:
+          type: array
+          description: Role assignments returned in the current page.
+          items:
+            $ref: '#/components/schemas/AssignedRoleDetails'
+        has_more:
+          type: boolean
+          description: Whether additional assignments are available when paginating.
+        next:
+          description: Cursor to fetch the next page of results, or `null` when there are no more assignments.
+          anyOf:
+          - type: string
+          - type: 'null'
+      required:
+      - object
+      - data
+      - has_more
+      - next
+      x-oaiMeta:
+        name: Assigned role list
+        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"role_01J1F8ROLE01\",\n            \"name\": \"API Group Manager\",\n            \"permissions\": [\n                \"api.groups.read\",\n                \"api.groups.write\"\n            ],\n            \"resource_type\": \"api.organization\",\n            \"predefined_role\": false,\n            \"description\": \"Allows managing organization groups\",\n            \"created_at\": 1711471533,\n            \"updated_at\": 1711472599,\n            \"created_by\": \"user_abc123\",\n            \"created_by_user_obj\": {\n                \"id\": \"user_abc123\",\n                \"name\": \"Ada Lovelace\",\n                \"email\": \"ada@example.com\"\n            },\n            \"metadata\": {},\n            \"assignment_sources\": null\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
     Role:
       type: object
       description: Details about a role that can be assigned through the public Roles API.
@@ -253,90 +321,6 @@ components:
       x-oaiMeta:
         name: The role object
         example: "{\n    \"object\": \"role\",\n    \"id\": \"role_01J1F8ROLE01\",\n    \"name\": \"API Group Manager\",\n    \"description\": \"Allows managing organization groups\",\n    \"permissions\": [\n        \"api.groups.read\",\n        \"api.groups.write\"\n    ],\n    \"resource_type\": \"api.organization\",\n    \"predefined_role\": false\n}\n"
-    GroupRoleAssignment:
-      type: object
-      description: Role assignment linking a group to a role.
-      properties:
-        object:
-          type: string
-          enum:
-          - group.role
-          description: Always `group.role`.
-          x-stainless-const: true
-        group:
-          $ref: '#/components/schemas/Group'
-        role:
-          $ref: '#/components/schemas/Role'
-      required:
-      - object
-      - group
-      - role
-      x-oaiMeta:
-        name: The group role object
-        example: "{\n    \"object\": \"group.role\",\n    \"group\": {\n        \"object\": \"group\",\n        \"id\": \"group_01J1F8ABCDXYZ\",\n        \"name\": \"Support Team\",\n        \"created_at\": 1711471533,\n        \"scim_managed\": false\n    },\n    \"role\": {\n        \"object\": \"role\",\n        \"id\": \"role_01J1F8ROLE01\",\n        \"name\": \"API Group Manager\",\n        \"description\": \"Allows managing organization groups\",\n        \"permissions\": [\n            \"api.groups.read\",\n            \"api.groups.write\"\n        ],\n        \"resource_type\": \"api.organization\",\n        \"predefined_role\": false\n    }\n}\n"
-    RoleListResource:
-      type: object
-      description: Paginated list of roles assigned to a principal.
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: Always `list`.
-          x-stainless-const: true
-        data:
-          type: array
-          description: Role assignments returned in the current page.
-          items:
-            $ref: '#/components/schemas/AssignedRoleDetails'
-        has_more:
-          type: boolean
-          description: Whether additional assignments are available when paginating.
-        next:
-          description: Cursor to fetch the next page of results, or `null` when there are no more assignments.
-          anyOf:
-          - type: string
-          - type: 'null'
-      required:
-      - object
-      - data
-      - has_more
-      - next
-      x-oaiMeta:
-        name: Assigned role list
-        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"role_01J1F8ROLE01\",\n            \"name\": \"API Group Manager\",\n            \"permissions\": [\n                \"api.groups.read\",\n                \"api.groups.write\"\n            ],\n            \"resource_type\": \"api.organization\",\n            \"predefined_role\": false,\n            \"description\": \"Allows managing organization groups\",\n            \"created_at\": 1711471533,\n            \"updated_at\": 1711472599,\n            \"created_by\": \"user_abc123\",\n            \"created_by_user_obj\": {\n                \"id\": \"user_abc123\",\n                \"name\": \"Ada Lovelace\",\n                \"email\": \"ada@example.com\"\n            },\n            \"metadata\": {}\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
-    Group:
-      type: object
-      description: Summary information about a group returned in role assignment responses.
-      properties:
-        object:
-          type: string
-          enum:
-          - group
-          description: Always `group`.
-          x-stainless-const: true
-        id:
-          type: string
-          description: Identifier for the group.
-        name:
-          type: string
-          description: Display name of the group.
-        created_at:
-          type: integer
-          format: unixtime
-          description: Unix timestamp (in seconds) when the group was created.
-        scim_managed:
-          type: boolean
-          description: Whether the group is managed through SCIM.
-      required:
-      - object
-      - id
-      - name
-      - created_at
-      - scim_managed
-      x-oaiMeta:
-        name: The group object
-        example: "{\n    \"object\": \"group\",\n    \"id\": \"group_01J1F8ABCDXYZ\",\n    \"name\": \"Support Team\",\n    \"created_at\": 1711471533,\n    \"scim_managed\": false\n}\n"
     AssignedRoleDetails:
       type: object
       description: Detailed information about a role assignment entry returned when listing assignments.
@@ -373,7 +357,7 @@ components:
           description: When the role was last updated.
           anyOf:
           - type: integer
-            format: int64
+            format: unixtime
           - type: 'null'
         created_by:
           description: Identifier of the actor who created the role.
@@ -392,6 +376,21 @@ components:
           - type: object
             additionalProperties: true
           - type: 'null'
+        assignment_sources:
+          description: Principals from which the role assignment is inherited, when available.
+          anyOf:
+          - type: array
+            items:
+              type: object
+              properties:
+                principal_id:
+                  type: string
+                principal_type:
+                  type: string
+              required:
+              - principal_id
+              - principal_type
+          - type: 'null'
       required:
       - id
       - name
@@ -404,6 +403,119 @@ components:
       - created_by
       - created_by_user_obj
       - metadata
+      - assignment_sources
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
+    Group:
+      type: object
+      description: Summary information about a group returned in role assignment responses.
+      properties:
+        object:
+          type: string
+          enum:
+          - group
+          description: Always `group`.
+          x-stainless-const: true
+        id:
+          type: string
+          description: Identifier for the group.
+        name:
+          type: string
+          description: Display name of the group.
+        created_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (in seconds) when the group was created.
+        scim_managed:
+          type: boolean
+          description: Whether the group is managed through SCIM.
+      required:
+      - object
+      - id
+      - name
+      - created_at
+      - scim_managed
+      x-oaiMeta:
+        name: The group object
+        example: "{\n    \"object\": \"group\",\n    \"id\": \"group_01J1F8ABCDXYZ\",\n    \"name\": \"Support Team\",\n    \"created_at\": 1711471533,\n    \"scim_managed\": false\n}\n"
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    GroupRoleAssignment:
+      type: object
+      description: Role assignment linking a group to a role.
+      properties:
+        object:
+          type: string
+          enum:
+          - group.role
+          description: Always `group.role`.
+          x-stainless-const: true
+        group:
+          $ref: '#/components/schemas/Group'
+        role:
+          $ref: '#/components/schemas/Role'
+      required:
+      - object
+      - group
+      - role
+      x-oaiMeta:
+        name: The group role object
+        example: "{\n    \"object\": \"group.role\",\n    \"group\": {\n        \"object\": \"group\",\n        \"id\": \"group_01J1F8ABCDXYZ\",\n        \"name\": \"Support Team\",\n        \"created_at\": 1711471533,\n        \"scim_managed\": false\n    },\n    \"role\": {\n        \"object\": \"role\",\n        \"id\": \"role_01J1F8ROLE01\",\n        \"name\": \"API Group Manager\",\n        \"description\": \"Allows managing organization groups\",\n        \"permissions\": [\n            \"api.groups.read\",\n            \"api.groups.write\"\n        ],\n        \"resource_type\": \"api.organization\",\n        \"predefined_role\": false\n    }\n}\n"
+    DeletedRoleAssignmentResource:
+      type: object
+      description: Confirmation payload returned after unassigning a role.
+      properties:
+        object:
+          type: string
+          description: Identifier for the deleted assignment, such as `group.role.deleted` or `user.role.deleted`.
+        deleted:
+          type: boolean
+          description: Whether the assignment was removed.
+      required:
+      - object
+      - deleted
+      x-oaiMeta:
+        name: Role assignment deletion confirmation
+        example: "{\n    \"object\": \"group.role.deleted\",\n    \"deleted\": true\n}\n"
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+  responses:
+    TooManyRequests:
+      description: The request was rejected because a rate limit was exceeded.
+      headers:
+        Retry-After:
+          description: The minimum number of seconds to wait before retrying. This header is returned when the server has computed a retry delay and may be omitted for 429 responses that require user action.
+          schema:
+            type: integer
+            minimum: 1
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   securitySchemes:
     ApiKeyAuth:
       type: http
@@ -426,6 +538,8 @@ x-oaiMeta:
     beta: true
   - id: containers
     title: Containers
+  - id: live
+    title: Live (alpha)
   - id: realtime
     title: Realtime
   - id: chat
@@ -440,7 +554,7 @@ x-oaiMeta:
   groups:
   - id: responses-streaming
     title: Streaming events
-    description: 'When you [create a Response](/docs/api-reference/responses/create) with
+    description: 'When you [create a Response](https://developers.openai.com/api/reference/resources/responses/methods/create) with
 
       `stream` set to `true`, the server will emit server-sent events to the
 
@@ -449,7 +563,22 @@ x-oaiMeta:
       are emitted by the server.
 
 
-      [Learn more about streaming responses](/docs/guides/streaming-responses?api-mode=responses).
+      When processing a `compaction_trigger`, `response.compaction.compacting`
+
+      reports newly sampled summary output at most once every 30 seconds. It
+
+      carries no summary content and does not modify the compaction output item.
+
+      The existing `response.output_item.added` and `response.output_item.done`
+
+      events mark that item''s lifecycle; `response.output_item.done` carries its
+
+      final encrypted content. A short compaction may finish without emitting a
+
+      progress event.
+
+
+      [Learn more about streaming responses](https://developers.openai.com/api/docs/guides/streaming-responses).
 
       '
     navigationGroup: responses
@@ -474,6 +603,9 @@ x-oaiMeta:
       path: <auto>
     - type: object
       key: ResponseOutputItemDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseCompactionCompactingEvent
       path: <auto>
     - type: object
       key: ResponseContentPartAddedEvent
@@ -601,6 +733,230 @@ x-oaiMeta:
     - type: object
       key: ResponseErrorEvent
       path: <auto>
+  - id: responses-websocket-client-events
+    title: Client events
+    description: 'Events sent by the client over a Responses API WebSocket connection.
+
+      '
+    navigationGroup: responses
+    sections:
+    - type: object
+      key: ResponsesClientEventResponseCreate
+      path: <auto>
+    - type: object
+      key: ResponseSteerEvent
+      path: <auto>
+  - id: responses-websocket-server-events
+    title: Server events (WebSocket only)
+    description: 'Events emitted only over a Responses API WebSocket connection.
+
+      '
+    navigationGroup: responses
+    sections:
+    - type: object
+      key: ResponseSteerAcceptedEvent
+      path: <auto>
+    - type: object
+      key: ResponseSteerPendingEvent
+      path: <auto>
+    - type: object
+      key: ResponseSteerFailedEvent
+      path: <auto>
+  - id: responses-websocket-shared-events
+    title: Server events
+    description: 'These events use the same payloads over WebSocket and
+
+      [HTTP streaming](https://developers.openai.com/api/reference/resources/responses/streaming-events).
+
+      Compaction progress follows the same cadence and output-item lifecycle
+
+      described in HTTP streaming.
+
+      '
+    navigationGroup: responses
+    sections:
+    - type: object
+      key: ResponseCreatedEvent
+      path: <auto>
+    - type: object
+      key: ResponseInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseIncompleteEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputItemAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputItemDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseCompactionCompactingEvent
+      path: <auto>
+    - type: object
+      key: ResponseContentPartAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseContentPartDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseTextDeltaEvent
+      path: response/output_text/delta
+    - type: object
+      key: ResponseTextDoneEvent
+      path: response/output_text/done
+    - type: object
+      key: ResponseRefusalDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseRefusalDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseFunctionCallArgumentsDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseFunctionCallArgumentsDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallSearchingEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallSearchingEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryPartAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryPartDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryTextDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryTextDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningTextDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningTextDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallGeneratingEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallPartialImageEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallArgumentsDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallArgumentsDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallInterpretingEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCodeDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCodeDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputTextAnnotationAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseQueuedEvent
+      path: <auto>
+    - type: object
+      key: ResponseCustomToolCallInputDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseCustomToolCallInputDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseErrorEvent
+      path: <auto>
+  - id: safety-cases
+    title: Safety Cases
+    description: 'Retrieve details about a safety warning or deactivation using the case ID
+
+      from a `safety.warning_issued` or `safety.deactivation_issued` webhook event.
+
+      Cases belong to an organization and require an API key with `api.safety.read`.
+
+      '
+    navigationGroup: endpoints
+    sections:
+    - type: endpoint
+      key: Getsafetycase
+      path: retrieve
+    - type: object
+      key: SafetyCaseResource
+      path: object
+  - id: safety-alerts
+    title: Safety Alerts
+    description: 'Retrieve approved safety alerts with an API key. Project keys require
+
+      `api.safety.alerts.read` and can read alerts from their project.
+
+      '
+    navigationGroup: endpoints
+    sections:
+    - type: endpoint
+      key: Getprojectsafetyalert
+      path: retrieve
+    - type: object
+      key: SafetyAlertResource
+      path: object
   - id: webhook-events
     title: Webhook Events
     description: 'Webhooks are HTTP requests sent by OpenAI to a URL you specify when certain
@@ -608,7 +964,7 @@ x-oaiMeta:
       events happen during the course of API usage.
 
 
-      [Learn more about webhooks](/docs/guides/webhooks).
+      [Learn more about webhooks](https://developers.openai.com/api/docs/guides/webhooks).
 
       '
     navigationGroup: webhooks
@@ -658,11 +1014,29 @@ x-oaiMeta:
     - type: object
       key: WebhookRealtimeCallIncoming
       path: <auto>
+    - type: object
+      key: WebhookLiveCallIncoming
+      path: <auto>
+    - type: object
+      key: WebhookLiveTransportIncoming
+      path: <auto>
+    - type: object
+      key: WebhookSafetyWarningIssued
+      path: <auto>
+    - type: object
+      key: WebhookSafetyDeactivationIssued
+      path: <auto>
+    - type: object
+      key: WebhookSafetyAlertCreated
+      path: <auto>
+    - type: object
+      key: WebhookSafetyOrgAlertCreated
+      path: <auto>
   - id: images-streaming
     title: Image Streaming
     description: 'Stream image generation and editing in real time with server-sent events.
 
-      [Learn more about image streaming](/docs/guides/image-generation).
+      [Learn more about image streaming](https://developers.openai.com/api/docs/guides/image-generation).
 
       '
     navigationGroup: endpoints
@@ -908,7 +1282,7 @@ x-oaiMeta:
 
       returned from the model using server-sent events.
 
-      [Learn more](/docs/guides/streaming-responses?api-mode=chat).
+      [Learn more](https://developers.openai.com/api/docs/guides/streaming-responses).
 
       '
     navigationGroup: chat
@@ -921,15 +1295,15 @@ x-oaiMeta:
     beta: true
     description: 'Stream the result of executing a Run or resuming a Run after submitting tool outputs.
 
-      You can stream events from the [Create Thread and Run](/docs/api-reference/runs/createThreadAndRun),
+      You can stream events from the [Create Thread and Run](https://developers.openai.com/api/docs/assistants/migration),
 
-      [Create Run](/docs/api-reference/runs/createRun), and [Submit Tool Outputs](/docs/api-reference/runs/submitToolOutputs)
+      [Create Run](https://developers.openai.com/api/docs/assistants/migration), and [Submit Tool Outputs](https://developers.openai.com/api/docs/assistants/migration)
 
       endpoints by passing `"stream": true`. The response will be a [Server-Sent events](https://html.spec.whatwg.org/multipage/server-sent-events.html#server-sent-events) stream.
 
       Our Node and Python SDKs provide helpful utilities to make streaming easy. Reference the
 
-      [Assistants API quickstart](/docs/assistants/overview) to learn more.
+      [Assistants API quickstart](https://developers.openai.com/api/docs/assistants/migration) to learn more.
 
       '
     navigationGroup: assistants
@@ -1109,4 +1483,98 @@ x-oaiMeta:
       path: <auto>
     - type: object
       key: RealtimeBetaServerEventRateLimitsUpdated
+      path: <auto>
+  - id: live-client-events
+    title: Client events
+    description: Initialize a primary WebSocket with session.start and wait for session.started before sending other events. WebRTC creation starts the session for you. Start with the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) to design frontend instructions and delegation policy; see [backend prompting](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt) for tools and business rules.
+    navigationGroup: live
+    sections:
+    - type: object
+      key: LiveSessionStartEvent
+      path: <auto>
+    - type: object
+      key: LiveForkSessionStartEvent
+      path: <auto>
+    - type: object
+      key: LiveSessionUpdateParam
+      path: <auto>
+    - type: object
+      key: LiveInputAudioAppendEvent
+      path: <auto>
+    - type: object
+      key: LiveInputAudioMuteParam
+      path: <auto>
+    - type: object
+      key: LiveInputAudioUnmuteParam
+      path: <auto>
+    - type: object
+      key: LiveInstructionsAppendParam
+      path: <auto>
+    - type: object
+      key: LiveThinkingAppendParam
+      path: <auto>
+    - type: object
+      key: LiveCommentaryAppendParam
+      path: <auto>
+    - type: object
+      key: LiveResponseItemCreateParam
+      path: <auto>
+    - type: object
+      key: LiveResponseCreateParam
+      path: <auto>
+    - type: object
+      key: LiveSessionCloseParam
+      path: <auto>
+  - id: live-server-events
+    title: Server events
+    description: Live server events. Responses delegation lifecycle events arrive inside response.event, not as top-level response events. Start with the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) to design frontend instructions and delegation policy; see [backend prompting](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt) for tools and business rules.
+    navigationGroup: live
+    sections:
+    - type: object
+      key: LiveSessionStarted
+      path: <auto>
+    - type: object
+      key: LiveSessionUpdated
+      path: <auto>
+    - type: object
+      key: LiveInputAudioMuted
+      path: <auto>
+    - type: object
+      key: LiveInputAudioUnmuted
+      path: <auto>
+    - type: object
+      key: LiveInstructionsAppended
+      path: <auto>
+    - type: object
+      key: LiveThinkingAppended
+      path: <auto>
+    - type: object
+      key: LiveCommentaryAppended
+      path: <auto>
+    - type: object
+      key: LiveOutputAudioDelta
+      path: <auto>
+    - type: object
+      key: LiveInputTranscriptDelta
+      path: <auto>
+    - type: object
+      key: LiveOutputTranscriptDelta
+      path: <auto>
+    - type: object
+      key: LiveDelegationCreated
+      path: <auto>
+    - type: object
+      key: LiveResponseEvent
+      path: <auto>
+    - type: object
+      key: LiveSessionUsageUpdated
+      path: <auto>
+    - type: object
+      key: LiveSessionClosed
+      path: <auto>
+    - type: object
+      key: LiveErrorEvent
+      path: <auto>
+    - type: object
+      key: LiveInfoEvent
       path: <auto>

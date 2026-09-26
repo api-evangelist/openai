@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/openai/main/json-schema/openai-organization-spend-alert-list-resource-schema.json",
+  "title": "OrganizationSpendAlertListResource",
+  "description": "Paginated list of organization spend alerts.",
+  "x-generated": "2026-09-23",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/openai-spend-alerts-api-openapi.yml#/components/schemas/OrganizationSpendAlertListResource",
+  "type": "object",
+  "properties": {
+    "object": {
+      "type": "string",
+      "enum": [
+        "list"
+      ],
+      "description": "Always `list`.",
+      "x-stainless-const": true
+    },
+    "data": {
+      "type": "array",
+      "description": "Spend alerts returned in the current page.",
+      "items": {
+        "$ref": "#/$defs/OrganizationSpendAlert"
+      }
+    },
+    "first_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "The ID of the first spend alert in this page."
+    },
+    "last_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "The ID of the last spend alert in this page."
+    },
+    "has_more": {
+      "type": "boolean",
+      "description": "Whether more spend alerts are available when paginating."
+    }
+  },
+  "required": [
+    "object",
+    "data",
+    "first_id",
+    "last_id",
+    "has_more"
+  ],
+  "$defs": {
+    "OrganizationSpendAlert": {
+      "type": "object",
+      "description": "Represents a spend alert configured at the organization level.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "The identifier, which can be referenced in API endpoints."
+        },
+        "object": {
+          "type": "string",
+          "enum": [
+            "organization.spend_alert"
+          ],
+          "description": "The object type, which is always `organization.spend_alert`.",
+          "x-stainless-const": true
+        },
+        "threshold_amount": {
+          "type": "integer",
+          "description": "The alert threshold amount, in cents."
+        },
+        "currency": {
+          "type": "string",
+          "enum": [
+            "USD"
+          ],
+          "description": "The currency for the threshold amount."
+        },
+        "interval": {
+          "type": "string",
+          "enum": [
+            "month"
+          ],
+          "description": "The time interval for evaluating spend against the threshold."
+        },
+        "notification_channel": {
+          "$ref": "#/$defs/SpendAlertNotificationChannel"
+        }
+      },
+      "required": [
+        "id",
+        "object",
+        "threshold_amount",
+        "currency",
+        "interval",
+        "notification_channel"
+      ],
+      "x-oaiMeta": {
+        "name": "The organization spend alert object"
+      }
+    },
+    "SpendAlertNotificationChannel": {
+      "type": "object",
+      "description": "Email notification settings for a spend alert.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "email"
+          ],
+          "description": "The notification channel type. Currently only `email` is supported.",
+          "x-stainless-const": true
+        },
+        "recipients": {
+          "type": "array",
+          "description": "Email addresses that receive the spend alert notification.",
+          "items": {
+            "type": "string"
+          }
+        },
+        "subject_prefix": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "description": "Optional subject prefix for alert emails."
+        }
+      },
+      "required": [
+        "type",
+        "recipients"
+      ]
+    }
+  }
+}

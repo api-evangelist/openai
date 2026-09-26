@@ -1,5 +1,5 @@
 ---
-name: Transcribe audio and summarize it
+name: transcribe-and-summarize-audio
 description: Turn an audio file into text with the Audio API, then summarize the transcript with the Responses API, then speak the summary back.
 api: openapi/openai-audio-api-openapi.yml
 operations: [createTranscription, createTranslation, createResponse, createSpeech]

@@ -1,5 +1,5 @@
 ---
-name: Fine-tune a model
+name: fine-tune-a-model
 description: Upload training data, start a fine-tuning job, monitor it, cancel it if needed, and use or retire the resulting model.
 api: openapi/openai-fine-tuning-api-openapi.yml
 operations: [createFile, createFineTuningJob, retrieveFineTuningJob, listFineTuningEvents, cancelFineTuningJob, deleteModel]

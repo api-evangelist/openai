@@ -465,7 +465,7 @@ components:
         `Authorization: Bearer <OPENAI_API_KEY>` must be sent on the
         WebSocket upgrade request.
     openAiBeta:
-      type: apiKey
+      type: httpApiKey
       in: header
       name: OpenAI-Beta
       description: |
@@ -1138,8 +1138,7 @@ components:
         - $ref: '#/components/schemas/MessageItem'
         - $ref: '#/components/schemas/FunctionCallItem'
         - $ref: '#/components/schemas/FunctionCallOutputItem'
-      discriminator:
-        propertyName: type
+      discriminator: type
 
     Response:
       type: object

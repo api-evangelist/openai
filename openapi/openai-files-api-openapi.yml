@@ -4,12 +4,9 @@ info:
   contact:
     name: OpenAI Support
     url: https://help.openai.com/
-  license:
-    name: MIT
-    url: https://github.com/openai/openai-openapi/blob/master/LICENSE
   termsOfService: https://openai.com/policies/terms-of-use
   version: '1.0'
-  description: 'Operations tagged Files across 2 of this provider''s published API definitions: files-openapi-original.yml, openai-openapi-master.yml. Each path carries the servers of the definition it was published in.'
+  description: 'Operations tagged Files across 2 of this provider''s published API definitions: files-openapi-original.yml, openai-openapi-master-2026-09-23.yml. Each path carries the servers of the definition it was published in.'
 servers:
 - url: https://api.openai.com/v1
 security:
@@ -200,35 +197,6 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
-    ListFilesResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OpenAIFile'
-        object:
-          type: string
-          enum:
-          - list
-      required:
-      - object
-      - data
-    DeleteFileResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        object:
-          type: string
-          enum:
-          - file
-        deleted:
-          type: boolean
-      required:
-      - id
-      - object
-      - deleted
     OpenAIFile:
       title: OpenAIFile
       description: The `File` object represents a document that has been uploaded to OpenAI.
@@ -281,90 +249,35 @@ components:
       x-oaiMeta:
         name: The file object
         example: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"file\",\n  \"bytes\": 120000,\n  \"created_at\": 1677610602,\n  \"filename\": \"salesOverview.pdf\",\n  \"purpose\": \"assistants\",\n}\n"
-    ListFilesResponse_2:
+    ListFilesResponse:
       type: object
       properties:
-        object:
-          type: string
-          example: list
         data:
           type: array
           items:
-            $ref: '#/components/schemas/OpenAIFile_2'
-        first_id:
+            $ref: '#/components/schemas/OpenAIFile'
+        object:
           type: string
-          example: file-abc123
-        last_id:
-          type: string
-          example: file-abc456
-        has_more:
-          type: boolean
-          example: false
+          enum:
+          - list
       required:
       - object
       - data
-      - first_id
-      - last_id
-      - has_more
-    CreateFileRequest:
+    DeleteFileResponse:
       type: object
-      additionalProperties: false
       properties:
-        file:
-          description: 'The File object (not file name) to be uploaded.
-
-            '
+        id:
           type: string
-          format: binary
-        purpose:
-          description: 'The intended purpose of the uploaded file. One of:
-
-            - `assistants`: Used in the Assistants API
-
-            - `batch`: Used in the Batch API
-
-            - `fine-tune`: Used for fine-tuning
-
-            - `vision`: Images used for vision fine-tuning
-
-            - `user_data`: Flexible file type for any purpose
-
-            - `evals`: Used for eval data sets
-
-            '
+        object:
           type: string
           enum:
-          - assistants
-          - batch
-          - fine-tune
-          - vision
-          - user_data
-          - evals
-        expires_after:
-          $ref: '#/components/schemas/FileExpirationAfter'
+          - file
+        deleted:
+          type: boolean
       required:
-      - file
-      - purpose
-    FileExpirationAfter:
-      type: object
-      title: File expiration policy
-      description: The expiration policy for a file. By default, files with `purpose=batch` expire after 30 days and all other files are persisted until they are manually deleted.
-      properties:
-        anchor:
-          description: 'Anchor timestamp after which the expiration policy applies. Supported anchors: `created_at`.'
-          type: string
-          enum:
-          - created_at
-          x-stainless-const: true
-        seconds:
-          description: The number of seconds after the anchor time that the file will expire. Must be between 3600 (1 hour) and 2592000 (30 days).
-          type: integer
-          format: int64
-          minimum: 3600
-          maximum: 2592000
-      required:
-      - anchor
-      - seconds
+      - id
+      - object
+      - deleted
     OpenAIFile_2:
       title: OpenAIFile
       description: The `File` object represents a document that has been uploaded to OpenAI.
@@ -443,6 +356,90 @@ components:
       - id
       - object
       - deleted
+    FileExpirationAfter:
+      type: object
+      title: File expiration policy
+      description: The expiration policy for a file. By default, files with `purpose=batch` expire after 30 days and all other files are persisted until they are manually deleted.
+      properties:
+        anchor:
+          description: 'Anchor timestamp after which the expiration policy applies. Supported anchors: `created_at`.'
+          type: string
+          enum:
+          - created_at
+          x-stainless-const: true
+        seconds:
+          description: The number of seconds after the anchor time that the file will expire. Must be between 3600 (1 hour) and 2592000 (30 days).
+          type: integer
+          format: int64
+          minimum: 3600
+          maximum: 2592000
+      required:
+      - anchor
+      - seconds
+    CreateFileRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        file:
+          description: 'The File object (not file name) to be uploaded.
+
+            '
+          type: string
+          format: binary
+        purpose:
+          description: 'The intended purpose of the uploaded file. One of:
+
+            - `assistants`: Used in the Assistants API
+
+            - `batch`: Used in the Batch API
+
+            - `fine-tune`: Used for fine-tuning
+
+            - `vision`: Images used for vision fine-tuning
+
+            - `user_data`: Flexible file type for any purpose
+
+            - `evals`: Used for eval data sets
+
+            '
+          type: string
+          enum:
+          - assistants
+          - batch
+          - fine-tune
+          - vision
+          - user_data
+          - evals
+        expires_after:
+          $ref: '#/components/schemas/FileExpirationAfter'
+      required:
+      - file
+      - purpose
+    ListFilesResponse_2:
+      type: object
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpenAIFile_2'
+        first_id:
+          type: string
+          example: file-abc123
+        last_id:
+          type: string
+          example: file-abc456
+        has_more:
+          type: boolean
+          example: false
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
   securitySchemes:
     ApiKeyAuth:
       type: http
@@ -452,7 +449,7 @@ components:
       scheme: bearer
 x-refined-from:
 - files-openapi-original.yml
-- openai-openapi-master.yml
+- openai-openapi-master-2026-09-23.yml
 x-oaiMeta:
   groups:
   - id: audio

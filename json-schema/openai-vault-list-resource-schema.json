@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/openai/main/json-schema/openai-vault-list-resource-schema.json",
+  "title": "VaultListResource",
+  "description": "A page of Agents API resources, with IDs for retrieving additional pages.",
+  "x-generated": "2026-09-23",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/openai-vaults-api-openapi.yml#/components/schemas/VaultListResource",
+  "type": "object",
+  "properties": {
+    "object": {
+      "type": "string",
+      "enum": [
+        "list"
+      ],
+      "default": "list",
+      "x-stainless-const": true,
+      "description": "The object type, which is always `list`."
+    },
+    "data": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/VaultResource"
+      },
+      "minItems": 0,
+      "maxItems": 2000,
+      "description": "The resources returned in this page, in the requested sort order."
+    },
+    "first_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 0,
+      "description": "The ID of the first resource in `data`, or `null` if the page is empty."
+    },
+    "last_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 0,
+      "description": "The ID of the last resource in `data`, or `null` if the page is empty. Pass this as `after` with the same order and filters."
+    },
+    "has_more": {
+      "type": "boolean",
+      "description": "Whether there are more resources to retrieve after this page."
+    }
+  },
+  "required": [
+    "object",
+    "data",
+    "first_id",
+    "last_id",
+    "has_more"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "VaultResource": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the vault."
+        },
+        "object": {
+          "type": "string",
+          "enum": [
+            "vault"
+          ],
+          "default": "vault",
+          "x-stainless-const": true,
+          "description": "The object type. Always `vault`."
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The human-readable name of the vault, if set."
+        },
+        "metadata": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string",
+            "minLength": 0
+          },
+          "propertyNames": {
+            "type": "string",
+            "minLength": 0
+          },
+          "minProperties": 0,
+          "description": "Key-value pairs associated with the vault, such as an application or team identifier."
+        },
+        "created_at": {
+          "type": "integer",
+          "format": "int64",
+          "description": "The Unix timestamp, in seconds, when the vault was created."
+        }
+      },
+      "required": [
+        "id",
+        "object",
+        "name",
+        "metadata",
+        "created_at"
+      ],
+      "additionalProperties": false,
+      "description": "A collection of credentials for MCP servers and OpenAI-hosted environments."
+    }
+  }
+}

@@ -1,0 +1,507 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/openai/main/json-schema/openai-live-fork-request-schema.json",
+  "title": "LiveForkRequest",
+  "description": "Fork a stored Live session onto a new WebRTC connection. Omit session or send an empty object to inherit its configuration.",
+  "x-generated": "2026-09-23",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/openai-live-api-openapi.yml#/components/schemas/LiveForkRequest",
+  "type": "object",
+  "properties": {
+    "session": {
+      "$ref": "#/$defs/LiveMediaSessionForkParams",
+      "description": "Optional configuration overrides for the new Live session. Omit this object or send an empty object to inherit the stored session's settings."
+    },
+    "transport": {
+      "$ref": "#/$defs/LiveWebRTCTransport",
+      "description": "WebRTC transport with an SDP offer for the new connection to the forked session."
+    }
+  },
+  "required": [
+    "transport"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "LiveAllowedServerEventParam": {
+      "description": "A Live server event selector for the WebRTC frontend data channel.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The outer Live server event type. Use 'response.event' for Responses events.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        },
+        "response_event": {
+          "description": "The nested Responses event type. Required when type is 'response.event'; forbidden for other event types.",
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "additionalProperties": false,
+      "x-oaiMeta": {}
+    },
+    "LiveClientConfigParam": {
+      "description": "Startup-only capabilities for an untrusted frontend attached to a unified WebRTC session. Trusted sideband connections are unaffected.",
+      "type": "object",
+      "properties": {
+        "data_channel": {
+          "description": "Client and server event permissions for the WebRTC frontend data channel.",
+          "$ref": "#/$defs/LiveDataChannelConfigParam"
+        }
+      },
+      "required": [
+        "data_channel"
+      ]
+    },
+    "LiveDataChannelConfigParam": {
+      "description": "Control which Live events an untrusted WebRTC frontend can send and receive over its data channel. These restrictions do not apply to trusted sideband connections.",
+      "type": "object",
+      "properties": {
+        "allowed_client_events": {
+          "description": "Client event types that the frontend data channel may send. Use 'all' to allow every client event; an empty array allows none. Omission preserves the existing allow-all behavior.",
+          "oneOf": [
+            {
+              "default": "all",
+              "x-stainless-const": true,
+              "type": "string",
+              "enum": [
+                "all"
+              ]
+            },
+            {
+              "type": "array",
+              "items": {
+                "description": "A Live client event type allowed on the frontend data channel, such as `session.input_audio.mute`.",
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 256,
+                "pattern": "^(?:error|info|[a-z][a-z0-9_-]*(?:\\.[a-z0-9_-]+)+)$"
+              },
+              "maxItems": 256
+            }
+          ]
+        },
+        "allowed_server_events": {
+          "description": "Server events that may be sent to the frontend data channel. Use 'all' to allow every server event; an empty array allows none. Omission preserves the existing allow-all behavior. Responses events use an object with type 'response.event' and a response_event selector.",
+          "oneOf": [
+            {
+              "default": "all",
+              "x-stainless-const": true,
+              "type": "string",
+              "enum": [
+                "all"
+              ]
+            },
+            {
+              "type": "array",
+              "items": {
+                "$ref": "#/$defs/LiveAllowedServerEventParam"
+              },
+              "maxItems": 256
+            }
+          ]
+        }
+      },
+      "required": []
+    },
+    "LiveDelegationReasoningInputParam": {
+      "description": "Reasoning options for Responses requests made on behalf of the Live session.",
+      "type": "object",
+      "properties": {
+        "effort": {
+          "anyOf": [
+            {
+              "description": "How much reasoning effort the delegated Responses model should use. Supported values depend on the backend model.",
+              "$ref": "#/$defs/LiveReasoningEffort"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "description": "The reasoning summary to request from the delegated Responses model, when supported.",
+              "$ref": "#/$defs/LiveReasoningSummary"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": []
+    },
+    "LiveDelegationTextInputParam": {
+      "description": "Text generation options for the Live session’s Responses backend.",
+      "type": "object",
+      "properties": {
+        "verbosity": {
+          "anyOf": [
+            {
+              "description": "The amount of detail in text generated by the Responses backend. This does not configure the Live model’s spoken delivery.",
+              "$ref": "#/$defs/LiveTextVerbosity"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": []
+    },
+    "LiveFunctionToolChoiceParam": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "default": "function",
+          "x-stainless-const": true,
+          "type": "string",
+          "enum": [
+            "function"
+          ]
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        }
+      },
+      "required": [
+        "type",
+        "name"
+      ]
+    },
+    "LiveFunctionToolInputParam": {
+      "description": "A function tool available to the Responses backend when the Live model delegates a task.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The tool type. Always `function`.",
+          "default": "function",
+          "x-stainless-const": true,
+          "type": "string",
+          "enum": [
+            "function"
+          ]
+        },
+        "name": {
+          "description": "The name the delegated Responses model uses when calling this function.",
+          "type": "string"
+        },
+        "description": {
+          "anyOf": [
+            {
+              "description": "What the function does and when the delegated Responses model should call it.",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "parameters": {
+          "anyOf": [
+            {
+              "description": "A JSON Schema object describing the arguments accepted by the function.",
+              "type": "object",
+              "additionalProperties": {}
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "strict": {
+          "anyOf": [
+            {
+              "description": "Whether the delegated Responses model must follow the function’s parameter schema exactly.",
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": [
+        "type",
+        "name"
+      ]
+    },
+    "LiveMCPToolChoiceParam": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "default": "mcp",
+          "x-stainless-const": true,
+          "type": "string",
+          "enum": [
+            "mcp"
+          ]
+        },
+        "server_label": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "pattern": "^[a-zA-Z0-9_-]+$"
+        }
+      },
+      "required": [
+        "type",
+        "server_label",
+        "name"
+      ]
+    },
+    "LiveMediaSessionForkParams": {
+      "type": "object",
+      "description": "Optional overrides for a stored Live session. Omitted settings are inherited. The model, voice, frontend instructions, and prior conversation come from the stored session. WebRTC negotiates its audio format; audio.format is only supported on WebSocket forks.",
+      "properties": {
+        "store": {
+          "$ref": "#/$defs/properties-store"
+        },
+        "delegation": {
+          "$ref": "#/$defs/LiveResponsesDelegationUpdateParam"
+        },
+        "client": {
+          "$ref": "#/$defs/LiveClientConfigParam"
+        }
+      },
+      "additionalProperties": false
+    },
+    "LiveReasoningEffort": {
+      "type": "string",
+      "enum": [
+        "none",
+        "minimal",
+        "low",
+        "medium",
+        "high",
+        "xhigh"
+      ]
+    },
+    "LiveReasoningSummary": {
+      "type": "string",
+      "enum": [
+        "concise",
+        "detailed",
+        "auto"
+      ]
+    },
+    "LiveResponsesDelegationSettingsUpdateInputParam": {
+      "description": "Updates to the Responses backend of an existing Live session. Omitted settings retain their current values.",
+      "type": "object",
+      "properties": {
+        "model": {
+          "description": "The Responses backend model to use for subsequent delegated requests. Omit to keep the current backend model.",
+          "type": "string"
+        },
+        "instructions": {
+          "anyOf": [
+            {
+              "description": "Instructions for the delegated Responses model, separate from Live instructions. See [backend prompting](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt).",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "max_output_tokens": {
+          "anyOf": [
+            {
+              "description": "Maximum number of output tokens for each delegated response.",
+              "type": "integer",
+              "minimum": 16
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "service_tier": {
+          "anyOf": [
+            {
+              "description": "Service tier for delegated Responses requests.",
+              "$ref": "#/$defs/LiveResponsesServiceTier"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "reasoning": {
+          "anyOf": [
+            {
+              "description": "Reasoning settings passed to each delegated Responses request.",
+              "$ref": "#/$defs/LiveDelegationReasoningInputParam"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "text": {
+          "anyOf": [
+            {
+              "description": "Text generation settings passed to each delegated Responses request.",
+              "$ref": "#/$defs/LiveDelegationTextInputParam"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "tools": {
+          "description": "Tools available to the Responses backend while it handles tasks delegated by the Live model.",
+          "type": "array",
+          "items": {
+            "oneOf": [
+              {
+                "$ref": "#/$defs/LiveFunctionToolInputParam"
+              },
+              {
+                "$ref": "#/$defs/LiveWebSearchToolInputParam"
+              }
+            ]
+          }
+        },
+        "tool_choice": {
+          "description": "Controls which tool the Responses backend uses when handling a task delegated by the Live model.",
+          "oneOf": [
+            {
+              "$ref": "#/$defs/LiveToolChoiceEnum"
+            },
+            {
+              "$ref": "#/$defs/LiveFunctionToolChoiceParam"
+            },
+            {
+              "$ref": "#/$defs/LiveMCPToolChoiceParam"
+            }
+          ]
+        },
+        "parallel_tool_calls": {
+          "anyOf": [
+            {
+              "description": "Whether the delegated Responses model may request multiple tool calls in a single response.",
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "required": []
+    },
+    "LiveResponsesDelegationUpdateParam": {
+      "description": "Update the Responses backend for an existing Live session without changing delegation ownership.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The delegation owner. Always `responses` for tasks handled by the Responses API.",
+          "default": "responses",
+          "x-stainless-const": true,
+          "type": "string",
+          "enum": [
+            "responses"
+          ]
+        },
+        "responses": {
+          "description": "Responses backend settings to update. Omitted settings keep their existing values.",
+          "$ref": "#/$defs/LiveResponsesDelegationSettingsUpdateInputParam"
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "LiveResponsesServiceTier": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "default",
+        "fast_tier_temp_pilot",
+        "flex",
+        "priority",
+        "ultrafast"
+      ]
+    },
+    "LiveTextVerbosity": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high"
+      ]
+    },
+    "LiveToolChoiceEnum": {
+      "type": "string",
+      "enum": [
+        "auto",
+        "none",
+        "required"
+      ]
+    },
+    "LiveWebRTCTransport": {
+      "type": "object",
+      "description": "WebRTC transport carrying the offer SDP in a creation request or answer SDP in its response.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The transport used for the Live session. Always `webrtc`.",
+          "enum": [
+            "webrtc"
+          ],
+          "x-stainless-const": true
+        },
+        "sdp": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Session Description Protocol message for the WebRTC connection."
+        }
+      },
+      "required": [
+        "type",
+        "sdp"
+      ],
+      "additionalProperties": false
+    },
+    "LiveWebSearchToolInputParam": {
+      "description": "A web search tool available to the Live session’s Responses backend.",
+      "type": "object",
+      "properties": {
+        "type": {
+          "description": "The tool type. Always `web_search`.",
+          "default": "web_search",
+          "x-stainless-const": true,
+          "type": "string",
+          "enum": [
+            "web_search"
+          ]
+        }
+      },
+      "required": [
+        "type"
+      ]
+    },
+    "properties-store": {
+      "description": "Whether to store the forked session. Omission inherits the stored session's setting.",
+      "type": "boolean"
+    }
+  }
+}

@@ -1,0 +1,2075 @@
+openapi: 3.2.0
+info:
+  title: OpenAI Live API
+  description: The OpenAI REST API. Please see https://platform.openai.com/docs/api-reference for more details.
+  version: 2.3.0
+  termsOfService: https://openai.com/policies/terms-of-use
+  contact:
+    name: OpenAI Support
+    url: https://help.openai.com/
+  license:
+    name: MIT
+    identifier: MIT
+servers:
+- url: https://api.openai.com/v1
+security:
+- ApiKeyAuth: []
+tags:
+- name: Live
+paths:
+  /live/sessions:
+    post:
+      operationId: create-live
+      summary: Create session
+      description: Create a Live WebRTC session. Start with the Live prompting guide.
+      tags:
+      - Live
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LiveCreateRequest'
+      responses:
+        '201':
+          description: Live session created with a WebRTC answer.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveCreateResponse'
+              example:
+                session:
+                  id: live_123
+                transport:
+                  type: webrtc
+                  sdp: <SDP answer>
+      x-oaiMeta:
+        group: live
+        returns: Returns 201 Created with the session identifier in session.id and SDP answer in transport.sdp.
+        examples:
+          request:
+            curl: "curl https://api.openai.com/v1/live/sessions \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"session\":{\"model\":\"gpt-live-1\",\"instructions\":\"Be concise. Ask for clarification when needed.\"},\"transport\":{\"type\":\"webrtc\",\"sdp\":\"<SDP offer>\"}}'"
+  /live/sessions/{session_id}/accept:
+    post:
+      operationId: accept-live-session
+      summary: Accept call
+      description: Accept an incoming SIP call. Supply session with type live, the model, and startup configuration. Before accepting calls, follow the Live prompting guide to write frontend conversation instructions and a separate backend prompt. SIP media format is negotiated; omit audio.format.
+      tags:
+      - Live
+      parameters:
+      - in: path
+        name: session_id
+        required: true
+        description: Opaque Live session identifier from the creation response or incoming-call webhook. Preserve the returned value unchanged, including its prefix.
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LiveCallAcceptRequest'
+      responses:
+        '200':
+          description: Session accept request accepted.
+      x-oaiMeta:
+        group: live-sessions
+        returns: Returns 200 OK when the control request succeeds.
+  /live/sessions/{session_id}/fork:
+    post:
+      operationId: fork-live-session
+      summary: Fork session
+      description: Fork a stored Live session onto a new WebRTC connection.
+      tags:
+      - Live
+      parameters:
+      - in: path
+        name: session_id
+        required: true
+        schema:
+          type: string
+        description: The ID of the stored Live session to fork.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LiveForkRequest'
+      responses:
+        '201':
+          description: Forked Live session created with a WebRTC answer.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveCreateResponse'
+      x-oaiMeta:
+        group: live
+        returns: The new session identifier in session.id and SDP answer in transport.sdp.
+        examples:
+          request:
+            curl: "curl https://api.openai.com/v1/live/sessions/live_123/fork \\\n  -H \"Authorization: Bearer $OPENAI_API_KEY\" \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\"session\":{},\"transport\":{\"type\":\"webrtc\",\"sdp\":\"<SDP offer>\"}}'"
+  /live/sessions/{session_id}/hangup:
+    post:
+      operationId: hangup-live-session
+      summary: Hang up session
+      description: End a SIP call identified by session_id.
+      tags:
+      - Live
+      parameters:
+      - in: path
+        name: session_id
+        required: true
+        description: Opaque Live session identifier from the creation response or incoming-call webhook. Preserve the returned value unchanged, including its prefix.
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Session hangup request accepted.
+      x-oaiMeta:
+        group: live-sessions
+        returns: Returns 200 OK when the control request succeeds.
+  /live/sessions/{session_id}/refer:
+    post:
+      operationId: refer-live-session
+      summary: Transfer call
+      description: Transfer a SIP call to another destination. Supply a nonblank target_uri for the SIP Refer-To header.
+      tags:
+      - Live
+      parameters:
+      - in: path
+        name: session_id
+        required: true
+        description: Opaque Live session identifier from the creation response or incoming-call webhook. Preserve the returned value unchanged, including its prefix.
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LiveCallReferRequest'
+      responses:
+        '200':
+          description: Session refer request accepted.
+      x-oaiMeta:
+        group: live-sessions
+        returns: Returns 200 OK when the control request succeeds.
+  /live/sessions/{session_id}/reject:
+    post:
+      operationId: reject-live-session
+      summary: Reject call
+      description: Reject an incoming SIP call. Send a required SIP rejection status_code between 300 and 699.
+      tags:
+      - Live
+      parameters:
+      - in: path
+        name: session_id
+        required: true
+        description: Opaque Live session identifier from the creation response or incoming-call webhook. Preserve the returned value unchanged, including its prefix.
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LiveCallRejectRequest'
+      responses:
+        '200':
+          description: Session reject request accepted.
+      x-oaiMeta:
+        group: live-sessions
+        returns: Returns 200 OK when the control request succeeds.
+  /live/sessions/{session_id}/content:
+    get:
+      tags:
+      - Live
+      summary: Download recording
+      description: Get Live session content
+      operationId: download-live-recording
+      parameters:
+      - name: session_id
+        in: path
+        description: The ID of the stored Live session to download. Use the session ID returned when the session started with storage enabled.
+        required: true
+        schema:
+          description: The ID of the stored Live session to download. Use the session ID returned when the session started with storage enabled.
+          type: string
+          pattern: ^live_[A-Za-z0-9_-]{1,128}$
+      responses:
+        '200':
+          description: Stored session recording. Input audio is in the left channel and output audio is in the right channel.
+          content:
+            audio/wav:
+              schema:
+                description: The Live session recording as a stereo WAV file, with input audio in the left channel and output audio in the right channel.
+                type: string
+                format: binary
+      x-oaiMeta:
+        group: live
+        returns: The stored session recording as binary stereo WAV audio.
+components:
+  schemas:
+    LiveForkRequest:
+      type: object
+      description: Fork a stored Live session onto a new WebRTC connection. Omit session or send an empty object to inherit its configuration.
+      properties:
+        session:
+          $ref: '#/components/schemas/LiveMediaSessionForkParams'
+          description: Optional configuration overrides for the new Live session. Omit this object or send an empty object to inherit the stored session's settings.
+        transport:
+          $ref: '#/components/schemas/LiveWebRTCTransport'
+          description: WebRTC transport with an SDP offer for the new connection to the forked session.
+      required:
+      - transport
+      additionalProperties: false
+    LiveInitialInputTextContentPartParam:
+      description: Text supplied in a developer or user message when starting a Live session.
+      type: object
+      properties:
+        type:
+          description: The text content type. Always `input_text`.
+          default: input_text
+          x-stainless-const: true
+          type: string
+          enum:
+          - input_text
+        text:
+          description: The message text to include in the Live session’s initial conversation history.
+          type: string
+      required:
+      - text
+    ModelIdsLive:
+      description: The Live model. Required in the session configuration for every transport; do not pass it as a URL query parameter.
+      example: gpt-live-1
+      anyOf:
+      - type: string
+        minLength: 1
+      - type: string
+        enum:
+        - gpt-live-1
+    LiveClientDelegationParam:
+      description: Delegate tasks to your application. The Live session emits delegation events that your backend handles.
+      type: object
+      properties:
+        type:
+          description: The delegation owner. Always `client` for tasks handled by your application.
+          default: client
+          x-stainless-const: true
+          type: string
+          enum:
+          - client
+      required:
+      - type
+    LiveCallAcceptSession:
+      type: object
+      description: Startup configuration for accepting an incoming Live SIP call. Follow the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) when writing frontend and backend instructions.
+      properties:
+        model:
+          $ref: '#/components/schemas/ModelIdsLive'
+          description: The Live model to use for the accepted call.
+          minLength: 1
+        instructions:
+          $ref: '#/components/schemas/instructions'
+        audio:
+          $ref: '#/components/schemas/LiveMediaSessionAudioParam'
+          description: Startup audio output configuration. SIP negotiates the media format; audio.format is only accepted for primary WebSockets. Voice cannot change after startup.
+        delegation:
+          $ref: '#/components/schemas/delegation'
+        store:
+          $ref: '#/components/schemas/store'
+        input:
+          $ref: '#/components/schemas/input'
+        type:
+          type: string
+          enum:
+          - live
+          default: live
+          x-stainless-const: true
+          description: The session type. Always `live`.
+      required:
+      - model
+      - type
+      additionalProperties: false
+    LiveDelegationReasoningInputParam:
+      description: Reasoning options for Responses requests made on behalf of the Live session.
+      type: object
+      properties:
+        effort:
+          anyOf:
+          - description: How much reasoning effort the delegated Responses model should use. Supported values depend on the backend model.
+            $ref: '#/components/schemas/LiveReasoningEffort'
+          - type: 'null'
+        summary:
+          anyOf:
+          - description: The reasoning summary to request from the delegated Responses model, when supported.
+            $ref: '#/components/schemas/LiveReasoningSummary'
+          - type: 'null'
+      required: []
+    LiveReasoningSummary:
+      type: string
+      enum:
+      - concise
+      - detailed
+      - auto
+    LiveInitialTextContentPartParam:
+      description: Assistant text supplied as conversation history when starting a Live session.
+      type: object
+      properties:
+        type:
+          description: The text content type. Always `text`.
+          default: text
+          x-stainless-const: true
+          type: string
+          enum:
+          - text
+        text:
+          description: The message text to include in the Live session’s initial conversation history.
+          type: string
+      required:
+      - text
+    LiveFunctionToolInputParam:
+      description: A function tool available to the Responses backend when the Live model delegates a task.
+      type: object
+      properties:
+        type:
+          description: The tool type. Always `function`.
+          default: function
+          x-stainless-const: true
+          type: string
+          enum:
+          - function
+        name:
+          description: The name the delegated Responses model uses when calling this function.
+          type: string
+        description:
+          anyOf:
+          - description: What the function does and when the delegated Responses model should call it.
+            type: string
+          - type: 'null'
+        parameters:
+          anyOf:
+          - description: A JSON Schema object describing the arguments accepted by the function.
+            type: object
+            additionalProperties: {}
+          - type: 'null'
+        strict:
+          anyOf:
+          - description: Whether the delegated Responses model must follow the function’s parameter schema exactly.
+            type: boolean
+          - type: 'null'
+      required:
+      - type
+      - name
+    LiveResponsesDelegationParam:
+      description: Delegate tasks to a Responses model managed by the Live session.
+      type: object
+      properties:
+        type:
+          description: The delegation owner. Always `responses` for tasks handled by the Responses API.
+          default: responses
+          x-stainless-const: true
+          type: string
+          enum:
+          - responses
+        responses:
+          description: Backend model, prompt, and tools used when the Live session delegates a task to Responses.
+          $ref: '#/components/schemas/LiveResponsesDelegationSettingsInputParam'
+      required:
+      - type
+      - responses
+    LiveInitialItem:
+      description: A developer, user, or assistant message supplied as text history before the Live session starts.
+      discriminator:
+        propertyName: role
+      oneOf:
+      - $ref: '#/components/schemas/LiveInitialDeveloperMessageItemParam'
+      - $ref: '#/components/schemas/LiveInitialUserMessageItemParam'
+      - $ref: '#/components/schemas/LiveInitialAssistantMessageItemParam'
+    LiveInitialAssistantMessageItemParam:
+      description: An assistant message included in the initial text history of a Live session.
+      type: object
+      properties:
+        id:
+          anyOf:
+          - description: An optional identifier for the supplied history message. Live uses the message’s role and text to initialize the conversation.
+            type: string
+          - type: 'null'
+        type:
+          description: The history item type. Always `message`.
+          default: message
+          x-stainless-const: true
+          type: string
+          enum:
+          - message
+        status:
+          anyOf:
+          - description: The supplied message’s status. Live uses its text as history and does not resume an incomplete message.
+            $ref: '#/components/schemas/LiveInitialMessageStatus'
+          - type: 'null'
+        role:
+          description: The author of this history message. Always `assistant`.
+          default: assistant
+          x-stainless-const: true
+          type: string
+          enum:
+          - assistant
+        content:
+          description: The message content. Supply exactly one text part for the initial Live conversation history.
+          type: array
+          items:
+            discriminator:
+              propertyName: type
+            oneOf:
+            - $ref: '#/components/schemas/LiveInitialTextContentPartParam'
+            - $ref: '#/components/schemas/LiveInitialOutputTextContentPartParam'
+            x-oai-default-discriminator-value: text
+          minItems: 1
+          maxItems: 1
+      required:
+      - role
+      - content
+    LiveMediaSessionAudioParam:
+      type: object
+      description: Startup audio output configuration. WebRTC and SIP negotiate the media format; audio.format is only accepted for primary WebSockets. Voice cannot change after startup.
+      properties:
+        output:
+          $ref: '#/components/schemas/LiveInitialSessionAudioOutputParam'
+      additionalProperties: false
+    delegation:
+      anyOf:
+      - description: Who handles tasks delegated by the Live model. Omitted or null selects your application; use `responses` to let the API manage a Responses backend.
+        discriminator:
+          propertyName: type
+        oneOf:
+        - $ref: '#/components/schemas/LiveClientDelegationParam'
+        - $ref: '#/components/schemas/LiveResponsesDelegationParam'
+      - type: 'null'
+    LiveTextVerbosity:
+      type: string
+      enum:
+      - low
+      - medium
+      - high
+    LiveAllowedServerEventParam:
+      description: A Live server event selector for the WebRTC frontend data channel.
+      example:
+        type: session.started
+      type: object
+      properties:
+        type:
+          description: The outer Live server event type. Use 'response.event' for Responses events.
+          type: string
+          minLength: 1
+          maxLength: 256
+        response_event:
+          description: The nested Responses event type. Required when type is 'response.event'; forbidden for other event types.
+          type: string
+          minLength: 1
+          maxLength: 256
+      required:
+      - type
+      additionalProperties: false
+      x-oaiMeta:
+        example:
+          type: session.started
+    target_uri:
+      type: string
+      description: 'URI that should appear in the SIP Refer-To header. Supports values like
+
+        `tel:+14155550123` or `sip:agent@example.com`.'
+      example: tel:+14155550123
+    LiveClientConfigParam:
+      description: Startup-only capabilities for an untrusted frontend attached to a unified WebRTC session. Trusted sideband connections are unaffected.
+      type: object
+      properties:
+        data_channel:
+          description: Client and server event permissions for the WebRTC frontend data channel.
+          $ref: '#/components/schemas/LiveDataChannelConfigParam'
+      required:
+      - data_channel
+    LiveResponsesServiceTier:
+      type: string
+      enum:
+      - auto
+      - default
+      - fast_tier_temp_pilot
+      - flex
+      - priority
+      - ultrafast
+    LiveCustomVoiceParam:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 1
+          maxLength: 128
+      required:
+      - id
+    LiveFunctionToolChoiceParam:
+      type: object
+      properties:
+        type:
+          default: function
+          x-stainless-const: true
+          type: string
+          enum:
+          - function
+        name:
+          type: string
+          minLength: 1
+          maxLength: 64
+          pattern: ^[a-zA-Z0-9_-]+$
+      required:
+      - type
+      - name
+    LiveResponsesDelegationSettingsInputParam:
+      description: Model, prompt, and tool settings for tasks delegated by the Live session to a Responses backend.
+      type: object
+      properties:
+        model:
+          description: The model used for server-owned Responses delegations.
+          type: string
+        instructions:
+          anyOf:
+          - description: Instructions for the delegated Responses model, separate from Live instructions. See [backend prompting](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt).
+            type: string
+          - type: 'null'
+        max_output_tokens:
+          anyOf:
+          - description: Maximum number of output tokens for each delegated response.
+            type: integer
+            minimum: 16
+          - type: 'null'
+        service_tier:
+          anyOf:
+          - description: Service tier for delegated Responses requests.
+            $ref: '#/components/schemas/LiveResponsesServiceTier'
+          - type: 'null'
+        reasoning:
+          anyOf:
+          - description: Reasoning settings passed to each delegated Responses request.
+            $ref: '#/components/schemas/LiveDelegationReasoningInputParam'
+          - type: 'null'
+        text:
+          anyOf:
+          - description: Text generation settings passed to each delegated Responses request.
+            $ref: '#/components/schemas/LiveDelegationTextInputParam'
+          - type: 'null'
+        tools:
+          description: Tools available to the Responses backend while it handles tasks delegated by the Live model.
+          type: array
+          items:
+            discriminator:
+              propertyName: type
+            oneOf:
+            - $ref: '#/components/schemas/LiveFunctionToolInputParam'
+            - $ref: '#/components/schemas/LiveWebSearchToolInputParam'
+        tool_choice:
+          description: Controls which tool the Responses backend uses when handling a task delegated by the Live model.
+          oneOf:
+          - $ref: '#/components/schemas/LiveToolChoiceEnum'
+          - $ref: '#/components/schemas/LiveFunctionToolChoiceParam'
+          - $ref: '#/components/schemas/LiveMCPToolChoiceParam'
+        parallel_tool_calls:
+          anyOf:
+          - description: Whether the delegated Responses model may request multiple tool calls in a single response.
+            type: boolean
+          - type: 'null'
+      required:
+      - model
+    LiveMediaSessionCreateParams:
+      type: object
+      description: Startup configuration for a Live media session. Follow the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) when writing frontend instructions and the backend prompt under delegation.responses.instructions.
+      properties:
+        model:
+          $ref: '#/components/schemas/ModelIdsLive'
+        instructions:
+          $ref: '#/components/schemas/instructions'
+        audio:
+          $ref: '#/components/schemas/LiveMediaSessionAudioParam'
+          description: Startup audio configuration. WebRTC and SIP negotiate their audio format on the media transport.
+        delegation:
+          $ref: '#/components/schemas/delegation'
+        store:
+          $ref: '#/components/schemas/store'
+        input:
+          $ref: '#/components/schemas/input'
+        client:
+          $ref: '#/components/schemas/LiveClientConfigParam'
+      required:
+      - model
+      additionalProperties: false
+    LiveResponsesDelegationUpdateParam:
+      description: Update the Responses backend for an existing Live session without changing delegation ownership.
+      type: object
+      properties:
+        type:
+          description: The delegation owner. Always `responses` for tasks handled by the Responses API.
+          default: responses
+          x-stainless-const: true
+          type: string
+          enum:
+          - responses
+        responses:
+          description: Responses backend settings to update. Omitted settings keep their existing values.
+          $ref: '#/components/schemas/LiveResponsesDelegationSettingsUpdateInputParam'
+      required:
+      - type
+    LiveResponsesDelegationSettingsUpdateInputParam:
+      description: Updates to the Responses backend of an existing Live session. Omitted settings retain their current values.
+      type: object
+      properties:
+        model:
+          description: The Responses backend model to use for subsequent delegated requests. Omit to keep the current backend model.
+          type: string
+        instructions:
+          anyOf:
+          - description: Instructions for the delegated Responses model, separate from Live instructions. See [backend prompting](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt).
+            type: string
+          - type: 'null'
+        max_output_tokens:
+          anyOf:
+          - description: Maximum number of output tokens for each delegated response.
+            type: integer
+            minimum: 16
+          - type: 'null'
+        service_tier:
+          anyOf:
+          - description: Service tier for delegated Responses requests.
+            $ref: '#/components/schemas/LiveResponsesServiceTier'
+          - type: 'null'
+        reasoning:
+          anyOf:
+          - description: Reasoning settings passed to each delegated Responses request.
+            $ref: '#/components/schemas/LiveDelegationReasoningInputParam'
+          - type: 'null'
+        text:
+          anyOf:
+          - description: Text generation settings passed to each delegated Responses request.
+            $ref: '#/components/schemas/LiveDelegationTextInputParam'
+          - type: 'null'
+        tools:
+          description: Tools available to the Responses backend while it handles tasks delegated by the Live model.
+          type: array
+          items:
+            discriminator:
+              propertyName: type
+            oneOf:
+            - $ref: '#/components/schemas/LiveFunctionToolInputParam'
+            - $ref: '#/components/schemas/LiveWebSearchToolInputParam'
+        tool_choice:
+          description: Controls which tool the Responses backend uses when handling a task delegated by the Live model.
+          oneOf:
+          - $ref: '#/components/schemas/LiveToolChoiceEnum'
+          - $ref: '#/components/schemas/LiveFunctionToolChoiceParam'
+          - $ref: '#/components/schemas/LiveMCPToolChoiceParam'
+        parallel_tool_calls:
+          anyOf:
+          - description: Whether the delegated Responses model may request multiple tool calls in a single response.
+            type: boolean
+          - type: 'null'
+      required: []
+    LiveCallAcceptRequest:
+      type: object
+      description: Accept an incoming SIP call with Live startup configuration.
+      properties:
+        session:
+          $ref: '#/components/schemas/LiveCallAcceptSession'
+          description: Model and startup configuration for the Live session that answers the incoming SIP call.
+      required:
+      - session
+      additionalProperties: false
+    LiveWebSearchToolInputParam:
+      description: A web search tool available to the Live session’s Responses backend.
+      type: object
+      properties:
+        type:
+          description: The tool type. Always `web_search`.
+          default: web_search
+          x-stainless-const: true
+          type: string
+          enum:
+          - web_search
+      required:
+      - type
+    properties-store:
+      description: Whether to store the forked session. Omission inherits the stored session's setting.
+      type: boolean
+    LiveMCPToolChoiceParam:
+      type: object
+      properties:
+        type:
+          default: mcp
+          x-stainless-const: true
+          type: string
+          enum:
+          - mcp
+        server_label:
+          type: string
+          minLength: 1
+          maxLength: 64
+          pattern: ^[a-zA-Z0-9_-]+$
+        name:
+          type: string
+          minLength: 1
+          maxLength: 64
+          pattern: ^[a-zA-Z0-9_-]+$
+      required:
+      - type
+      - server_label
+      - name
+    store:
+      description: Whether to store the session for later forking and recording download. Defaults to false for new sessions.
+      type: boolean
+    LiveInitialUserMessageItemParam:
+      description: A user message included in the initial text history of a Live session.
+      type: object
+      properties:
+        id:
+          anyOf:
+          - description: An optional identifier for the supplied history message. Live uses the message’s role and text to initialize the conversation.
+            type: string
+          - type: 'null'
+        type:
+          description: The history item type. Always `message`.
+          default: message
+          x-stainless-const: true
+          type: string
+          enum:
+          - message
+        status:
+          anyOf:
+          - description: The supplied message’s status. Live uses its text as history and does not resume an incomplete message.
+            $ref: '#/components/schemas/LiveInitialMessageStatus'
+          - type: 'null'
+        role:
+          description: The author of this history message. Always `user`.
+          default: user
+          x-stainless-const: true
+          type: string
+          enum:
+          - user
+        content:
+          description: The message content. Supply exactly one text part for the initial Live conversation history.
+          type: array
+          items:
+            $ref: '#/components/schemas/LiveInitialInputTextContentPartParam'
+          minItems: 1
+          maxItems: 1
+      required:
+      - role
+      - content
+    LiveDataChannelConfigParam:
+      description: Control which Live events an untrusted WebRTC frontend can send and receive over its data channel. These restrictions do not apply to trusted sideband connections.
+      type: object
+      properties:
+        allowed_client_events:
+          description: Client event types that the frontend data channel may send. Use 'all' to allow every client event; an empty array allows none. Omission preserves the existing allow-all behavior.
+          oneOf:
+          - default: all
+            x-stainless-const: true
+            type: string
+            enum:
+            - all
+          - type: array
+            items:
+              description: A Live client event type allowed on the frontend data channel, such as `session.input_audio.mute`.
+              type: string
+              minLength: 1
+              maxLength: 256
+              pattern: ^(?:error|info|[a-z][a-z0-9_-]*(?:\.[a-z0-9_-]+)+)$
+            maxItems: 256
+        allowed_server_events:
+          description: Server events that may be sent to the frontend data channel. Use 'all' to allow every server event; an empty array allows none. Omission preserves the existing allow-all behavior. Responses events use an object with type 'response.event' and a response_event selector.
+          oneOf:
+          - default: all
+            x-stainless-const: true
+            type: string
+            enum:
+            - all
+          - type: array
+            items:
+              $ref: '#/components/schemas/LiveAllowedServerEventParam'
+            maxItems: 256
+      required: []
+    LiveInitialMessageStatus:
+      type: string
+      enum:
+      - incomplete
+      - completed
+    instructions:
+      anyOf:
+      - description: Frontend instructions for voice, conversation, interruptions, and when to delegate. Start with the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting); put business rules and tool workflows in a separate [backend prompt](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt). Limited to 16,384 client-supplied tokens. Omitted or blank instructions use server defaults. Immutable after startup.
+        type: string
+      - type: 'null'
+    LiveToolChoiceEnum:
+      type: string
+      enum:
+      - auto
+      - none
+      - required
+    LiveCallRejectRequest:
+      type: object
+      description: Parameters used to reject an incoming Live SIP call.
+      properties:
+        status_code:
+          type: integer
+          minimum: 300
+          maximum: 699
+          description: SIP rejection status sent to the caller. This field is required.
+          example: 486
+      required:
+      - status_code
+      additionalProperties: false
+    LiveCreateResponse:
+      type: object
+      description: The created Live session identifier and WebRTC answer. Apply transport.sdp as the peer's remote answer and wait for session.started on the data channel before sending commands.
+      properties:
+        session:
+          type: object
+          description: The newly created Live session. Use its ID for session controls and sideband connections.
+          properties:
+            id:
+              type: string
+              description: Opaque session identifier. Preserve the returned value unchanged, including its prefix.
+          required:
+          - id
+        transport:
+          $ref: '#/components/schemas/LiveWebRTCTransport'
+          description: WebRTC transport with the SDP answer.
+      required:
+      - session
+      - transport
+    input:
+      description: Ordered text-only history supplied before startup. Supports developer, user, and assistant messages with one text part each; at most 128 messages and 8,192 rendered tokens in total.
+      type: array
+      items:
+        $ref: '#/components/schemas/LiveInitialItem'
+      maxItems: 128
+    LiveReasoningEffort:
+      type: string
+      enum:
+      - none
+      - minimal
+      - low
+      - medium
+      - high
+      - xhigh
+    LiveCreateRequest:
+      type: object
+      description: Create a Live WebRTC session with JSON session configuration and an SDP offer. Follow the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) before choosing frontend and backend instructions. The request starts the session; do not send session.start on the data channel.
+      properties:
+        session:
+          $ref: '#/components/schemas/LiveMediaSessionCreateParams'
+          description: Startup configuration for the Live session.
+        transport:
+          $ref: '#/components/schemas/LiveWebRTCTransport'
+          description: WebRTC transport with the browser's SDP offer.
+      required:
+      - session
+      - transport
+      additionalProperties: false
+    LiveInitialSessionAudioOutputParam:
+      description: Settings for speech generated by the Live model. Choose the voice before starting the session.
+      type: object
+      properties:
+        voice:
+          description: The voice used for Live speech, as a built-in voice name or a custom voice object containing its ID. Defaults to `marin` and cannot change after startup.
+          oneOf:
+          - anyOf:
+            - type: string
+            - type: string
+              enum:
+              - alloy
+              - ash
+              - ballad
+              - beacon
+              - bossa
+              - cedar
+              - cinder
+              - coral
+              - delta
+              - echo
+              - gleam
+              - marin
+              - meridian
+              - quartz
+              - ripple
+              - sage
+              - shimmer
+              - stone
+              - tempo
+              - verse
+              - vesper
+              - willow
+          - $ref: '#/components/schemas/LiveCustomVoiceParam'
+      required: []
+    LiveMediaSessionForkParams:
+      type: object
+      description: Optional overrides for a stored Live session. Omitted settings are inherited. The model, voice, frontend instructions, and prior conversation come from the stored session. WebRTC negotiates its audio format; audio.format is only supported on WebSocket forks.
+      properties:
+        store:
+          $ref: '#/components/schemas/properties-store'
+        delegation:
+          $ref: '#/components/schemas/LiveResponsesDelegationUpdateParam'
+        client:
+          $ref: '#/components/schemas/LiveClientConfigParam'
+      additionalProperties: false
+    LiveDelegationTextInputParam:
+      description: Text generation options for the Live session’s Responses backend.
+      type: object
+      properties:
+        verbosity:
+          anyOf:
+          - description: The amount of detail in text generated by the Responses backend. This does not configure the Live model’s spoken delivery.
+            $ref: '#/components/schemas/LiveTextVerbosity'
+          - type: 'null'
+      required: []
+    LiveCallReferRequest:
+      type: object
+      description: Parameters used to transfer a Live SIP call to another destination.
+      properties:
+        target_uri:
+          $ref: '#/components/schemas/target_uri'
+          minLength: 1
+          pattern: \S
+          description: Nonblank URI for the SIP Refer-To header, such as tel:+14155550123 or sip:agent@example.com.
+      required:
+      - target_uri
+      additionalProperties: false
+    LiveWebRTCTransport:
+      type: object
+      description: WebRTC transport carrying the offer SDP in a creation request or answer SDP in its response.
+      properties:
+        type:
+          type: string
+          description: The transport used for the Live session. Always `webrtc`.
+          enum:
+          - webrtc
+          x-stainless-const: true
+        sdp:
+          type: string
+          minLength: 1
+          description: Session Description Protocol message for the WebRTC connection.
+      required:
+      - type
+      - sdp
+      additionalProperties: false
+    LiveInitialDeveloperMessageItemParam:
+      description: A developer message included in the initial text history of a Live session.
+      type: object
+      properties:
+        id:
+          anyOf:
+          - description: An optional identifier for the supplied history message. Live uses the message’s role and text to initialize the conversation.
+            type: string
+          - type: 'null'
+        type:
+          description: The history item type. Always `message`.
+          default: message
+          x-stainless-const: true
+          type: string
+          enum:
+          - message
+        status:
+          anyOf:
+          - description: The supplied message’s status. Live uses its text as history and does not resume an incomplete message.
+            $ref: '#/components/schemas/LiveInitialMessageStatus'
+          - type: 'null'
+        role:
+          description: The author of this history message. Always `developer`.
+          default: developer
+          x-stainless-const: true
+          type: string
+          enum:
+          - developer
+        content:
+          description: The message content. Supply exactly one text part for the initial Live conversation history.
+          type: array
+          items:
+            $ref: '#/components/schemas/LiveInitialInputTextContentPartParam'
+          minItems: 1
+          maxItems: 1
+      required:
+      - role
+      - content
+    LiveInitialOutputTextContentPartParam:
+      description: Assistant output text supplied as conversation history when starting a Live session.
+      type: object
+      properties:
+        type:
+          description: The text content type. Always `output_text`.
+          default: output_text
+          x-stainless-const: true
+          type: string
+          enum:
+          - output_text
+        text:
+          description: The message text to include in the Live session’s initial conversation history.
+          type: string
+      required:
+      - type
+      - text
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+    AdminApiKeyAuth:
+      type: http
+      scheme: bearer
+x-oaiMeta:
+  navigationGroups:
+  - id: responses
+    title: Responses API
+  - id: webhooks
+    title: Webhooks
+  - id: endpoints
+    title: Platform APIs
+  - id: vector_stores
+    title: Vector stores
+  - id: chatkit
+    title: ChatKit
+    beta: true
+  - id: containers
+    title: Containers
+  - id: live
+    title: Live (alpha)
+  - id: realtime
+    title: Realtime
+  - id: chat
+    title: Chat Completions
+  - id: assistants
+    title: Assistants
+    deprecated: true
+  - id: administration
+    title: Administration
+  - id: legacy
+    title: Legacy
+  groups:
+  - id: responses-streaming
+    title: Streaming events
+    description: 'When you [create a Response](https://developers.openai.com/api/reference/resources/responses/methods/create) with
+
+      `stream` set to `true`, the server will emit server-sent events to the
+
+      client as the Response is generated. This section contains the events that
+
+      are emitted by the server.
+
+
+      When processing a `compaction_trigger`, `response.compaction.compacting`
+
+      reports newly sampled summary output at most once every 30 seconds. It
+
+      carries no summary content and does not modify the compaction output item.
+
+      The existing `response.output_item.added` and `response.output_item.done`
+
+      events mark that item''s lifecycle; `response.output_item.done` carries its
+
+      final encrypted content. A short compaction may finish without emitting a
+
+      progress event.
+
+
+      [Learn more about streaming responses](https://developers.openai.com/api/docs/guides/streaming-responses).
+
+      '
+    navigationGroup: responses
+    sections:
+    - type: object
+      key: ResponseCreatedEvent
+      path: <auto>
+    - type: object
+      key: ResponseInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseIncompleteEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputItemAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputItemDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseCompactionCompactingEvent
+      path: <auto>
+    - type: object
+      key: ResponseContentPartAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseContentPartDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseTextDeltaEvent
+      path: response/output_text/delta
+    - type: object
+      key: ResponseTextDoneEvent
+      path: response/output_text/done
+    - type: object
+      key: ResponseRefusalDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseRefusalDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseFunctionCallArgumentsDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseFunctionCallArgumentsDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallSearchingEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallSearchingEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryPartAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryPartDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryTextDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryTextDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningTextDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningTextDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallGeneratingEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallPartialImageEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallArgumentsDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallArgumentsDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallInterpretingEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCodeDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCodeDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputTextAnnotationAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseQueuedEvent
+      path: <auto>
+    - type: object
+      key: ResponseCustomToolCallInputDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseCustomToolCallInputDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseErrorEvent
+      path: <auto>
+  - id: responses-websocket-client-events
+    title: Client events
+    description: 'Events sent by the client over a Responses API WebSocket connection.
+
+      '
+    navigationGroup: responses
+    sections:
+    - type: object
+      key: ResponsesClientEventResponseCreate
+      path: <auto>
+    - type: object
+      key: ResponseSteerEvent
+      path: <auto>
+  - id: responses-websocket-server-events
+    title: Server events (WebSocket only)
+    description: 'Events emitted only over a Responses API WebSocket connection.
+
+      '
+    navigationGroup: responses
+    sections:
+    - type: object
+      key: ResponseSteerAcceptedEvent
+      path: <auto>
+    - type: object
+      key: ResponseSteerPendingEvent
+      path: <auto>
+    - type: object
+      key: ResponseSteerFailedEvent
+      path: <auto>
+  - id: responses-websocket-shared-events
+    title: Server events
+    description: 'These events use the same payloads over WebSocket and
+
+      [HTTP streaming](https://developers.openai.com/api/reference/resources/responses/streaming-events).
+
+      Compaction progress follows the same cadence and output-item lifecycle
+
+      described in HTTP streaming.
+
+      '
+    navigationGroup: responses
+    sections:
+    - type: object
+      key: ResponseCreatedEvent
+      path: <auto>
+    - type: object
+      key: ResponseInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseIncompleteEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputItemAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputItemDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseCompactionCompactingEvent
+      path: <auto>
+    - type: object
+      key: ResponseContentPartAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseContentPartDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseTextDeltaEvent
+      path: response/output_text/delta
+    - type: object
+      key: ResponseTextDoneEvent
+      path: response/output_text/done
+    - type: object
+      key: ResponseRefusalDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseRefusalDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseFunctionCallArgumentsDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseFunctionCallArgumentsDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallSearchingEvent
+      path: <auto>
+    - type: object
+      key: ResponseFileSearchCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallSearchingEvent
+      path: <auto>
+    - type: object
+      key: ResponseWebSearchCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryPartAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryPartDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryTextDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningSummaryTextDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningTextDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseReasoningTextDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallGeneratingEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseImageGenCallPartialImageEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallArgumentsDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallArgumentsDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsFailedEvent
+      path: <auto>
+    - type: object
+      key: ResponseMCPListToolsInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallInProgressEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallInterpretingEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCompletedEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCodeDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseCodeInterpreterCallCodeDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseOutputTextAnnotationAddedEvent
+      path: <auto>
+    - type: object
+      key: ResponseQueuedEvent
+      path: <auto>
+    - type: object
+      key: ResponseCustomToolCallInputDeltaEvent
+      path: <auto>
+    - type: object
+      key: ResponseCustomToolCallInputDoneEvent
+      path: <auto>
+    - type: object
+      key: ResponseErrorEvent
+      path: <auto>
+  - id: safety-cases
+    title: Safety Cases
+    description: 'Retrieve details about a safety warning or deactivation using the case ID
+
+      from a `safety.warning_issued` or `safety.deactivation_issued` webhook event.
+
+      Cases belong to an organization and require an API key with `api.safety.read`.
+
+      '
+    navigationGroup: endpoints
+    sections:
+    - type: endpoint
+      key: Getsafetycase
+      path: retrieve
+    - type: object
+      key: SafetyCaseResource
+      path: object
+  - id: safety-alerts
+    title: Safety Alerts
+    description: 'Retrieve approved safety alerts with an API key. Project keys require
+
+      `api.safety.alerts.read` and can read alerts from their project.
+
+      '
+    navigationGroup: endpoints
+    sections:
+    - type: endpoint
+      key: Getprojectsafetyalert
+      path: retrieve
+    - type: object
+      key: SafetyAlertResource
+      path: object
+  - id: webhook-events
+    title: Webhook Events
+    description: 'Webhooks are HTTP requests sent by OpenAI to a URL you specify when certain
+
+      events happen during the course of API usage.
+
+
+      [Learn more about webhooks](https://developers.openai.com/api/docs/guides/webhooks).
+
+      '
+    navigationGroup: webhooks
+    sections:
+    - type: object
+      key: WebhookResponseCompleted
+      path: <auto>
+    - type: object
+      key: WebhookResponseCancelled
+      path: <auto>
+    - type: object
+      key: WebhookResponseFailed
+      path: <auto>
+    - type: object
+      key: WebhookResponseIncomplete
+      path: <auto>
+    - type: object
+      key: WebhookBatchCompleted
+      path: <auto>
+    - type: object
+      key: WebhookBatchCancelled
+      path: <auto>
+    - type: object
+      key: WebhookBatchExpired
+      path: <auto>
+    - type: object
+      key: WebhookBatchFailed
+      path: <auto>
+    - type: object
+      key: WebhookFineTuningJobSucceeded
+      path: <auto>
+    - type: object
+      key: WebhookFineTuningJobFailed
+      path: <auto>
+    - type: object
+      key: WebhookFineTuningJobCancelled
+      path: <auto>
+    - type: object
+      key: WebhookEvalRunSucceeded
+      path: <auto>
+    - type: object
+      key: WebhookEvalRunFailed
+      path: <auto>
+    - type: object
+      key: WebhookEvalRunCanceled
+      path: <auto>
+    - type: object
+      key: WebhookRealtimeCallIncoming
+      path: <auto>
+    - type: object
+      key: WebhookLiveCallIncoming
+      path: <auto>
+    - type: object
+      key: WebhookLiveTransportIncoming
+      path: <auto>
+    - type: object
+      key: WebhookSafetyWarningIssued
+      path: <auto>
+    - type: object
+      key: WebhookSafetyDeactivationIssued
+      path: <auto>
+    - type: object
+      key: WebhookSafetyAlertCreated
+      path: <auto>
+    - type: object
+      key: WebhookSafetyOrgAlertCreated
+      path: <auto>
+  - id: images-streaming
+    title: Image Streaming
+    description: 'Stream image generation and editing in real time with server-sent events.
+
+      [Learn more about image streaming](https://developers.openai.com/api/docs/guides/image-generation).
+
+      '
+    navigationGroup: endpoints
+    sections:
+    - type: object
+      key: ImageGenPartialImageEvent
+      path: <auto>
+    - type: object
+      key: ImageGenCompletedEvent
+      path: <auto>
+    - type: object
+      key: ImageEditPartialImageEvent
+      path: <auto>
+    - type: object
+      key: ImageEditCompletedEvent
+      path: <auto>
+  - id: realtime-client-events
+    title: Client events
+    description: 'These are events that the OpenAI Realtime WebSocket server will accept from the client.
+
+      '
+    navigationGroup: realtime
+    sections:
+    - type: object
+      key: RealtimeClientEventSessionUpdate
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventInputAudioBufferAppend
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventInputAudioBufferCommit
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventInputAudioBufferClear
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventConversationItemCreate
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventConversationItemRetrieve
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventConversationItemTruncate
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventConversationItemDelete
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventResponseCreate
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventResponseCancel
+      path: <auto>
+    - type: object
+      key: RealtimeClientEventOutputAudioBufferClear
+      path: <auto>
+  - id: realtime-server-events
+    title: Server events
+    description: 'These are events emitted from the OpenAI Realtime WebSocket server to the client.
+
+      '
+    navigationGroup: realtime
+    sections:
+    - type: object
+      key: RealtimeServerEventError
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventSessionCreated
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventSessionUpdated
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemAdded
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemRetrieved
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemInputAudioTranscriptionCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemInputAudioTranscriptionDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemInputAudioTranscriptionSegment
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemInputAudioTranscriptionFailed
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemTruncated
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventConversationItemDeleted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferCommitted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferDtmfEventReceived
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferCleared
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferSpeechStarted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferSpeechStopped
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferTimeoutTriggered
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventOutputAudioBufferStarted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventOutputAudioBufferStopped
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventOutputAudioBufferCleared
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseCreated
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseOutputItemAdded
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseOutputItemDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseContentPartAdded
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseContentPartDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseTextDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseTextDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseAudioTranscriptDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseAudioTranscriptDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseAudioDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseAudioDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseFunctionCallArgumentsDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseFunctionCallArgumentsDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallArgumentsDelta
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallArgumentsDone
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallInProgress
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventResponseMCPCallFailed
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventMCPListToolsInProgress
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventMCPListToolsCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventMCPListToolsFailed
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventRateLimitsUpdated
+      path: <auto>
+  - id: realtime-translation-client-events
+    title: Translation client events
+    description: 'These are events that the OpenAI Realtime Translation WebSocket server will accept from the client.
+
+      '
+    navigationGroup: realtime
+    sections:
+    - type: object
+      key: RealtimeTranslationClientEventSessionUpdate
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationClientEventInputAudioBufferAppend
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationClientEventSessionClose
+      path: <auto>
+  - id: realtime-translation-server-events
+    title: Translation server events
+    description: 'These are events emitted from the OpenAI Realtime Translation WebSocket server to the client.
+
+      '
+    navigationGroup: realtime
+    sections:
+    - type: object
+      key: RealtimeServerEventError
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionCreated
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionUpdated
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionClosed
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionInputTranscriptDelta
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionOutputTranscriptDelta
+      path: <auto>
+    - type: object
+      key: RealtimeTranslationServerEventSessionOutputAudioDelta
+      path: <auto>
+  - id: chat-streaming
+    title: Streaming
+    description: 'Stream Chat Completions in real time. Receive chunks of completions
+
+      returned from the model using server-sent events.
+
+      [Learn more](https://developers.openai.com/api/docs/guides/streaming-responses).
+
+      '
+    navigationGroup: chat
+    sections:
+    - type: object
+      key: CreateChatCompletionStreamResponse
+      path: streaming
+  - id: assistants-streaming
+    title: Streaming
+    beta: true
+    description: 'Stream the result of executing a Run or resuming a Run after submitting tool outputs.
+
+      You can stream events from the [Create Thread and Run](https://developers.openai.com/api/docs/assistants/migration),
+
+      [Create Run](https://developers.openai.com/api/docs/assistants/migration), and [Submit Tool Outputs](https://developers.openai.com/api/docs/assistants/migration)
+
+      endpoints by passing `"stream": true`. The response will be a [Server-Sent events](https://html.spec.whatwg.org/multipage/server-sent-events.html#server-sent-events) stream.
+
+      Our Node and Python SDKs provide helpful utilities to make streaming easy. Reference the
+
+      [Assistants API quickstart](https://developers.openai.com/api/docs/assistants/migration) to learn more.
+
+      '
+    navigationGroup: assistants
+    sections:
+    - type: object
+      key: AssistantStreamEvent
+      path: events
+  - id: realtime-beta-client-events
+    title: Realtime Beta client events
+    description: 'These are events that the OpenAI Realtime WebSocket server will accept from the client.
+
+      '
+    navigationGroup: legacy
+    sections:
+    - type: object
+      key: RealtimeBetaClientEventSessionUpdate
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventInputAudioBufferAppend
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventInputAudioBufferCommit
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventInputAudioBufferClear
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventConversationItemCreate
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventConversationItemRetrieve
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventConversationItemTruncate
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventConversationItemDelete
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventResponseCreate
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventResponseCancel
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventTranscriptionSessionUpdate
+      path: <auto>
+    - type: object
+      key: RealtimeBetaClientEventOutputAudioBufferClear
+      path: <auto>
+  - id: realtime-beta-server-events
+    title: Realtime Beta server events
+    description: 'These are events emitted from the OpenAI Realtime WebSocket server to the client.
+
+      '
+    navigationGroup: legacy
+    sections:
+    - type: object
+      key: RealtimeBetaServerEventError
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventSessionCreated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventSessionUpdated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventTranscriptionSessionCreated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventTranscriptionSessionUpdated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemCreated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemRetrieved
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemInputAudioTranscriptionCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemInputAudioTranscriptionDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemInputAudioTranscriptionSegment
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemInputAudioTranscriptionFailed
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemTruncated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventConversationItemDeleted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventInputAudioBufferCommitted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventInputAudioBufferCleared
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventInputAudioBufferSpeechStarted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventInputAudioBufferSpeechStopped
+      path: <auto>
+    - type: object
+      key: RealtimeServerEventInputAudioBufferTimeoutTriggered
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseCreated
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseOutputItemAdded
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseOutputItemDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseContentPartAdded
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseContentPartDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseTextDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseTextDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseAudioTranscriptDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseAudioTranscriptDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseAudioDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseAudioDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseFunctionCallArgumentsDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseFunctionCallArgumentsDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallArgumentsDelta
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallArgumentsDone
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallInProgress
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventResponseMCPCallFailed
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventMCPListToolsInProgress
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventMCPListToolsCompleted
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventMCPListToolsFailed
+      path: <auto>
+    - type: object
+      key: RealtimeBetaServerEventRateLimitsUpdated
+      path: <auto>
+  - id: live-client-events
+    title: Client events
+    description: Initialize a primary WebSocket with session.start and wait for session.started before sending other events. WebRTC creation starts the session for you. Start with the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) to design frontend instructions and delegation policy; see [backend prompting](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt) for tools and business rules.
+    navigationGroup: live
+    sections:
+    - type: object
+      key: LiveSessionStartEvent
+      path: <auto>
+    - type: object
+      key: LiveForkSessionStartEvent
+      path: <auto>
+    - type: object
+      key: LiveSessionUpdateParam
+      path: <auto>
+    - type: object
+      key: LiveInputAudioAppendEvent
+      path: <auto>
+    - type: object
+      key: LiveInputAudioMuteParam
+      path: <auto>
+    - type: object
+      key: LiveInputAudioUnmuteParam
+      path: <auto>
+    - type: object
+      key: LiveInstructionsAppendParam
+      path: <auto>
+    - type: object
+      key: LiveThinkingAppendParam
+      path: <auto>
+    - type: object
+      key: LiveCommentaryAppendParam
+      path: <auto>
+    - type: object
+      key: LiveResponseItemCreateParam
+      path: <auto>
+    - type: object
+      key: LiveResponseCreateParam
+      path: <auto>
+    - type: object
+      key: LiveSessionCloseParam
+      path: <auto>
+  - id: live-server-events
+    title: Server events
+    description: Live server events. Responses delegation lifecycle events arrive inside response.event, not as top-level response events. Start with the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) to design frontend instructions and delegation policy; see [backend prompting](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt) for tools and business rules.
+    navigationGroup: live
+    sections:
+    - type: object
+      key: LiveSessionStarted
+      path: <auto>
+    - type: object
+      key: LiveSessionUpdated
+      path: <auto>
+    - type: object
+      key: LiveInputAudioMuted
+      path: <auto>
+    - type: object
+      key: LiveInputAudioUnmuted
+      path: <auto>
+    - type: object
+      key: LiveInstructionsAppended
+      path: <auto>
+    - type: object
+      key: LiveThinkingAppended
+      path: <auto>
+    - type: object
+      key: LiveCommentaryAppended
+      path: <auto>
+    - type: object
+      key: LiveOutputAudioDelta
+      path: <auto>
+    - type: object
+      key: LiveInputTranscriptDelta
+      path: <auto>
+    - type: object
+      key: LiveOutputTranscriptDelta
+      path: <auto>
+    - type: object
+      key: LiveDelegationCreated
+      path: <auto>
+    - type: object
+      key: LiveResponseEvent
+      path: <auto>
+    - type: object
+      key: LiveSessionUsageUpdated
+      path: <auto>
+    - type: object
+      key: LiveSessionClosed
+      path: <auto>
+    - type: object
+      key: LiveErrorEvent
+      path: <auto>
+    - type: object
+      key: LiveInfoEvent
+      path: <auto>

@@ -113,16 +113,16 @@ support:
   community: https://community.openai.com/categories
   note: help.openai.com is behind a bot challenge (403 to automated clients).
 deprecated_operations:
+  - {method: GET, path: /assistants, operationId: listAssistants, tag: Assistants}
+  - {method: POST, path: /assistants, operationId: createAssistant, tag: Assistants}
+  - {method: GET, path: "/assistants/{assistant_id}", operationId: getAssistant, tag: Assistants}
+  - {method: POST, path: "/assistants/{assistant_id}", operationId: modifyAssistant, tag: Assistants}
+  - {method: DELETE, path: "/assistants/{assistant_id}", operationId: deleteAssistant, tag: Assistants}
+deprecated_operations_meta:
   count: 5
   source: >-
     openapi/_original/openai-openapi-master.yml — `deprecated` set true on the
     operation object.
-  operations:
-    - {method: GET, path: /assistants, operationId: listAssistants, tag: Assistants}
-    - {method: POST, path: /assistants, operationId: createAssistant, tag: Assistants}
-    - {method: GET, path: "/assistants/{assistant_id}", operationId: getAssistant, tag: Assistants}
-    - {method: POST, path: "/assistants/{assistant_id}", operationId: modifyAssistant, tag: Assistants}
-    - {method: DELETE, path: "/assistants/{assistant_id}", operationId: deleteAssistant, tag: Assistants}
   note: >-
     Every deprecated operation in the contract belongs to the Assistants API,
     superseded by the Responses API + Conversations API (migration guide:

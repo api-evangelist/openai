@@ -1,0 +1,76 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/openai/main/json-schema/openai-safety-alert-resource-schema.json",
+  "title": "SafetyAlertResource",
+  "x-generated": "2026-09-23",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/openai-safety-api-openapi.yml#/components/schemas/SafetyAlertResource",
+  "properties": {
+    "id": {
+      "type": "string"
+    },
+    "object": {
+      "type": "string",
+      "enum": [
+        "safety.alert"
+      ],
+      "default": "safety.alert",
+      "x-stainless-const": true
+    },
+    "created_at": {
+      "type": "integer",
+      "format": "unixtime"
+    },
+    "request_id": {
+      "type": "string"
+    },
+    "response_id": {
+      "type": "string"
+    },
+    "model": {
+      "type": "string"
+    },
+    "request_paused": {
+      "type": "boolean",
+      "description": "Whether block registration succeeded for this request. This does not confirm that response execution stopped."
+    },
+    "error_type": {
+      "$ref": "#/$defs/SafetyAlertErrorType"
+    },
+    "reason": {
+      "anyOf": [
+        {
+          "type": "string",
+          "description": "A customer-safe description derived from error_type, or null for zero data retention requests."
+        },
+        {
+          "type": "null"
+        }
+      ]
+    }
+  },
+  "type": "object",
+  "required": [
+    "id",
+    "object",
+    "created_at",
+    "request_id",
+    "response_id",
+    "model",
+    "request_paused",
+    "error_type",
+    "reason"
+  ],
+  "$defs": {
+    "SafetyAlertErrorType": {
+      "type": "string",
+      "enum": [
+        "potentially_unintended_data_transfer",
+        "potentially_unintended_data_access",
+        "potentially_unintended_destructive_activity",
+        "other"
+      ]
+    }
+  }
+}

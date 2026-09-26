@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/openai/main/json-schema/openai-update-project-data-retention-body-schema.json",
+  "title": "UpdateProjectDataRetentionBody",
+  "description": "Parameters for updating project data retention controls.",
+  "x-generated": "2026-09-23",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/openai-data-retention-api-openapi.yml#/components/schemas/UpdateProjectDataRetentionBody",
+  "type": "object",
+  "properties": {
+    "retention_type": {
+      "type": "string",
+      "enum": [
+        "organization_default",
+        "none",
+        "zero_data_retention",
+        "modified_abuse_monitoring",
+        "enhanced_zero_data_retention",
+        "enhanced_modified_abuse_monitoring"
+      ],
+      "description": "The desired project data retention type."
+    }
+  },
+  "required": [
+    "retention_type"
+  ]
+}

@@ -1,0 +1,60 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for OpenAI API (webhooks manifest)
+  version: 1.0.0
+extends: openapi/openai-openai-api-api-openapi.yml
+x-generated: '2026-09-23'
+x-method: generated
+x-source: openapi/openai-openai-api-api-openapi.yml
+x-note: >-
+  Captures the API Evangelist enrichment layer over OpenAI's webhooks-only
+  manifest as a repeatable OpenAPI Overlay 1.0.0 transformation. This upstream
+  document carries `paths: {}` and defines only the `webhooks:` object (batch,
+  fine-tuning, evals, realtime and response lifecycle events), so the overlay
+  targets $.info alone — there are no operations to enrich. The upstream is
+  never mutated. Every referenced artifact is a real file in this repository.
+actions:
+  - target: $.info
+    update:
+      x-apievangelist:
+        catalog: https://apis.io/openai
+        provider: OpenAI
+        maintainer: Kin Lane <kin@apievangelist.com>
+        upstream: https://github.com/openai/openai-openapi
+        artifacts:
+          - apis.yml
+          - vocabulary/openai-vocabulary.yaml
+          - rules/openai-spectral-rules.yml
+          - conformance/openai-conformance.yml
+          - conventions/openai-conventions.yml
+          - errors/openai-problem-types.yml
+          - lifecycle/openai-lifecycle.yml
+          - rate-limits/openai-rate-limits.yml
+          - plans/openai-plans-pricing.yml
+          - packages/openai-packages.yml
+          - scopes/openai-scopes.yml
+          - authentication/openai-authentication.yml
+          - data-model/openai-data-model.yml
+          - mcp/openai-mcp.yml
+          - mcp/openai-tool-crosswalk.yml
+          - well-known/openai-well-known.yml
+          - sandbox/openai-sandbox.yml
+          - changelog/openai-changelog.yml
+          - agentic-access/openai-agentic-access.yml
+      x-runtime-semantics:
+        surface: webhooks
+        surface_note: >-
+          This document defines OpenAI's outbound webhooks (batch, fine-tuning,
+          evals, realtime call incoming, response completed/failed/cancelled/
+          incomplete). There are no request operations here; consumers register
+          a callback URL in the dashboard and verify signed deliveries.
+        signature_header: webhook-signature
+        signature_scheme: Standard Webhooks (HMAC-SHA256, base64)
+        idempotency: none
+        idempotency_note: >-
+          Webhook deliveries can be retried by the sender and MUST be treated
+          as at-least-once. Deduplicate on the event id in the payload.
+        reversibility: >-
+          Webhook events are notifications only; the source-of-truth resource
+          is queried via its own API (Batch, Fine-tuning, Evals, Responses).
+        request_id_header: x-request-id

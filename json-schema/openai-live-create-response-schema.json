@@ -1,0 +1,60 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/openai/main/json-schema/openai-live-create-response-schema.json",
+  "title": "LiveCreateResponse",
+  "description": "The created Live session identifier and WebRTC answer. Apply transport.sdp as the peer's remote answer and wait for session.started on the data channel before sending commands.",
+  "x-generated": "2026-09-23",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/openai-live-api-openapi.yml#/components/schemas/LiveCreateResponse",
+  "type": "object",
+  "properties": {
+    "session": {
+      "type": "object",
+      "description": "The newly created Live session. Use its ID for session controls and sideband connections.",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Opaque session identifier. Preserve the returned value unchanged, including its prefix."
+        }
+      },
+      "required": [
+        "id"
+      ]
+    },
+    "transport": {
+      "$ref": "#/$defs/LiveWebRTCTransport",
+      "description": "WebRTC transport with the SDP answer."
+    }
+  },
+  "required": [
+    "session",
+    "transport"
+  ],
+  "$defs": {
+    "LiveWebRTCTransport": {
+      "type": "object",
+      "description": "WebRTC transport carrying the offer SDP in a creation request or answer SDP in its response.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The transport used for the Live session. Always `webrtc`.",
+          "enum": [
+            "webrtc"
+          ],
+          "x-stainless-const": true
+        },
+        "sdp": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Session Description Protocol message for the WebRTC connection."
+        }
+      },
+      "required": [
+        "type",
+        "sdp"
+      ],
+      "additionalProperties": false
+    }
+  }
+}

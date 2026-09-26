@@ -1,0 +1,512 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/openai/main/json-schema/openai-create-environment-template-params-schema.json",
+  "title": "CreateEnvironmentTemplateParams",
+  "description": "Parameters for creating a reusable, project-scoped OpenAI-hosted environment template.",
+  "x-generated": "2026-09-23",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/openai-agents-api-openapi.yml#/components/schemas/CreateEnvironmentTemplateParams",
+  "type": "object",
+  "properties": {
+    "packages": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/EnvironmentPackagesParam"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Packages to install in the environment. Defaults to empty package lists."
+    },
+    "setup_commands": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/SetupCommandParam"
+      },
+      "minItems": 0,
+      "maxItems": 16,
+      "description": "Ordered, confidential setup commands. Command bodies are never returned."
+    },
+    "network": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/NetworkPolicyParam"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "description": "Network access policy for the environment. Defaults to disabled for GA requests and enabled for alpha/beta requests."
+    },
+    "env": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "additionalProperties": {
+        "type": "string",
+        "minLength": 0,
+        "maxLength": 1048576
+      },
+      "propertyNames": {
+        "type": "string",
+        "minLength": 1,
+        "maxLength": 256
+      },
+      "minProperties": 0,
+      "maxProperties": 1024,
+      "description": "Environment variables made available to the agent."
+    },
+    "capability_directories": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "type": "string",
+        "minLength": 0,
+        "maxLength": 1048576
+      },
+      "minItems": 0,
+      "maxItems": 16384,
+      "description": "Directories that contain capabilities exposed to the agent. Defaults to an empty list."
+    },
+    "skills": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/HostedSkillParam"
+      },
+      "minItems": 0,
+      "maxItems": 200,
+      "description": "Skills referenced by ID or provided as inline ZIP archives. Defaults to an empty list."
+    },
+    "plugins": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/HostedPluginParam"
+      },
+      "minItems": 0,
+      "maxItems": 32,
+      "description": "Plugins provided as inline ZIP archives. Defaults to an empty list."
+    },
+    "files": {
+      "type": [
+        "array",
+        "null"
+      ],
+      "items": {
+        "$ref": "#/$defs/HostedEnvironmentFileParam"
+      },
+      "minItems": 0,
+      "maxItems": 50,
+      "description": "Files available before the agent starts. Defaults to an empty list."
+    },
+    "name": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 1,
+      "maxLength": 256,
+      "description": "An optional human-readable display name for the template."
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "EnvironmentPackagesParam": {
+      "type": "object",
+      "properties": {
+        "python": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 1048576
+          },
+          "minItems": 0,
+          "maxItems": 16384,
+          "description": "Python packages to install. Defaults to an empty list."
+        },
+        "system": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 1048576
+          },
+          "minItems": 0,
+          "maxItems": 16384,
+          "description": "System packages to install. Defaults to an empty list."
+        },
+        "npm": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 1048576
+          },
+          "minItems": 0,
+          "maxItems": 16384,
+          "description": "npm packages to install globally. Defaults to an empty list."
+        }
+      },
+      "additionalProperties": false,
+      "description": "Packages to install in an OpenAI-hosted environment."
+    },
+    "HostedEnvironmentFileParam": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/HostedEnvironmentFileParamFileId"
+        },
+        {
+          "$ref": "#/$defs/HostedEnvironmentFileParamInline"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "file_id",
+        "inline"
+      ],
+      "description": "A file materialized in an OpenAI-hosted execution environment."
+    },
+    "HostedEnvironmentFileParamFileId": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "file_id"
+          ],
+          "default": "file_id",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `file_id`."
+        },
+        "file_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 256,
+          "description": "The ID of the uploaded file."
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "description": "The absolute destination path inside `/workspace`."
+        }
+      },
+      "required": [
+        "type",
+        "file_id",
+        "path"
+      ],
+      "additionalProperties": false,
+      "description": "A file previously uploaded through the OpenAI Files API."
+    },
+    "HostedEnvironmentFileParamInline": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "inline"
+          ],
+          "default": "inline",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `inline`."
+        },
+        "data": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 6990508,
+          "description": "The standard-base64-encoded file contents."
+        },
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 4096,
+          "description": "The absolute destination path inside `/workspace`."
+        }
+      },
+      "required": [
+        "type",
+        "data",
+        "path"
+      ],
+      "additionalProperties": false,
+      "description": "A file supplied directly as standard-base64 data."
+    },
+    "HostedPluginParam": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/HostedPluginParamInline"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "inline"
+      ],
+      "description": "A plugin installed in an OpenAI-hosted environment."
+    },
+    "HostedPluginParamInline": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "inline"
+          ],
+          "default": "inline",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `inline`."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The plugin name declared in `.codex-plugin/plugin.json`."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1048576,
+          "description": "The plugin description declared in `.codex-plugin/plugin.json`."
+        },
+        "source": {
+          "$ref": "#/$defs/InlineCapabilitySourceParam",
+          "description": "The inline ZIP archive."
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "description",
+        "source"
+      ],
+      "additionalProperties": false,
+      "description": "Supplies a plugin ZIP directly in the session request."
+    },
+    "HostedSkillParam": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/HostedSkillParamSkillReference"
+        },
+        {
+          "$ref": "#/$defs/HostedSkillParamInline"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "skill_reference",
+        "inline"
+      ],
+      "description": "A skill installed in an OpenAI-hosted environment."
+    },
+    "HostedSkillParamInline": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "inline"
+          ],
+          "default": "inline",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `inline`."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The skill name declared in `SKILL.md`."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1048576,
+          "description": "The skill description declared in `SKILL.md`."
+        },
+        "source": {
+          "$ref": "#/$defs/InlineCapabilitySourceParam",
+          "description": "The inline ZIP archive."
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "description",
+        "source"
+      ],
+      "additionalProperties": false,
+      "description": "Supplies a skill ZIP directly in the session request."
+    },
+    "HostedSkillParamSkillReference": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "skill_reference"
+          ],
+          "default": "skill_reference",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `skill_reference`."
+        },
+        "skill_id": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 64,
+          "description": "The ID of the skill created through `/v1/skills`."
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "maxLength": 1048576,
+          "description": "The skill version, a positive integer or `latest`; omission selects the default."
+        }
+      },
+      "required": [
+        "type",
+        "skill_id"
+      ],
+      "additionalProperties": false,
+      "description": "References a skill uploaded through the Skills API."
+    },
+    "InlineCapabilitySourceParam": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/InlineCapabilitySourceParamBase64"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "base64"
+      ],
+      "description": "The encoded ZIP archive for an inline skill or plugin."
+    },
+    "InlineCapabilitySourceParamBase64": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "base64"
+          ],
+          "default": "base64",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `base64`."
+        },
+        "media_type": {
+          "type": "string",
+          "enum": [
+            "application/zip"
+          ],
+          "default": "application/zip",
+          "x-stainless-const": true,
+          "x-enumDescriptions": [
+            "A ZIP archive."
+          ],
+          "description": "The archive media type, always `application/zip`."
+        },
+        "data": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 70254592,
+          "description": "Standard-base64 encoded ZIP archive bytes."
+        }
+      },
+      "required": [
+        "type",
+        "media_type",
+        "data"
+      ],
+      "additionalProperties": false,
+      "description": "Provides ZIP bytes encoded with standard base64."
+    },
+    "NetworkAccessParam": {
+      "type": "string",
+      "enum": [
+        "enabled",
+        "disabled",
+        "restricted"
+      ],
+      "x-enumDescriptions": [
+        "Allows unrestricted network access.",
+        "Disables network access.",
+        "Allows access only to configured domains."
+      ],
+      "description": "The network access mode for an OpenAI-hosted environment."
+    },
+    "NetworkPolicyParam": {
+      "type": "object",
+      "properties": {
+        "access": {
+          "$ref": "#/$defs/NetworkAccessParam",
+          "description": "The environment's network access mode."
+        },
+        "allowed_domains": {
+          "type": [
+            "array",
+            "null"
+          ],
+          "items": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 1048576
+          },
+          "minItems": 0,
+          "maxItems": 16384,
+          "description": "Domains the environment may access when network access is restricted."
+        }
+      },
+      "required": [
+        "access"
+      ],
+      "additionalProperties": false,
+      "description": "Network access for an OpenAI-hosted environment."
+    },
+    "SetupCommandParam": {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 65536,
+          "description": "The shell command to execute."
+        },
+        "cwd": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "maxLength": 4096,
+          "description": "The absolute working directory. Defaults to `/workspace`."
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "additionalProperties": false,
+      "description": "A confidential setup command executed before the hosted agent starts."
+    }
+  }
+}

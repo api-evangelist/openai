@@ -1,5 +1,5 @@
 ---
-name: Ingest documents and search them
+name: ingest-and-search-documents
 description: Upload files, build a vector store, attach the files, and run a semantic search — the retrieval-augmented flow, with its irreversible steps called out.
 api: openapi/openai-vector-stores-api-openapi.yml
 operations: [createFile, createVectorStore, createVectorStoreFile, createVectorStoreFileBatch, cancelVectorStoreFileBatch, searchVectorStore, deleteVectorStoreFile, deleteVectorStore, deleteFile]

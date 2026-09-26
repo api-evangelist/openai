@@ -1,5 +1,5 @@
 ---
-name: Run a bulk inference batch at half price
+name: run-a-batch-job
 description: Submit a JSONL batch, poll it, cancel it inside the documented window, and pull the results — the cheapest path for high-volume inference.
 api: openapi/openai-batch-api-openapi.yml
 operations: [createFile, createBatch, retrieveBatch, cancelBatch, listBatches]

@@ -1,0 +1,59 @@
+generated: '2026-09-23'
+method: probed
+source: pre-flight dossier (docs platform, portal detections) + CNAME chains and response headers of the hosts apis.yml names
+registry: all/0-working/vendors.yml
+areas_vocabulary:
+- documentation
+- developer-portal
+- api-gateway
+- cdn
+- hosting
+- sdk-generation
+- api-collections
+- status-page
+- support
+- community
+- identity
+- mcp-hosting
+vendors:
+- vendor: cloudflare
+  name: Cloudflare
+  area: cdn
+  host: openai.com
+  evidence: header:cf-ray
+  signal: header
+  confidence: high
+  kin_score:
+  - https_enforced
+  - hsts
+- vendor: vercel
+  name: Vercel
+  area: hosting
+  host: developers.openai.com
+  evidence: cname:08d9e9b18d2ea32e.vercel-dns-013.com
+  signal: docs-platform
+  confidence: medium
+  kin_score: []
+reliance:
+  areas_vendor_served:
+  - cdn
+  - hosting
+  vendor_count: 2
+  areas_observed: 12
+  share_of_observable_areas: 0.167
+  note: areas where a third party was DETECTED serving this provider; an area absent here was either self-run or not observed, and this script
+    cannot tell those apart
+checked:
+- 'docs-platform: custom'
+- openai.com (Website)
+- platform.openai.com (Portal)
+- platform.openai.com (GettingStarted)
+- platform.openai.com (Documentation)
+- help.openai.com (Support)
+- status.openai.com (StatusPage)
+- platform.openai.com (Login)
+- developers.openai.com (Documentation)
+- developers.openai.com (Portal)
+- developers.openai.com (APIReference)
+- api.openai.com (baseURL)
+- developers.openai.com (mcp)

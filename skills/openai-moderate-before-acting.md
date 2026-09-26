@@ -1,5 +1,5 @@
 ---
-name: Moderate input before acting on it
+name: moderate-before-acting
 description: Screen user-supplied content with the Moderations API before passing it to a model or acting on it.
 api: openapi/openai-moderations-api-openapi.yml
 operations: [createModeration, createResponse]

@@ -1,0 +1,390 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/openai/main/json-schema/openai-environment-template-resource-schema.json",
+  "title": "EnvironmentTemplateResource",
+  "description": "Reusable configuration that provisions a fresh OpenAI-hosted environment for each session.",
+  "x-generated": "2026-09-23",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/openai-agents-api-openapi.yml#/components/schemas/EnvironmentTemplateResource",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "minLength": 0,
+      "description": "The ID of the reusable environment template."
+    },
+    "name": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "minLength": 0,
+      "description": "An optional human-readable display name for the template."
+    },
+    "object": {
+      "type": "string",
+      "enum": [
+        "agent.environment.template"
+      ],
+      "default": "agent.environment.template",
+      "x-stainless-const": true,
+      "description": "The object type. Always `agent.environment.template`."
+    },
+    "created_at": {
+      "type": "integer",
+      "format": "int64",
+      "description": "The Unix timestamp, in seconds, when the template was created."
+    },
+    "updated_at": {
+      "type": "integer",
+      "format": "int64",
+      "description": "The Unix timestamp, in seconds, when the template was last updated."
+    },
+    "packages": {
+      "$ref": "#/$defs/EnvironmentPackagesResource",
+      "description": "Packages installed in each fresh OpenAI-hosted environment."
+    },
+    "network": {
+      "$ref": "#/$defs/NetworkPolicyResource",
+      "description": "Runtime network access for each OpenAI-hosted environment."
+    },
+    "capability_directories": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 0
+      },
+      "minItems": 0,
+      "maxItems": 2000,
+      "description": "Directories that expose capabilities to the agent."
+    },
+    "skills": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/HostedTemplateSkillResource"
+      },
+      "minItems": 0,
+      "maxItems": 200,
+      "description": "Safe skill metadata, preserving unresolved version selectors."
+    },
+    "plugins": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/HostedPluginResource"
+      },
+      "minItems": 0,
+      "maxItems": 32,
+      "description": "Safe plugin metadata, excluding inline archive contents."
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/HostedTemplateFileResource"
+      },
+      "minItems": 0,
+      "maxItems": 50,
+      "description": "Safe file metadata, excluding contents and session-scoped file IDs."
+    }
+  },
+  "required": [
+    "id",
+    "name",
+    "object",
+    "created_at",
+    "updated_at",
+    "packages",
+    "network",
+    "capability_directories",
+    "skills",
+    "plugins",
+    "files"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "EnvironmentPackagesResource": {
+      "type": "object",
+      "properties": {
+        "python": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 1048576
+          },
+          "minItems": 0,
+          "maxItems": 16384,
+          "description": "Python packages installed in the environment."
+        },
+        "system": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 1048576
+          },
+          "minItems": 0,
+          "maxItems": 16384,
+          "description": "System packages installed in the environment."
+        },
+        "npm": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0,
+            "maxLength": 1048576
+          },
+          "minItems": 0,
+          "maxItems": 16384,
+          "description": "npm packages installed globally in the environment."
+        }
+      },
+      "required": [
+        "python",
+        "system",
+        "npm"
+      ],
+      "additionalProperties": false,
+      "description": "Packages installed in an OpenAI-hosted environment."
+    },
+    "HostedPluginResource": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/HostedPluginResourceInline"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "inline"
+      ],
+      "description": "A plugin installed in an OpenAI-hosted environment."
+    },
+    "HostedPluginResourceInline": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "inline"
+          ],
+          "default": "inline",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `inline`."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The installed plugin name."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The installed plugin description."
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "description"
+      ],
+      "additionalProperties": false,
+      "description": "A plugin installed from an inline ZIP archive."
+    },
+    "HostedTemplateFileResource": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/HostedTemplateFileResourceFileId"
+        },
+        {
+          "$ref": "#/$defs/HostedTemplateFileResourceInline"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "file_id",
+        "inline"
+      ],
+      "description": "Safe metadata for a file configured by an environment template."
+    },
+    "HostedTemplateFileResourceFileId": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "file_id"
+          ],
+          "default": "file_id",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `file_id`."
+        },
+        "file_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The ID of the uploaded file."
+        },
+        "path": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The file's absolute path inside the environment."
+        }
+      },
+      "required": [
+        "type",
+        "file_id",
+        "path"
+      ],
+      "additionalProperties": false,
+      "description": "A project-scoped Files API reference resolved separately for each session."
+    },
+    "HostedTemplateFileResourceInline": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "inline"
+          ],
+          "default": "inline",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `inline`."
+        },
+        "path": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The file's absolute path inside the environment."
+        },
+        "size_bytes": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": 0,
+          "description": "The decoded size of the inline file in bytes."
+        }
+      },
+      "required": [
+        "type",
+        "path",
+        "size_bytes"
+      ],
+      "additionalProperties": false,
+      "description": "Metadata for confidential inline file contents."
+    },
+    "HostedTemplateSkillResource": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/HostedTemplateSkillResourceSkillReference"
+        },
+        {
+          "$ref": "#/$defs/HostedTemplateSkillResourceInline"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "skill_reference",
+        "inline"
+      ],
+      "description": "Safe metadata for a skill configured by an environment template."
+    },
+    "HostedTemplateSkillResourceInline": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "inline"
+          ],
+          "default": "inline",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `inline`."
+        },
+        "name": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The skill name declared in `SKILL.md`."
+        },
+        "description": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The skill description declared in `SKILL.md`."
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "description"
+      ],
+      "additionalProperties": false,
+      "description": "Safe metadata for an inline skill archive."
+    },
+    "HostedTemplateSkillResourceSkillReference": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "skill_reference"
+          ],
+          "default": "skill_reference",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `skill_reference`."
+        },
+        "skill_id": {
+          "type": "string",
+          "minLength": 0,
+          "description": "The referenced skill ID."
+        },
+        "version": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0,
+          "description": "The requested version selector, including `latest`."
+        }
+      },
+      "required": [
+        "type",
+        "skill_id",
+        "version"
+      ],
+      "additionalProperties": false,
+      "description": "A skill resolved afresh from the Skills API whenever a session starts."
+    },
+    "NetworkAccessResource": {
+      "type": "string",
+      "enum": [
+        "enabled",
+        "disabled",
+        "restricted"
+      ],
+      "x-enumDescriptions": [
+        "Allows unrestricted network access.",
+        "Disables network access.",
+        "Allows access only to configured domains."
+      ],
+      "description": "The network access mode for an OpenAI-hosted environment."
+    },
+    "NetworkPolicyResource": {
+      "type": "object",
+      "properties": {
+        "access": {
+          "$ref": "#/$defs/NetworkAccessResource",
+          "description": "The environment's network access mode."
+        },
+        "allowed_domains": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 0
+          },
+          "minItems": 0,
+          "maxItems": 2000,
+          "description": "Domains the environment may access when network access is restricted."
+        }
+      },
+      "required": [
+        "access",
+        "allowed_domains"
+      ],
+      "additionalProperties": false,
+      "description": "Network access for an OpenAI-hosted environment."
+    }
+  }
+}
