@@ -463,51 +463,6 @@ paths:
       - Containers
 components:
   schemas:
-    InlineSkillParam:
-      properties:
-        type:
-          type: string
-          enum:
-          - inline
-          description: Defines an inline skill for this request.
-          default: inline
-          x-stainless-const: true
-        name:
-          type: string
-          description: The name of the skill.
-        description:
-          type: string
-          description: The description of the skill.
-        source:
-          $ref: '#/components/schemas/InlineSkillSourceParam'
-          description: Inline skill payload
-      type: object
-      required:
-      - type
-      - name
-      - description
-      - source
-    SkillReferenceParam:
-      properties:
-        type:
-          type: string
-          enum:
-          - skill_reference
-          description: References a skill created with the /v1/skills endpoint.
-          default: skill_reference
-          x-stainless-const: true
-        skill_id:
-          type: string
-          maxLength: 64
-          minLength: 1
-          description: The ID of the referenced skill.
-        version:
-          type: string
-          description: Optional skill version. Use a positive integer or 'latest'. Omit for default.
-      type: object
-      required:
-      - type
-      - skill_id
     ContainerResource:
       type: object
       title: The container object
@@ -588,65 +543,6 @@ components:
       x-oaiMeta:
         name: The container object
         example: "{\n   \"id\": \"cntr_682dfebaacac8198bbfe9c2474fb6f4a085685cbe3cb5863\",\n   \"object\": \"container\",\n   \"created_at\": 1747844794,\n   \"status\": \"running\",\n   \"expires_after\": {\n     \"anchor\": \"last_active_at\",\n     \"minutes\": 20\n   },\n   \"last_active_at\": 1747844794,\n   \"memory_limit\": \"1g\",\n   \"name\": \"My Container\"\n}\n"
-    ContainerNetworkPolicyDomainSecretParam:
-      properties:
-        domain:
-          type: string
-          minLength: 1
-          description: The domain associated with the secret.
-        name:
-          type: string
-          minLength: 1
-          description: The name of the secret to inject for the domain.
-        value:
-          type: string
-          maxLength: 10485760
-          minLength: 1
-          description: The secret value to inject for the domain.
-      type: object
-      required:
-      - domain
-      - name
-      - value
-    InlineSkillSourceParam:
-      properties:
-        type:
-          type: string
-          enum:
-          - base64
-          description: The type of the inline skill source. Must be `base64`.
-          default: base64
-          x-stainless-const: true
-        media_type:
-          type: string
-          enum:
-          - application/zip
-          description: The media type of the inline skill payload. Must be `application/zip`.
-          default: application/zip
-          x-stainless-const: true
-        data:
-          type: string
-          maxLength: 70254592
-          minLength: 1
-          description: Base64-encoded skill zip bundle.
-      type: object
-      required:
-      - type
-      - media_type
-      - data
-      description: Inline skill payload
-    ContainerNetworkPolicyDisabledParam:
-      properties:
-        type:
-          type: string
-          enum:
-          - disabled
-          description: Disable outbound network access. Always `disabled`.
-          default: disabled
-          x-stainless-const: true
-      type: object
-      required:
-      - type
     ContainerFileListResource:
       type: object
       properties:
@@ -675,43 +571,86 @@ components:
       - first_id
       - last_id
       - has_more
-    ContainerFileResource:
-      type: object
-      title: The container file object
+    ContainerNetworkPolicyDomainSecretParam:
       properties:
-        id:
+        domain:
           type: string
-          description: Unique identifier for the file.
-        object:
+          minLength: 1
+          description: The domain associated with the secret.
+        name:
           type: string
-          description: The type of this object (`container.file`).
-        container_id:
+          minLength: 1
+          description: The name of the secret to inject for the domain.
+        value:
           type: string
-          description: The container this file belongs to.
-        created_at:
-          type: integer
-          format: unixtime
-          description: Unix timestamp (in seconds) when the file was created.
-        bytes:
-          type: integer
-          description: Size of the file in bytes.
-        path:
-          type: string
-          description: Path of the file in the container.
-        source:
-          type: string
-          description: Source of the file (e.g., `user`, `assistant`).
+          maxLength: 10485760
+          minLength: 1
+          description: The secret value to inject for the domain.
+      type: object
       required:
-      - id
-      - object
-      - created_at
-      - bytes
-      - container_id
-      - path
-      - source
-      x-oaiMeta:
-        name: The container file object
-        example: "{\n    \"id\": \"cfile_682e0e8a43c88191a7978f477a09bdf5\",\n    \"object\": \"container.file\",\n    \"created_at\": 1747848842,\n    \"bytes\": 880,\n    \"container_id\": \"cntr_682e0e7318108198aa783fd921ff305e08e78805b9fdbb04\",\n    \"path\": \"/mnt/data/88e12fa445d32636f190a0b33daed6cb-tsconfig.json\",\n    \"source\": \"user\"\n}\n"
+      - domain
+      - name
+      - value
+    SkillReferenceParam:
+      properties:
+        type:
+          type: string
+          enum:
+          - skill_reference
+          description: References a skill created with the /v1/skills endpoint.
+          default: skill_reference
+          x-stainless-const: true
+        skill_id:
+          type: string
+          maxLength: 64
+          minLength: 1
+          description: The ID of the referenced skill.
+        version:
+          type: string
+          description: Optional skill version. Use a positive integer or 'latest'. Omit for default.
+      type: object
+      required:
+      - type
+      - skill_id
+    ContainerNetworkPolicyDisabledParam:
+      properties:
+        type:
+          type: string
+          enum:
+          - disabled
+          description: Disable outbound network access. Always `disabled`.
+          default: disabled
+          x-stainless-const: true
+      type: object
+      required:
+      - type
+    InlineSkillSourceParam:
+      properties:
+        type:
+          type: string
+          enum:
+          - base64
+          description: The type of the inline skill source. Must be `base64`.
+          default: base64
+          x-stainless-const: true
+        media_type:
+          type: string
+          enum:
+          - application/zip
+          description: The media type of the inline skill payload. Must be `application/zip`.
+          default: application/zip
+          x-stainless-const: true
+        data:
+          type: string
+          maxLength: 70254592
+          minLength: 1
+          description: Base64-encoded skill zip bundle.
+      type: object
+      required:
+      - type
+      - media_type
+      - data
+      description: Inline skill payload
     CreateContainerBody:
       type: object
       properties:
@@ -763,19 +702,30 @@ components:
             propertyName: type
       required:
       - name
-    CreateContainerFileBody:
-      type: object
+    InlineSkillParam:
       properties:
-        file_id:
+        type:
           type: string
-          description: Name of the file to create.
-        file:
-          description: 'The File object (not file name) to be uploaded.
-
-            '
+          enum:
+          - inline
+          description: Defines an inline skill for this request.
+          default: inline
+          x-stainless-const: true
+        name:
           type: string
-          format: binary
-      required: []
+          description: The name of the skill.
+        description:
+          type: string
+          description: The description of the skill.
+        source:
+          $ref: '#/components/schemas/InlineSkillSourceParam'
+          description: Inline skill payload
+      type: object
+      required:
+      - type
+      - name
+      - description
+      - source
     ContainerListResource:
       type: object
       properties:
@@ -804,6 +754,43 @@ components:
       - first_id
       - last_id
       - has_more
+    ContainerFileResource:
+      type: object
+      title: The container file object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the file.
+        object:
+          type: string
+          description: The type of this object (`container.file`).
+        container_id:
+          type: string
+          description: The container this file belongs to.
+        created_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (in seconds) when the file was created.
+        bytes:
+          type: integer
+          description: Size of the file in bytes.
+        path:
+          type: string
+          description: Path of the file in the container.
+        source:
+          type: string
+          description: Source of the file (e.g., `user`, `assistant`).
+      required:
+      - id
+      - object
+      - created_at
+      - bytes
+      - container_id
+      - path
+      - source
+      x-oaiMeta:
+        name: The container file object
+        example: "{\n    \"id\": \"cfile_682e0e8a43c88191a7978f477a09bdf5\",\n    \"object\": \"container.file\",\n    \"created_at\": 1747848842,\n    \"bytes\": 880,\n    \"container_id\": \"cntr_682e0e7318108198aa783fd921ff305e08e78805b9fdbb04\",\n    \"path\": \"/mnt/data/88e12fa445d32636f190a0b33daed6cb-tsconfig.json\",\n    \"source\": \"user\"\n}\n"
     ContainerNetworkPolicyAllowlistParam:
       properties:
         type:
@@ -829,6 +816,19 @@ components:
       required:
       - type
       - allowed_domains
+    CreateContainerFileBody:
+      type: object
+      properties:
+        file_id:
+          type: string
+          description: Name of the file to create.
+        file:
+          description: 'The File object (not file name) to be uploaded.
+
+            '
+          type: string
+          format: binary
+      required: []
   securitySchemes:
     ApiKeyAuth:
       type: http

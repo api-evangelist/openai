@@ -1043,68 +1043,6 @@ paths:
           response: "{\n    \"object\": \"organization.project.user.deleted\",\n    \"id\": \"user_abc\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
-    ProjectApiKeyOwnerServiceAccount:
-      type: object
-      description: The service account that owns a project API key.
-      properties:
-        id:
-          type: string
-          description: The identifier, which can be referenced in API endpoints
-        name:
-          type: string
-          description: The name of the service account.
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) of when the service account was created.
-        role:
-          type: string
-          description: The service account's project role.
-      required:
-      - id
-      - name
-      - created_at
-      - role
-    ProjectServiceAccountApiKey:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.service_account.api_key
-          description: The object type, which is always `organization.project.service_account.api_key`
-          x-stainless-const: true
-        value:
-          type: string
-        name:
-          type: string
-        created_at:
-          type: integer
-          format: unixtime
-        id:
-          type: string
-      required:
-      - object
-      - value
-      - name
-      - created_at
-      - id
-    ProjectServiceAccountDeleteResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.service_account.deleted
-          x-stainless-const: true
-        id:
-          type: string
-        deleted:
-          type: boolean
-      required:
-      - object
-      - id
-      - deleted
     ProjectUser:
       type: object
       description: Represents an individual user in a project.
@@ -1143,6 +1081,76 @@ components:
       x-oaiMeta:
         name: The project user object
         example: "{\n    \"object\": \"organization.project.user\",\n    \"id\": \"user_abc\",\n    \"name\": \"First Last\",\n    \"email\": \"user@example.com\",\n    \"role\": \"owner\",\n    \"added_at\": 1711471533\n}\n"
+    ProjectCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The friendly name of the project, this name appears in reports.
+        geography:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Create the project with the specified data residency region. Your organization must have access to Data residency functionality in order to use. See [data residency controls](/docs/guides/your-data#data-residency-controls) to review the functionality and limitations of setting this field.
+        external_key_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: External key ID to associate with the project.
+      required:
+      - name
+    ProjectUserUpdateRequest:
+      type: object
+      properties:
+        role:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: '`owner` or `member`'
+    Error:
+      type: object
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+      required:
+      - type
+      - message
+      - param
+      - code
+    ProjectServiceAccountApiKey:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.service_account.api_key
+          description: The object type, which is always `organization.project.service_account.api_key`
+          x-stainless-const: true
+        value:
+          type: string
+        name:
+          type: string
+        created_at:
+          type: integer
+          format: unixtime
+        id:
+          type: string
+      required:
+      - object
+      - value
+      - name
+      - created_at
+      - id
     ProjectListResponse:
       type: object
       properties:
@@ -1155,6 +1163,115 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/Project'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
+    ProjectServiceAccountDeleteResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.service_account.deleted
+          x-stainless-const: true
+        id:
+          type: string
+        deleted:
+          type: boolean
+      required:
+      - object
+      - id
+      - deleted
+    ProjectUserDeleteResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.user.deleted
+          x-stainless-const: true
+        id:
+          type: string
+        deleted:
+          type: boolean
+      required:
+      - object
+      - id
+      - deleted
+    ProjectRateLimitUpdateRequest:
+      type: object
+      properties:
+        max_requests_per_1_minute:
+          type: integer
+          description: The maximum requests per minute.
+        max_tokens_per_1_minute:
+          type: integer
+          description: The maximum tokens per minute.
+        max_images_per_1_minute:
+          type: integer
+          description: The maximum images per minute. Only relevant for certain models.
+        max_audio_megabytes_per_1_minute:
+          type: integer
+          description: The maximum audio megabytes per minute. Only relevant for certain models.
+        max_requests_per_1_day:
+          type: integer
+          description: The maximum requests per day. Only relevant for certain models.
+        batch_1_day_max_input_tokens:
+          type: integer
+          description: The maximum batch input tokens per day. Only relevant for certain models.
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    ProjectUserListResponse:
+      type: object
+      properties:
+        object:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectUser'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
+    ProjectRateLimitListResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectRateLimit'
         first_id:
           anyOf:
           - type: string
@@ -1214,49 +1331,32 @@ components:
       x-oaiMeta:
         name: The project object
         example: "{\n    \"id\": \"proj_abc\",\n    \"object\": \"organization.project\",\n    \"name\": \"Project example\",\n    \"created_at\": 1711471533,\n    \"archived_at\": null,\n    \"status\": \"active\",\n    \"external_key_id\": null\n}\n"
-    ProjectServiceAccount:
+    ProjectApiKeyListResponse:
       type: object
-      description: Represents an individual service account in a project.
       properties:
         object:
           type: string
           enum:
-          - organization.project.service_account
-          description: The object type, which is always `organization.project.service_account`
+          - list
           x-stainless-const: true
-        id:
-          type: string
-          description: The identifier, which can be referenced in API endpoints
-        name:
-          type: string
-          description: The name of the service account
-        role:
-          type: string
-          enum:
-          - owner
-          - member
-          description: '`owner` or `member`'
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) of when the service account was created
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectApiKey'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        has_more:
+          type: boolean
       required:
       - object
-      - id
-      - name
-      - role
-      - created_at
-      x-oaiMeta:
-        name: The project service account object
-        example: "{\n    \"object\": \"organization.project.service_account\",\n    \"id\": \"svc_acct_abc\",\n    \"name\": \"Service Account\",\n    \"role\": \"owner\",\n    \"created_at\": 1711471533\n}\n"
-    ProjectServiceAccountCreateRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the service account being created.
-      required:
-      - name
+      - data
+      - has_more
     ProjectUpdateRequest:
       type: object
       properties:
@@ -1275,103 +1375,46 @@ components:
           - type: string
           - type: 'null'
           description: Geography for the project.
-    ProjectRateLimitUpdateRequest:
+    ProjectApiKeyOwnerServiceAccount:
       type: object
+      description: The service account that owns a project API key.
       properties:
-        max_requests_per_1_minute:
-          type: integer
-          description: The maximum requests per minute.
-        max_tokens_per_1_minute:
-          type: integer
-          description: The maximum tokens per minute.
-        max_images_per_1_minute:
-          type: integer
-          description: The maximum images per minute. Only relevant for certain models.
-        max_audio_megabytes_per_1_minute:
-          type: integer
-          description: The maximum audio megabytes per minute. Only relevant for certain models.
-        max_requests_per_1_day:
-          type: integer
-          description: The maximum requests per day. Only relevant for certain models.
-        batch_1_day_max_input_tokens:
-          type: integer
-          description: The maximum batch input tokens per day. Only relevant for certain models.
-    ProjectUserUpdateRequest:
-      type: object
-      properties:
-        role:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: '`owner` or `member`'
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-      required:
-      - type
-      - message
-      - param
-      - code
-    ProjectServiceAccountCreateResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.service_account
-          x-stainless-const: true
         id:
           type: string
+          description: The identifier, which can be referenced in API endpoints
         name:
           type: string
-        role:
-          type: string
-          enum:
-          - member
-          description: Service accounts can only have one role of type `member`
-          x-stainless-const: true
+          description: The name of the service account.
         created_at:
           type: integer
           format: unixtime
-        api_key:
-          anyOf:
-          - $ref: '#/components/schemas/ProjectServiceAccountApiKey'
-          - type: 'null'
+          description: The Unix timestamp (in seconds) of when the service account was created.
+        role:
+          type: string
+          description: The service account's project role.
       required:
-      - object
       - id
       - name
-      - role
       - created_at
-      - api_key
-    ProjectUserDeleteResponse:
+      - role
+    ProjectUserCreateRequest:
       type: object
       properties:
-        object:
+        user_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The ID of the user.
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Email of the user to add.
+        role:
           type: string
-          enum:
-          - organization.project.user.deleted
-          x-stainless-const: true
-        id:
-          type: string
-        deleted:
-          type: boolean
+          description: '`owner` or `member`'
       required:
-      - object
-      - id
-      - deleted
+      - role
     ProjectServiceAccountListResponse:
       type: object
       properties:
@@ -1424,139 +1467,41 @@ components:
       - name
       - created_at
       - role
-    ProjectRateLimit:
+    ProjectServiceAccount:
       type: object
-      description: Represents a project rate limit config.
+      description: Represents an individual service account in a project.
       properties:
         object:
           type: string
           enum:
-          - project.rate_limit
-          description: The object type, which is always `project.rate_limit`
+          - organization.project.service_account
+          description: The object type, which is always `organization.project.service_account`
           x-stainless-const: true
         id:
           type: string
-          description: The identifier, which can be referenced in API endpoints.
-        model:
-          type: string
-          description: The model this rate limit applies to.
-        max_requests_per_1_minute:
-          type: integer
-          description: The maximum requests per minute.
-        max_tokens_per_1_minute:
-          type: integer
-          description: The maximum tokens per minute.
-        max_images_per_1_minute:
-          type: integer
-          description: The maximum images per minute. Only present for relevant models.
-        max_audio_megabytes_per_1_minute:
-          type: integer
-          description: The maximum audio megabytes per minute. Only present for relevant models.
-        max_requests_per_1_day:
-          type: integer
-          description: The maximum requests per day. Only present for relevant models.
-        batch_1_day_max_input_tokens:
-          type: integer
-          description: The maximum batch input tokens per day. Only present for relevant models.
-      required:
-      - object
-      - id
-      - model
-      - max_requests_per_1_minute
-      - max_tokens_per_1_minute
-      x-oaiMeta:
-        name: The project rate limit object
-        example: "{\n    \"object\": \"project.rate_limit\",\n    \"id\": \"rl_ada\",\n    \"model\": \"ada\",\n    \"max_requests_per_1_minute\": 600,\n    \"max_tokens_per_1_minute\": 150000,\n    \"max_images_per_1_minute\": 10\n}\n"
-    ProjectUserListResponse:
-      type: object
-      properties:
-        object:
-          type: string
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectUser'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        has_more:
-          type: boolean
-      required:
-      - object
-      - data
-      - has_more
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    ProjectApiKeyDeleteResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.api_key.deleted
-          x-stainless-const: true
-        id:
-          type: string
-        deleted:
-          type: boolean
-      required:
-      - object
-      - id
-      - deleted
-    ProjectCreateRequest:
-      type: object
-      properties:
+          description: The identifier, which can be referenced in API endpoints
         name:
           type: string
-          description: The friendly name of the project, this name appears in reports.
-        geography:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: Create the project with the specified data residency region. Your organization must have access to Data residency functionality in order to use. See [data residency controls](/docs/guides/your-data#data-residency-controls) to review the functionality and limitations of setting this field.
-        external_key_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: External key ID to associate with the project.
-      required:
-      - name
-    ProjectApiKeyListResponse:
-      type: object
-      properties:
-        object:
+          description: The name of the service account
+        role:
           type: string
           enum:
-          - list
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectApiKey'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        has_more:
-          type: boolean
+          - owner
+          - member
+          description: '`owner` or `member`'
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) of when the service account was created
       required:
       - object
-      - data
-      - has_more
+      - id
+      - name
+      - role
+      - created_at
+      x-oaiMeta:
+        name: The project service account object
+        example: "{\n    \"object\": \"organization.project.service_account\",\n    \"id\": \"svc_acct_abc\",\n    \"name\": \"Service Account\",\n    \"role\": \"owner\",\n    \"created_at\": 1711471533\n}\n"
     ProjectApiKey:
       type: object
       description: Represents an individual API key in a project.
@@ -1610,50 +1555,105 @@ components:
       x-oaiMeta:
         name: The project API key object
         example: "{\n    \"object\": \"organization.project.api_key\",\n    \"redacted_value\": \"sk-abc...def\",\n    \"name\": \"My API Key\",\n    \"created_at\": 1711471533,\n    \"last_used_at\": 1711471534,\n    \"id\": \"key_abc\",\n    \"owner\": {\n        \"type\": \"user\",\n        \"user\": {\n            \"id\": \"user_abc\",\n            \"name\": \"First Last\",\n            \"email\": \"user@example.com\",\n            \"role\": \"owner\",\n            \"created_at\": 1711471533\n        }\n    }\n}\n"
-    ProjectUserCreateRequest:
-      type: object
-      properties:
-        user_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The ID of the user.
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: Email of the user to add.
-        role:
-          type: string
-          description: '`owner` or `member`'
-      required:
-      - role
-    ProjectRateLimitListResponse:
+    ProjectApiKeyDeleteResponse:
       type: object
       properties:
         object:
           type: string
           enum:
-          - list
+          - organization.project.api_key.deleted
           x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectRateLimit'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        has_more:
+        id:
+          type: string
+        deleted:
           type: boolean
       required:
       - object
-      - data
-      - has_more
+      - id
+      - deleted
+    ProjectRateLimit:
+      type: object
+      description: Represents a project rate limit config.
+      properties:
+        object:
+          type: string
+          enum:
+          - project.rate_limit
+          description: The object type, which is always `project.rate_limit`
+          x-stainless-const: true
+        id:
+          type: string
+          description: The identifier, which can be referenced in API endpoints.
+        model:
+          type: string
+          description: The model this rate limit applies to.
+        max_requests_per_1_minute:
+          type: integer
+          description: The maximum requests per minute.
+        max_tokens_per_1_minute:
+          type: integer
+          description: The maximum tokens per minute.
+        max_images_per_1_minute:
+          type: integer
+          description: The maximum images per minute. Only present for relevant models.
+        max_audio_megabytes_per_1_minute:
+          type: integer
+          description: The maximum audio megabytes per minute. Only present for relevant models.
+        max_requests_per_1_day:
+          type: integer
+          description: The maximum requests per day. Only present for relevant models.
+        batch_1_day_max_input_tokens:
+          type: integer
+          description: The maximum batch input tokens per day. Only present for relevant models.
+      required:
+      - object
+      - id
+      - model
+      - max_requests_per_1_minute
+      - max_tokens_per_1_minute
+      x-oaiMeta:
+        name: The project rate limit object
+        example: "{\n    \"object\": \"project.rate_limit\",\n    \"id\": \"rl_ada\",\n    \"model\": \"ada\",\n    \"max_requests_per_1_minute\": 600,\n    \"max_tokens_per_1_minute\": 150000,\n    \"max_images_per_1_minute\": 10\n}\n"
+    ProjectServiceAccountCreateResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.service_account
+          x-stainless-const: true
+        id:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+          enum:
+          - member
+          description: Service accounts can only have one role of type `member`
+          x-stainless-const: true
+        created_at:
+          type: integer
+          format: unixtime
+        api_key:
+          anyOf:
+          - $ref: '#/components/schemas/ProjectServiceAccountApiKey'
+          - type: 'null'
+      required:
+      - object
+      - id
+      - name
+      - role
+      - created_at
+      - api_key
+    ProjectServiceAccountCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the service account being created.
+      required:
+      - name
   securitySchemes:
     ApiKeyAuth:
       type: http

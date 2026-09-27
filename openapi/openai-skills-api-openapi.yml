@@ -524,28 +524,43 @@ paths:
               puts(content)'
 components:
   schemas:
-    DeletedSkillVersionResource:
+    SetDefaultSkillVersionBody:
       properties:
-        object:
+        default_version:
           type: string
-          enum:
-          - skill.version.deleted
-          default: skill.version.deleted
-          x-stainless-const: true
-        deleted:
-          type: boolean
-        id:
-          type: string
-        version:
-          type: string
-          description: The deleted skill version.
+          description: The skill version number to set as default.
       type: object
       required:
-      - object
-      - deleted
-      - id
-      - version
-    SkillVersionListResource:
+      - default_version
+      title: Update skill request
+      description: Updates the default version pointer for a skill.
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    CreateSkillVersionBody:
+      properties:
+        files:
+          oneOf:
+          - items:
+              type: string
+              format: binary
+            type: array
+            maxItems: 500
+            description: Skill files to upload (directory upload) or a single zip file.
+          - type: string
+            format: binary
+            description: Skill zip file to upload.
+        default:
+          type: boolean
+          description: Whether to set this version as the default.
+      type: object
+      required:
+      - files
+      title: Create skill version request
+      description: Uploads a new immutable version of a skill.
+    SkillListResource:
       properties:
         object:
           type: string
@@ -556,7 +571,7 @@ components:
           x-stainless-const: true
         data:
           items:
-            $ref: '#/components/schemas/SkillVersionResource'
+            $ref: '#/components/schemas/SkillResource'
           type: array
           description: A list of items
         first_id:
@@ -579,6 +594,44 @@ components:
       - first_id
       - last_id
       - has_more
+    DeletedSkillVersionResource:
+      properties:
+        object:
+          type: string
+          enum:
+          - skill.version.deleted
+          default: skill.version.deleted
+          x-stainless-const: true
+        deleted:
+          type: boolean
+        id:
+          type: string
+        version:
+          type: string
+          description: The deleted skill version.
+      type: object
+      required:
+      - object
+      - deleted
+      - id
+      - version
+    DeletedSkillResource:
+      properties:
+        object:
+          type: string
+          enum:
+          - skill.deleted
+          default: skill.deleted
+          x-stainless-const: true
+        deleted:
+          type: boolean
+        id:
+          type: string
+      type: object
+      required:
+      - object
+      - deleted
+      - id
     SkillResource:
       properties:
         id:
@@ -616,51 +669,6 @@ components:
       - created_at
       - default_version
       - latest_version
-    DeletedSkillResource:
-      properties:
-        object:
-          type: string
-          enum:
-          - skill.deleted
-          default: skill.deleted
-          x-stainless-const: true
-        deleted:
-          type: boolean
-        id:
-          type: string
-      type: object
-      required:
-      - object
-      - deleted
-      - id
-    SetDefaultSkillVersionBody:
-      properties:
-        default_version:
-          type: string
-          description: The skill version number to set as default.
-      type: object
-      required:
-      - default_version
-      title: Update skill request
-      description: Updates the default version pointer for a skill.
-    CreateSkillBody:
-      properties:
-        files:
-          oneOf:
-          - items:
-              type: string
-              format: binary
-            type: array
-            maxItems: 500
-            description: Skill files to upload (directory upload) or a single zip file.
-          - type: string
-            format: binary
-            description: Skill zip file to upload.
-      type: object
-      required:
-      - files
-      title: Create skill request
-      description: Uploads a skill either as a directory (multipart `files[]`) or as a single zip file.
     SkillVersionResource:
       properties:
         object:
@@ -698,7 +706,25 @@ components:
       - created_at
       - name
       - description
-    SkillListResource:
+    CreateSkillBody:
+      properties:
+        files:
+          oneOf:
+          - items:
+              type: string
+              format: binary
+            type: array
+            maxItems: 500
+            description: Skill files to upload (directory upload) or a single zip file.
+          - type: string
+            format: binary
+            description: Skill zip file to upload.
+      type: object
+      required:
+      - files
+      title: Create skill request
+      description: Uploads a skill either as a directory (multipart `files[]`) or as a single zip file.
+    SkillVersionListResource:
       properties:
         object:
           type: string
@@ -709,7 +735,7 @@ components:
           x-stainless-const: true
         data:
           items:
-            $ref: '#/components/schemas/SkillResource'
+            $ref: '#/components/schemas/SkillVersionResource'
           type: array
           description: A list of items
         first_id:
@@ -732,32 +758,6 @@ components:
       - first_id
       - last_id
       - has_more
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
-    CreateSkillVersionBody:
-      properties:
-        files:
-          oneOf:
-          - items:
-              type: string
-              format: binary
-            type: array
-            maxItems: 500
-            description: Skill files to upload (directory upload) or a single zip file.
-          - type: string
-            format: binary
-            description: Skill zip file to upload.
-        default:
-          type: boolean
-          description: Whether to set this version as the default.
-      type: object
-      required:
-      - files
-      title: Create skill version request
-      description: Uploads a new immutable version of a skill.
   securitySchemes:
     ApiKeyAuth:
       type: http

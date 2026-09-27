@@ -291,36 +291,6 @@ components:
       x-oaiMeta:
         name: The invite object
         example: "{\n  \"object\": \"organization.invite\",\n  \"id\": \"invite-abc\",\n  \"email\": \"user@example.com\",\n  \"role\": \"owner\",\n  \"status\": \"accepted\",\n  \"created_at\": 1711471533,\n  \"expires_at\": 1711471533,\n  \"accepted_at\": 1711471533,\n  \"projects\": [\n    {\n      \"id\": \"project-xyz\",\n      \"role\": \"member\"\n    }\n  ]\n}\n"
-    InviteListResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: The object type, which is always `list`
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Invite'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The first `invite_id` in the retrieved `list`
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The last `invite_id` in the retrieved `list`
-        has_more:
-          type: boolean
-          description: The `has_more` property is used for pagination to indicate there are additional results.
-      required:
-      - object
-      - data
-      - has_more
     InviteRequest:
       type: object
       properties:
@@ -354,6 +324,36 @@ components:
       required:
       - email
       - role
+    InviteListResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: The object type, which is always `list`
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Invite'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The first `invite_id` in the retrieved `list`
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The last `invite_id` in the retrieved `list`
+        has_more:
+          type: boolean
+          description: The `has_more` property is used for pagination to indicate there are additional results.
+      required:
+      - object
+      - data
+      - has_more
   securitySchemes:
     ApiKeyAuth:
       type: http

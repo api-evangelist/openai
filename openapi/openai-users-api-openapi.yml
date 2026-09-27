@@ -215,71 +215,6 @@ paths:
           response: "{\n    \"object\": \"organization.user.deleted\",\n    \"id\": \"user_abc\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
-    UserDeleteResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.user.deleted
-          x-stainless-const: true
-        id:
-          type: string
-        deleted:
-          type: boolean
-      required:
-      - object
-      - id
-      - deleted
-    UserRoleUpdateRequest:
-      type: object
-      properties:
-        role:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: '`owner` or `reader`'
-        role_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: Role ID to assign to the user.
-        technical_level:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: Technical level metadata.
-        developer_persona:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: Developer persona metadata.
-    UserListResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        has_more:
-          type: boolean
-      required:
-      - object
-      - data
-      - has_more
     User:
       type: object
       description: Represents an individual `user` within an organization.
@@ -423,6 +358,71 @@ components:
       x-oaiMeta:
         name: The user object
         example: "{\n    \"object\": \"organization.user\",\n    \"id\": \"user_abc\",\n    \"name\": \"First Last\",\n    \"email\": \"user@example.com\",\n    \"role\": \"owner\",\n    \"added_at\": 1711471533\n}\n"
+    UserRoleUpdateRequest:
+      type: object
+      properties:
+        role:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: '`owner` or `reader`'
+        role_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Role ID to assign to the user.
+        technical_level:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Technical level metadata.
+        developer_persona:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Developer persona metadata.
+    UserListResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
+    UserDeleteResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.user.deleted
+          x-stainless-const: true
+        id:
+          type: string
+        deleted:
+          type: boolean
+      required:
+      - object
+      - id
+      - deleted
   securitySchemes:
     ApiKeyAuth:
       type: http

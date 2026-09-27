@@ -189,6 +189,40 @@ paths:
           response: "{\n    \"object\": \"group.user.deleted\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
+    CreateGroupUserBody:
+      type: object
+      description: Request payload for adding a user to a group.
+      properties:
+        user_id:
+          type: string
+          description: Identifier of the user to add to the group.
+      required:
+      - user_id
+      x-oaiMeta:
+        example: "{\n    \"user_id\": \"user_abc123\"\n}\n"
+    GroupUserAssignment:
+      type: object
+      description: Confirmation payload returned after adding a user to a group.
+      properties:
+        object:
+          type: string
+          enum:
+          - group.user
+          description: Always `group.user`.
+          x-stainless-const: true
+        user_id:
+          type: string
+          description: Identifier of the user that was added.
+        group_id:
+          type: string
+          description: Identifier of the group the user was added to.
+      required:
+      - object
+      - user_id
+      - group_id
+      x-oaiMeta:
+        name: The group user object
+        example: "{\n    \"object\": \"group.user\",\n    \"user_id\": \"user_abc123\",\n    \"group_id\": \"group_01J1F8ABCDXYZ\"\n}\n"
     UserListResource:
       type: object
       description: Paginated list of user objects returned when inspecting group membership.
@@ -220,25 +254,6 @@ components:
       x-oaiMeta:
         name: Group user list
         example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"user_abc123\",\n            \"name\": \"Ada Lovelace\",\n            \"email\": \"ada@example.com\"\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
-    GroupUser:
-      type: object
-      description: Represents an individual user returned when inspecting group membership.
-      properties:
-        id:
-          type: string
-          description: The identifier, which can be referenced in API endpoints
-        name:
-          type: string
-          description: The name of the user.
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The email address of the user.
-      required:
-      - id
-      - name
-      - email
     GroupUserDeletedResource:
       type: object
       description: Confirmation payload returned after removing a user from a group.
@@ -258,40 +273,25 @@ components:
       x-oaiMeta:
         name: Group user deletion confirmation
         example: "{\n    \"object\": \"group.user.deleted\",\n    \"deleted\": true\n}\n"
-    GroupUserAssignment:
+    GroupUser:
       type: object
-      description: Confirmation payload returned after adding a user to a group.
+      description: Represents an individual user returned when inspecting group membership.
       properties:
-        object:
+        id:
           type: string
-          enum:
-          - group.user
-          description: Always `group.user`.
-          x-stainless-const: true
-        user_id:
+          description: The identifier, which can be referenced in API endpoints
+        name:
           type: string
-          description: Identifier of the user that was added.
-        group_id:
-          type: string
-          description: Identifier of the group the user was added to.
+          description: The name of the user.
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The email address of the user.
       required:
-      - object
-      - user_id
-      - group_id
-      x-oaiMeta:
-        name: The group user object
-        example: "{\n    \"object\": \"group.user\",\n    \"user_id\": \"user_abc123\",\n    \"group_id\": \"group_01J1F8ABCDXYZ\"\n}\n"
-    CreateGroupUserBody:
-      type: object
-      description: Request payload for adding a user to a group.
-      properties:
-        user_id:
-          type: string
-          description: Identifier of the user to add to the group.
-      required:
-      - user_id
-      x-oaiMeta:
-        example: "{\n    \"user_id\": \"user_abc123\"\n}\n"
+      - id
+      - name
+      - email
   securitySchemes:
     ApiKeyAuth:
       type: http

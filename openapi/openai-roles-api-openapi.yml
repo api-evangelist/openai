@@ -427,6 +427,59 @@ paths:
           response: "{\n    \"object\": \"role.deleted\",\n    \"id\": \"role_01J1F8PROJ\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
+    PublicCreateOrganizationRoleBody:
+      type: object
+      description: Request payload for creating a custom role.
+      properties:
+        role_name:
+          type: string
+          description: Unique name for the role.
+        permissions:
+          type: array
+          description: Permissions to grant to the role.
+          items:
+            type: string
+        description:
+          description: Optional description of the role.
+          anyOf:
+          - type: string
+          - type: 'null'
+      required:
+      - role_name
+      - permissions
+      x-oaiMeta:
+        example: "{\n    \"role_name\": \"API Group Manager\",\n    \"permissions\": [\n        \"api.groups.read\",\n        \"api.groups.write\"\n    ],\n    \"description\": \"Allows managing organization groups\"\n}\n"
+    PublicRoleListResource:
+      type: object
+      description: Paginated list of roles available on an organization or project.
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: Always `list`.
+          x-stainless-const: true
+        data:
+          type: array
+          description: Roles returned in the current page.
+          items:
+            $ref: '#/components/schemas/Role'
+        has_more:
+          type: boolean
+          description: Whether more roles are available when paginating.
+        next:
+          description: Cursor to fetch the next page of results, or `null` when there are no additional roles.
+          anyOf:
+          - type: string
+          - type: 'null'
+      required:
+      - object
+      - data
+      - has_more
+      - next
+      x-oaiMeta:
+        name: Role list
+        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"object\": \"role\",\n            \"id\": \"role_01J1F8ROLE01\",\n            \"name\": \"API Group Manager\",\n            \"description\": \"Allows managing organization groups\",\n            \"permissions\": [\n                \"api.groups.read\",\n                \"api.groups.write\"\n            ],\n            \"resource_type\": \"api.organization\",\n            \"predefined_role\": false\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
     RoleDeletedResource:
       type: object
       description: Confirmation payload returned after deleting a role.
@@ -450,6 +503,29 @@ components:
       x-oaiMeta:
         name: Role deletion confirmation
         example: "{\n    \"object\": \"role.deleted\",\n    \"id\": \"role_01J1F8ROLE01\",\n    \"deleted\": true\n}\n"
+    PublicUpdateOrganizationRoleBody:
+      type: object
+      description: Request payload for updating an existing role.
+      properties:
+        permissions:
+          description: Updated set of permissions for the role.
+          anyOf:
+          - type: array
+            items:
+              type: string
+          - type: 'null'
+        description:
+          description: New description for the role.
+          anyOf:
+          - type: string
+          - type: 'null'
+        role_name:
+          description: New name for the role.
+          anyOf:
+          - type: string
+          - type: 'null'
+      x-oaiMeta:
+        example: "{\n    \"role_name\": \"API Group Manager\",\n    \"permissions\": [\n        \"api.groups.read\",\n        \"api.groups.write\"\n    ],\n    \"description\": \"Allows managing organization groups\"\n}\n"
     Role:
       type: object
       description: Details about a role that can be assigned through the public Roles API.
@@ -493,82 +569,6 @@ components:
       x-oaiMeta:
         name: The role object
         example: "{\n    \"object\": \"role\",\n    \"id\": \"role_01J1F8ROLE01\",\n    \"name\": \"API Group Manager\",\n    \"description\": \"Allows managing organization groups\",\n    \"permissions\": [\n        \"api.groups.read\",\n        \"api.groups.write\"\n    ],\n    \"resource_type\": \"api.organization\",\n    \"predefined_role\": false\n}\n"
-    PublicCreateOrganizationRoleBody:
-      type: object
-      description: Request payload for creating a custom role.
-      properties:
-        role_name:
-          type: string
-          description: Unique name for the role.
-        permissions:
-          type: array
-          description: Permissions to grant to the role.
-          items:
-            type: string
-        description:
-          description: Optional description of the role.
-          anyOf:
-          - type: string
-          - type: 'null'
-      required:
-      - role_name
-      - permissions
-      x-oaiMeta:
-        example: "{\n    \"role_name\": \"API Group Manager\",\n    \"permissions\": [\n        \"api.groups.read\",\n        \"api.groups.write\"\n    ],\n    \"description\": \"Allows managing organization groups\"\n}\n"
-    PublicUpdateOrganizationRoleBody:
-      type: object
-      description: Request payload for updating an existing role.
-      properties:
-        permissions:
-          description: Updated set of permissions for the role.
-          anyOf:
-          - type: array
-            items:
-              type: string
-          - type: 'null'
-        description:
-          description: New description for the role.
-          anyOf:
-          - type: string
-          - type: 'null'
-        role_name:
-          description: New name for the role.
-          anyOf:
-          - type: string
-          - type: 'null'
-      x-oaiMeta:
-        example: "{\n    \"role_name\": \"API Group Manager\",\n    \"permissions\": [\n        \"api.groups.read\",\n        \"api.groups.write\"\n    ],\n    \"description\": \"Allows managing organization groups\"\n}\n"
-    PublicRoleListResource:
-      type: object
-      description: Paginated list of roles available on an organization or project.
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: Always `list`.
-          x-stainless-const: true
-        data:
-          type: array
-          description: Roles returned in the current page.
-          items:
-            $ref: '#/components/schemas/Role'
-        has_more:
-          type: boolean
-          description: Whether more roles are available when paginating.
-        next:
-          description: Cursor to fetch the next page of results, or `null` when there are no additional roles.
-          anyOf:
-          - type: string
-          - type: 'null'
-      required:
-      - object
-      - data
-      - has_more
-      - next
-      x-oaiMeta:
-        name: Role list
-        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"object\": \"role\",\n            \"id\": \"role_01J1F8ROLE01\",\n            \"name\": \"API Group Manager\",\n            \"description\": \"Allows managing organization groups\",\n            \"permissions\": [\n                \"api.groups.read\",\n                \"api.groups.write\"\n            ],\n            \"resource_type\": \"api.organization\",\n            \"predefined_role\": false\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
   securitySchemes:
     ApiKeyAuth:
       type: http

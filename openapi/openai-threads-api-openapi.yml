@@ -968,6 +968,39 @@ components:
       - first_id
       - last_id
       - has_more
+    ThreadObject:
+      type: object
+      title: Thread
+      description: Represents a thread that contains [messages](/docs/api-reference/messages).
+      properties:
+        id:
+          description: The identifier, which can be referenced in API endpoints.
+          type: string
+        object:
+          description: The object type, which is always `thread`.
+          type: string
+          enum:
+          - thread
+        created_at:
+          description: The Unix timestamp (in seconds) for when the thread was created.
+          type: integer
+        metadata:
+          description: 'Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+
+            '
+          type:
+          - object
+          - 'null'
+          x-oaiTypeLabel: map
+      required:
+      - id
+      - object
+      - created_at
+      - metadata
+      x-oaiMeta:
+        name: The thread object
+        beta: true
+        example: "{\n  \"id\": \"thread_abc123\",\n  \"object\": \"thread\",\n  \"created_at\": 1698107661,\n  \"metadata\": {}\n}\n"
     RunStepObject:
       type: object
       title: Run steps
@@ -1086,137 +1119,6 @@ components:
         name: The run step object
         beta: true
         example: "{\n  \"id\": \"step_abc123\",\n  \"object\": \"thread.run.step\",\n  \"created_at\": 1699063291,\n  \"run_id\": \"run_abc123\",\n  \"assistant_id\": \"asst_abc123\",\n  \"thread_id\": \"thread_abc123\",\n  \"type\": \"message_creation\",\n  \"status\": \"completed\",\n  \"cancelled_at\": null,\n  \"completed_at\": 1699063291,\n  \"expired_at\": null,\n  \"failed_at\": null,\n  \"last_error\": null,\n  \"step_details\": {\n    \"type\": \"message_creation\",\n    \"message_creation\": {\n      \"message_id\": \"msg_abc123\"\n    }\n  },\n  \"usage\": {\n    \"prompt_tokens\": 123,\n    \"completion_tokens\": 456,\n    \"total_tokens\": 579\n  }\n}\n"
-    ThreadObject:
-      type: object
-      title: Thread
-      description: Represents a thread that contains [messages](/docs/api-reference/messages).
-      properties:
-        id:
-          description: The identifier, which can be referenced in API endpoints.
-          type: string
-        object:
-          description: The object type, which is always `thread`.
-          type: string
-          enum:
-          - thread
-        created_at:
-          description: The Unix timestamp (in seconds) for when the thread was created.
-          type: integer
-        metadata:
-          description: 'Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
-
-            '
-          type:
-          - object
-          - 'null'
-          x-oaiTypeLabel: map
-      required:
-      - id
-      - object
-      - created_at
-      - metadata
-      x-oaiMeta:
-        name: The thread object
-        beta: true
-        example: "{\n  \"id\": \"thread_abc123\",\n  \"object\": \"thread\",\n  \"created_at\": 1698107661,\n  \"metadata\": {}\n}\n"
-    ListRunsResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          example: list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/RunObject'
-        first_id:
-          type: string
-          example: run_abc123
-        last_id:
-          type: string
-          example: run_abc456
-        has_more:
-          type: boolean
-          example: false
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
-    MessageObject:
-      type: object
-      title: The message object
-      description: Represents a message within a [thread](/docs/api-reference/threads).
-      properties:
-        id:
-          description: The identifier, which can be referenced in API endpoints.
-          type: string
-        object:
-          description: The object type, which is always `thread.message`.
-          type: string
-          enum:
-          - thread.message
-        created_at:
-          description: The Unix timestamp (in seconds) for when the message was created.
-          type: integer
-        thread_id:
-          description: The [thread](/docs/api-reference/threads) ID that this message belongs to.
-          type: string
-        role:
-          description: The entity that produced the message. One of `user` or `assistant`.
-          type: string
-          enum:
-          - user
-          - assistant
-        content:
-          description: The content of the message in array of text and/or images.
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/MessageContentImageFileObject'
-            - $ref: '#/components/schemas/MessageContentTextObject'
-            x-oaiExpandable: true
-        assistant_id:
-          description: If applicable, the ID of the [assistant](/docs/api-reference/assistants) that authored this message.
-          type:
-          - string
-          - 'null'
-        run_id:
-          description: If applicable, the ID of the [run](/docs/api-reference/runs) associated with the authoring of this message.
-          type:
-          - string
-          - 'null'
-        file_ids:
-          description: A list of [file](/docs/api-reference/files) IDs that the assistant should use. Useful for tools like retrieval and code_interpreter that can access files. A maximum of 10 files can be attached to a message.
-          default: []
-          maxItems: 10
-          type: array
-          items:
-            type: string
-        metadata:
-          description: 'Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
-
-            '
-          type:
-          - object
-          - 'null'
-          x-oaiTypeLabel: map
-      required:
-      - id
-      - object
-      - created_at
-      - thread_id
-      - role
-      - content
-      - assistant_id
-      - run_id
-      - file_ids
-      - metadata
-      x-oaiMeta:
-        name: The message object
-        beta: true
-        example: "{\n  \"id\": \"msg_abc123\",\n  \"object\": \"thread.message\",\n  \"created_at\": 1698983503,\n  \"thread_id\": \"thread_abc123\",\n  \"role\": \"assistant\",\n  \"content\": [\n    {\n      \"type\": \"text\",\n      \"text\": {\n        \"value\": \"Hi! How can I help you today?\",\n        \"annotations\": []\n      }\n    }\n  ],\n  \"file_ids\": [],\n  \"assistant_id\": \"asst_abc123\",\n  \"run_id\": \"run_abc123\",\n  \"metadata\": {}\n}\n"
     DeleteThreadResponse:
       type: object
       properties:
@@ -1232,54 +1134,6 @@ components:
       - id
       - object
       - deleted
-    ListMessagesResponse:
-      properties:
-        object:
-          type: string
-          example: list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/MessageObject'
-        first_id:
-          type: string
-          example: msg_abc123
-        last_id:
-          type: string
-          example: msg_abc123
-        has_more:
-          type: boolean
-          example: false
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
-    ListRunStepsResponse:
-      properties:
-        object:
-          type: string
-          example: list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/RunStepObject'
-        first_id:
-          type: string
-          example: step_abc123
-        last_id:
-          type: string
-          example: step_abc456
-        has_more:
-          type: boolean
-          example: false
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
     RunObject:
       type: object
       title: A run on a thread
@@ -1437,6 +1291,152 @@ components:
         name: The run object
         beta: true
         example: "{\n  \"id\": \"run_abc123\",\n  \"object\": \"thread.run\",\n  \"created_at\": 1698107661,\n  \"assistant_id\": \"asst_abc123\",\n  \"thread_id\": \"thread_abc123\",\n  \"status\": \"completed\",\n  \"started_at\": 1699073476,\n  \"expires_at\": null,\n  \"cancelled_at\": null,\n  \"failed_at\": null,\n  \"completed_at\": 1699073498,\n  \"last_error\": null,\n  \"model\": \"gpt-4\",\n  \"instructions\": null,\n  \"tools\": [{\"type\": \"retrieval\"}, {\"type\": \"code_interpreter\"}],\n  \"file_ids\": [],\n  \"metadata\": {},\n  \"usage\": {\n    \"prompt_tokens\": 123,\n    \"completion_tokens\": 456,\n    \"total_tokens\": 579\n  }\n}\n"
+    ListMessagesResponse:
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageObject'
+        first_id:
+          type: string
+          example: msg_abc123
+        last_id:
+          type: string
+          example: msg_abc123
+        has_more:
+          type: boolean
+          example: false
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    ListRunsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RunObject'
+        first_id:
+          type: string
+          example: run_abc123
+        last_id:
+          type: string
+          example: run_abc456
+        has_more:
+          type: boolean
+          example: false
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    MessageObject:
+      type: object
+      title: The message object
+      description: Represents a message within a [thread](/docs/api-reference/threads).
+      properties:
+        id:
+          description: The identifier, which can be referenced in API endpoints.
+          type: string
+        object:
+          description: The object type, which is always `thread.message`.
+          type: string
+          enum:
+          - thread.message
+        created_at:
+          description: The Unix timestamp (in seconds) for when the message was created.
+          type: integer
+        thread_id:
+          description: The [thread](/docs/api-reference/threads) ID that this message belongs to.
+          type: string
+        role:
+          description: The entity that produced the message. One of `user` or `assistant`.
+          type: string
+          enum:
+          - user
+          - assistant
+        content:
+          description: The content of the message in array of text and/or images.
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/MessageContentImageFileObject'
+            - $ref: '#/components/schemas/MessageContentTextObject'
+            x-oaiExpandable: true
+        assistant_id:
+          description: If applicable, the ID of the [assistant](/docs/api-reference/assistants) that authored this message.
+          type:
+          - string
+          - 'null'
+        run_id:
+          description: If applicable, the ID of the [run](/docs/api-reference/runs) associated with the authoring of this message.
+          type:
+          - string
+          - 'null'
+        file_ids:
+          description: A list of [file](/docs/api-reference/files) IDs that the assistant should use. Useful for tools like retrieval and code_interpreter that can access files. A maximum of 10 files can be attached to a message.
+          default: []
+          maxItems: 10
+          type: array
+          items:
+            type: string
+        metadata:
+          description: 'Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+
+            '
+          type:
+          - object
+          - 'null'
+          x-oaiTypeLabel: map
+      required:
+      - id
+      - object
+      - created_at
+      - thread_id
+      - role
+      - content
+      - assistant_id
+      - run_id
+      - file_ids
+      - metadata
+      x-oaiMeta:
+        name: The message object
+        beta: true
+        example: "{\n  \"id\": \"msg_abc123\",\n  \"object\": \"thread.message\",\n  \"created_at\": 1698983503,\n  \"thread_id\": \"thread_abc123\",\n  \"role\": \"assistant\",\n  \"content\": [\n    {\n      \"type\": \"text\",\n      \"text\": {\n        \"value\": \"Hi! How can I help you today?\",\n        \"annotations\": []\n      }\n    }\n  ],\n  \"file_ids\": [],\n  \"assistant_id\": \"asst_abc123\",\n  \"run_id\": \"run_abc123\",\n  \"metadata\": {}\n}\n"
+    ListRunStepsResponse:
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RunStepObject'
+        first_id:
+          type: string
+          example: step_abc123
+        last_id:
+          type: string
+          example: step_abc456
+        has_more:
+          type: boolean
+          example: false
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
   securitySchemes:
     ApiKeyAuth:
       type: http

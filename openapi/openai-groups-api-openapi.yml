@@ -219,6 +219,19 @@ paths:
           response: "{\n    \"object\": \"group.deleted\",\n    \"id\": \"group_01J1F8ABCDXYZ\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
+    UpdateGroupBody:
+      type: object
+      description: Request payload for updating the details of an existing group.
+      properties:
+        name:
+          type: string
+          description: New display name for the group.
+          minLength: 1
+          maxLength: 255
+      required:
+      - name
+      x-oaiMeta:
+        example: "{\n    \"name\": \"Escalations\"\n}\n"
     GroupResponse:
       type: object
       description: Details about an organization group.
@@ -248,19 +261,6 @@ components:
       x-oaiMeta:
         name: Group
         example: "{\n    \"id\": \"group_01J1F8ABCDXYZ\",\n    \"name\": \"Support Team\",\n    \"created_at\": 1711471533,\n    \"is_scim_managed\": false,\n    \"group_type\": \"group\"\n}\n"
-    CreateGroupBody:
-      type: object
-      description: Request payload for creating a new group in the organization.
-      properties:
-        name:
-          type: string
-          description: Human readable name for the group.
-          minLength: 1
-          maxLength: 255
-      required:
-      - name
-      x-oaiMeta:
-        example: "{\n    \"name\": \"Support Team\"\n}\n"
     GroupResourceWithSuccess:
       type: object
       description: Response returned after updating a group.
@@ -307,6 +307,19 @@ components:
       - deleted
       x-oaiMeta:
         example: "{\n    \"object\": \"group.deleted\",\n    \"id\": \"group_01J1F8ABCDXYZ\",\n    \"deleted\": true\n}\n"
+    CreateGroupBody:
+      type: object
+      description: Request payload for creating a new group in the organization.
+      properties:
+        name:
+          type: string
+          description: Human readable name for the group.
+          minLength: 1
+          maxLength: 255
+      required:
+      - name
+      x-oaiMeta:
+        example: "{\n    \"name\": \"Support Team\"\n}\n"
     GroupListResource:
       type: object
       description: Paginated list of organization groups.
@@ -338,19 +351,6 @@ components:
       x-oaiMeta:
         name: Group list
         example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"group_01J1F8ABCDXYZ\",\n            \"name\": \"Support Team\",\n            \"created_at\": 1711471533,\n            \"is_scim_managed\": false\n        },\n        {\n            \"id\": \"group_01J1F8PQRMNO\",\n            \"name\": \"Sales\",\n            \"created_at\": 1711472599,\n            \"is_scim_managed\": true\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
-    UpdateGroupBody:
-      type: object
-      description: Request payload for updating the details of an existing group.
-      properties:
-        name:
-          type: string
-          description: New display name for the group.
-          minLength: 1
-          maxLength: 255
-      required:
-      - name
-      x-oaiMeta:
-        example: "{\n    \"name\": \"Escalations\"\n}\n"
   securitySchemes:
     ApiKeyAuth:
       type: http
