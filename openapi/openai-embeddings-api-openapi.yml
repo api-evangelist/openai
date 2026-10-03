@@ -53,6 +53,36 @@ paths:
           response: "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": \"embedding\",\n      \"embedding\": [\n        0.0023064255,\n        -0.009327292,\n        .... (1536 floats total for ada-002)\n        -0.0028842222,\n      ],\n      \"index\": 0\n    }\n  ],\n  \"model\": \"text-embedding-ada-002\",\n  \"usage\": {\n    \"prompt_tokens\": 8,\n    \"total_tokens\": 8\n  }\n}\n"
 components:
   schemas:
+    Embedding:
+      type: object
+      description: 'Represents an embedding vector returned by embedding endpoint.
+
+        '
+      properties:
+        index:
+          type: integer
+          description: The index of the embedding in the list of embeddings.
+        embedding:
+          type: array
+          description: 'The embedding vector, which is a list of floats. The length of vector depends on the model as listed in the [embedding guide](/docs/guides/embeddings).
+
+            '
+          items:
+            type: number
+            format: float
+        object:
+          type: string
+          description: The object type, which is always "embedding".
+          enum:
+          - embedding
+          x-stainless-const: true
+      required:
+      - index
+      - object
+      - embedding
+      x-oaiMeta:
+        name: The embedding object
+        example: "{\n  \"object\": \"embedding\",\n  \"embedding\": [\n    0.0023064255,\n    -0.009327292,\n    .... (1536 floats total for ada-002)\n    -0.0028842222,\n  ],\n  \"index\": 0\n}\n"
     CreateEmbeddingResponse:
       type: object
       properties:
@@ -88,36 +118,6 @@ components:
       - model
       - data
       - usage
-    Embedding:
-      type: object
-      description: 'Represents an embedding vector returned by embedding endpoint.
-
-        '
-      properties:
-        index:
-          type: integer
-          description: The index of the embedding in the list of embeddings.
-        embedding:
-          type: array
-          description: 'The embedding vector, which is a list of floats. The length of vector depends on the model as listed in the [embedding guide](/docs/guides/embeddings).
-
-            '
-          items:
-            type: number
-            format: float
-        object:
-          type: string
-          description: The object type, which is always "embedding".
-          enum:
-          - embedding
-          x-stainless-const: true
-      required:
-      - index
-      - object
-      - embedding
-      x-oaiMeta:
-        name: The embedding object
-        example: "{\n  \"object\": \"embedding\",\n  \"embedding\": [\n    0.0023064255,\n    -0.009327292,\n    .... (1536 floats total for ada-002)\n    -0.0028842222,\n  ],\n  \"index\": 0\n}\n"
     CreateEmbeddingRequest:
       type: object
       additionalProperties: false

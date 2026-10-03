@@ -233,6 +233,36 @@ paths:
       - Organization
 components:
   schemas:
+    ApiKeyList:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          example: list
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdminApiKey'
+        has_more:
+          type: boolean
+          example: false
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: key_abc
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: key_xyz
+      required:
+      - object
+      - data
+      - has_more
     AdminApiKey:
       type: object
       description: Represents an individual Admin API key in an org.
@@ -318,36 +348,6 @@ components:
             description: The value of the API key. Only shown on create.
         required:
         - value
-    ApiKeyList:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          example: list
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AdminApiKey'
-        has_more:
-          type: boolean
-          example: false
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          example: key_abc
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          example: key_xyz
-      required:
-      - object
-      - data
-      - has_more
   securitySchemes:
     ApiKeyAuth:
       type: http

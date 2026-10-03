@@ -524,21 +524,6 @@ paths:
               puts(content)'
 components:
   schemas:
-    SetDefaultSkillVersionBody:
-      properties:
-        default_version:
-          type: string
-          description: The skill version number to set as default.
-      type: object
-      required:
-      - default_version
-      title: Update skill request
-      description: Updates the default version pointer for a skill.
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
     CreateSkillVersionBody:
       properties:
         files:
@@ -560,40 +545,24 @@ components:
       - files
       title: Create skill version request
       description: Uploads a new immutable version of a skill.
-    SkillListResource:
+    CreateSkillBody:
       properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: The type of object returned, must be `list`.
-          default: list
-          x-stainless-const: true
-        data:
-          items:
-            $ref: '#/components/schemas/SkillResource'
-          type: array
-          description: A list of items
-        first_id:
-          anyOf:
+        files:
+          oneOf:
+          - items:
+              type: string
+              format: binary
+            type: array
+            maxItems: 500
+            description: Skill files to upload (directory upload) or a single zip file.
           - type: string
-            description: The ID of the first item in the list.
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-            description: The ID of the last item in the list.
-          - type: 'null'
-        has_more:
-          type: boolean
-          description: Whether there are more items available.
+            format: binary
+            description: Skill zip file to upload.
       type: object
       required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
+      - files
+      title: Create skill request
+      description: Uploads a skill either as a directory (multipart `files[]`) or as a single zip file.
     DeletedSkillVersionResource:
       properties:
         object:
@@ -615,23 +584,6 @@ components:
       - deleted
       - id
       - version
-    DeletedSkillResource:
-      properties:
-        object:
-          type: string
-          enum:
-          - skill.deleted
-          default: skill.deleted
-          x-stainless-const: true
-        deleted:
-          type: boolean
-        id:
-          type: string
-      type: object
-      required:
-      - object
-      - deleted
-      - id
     SkillResource:
       properties:
         id:
@@ -706,24 +658,6 @@ components:
       - created_at
       - name
       - description
-    CreateSkillBody:
-      properties:
-        files:
-          oneOf:
-          - items:
-              type: string
-              format: binary
-            type: array
-            maxItems: 500
-            description: Skill files to upload (directory upload) or a single zip file.
-          - type: string
-            format: binary
-            description: Skill zip file to upload.
-      type: object
-      required:
-      - files
-      title: Create skill request
-      description: Uploads a skill either as a directory (multipart `files[]`) or as a single zip file.
     SkillVersionListResource:
       properties:
         object:
@@ -758,6 +692,72 @@ components:
       - first_id
       - last_id
       - has_more
+    SetDefaultSkillVersionBody:
+      properties:
+        default_version:
+          type: string
+          description: The skill version number to set as default.
+      type: object
+      required:
+      - default_version
+      title: Update skill request
+      description: Updates the default version pointer for a skill.
+    SkillListResource:
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: The type of object returned, must be `list`.
+          default: list
+          x-stainless-const: true
+        data:
+          items:
+            $ref: '#/components/schemas/SkillResource'
+          type: array
+          description: A list of items
+        first_id:
+          anyOf:
+          - type: string
+            description: The ID of the first item in the list.
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+            description: The ID of the last item in the list.
+          - type: 'null'
+        has_more:
+          type: boolean
+          description: Whether there are more items available.
+      type: object
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    DeletedSkillResource:
+      properties:
+        object:
+          type: string
+          enum:
+          - skill.deleted
+          default: skill.deleted
+          x-stainless-const: true
+        deleted:
+          type: boolean
+        id:
+          type: string
+      type: object
+      required:
+      - object
+      - deleted
+      - id
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
   securitySchemes:
     ApiKeyAuth:
       type: http

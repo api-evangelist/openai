@@ -531,198 +531,46 @@ paths:
           response: "{\n  \"id\": \"video_456\",\n  \"object\": \"video\",\n  \"model\": \"sora-2\",\n  \"status\": \"queued\",\n  \"progress\": 0,\n  \"created_at\": 1712698600,\n  \"size\": \"720x1280\",\n  \"seconds\": \"8\",\n  \"remixed_from_video_id\": \"video_123\"\n}\n"
 components:
   schemas:
-    CreateVideoJsonBody:
-      properties:
-        model:
-          $ref: '#/components/schemas/VideoModel'
-          description: 'The video generation model to use (allowed values: sora-2, sora-2-pro). Defaults to `sora-2`.'
-        prompt:
-          type: string
-          maxLength: 32000
-          minLength: 1
-          description: Text prompt that describes the video to generate.
-        input_reference:
-          $ref: '#/components/schemas/ImageRefParam-2'
-          description: Optional reference object that guides generation. Provide exactly one of `image_url` or `file_id`.
-        seconds:
-          $ref: '#/components/schemas/VideoSeconds'
-          description: 'Clip duration in seconds (allowed values: 4, 8, 12). Defaults to 4 seconds.'
-        size:
-          $ref: '#/components/schemas/VideoSize'
-          description: 'Output resolution formatted as width x height (allowed values: 720x1280, 1280x720, 1024x1792, 1792x1024). Defaults to 720x1280.'
-      type: object
-      required:
-      - prompt
-      title: Create video JSON request
-      description: JSON parameters for creating a new video generation job.
-    DeletedVideoResource:
+    VideoContentVariant:
+      type: string
+      enum:
+      - video
+      - thumbnail
+      - spritesheet
+    VideoListResource:
       properties:
         object:
           type: string
           enum:
-          - video.deleted
-          description: The object type that signals the deletion response.
-          default: video.deleted
+          - list
+          description: The type of object returned, must be `list`.
+          default: list
           x-stainless-const: true
-        deleted:
+        data:
+          items:
+            $ref: '#/components/schemas/VideoResource'
+          type: array
+          description: A list of items
+        first_id:
+          anyOf:
+          - type: string
+            description: The ID of the first item in the list.
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+            description: The ID of the last item in the list.
+          - type: 'null'
+        has_more:
           type: boolean
-          description: Indicates that the video resource was deleted.
-        id:
-          type: string
-          description: Identifier of the deleted video.
+          description: Whether there are more items available.
       type: object
       required:
       - object
-      - deleted
-      - id
-      title: Deleted video response
-      description: Confirmation payload returned after deleting a video.
-    VideoStatus:
-      type: string
-      enum:
-      - queued
-      - in_progress
-      - completed
-      - failed
-    VideoModel:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - sora-2
-        - sora-2-pro
-        - sora-2-2025-10-06
-        - sora-2-pro-2025-10-06
-        - sora-2-2025-12-08
-    CreateVideoExtendJsonBody:
-      properties:
-        video:
-          $ref: '#/components/schemas/VideoReferenceInputParam'
-          description: Reference to the completed video to extend.
-        prompt:
-          type: string
-          maxLength: 32000
-          minLength: 1
-          description: Updated text prompt that directs the extension generation.
-        seconds:
-          $ref: '#/components/schemas/VideoSeconds'
-          description: 'Length of the newly generated extension segment in seconds (allowed values: 4, 8, 12, 16, 20).'
-      type: object
-      required:
-      - video
-      - prompt
-      - seconds
-      title: Create video extension JSON request
-      description: JSON parameters for extending an existing generated video.
-    VideoReferenceInputParam:
-      properties:
-        id:
-          type: string
-          description: The identifier of the completed video.
-          example: video_123
-      type: object
-      required:
-      - id
-      description: Reference to the completed video.
-    CreateVideoCharacterBody:
-      properties:
-        video:
-          type: string
-          format: binary
-          description: Video file used to create a character.
-        name:
-          type: string
-          maxLength: 80
-          minLength: 1
-          description: Display name for this API character.
-      type: object
-      required:
-      - video
-      - name
-      title: Create character request
-      description: Parameters for creating a character from an uploaded video.
-    CreateVideoExtendMultipartBody:
-      properties:
-        video:
-          oneOf:
-          - $ref: '#/components/schemas/VideoReferenceInputParam'
-          - type: string
-            format: binary
-            description: Reference to the completed video to extend.
-        prompt:
-          type: string
-          maxLength: 32000
-          minLength: 1
-          description: Updated text prompt that directs the extension generation.
-        seconds:
-          $ref: '#/components/schemas/VideoSeconds'
-          description: 'Length of the newly generated extension segment in seconds (allowed values: 4, 8, 12, 16, 20).'
-      type: object
-      required:
-      - video
-      - prompt
-      - seconds
-      title: Create video extension multipart request
-      description: Multipart parameters for extending an existing generated video.
-    CreateVideoEditMultipartBody:
-      properties:
-        video:
-          oneOf:
-          - type: string
-            format: binary
-            description: Reference to the completed video to edit.
-          - $ref: '#/components/schemas/VideoReferenceInputParam'
-        prompt:
-          type: string
-          maxLength: 32000
-          minLength: 1
-          description: Text prompt that describes how to edit the source video.
-      type: object
-      required:
-      - video
-      - prompt
-      title: Create video edit multipart request
-      description: Parameters for editing an existing generated video.
-    OrderEnum:
-      type: string
-      enum:
-      - asc
-      - desc
-    VideoCharacterResource:
-      properties:
-        id:
-          anyOf:
-          - type: string
-            description: Identifier for the character creation cameo.
-          - type: 'null'
-        name:
-          anyOf:
-          - type: string
-            description: Display name for the character.
-          - type: 'null'
-        created_at:
-          type: integer
-          format: unixtime
-          description: Unix timestamp (in seconds) when the character was created.
-      type: object
-      required:
-      - id
-      - name
-      - created_at
-    Error-2:
-      properties:
-        code:
-          type: string
-          description: A machine-readable error code that was returned.
-        message:
-          type: string
-          description: A human-readable description of the error that was returned.
-      type: object
-      required:
-      - code
-      - message
-      title: Error
-      description: An error that occurred while generating the response.
+      - data
+      - first_id
+      - last_id
+      - has_more
     CreateVideoMultipartBody:
       properties:
         model:
@@ -750,6 +598,32 @@ components:
       - prompt
       title: Create video multipart request
       description: Multipart parameters for creating a new video generation job.
+    OrderEnum:
+      type: string
+      enum:
+      - asc
+      - desc
+    VideoCharacterResource:
+      properties:
+        id:
+          anyOf:
+          - type: string
+            description: Identifier for the character creation cameo.
+          - type: 'null'
+        name:
+          anyOf:
+          - type: string
+            description: Display name for the character.
+          - type: 'null'
+        created_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (in seconds) when the character was created.
+      type: object
+      required:
+      - id
+      - name
+      - created_at
     ImageRefParam-2:
       properties:
         image_url:
@@ -762,6 +636,16 @@ components:
           example: file-123
       type: object
       required: []
+    VideoReferenceInputParam:
+      properties:
+        id:
+          type: string
+          description: The identifier of the completed video.
+          example: video_123
+      type: object
+      required:
+      - id
+      description: Reference to the completed video.
     VideoResource:
       properties:
         id:
@@ -837,12 +721,6 @@ components:
       - error
       title: Video job
       description: Structured information describing a generated video job.
-    VideoSeconds:
-      type: string
-      enum:
-      - '4'
-      - '8'
-      - '12'
     VideoSize:
       type: string
       enum:
@@ -850,24 +728,70 @@ components:
       - 1280x720
       - 1024x1792
       - 1792x1024
-    VideoContentVariant:
-      type: string
-      enum:
-      - video
-      - thumbnail
-      - spritesheet
-    CreateVideoRemixBody:
+    CreateVideoCharacterBody:
       properties:
+        video:
+          type: string
+          format: binary
+          description: Video file used to create a character.
+        name:
+          type: string
+          maxLength: 80
+          minLength: 1
+          description: Display name for this API character.
+      type: object
+      required:
+      - video
+      - name
+      title: Create character request
+      description: Parameters for creating a character from an uploaded video.
+    CreateVideoExtendMultipartBody:
+      properties:
+        video:
+          oneOf:
+          - $ref: '#/components/schemas/VideoReferenceInputParam'
+          - type: string
+            format: binary
+            description: Reference to the completed video to extend.
         prompt:
           type: string
           maxLength: 32000
           minLength: 1
-          description: Updated text prompt that directs the remix generation.
+          description: Updated text prompt that directs the extension generation.
+        seconds:
+          $ref: '#/components/schemas/VideoSeconds'
+          description: 'Length of the newly generated extension segment in seconds (allowed values: 4, 8, 12, 16, 20).'
       type: object
       required:
+      - video
       - prompt
-      title: Create video remix request
-      description: Parameters for remixing an existing generated video.
+      - seconds
+      title: Create video extension multipart request
+      description: Multipart parameters for extending an existing generated video.
+    Error-2:
+      properties:
+        code:
+          type: string
+          description: A machine-readable error code that was returned.
+        message:
+          type: string
+          description: A human-readable description of the error that was returned.
+      type: object
+      required:
+      - code
+      - message
+      title: Error
+      description: An error that occurred while generating the response.
+    VideoModel:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - sora-2
+        - sora-2-pro
+        - sora-2-2025-10-06
+        - sora-2-pro-2025-10-06
+        - sora-2-2025-12-08
     CreateVideoEditJsonBody:
       properties:
         video:
@@ -884,40 +808,116 @@ components:
       - prompt
       title: Create video edit JSON request
       description: JSON parameters for editing an existing generated video.
-    VideoListResource:
+    VideoStatus:
+      type: string
+      enum:
+      - queued
+      - in_progress
+      - completed
+      - failed
+    DeletedVideoResource:
       properties:
         object:
           type: string
           enum:
-          - list
-          description: The type of object returned, must be `list`.
-          default: list
+          - video.deleted
+          description: The object type that signals the deletion response.
+          default: video.deleted
           x-stainless-const: true
-        data:
-          items:
-            $ref: '#/components/schemas/VideoResource'
-          type: array
-          description: A list of items
-        first_id:
-          anyOf:
-          - type: string
-            description: The ID of the first item in the list.
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-            description: The ID of the last item in the list.
-          - type: 'null'
-        has_more:
+        deleted:
           type: boolean
-          description: Whether there are more items available.
+          description: Indicates that the video resource was deleted.
+        id:
+          type: string
+          description: Identifier of the deleted video.
       type: object
       required:
       - object
-      - data
-      - first_id
-      - last_id
-      - has_more
+      - deleted
+      - id
+      title: Deleted video response
+      description: Confirmation payload returned after deleting a video.
+    CreateVideoJsonBody:
+      properties:
+        model:
+          $ref: '#/components/schemas/VideoModel'
+          description: 'The video generation model to use (allowed values: sora-2, sora-2-pro). Defaults to `sora-2`.'
+        prompt:
+          type: string
+          maxLength: 32000
+          minLength: 1
+          description: Text prompt that describes the video to generate.
+        input_reference:
+          $ref: '#/components/schemas/ImageRefParam-2'
+          description: Optional reference object that guides generation. Provide exactly one of `image_url` or `file_id`.
+        seconds:
+          $ref: '#/components/schemas/VideoSeconds'
+          description: 'Clip duration in seconds (allowed values: 4, 8, 12). Defaults to 4 seconds.'
+        size:
+          $ref: '#/components/schemas/VideoSize'
+          description: 'Output resolution formatted as width x height (allowed values: 720x1280, 1280x720, 1024x1792, 1792x1024). Defaults to 720x1280.'
+      type: object
+      required:
+      - prompt
+      title: Create video JSON request
+      description: JSON parameters for creating a new video generation job.
+    VideoSeconds:
+      type: string
+      enum:
+      - '4'
+      - '8'
+      - '12'
+    CreateVideoEditMultipartBody:
+      properties:
+        video:
+          oneOf:
+          - type: string
+            format: binary
+            description: Reference to the completed video to edit.
+          - $ref: '#/components/schemas/VideoReferenceInputParam'
+        prompt:
+          type: string
+          maxLength: 32000
+          minLength: 1
+          description: Text prompt that describes how to edit the source video.
+      type: object
+      required:
+      - video
+      - prompt
+      title: Create video edit multipart request
+      description: Parameters for editing an existing generated video.
+    CreateVideoRemixBody:
+      properties:
+        prompt:
+          type: string
+          maxLength: 32000
+          minLength: 1
+          description: Updated text prompt that directs the remix generation.
+      type: object
+      required:
+      - prompt
+      title: Create video remix request
+      description: Parameters for remixing an existing generated video.
+    CreateVideoExtendJsonBody:
+      properties:
+        video:
+          $ref: '#/components/schemas/VideoReferenceInputParam'
+          description: Reference to the completed video to extend.
+        prompt:
+          type: string
+          maxLength: 32000
+          minLength: 1
+          description: Updated text prompt that directs the extension generation.
+        seconds:
+          $ref: '#/components/schemas/VideoSeconds'
+          description: 'Length of the newly generated extension segment in seconds (allowed values: 4, 8, 12, 16, 20).'
+      type: object
+      required:
+      - video
+      - prompt
+      - seconds
+      title: Create video extension JSON request
+      description: JSON parameters for extending an existing generated video.
   securitySchemes:
     ApiKeyAuth:
       type: http

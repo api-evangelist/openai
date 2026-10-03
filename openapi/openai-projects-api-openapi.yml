@@ -1043,115 +1043,7 @@ paths:
           response: "{\n    \"object\": \"organization.project.user.deleted\",\n    \"id\": \"user_abc\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
-    ProjectUser:
-      type: object
-      description: Represents an individual user in a project.
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.user
-          description: The object type, which is always `organization.project.user`
-          x-stainless-const: true
-        id:
-          type: string
-          description: The identifier, which can be referenced in API endpoints
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The name of the user
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The email address of the user
-        role:
-          type: string
-          description: '`owner` or `member`'
-        added_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) of when the project was added.
-      required:
-      - object
-      - id
-      - role
-      - added_at
-      x-oaiMeta:
-        name: The project user object
-        example: "{\n    \"object\": \"organization.project.user\",\n    \"id\": \"user_abc\",\n    \"name\": \"First Last\",\n    \"email\": \"user@example.com\",\n    \"role\": \"owner\",\n    \"added_at\": 1711471533\n}\n"
-    ProjectCreateRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The friendly name of the project, this name appears in reports.
-        geography:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: Create the project with the specified data residency region. Your organization must have access to Data residency functionality in order to use. See [data residency controls](/docs/guides/your-data#data-residency-controls) to review the functionality and limitations of setting this field.
-        external_key_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: External key ID to associate with the project.
-      required:
-      - name
-    ProjectUserUpdateRequest:
-      type: object
-      properties:
-        role:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: '`owner` or `member`'
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-      required:
-      - type
-      - message
-      - param
-      - code
-    ProjectServiceAccountApiKey:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.service_account.api_key
-          description: The object type, which is always `organization.project.service_account.api_key`
-          x-stainless-const: true
-        value:
-          type: string
-        name:
-          type: string
-        created_at:
-          type: integer
-          format: unixtime
-        id:
-          type: string
-      required:
-      - object
-      - value
-      - name
-      - created_at
-      - id
-    ProjectListResponse:
+    ProjectServiceAccountListResponse:
       type: object
       properties:
         object:
@@ -1162,7 +1054,7 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/Project'
+            $ref: '#/components/schemas/ProjectServiceAccount'
         first_id:
           anyOf:
           - type: string
@@ -1177,13 +1069,13 @@ components:
       - object
       - data
       - has_more
-    ProjectServiceAccountDeleteResponse:
+    ProjectApiKeyDeleteResponse:
       type: object
       properties:
         object:
           type: string
           enum:
-          - organization.project.service_account.deleted
+          - organization.project.api_key.deleted
           x-stainless-const: true
         id:
           type: string
@@ -1193,43 +1085,14 @@ components:
       - object
       - id
       - deleted
-    ProjectUserDeleteResponse:
+    ProjectServiceAccountCreateRequest:
       type: object
       properties:
-        object:
+        name:
           type: string
-          enum:
-          - organization.project.user.deleted
-          x-stainless-const: true
-        id:
-          type: string
-        deleted:
-          type: boolean
+          description: The name of the service account being created.
       required:
-      - object
-      - id
-      - deleted
-    ProjectRateLimitUpdateRequest:
-      type: object
-      properties:
-        max_requests_per_1_minute:
-          type: integer
-          description: The maximum requests per minute.
-        max_tokens_per_1_minute:
-          type: integer
-          description: The maximum tokens per minute.
-        max_images_per_1_minute:
-          type: integer
-          description: The maximum images per minute. Only relevant for certain models.
-        max_audio_megabytes_per_1_minute:
-          type: integer
-          description: The maximum audio megabytes per minute. Only relevant for certain models.
-        max_requests_per_1_day:
-          type: integer
-          description: The maximum requests per day. Only relevant for certain models.
-        batch_1_day_max_input_tokens:
-          type: integer
-          description: The maximum batch input tokens per day. Only relevant for certain models.
+      - name
     ErrorResponse:
       type: object
       properties:
@@ -1260,32 +1123,93 @@ components:
       - object
       - data
       - has_more
-    ProjectRateLimitListResponse:
+    ProjectServiceAccountDeleteResponse:
       type: object
       properties:
         object:
           type: string
           enum:
-          - list
+          - organization.project.service_account.deleted
           x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectRateLimit'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        has_more:
+        id:
+          type: string
+        deleted:
           type: boolean
       required:
       - object
-      - data
-      - has_more
+      - id
+      - deleted
+    ProjectRateLimitUpdateRequest:
+      type: object
+      properties:
+        max_requests_per_1_minute:
+          type: integer
+          description: The maximum requests per minute.
+        max_tokens_per_1_minute:
+          type: integer
+          description: The maximum tokens per minute.
+        max_images_per_1_minute:
+          type: integer
+          description: The maximum images per minute. Only relevant for certain models.
+        max_audio_megabytes_per_1_minute:
+          type: integer
+          description: The maximum audio megabytes per minute. Only relevant for certain models.
+        max_requests_per_1_day:
+          type: integer
+          description: The maximum requests per day. Only relevant for certain models.
+        batch_1_day_max_input_tokens:
+          type: integer
+          description: The maximum batch input tokens per day. Only relevant for certain models.
+    ProjectServiceAccountApiKey:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.service_account.api_key
+          description: The object type, which is always `organization.project.service_account.api_key`
+          x-stainless-const: true
+        value:
+          type: string
+        name:
+          type: string
+        created_at:
+          type: integer
+          format: unixtime
+        id:
+          type: string
+      required:
+      - object
+      - value
+      - name
+      - created_at
+      - id
+    ProjectApiKeyOwnerUser:
+      type: object
+      description: The user that owns a project API key.
+      properties:
+        id:
+          type: string
+          description: The identifier, which can be referenced in API endpoints
+        email:
+          type: string
+          description: The email address of the user.
+        name:
+          type: string
+          description: The name of the user.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) of when the user was created.
+        role:
+          type: string
+          description: The user's project role.
+      required:
+      - id
+      - email
+      - name
+      - created_at
+      - role
     Project:
       type: object
       description: Represents an individual project.
@@ -1331,142 +1255,52 @@ components:
       x-oaiMeta:
         name: The project object
         example: "{\n    \"id\": \"proj_abc\",\n    \"object\": \"organization.project\",\n    \"name\": \"Project example\",\n    \"created_at\": 1711471533,\n    \"archived_at\": null,\n    \"status\": \"active\",\n    \"external_key_id\": null\n}\n"
-    ProjectApiKeyListResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectApiKey'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        has_more:
-          type: boolean
-      required:
-      - object
-      - data
-      - has_more
-    ProjectUpdateRequest:
+    ProjectCreateRequest:
       type: object
       properties:
         name:
+          type: string
+          description: The friendly name of the project, this name appears in reports.
+        geography:
           anyOf:
           - type: string
           - type: 'null'
-          description: The updated name of the project, this name appears in reports.
+          description: Create the project with the specified data residency region. Your organization must have access to Data residency functionality in order to use. See [data residency controls](/docs/guides/your-data#data-residency-controls) to review the functionality and limitations of setting this field.
         external_key_id:
           anyOf:
           - type: string
           - type: 'null'
           description: External key ID to associate with the project.
-        geography:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: Geography for the project.
-    ProjectApiKeyOwnerServiceAccount:
-      type: object
-      description: The service account that owns a project API key.
-      properties:
-        id:
-          type: string
-          description: The identifier, which can be referenced in API endpoints
-        name:
-          type: string
-          description: The name of the service account.
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) of when the service account was created.
-        role:
-          type: string
-          description: The service account's project role.
       required:
-      - id
       - name
-      - created_at
-      - role
-    ProjectUserCreateRequest:
+    Error:
       type: object
       properties:
-        user_id:
+        code:
           anyOf:
           - type: string
           - type: 'null'
-          description: The ID of the user.
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: Email of the user to add.
-        role:
+        message:
           type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+      required:
+      - type
+      - message
+      - param
+      - code
+    ProjectUserUpdateRequest:
+      type: object
+      properties:
+        role:
+          anyOf:
+          - type: string
+          - type: 'null'
           description: '`owner` or `member`'
-      required:
-      - role
-    ProjectServiceAccountListResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectServiceAccount'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        has_more:
-          type: boolean
-      required:
-      - object
-      - data
-      - has_more
-    ProjectApiKeyOwnerUser:
-      type: object
-      description: The user that owns a project API key.
-      properties:
-        id:
-          type: string
-          description: The identifier, which can be referenced in API endpoints
-        email:
-          type: string
-          description: The email address of the user.
-        name:
-          type: string
-          description: The name of the user.
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) of when the user was created.
-        role:
-          type: string
-          description: The user's project role.
-      required:
-      - id
-      - email
-      - name
-      - created_at
-      - role
     ProjectServiceAccount:
       type: object
       description: Represents an individual service account in a project.
@@ -1555,13 +1389,51 @@ components:
       x-oaiMeta:
         name: The project API key object
         example: "{\n    \"object\": \"organization.project.api_key\",\n    \"redacted_value\": \"sk-abc...def\",\n    \"name\": \"My API Key\",\n    \"created_at\": 1711471533,\n    \"last_used_at\": 1711471534,\n    \"id\": \"key_abc\",\n    \"owner\": {\n        \"type\": \"user\",\n        \"user\": {\n            \"id\": \"user_abc\",\n            \"name\": \"First Last\",\n            \"email\": \"user@example.com\",\n            \"role\": \"owner\",\n            \"created_at\": 1711471533\n        }\n    }\n}\n"
-    ProjectApiKeyDeleteResponse:
+    ProjectUser:
+      type: object
+      description: Represents an individual user in a project.
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.user
+          description: The object type, which is always `organization.project.user`
+          x-stainless-const: true
+        id:
+          type: string
+          description: The identifier, which can be referenced in API endpoints
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The name of the user
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The email address of the user
+        role:
+          type: string
+          description: '`owner` or `member`'
+        added_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) of when the project was added.
+      required:
+      - object
+      - id
+      - role
+      - added_at
+      x-oaiMeta:
+        name: The project user object
+        example: "{\n    \"object\": \"organization.project.user\",\n    \"id\": \"user_abc\",\n    \"name\": \"First Last\",\n    \"email\": \"user@example.com\",\n    \"role\": \"owner\",\n    \"added_at\": 1711471533\n}\n"
+    ProjectUserDeleteResponse:
       type: object
       properties:
         object:
           type: string
           enum:
-          - organization.project.api_key.deleted
+          - organization.project.user.deleted
           x-stainless-const: true
         id:
           type: string
@@ -1571,6 +1443,28 @@ components:
       - object
       - id
       - deleted
+    ProjectApiKeyOwnerServiceAccount:
+      type: object
+      description: The service account that owns a project API key.
+      properties:
+        id:
+          type: string
+          description: The identifier, which can be referenced in API endpoints
+        name:
+          type: string
+          description: The name of the service account.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) of when the service account was created.
+        role:
+          type: string
+          description: The service account's project role.
+      required:
+      - id
+      - name
+      - created_at
+      - role
     ProjectRateLimit:
       type: object
       description: Represents a project rate limit config.
@@ -1614,6 +1508,50 @@ components:
       x-oaiMeta:
         name: The project rate limit object
         example: "{\n    \"object\": \"project.rate_limit\",\n    \"id\": \"rl_ada\",\n    \"model\": \"ada\",\n    \"max_requests_per_1_minute\": 600,\n    \"max_tokens_per_1_minute\": 150000,\n    \"max_images_per_1_minute\": 10\n}\n"
+    ProjectApiKeyListResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectApiKey'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
+    ProjectUpdateRequest:
+      type: object
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The updated name of the project, this name appears in reports.
+        external_key_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: External key ID to associate with the project.
+        geography:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Geography for the project.
     ProjectServiceAccountCreateResponse:
       type: object
       properties:
@@ -1646,14 +1584,76 @@ components:
       - role
       - created_at
       - api_key
-    ProjectServiceAccountCreateRequest:
+    ProjectUserCreateRequest:
       type: object
       properties:
-        name:
+        user_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The ID of the user.
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Email of the user to add.
+        role:
           type: string
-          description: The name of the service account being created.
+          description: '`owner` or `member`'
       required:
-      - name
+      - role
+    ProjectRateLimitListResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectRateLimit'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
+    ProjectListResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
   securitySchemes:
     ApiKeyAuth:
       type: http

@@ -155,32 +155,6 @@ components:
         email:
           type: string
           description: The user email.
-    AuditLogActorSession:
-      type: object
-      description: The session in which the audit logged action was performed.
-      properties:
-        user:
-          $ref: '#/components/schemas/AuditLogActorUser'
-        ip_address:
-          type: string
-          description: The IP address from which the action was performed.
-    AuditLogActorApiKey:
-      type: object
-      description: The API Key used to perform the audit logged action.
-      properties:
-        id:
-          type: string
-          description: The tracking id of the API key.
-        type:
-          type: string
-          description: The type of API key. Can be either `user` or `service_account`.
-          enum:
-          - user
-          - service_account
-        user:
-          $ref: '#/components/schemas/AuditLogActorUser'
-        service_account:
-          $ref: '#/components/schemas/AuditLogActorServiceAccount'
     AuditLogEventType:
       type: string
       description: The event type.
@@ -236,27 +210,6 @@ components:
       - user.added
       - user.updated
       - user.deleted
-    AuditLogActor:
-      type: object
-      description: The actor who performed the audit logged action.
-      properties:
-        type:
-          type: string
-          description: The type of actor. Is either `session` or `api_key`.
-          enum:
-          - session
-          - api_key
-        session:
-          $ref: '#/components/schemas/AuditLogActorSession'
-        api_key:
-          $ref: '#/components/schemas/AuditLogActorApiKey'
-    AuditLogActorServiceAccount:
-      type: object
-      description: The service account that performed the audit logged action.
-      properties:
-        id:
-          type: string
-          description: The service account id.
     AuditLog:
       type: object
       description: A log of a user action or configuration change within this organization.
@@ -927,6 +880,53 @@ components:
       - object
       - data
       - has_more
+    AuditLogActor:
+      type: object
+      description: The actor who performed the audit logged action.
+      properties:
+        type:
+          type: string
+          description: The type of actor. Is either `session` or `api_key`.
+          enum:
+          - session
+          - api_key
+        session:
+          $ref: '#/components/schemas/AuditLogActorSession'
+        api_key:
+          $ref: '#/components/schemas/AuditLogActorApiKey'
+    AuditLogActorServiceAccount:
+      type: object
+      description: The service account that performed the audit logged action.
+      properties:
+        id:
+          type: string
+          description: The service account id.
+    AuditLogActorSession:
+      type: object
+      description: The session in which the audit logged action was performed.
+      properties:
+        user:
+          $ref: '#/components/schemas/AuditLogActorUser'
+        ip_address:
+          type: string
+          description: The IP address from which the action was performed.
+    AuditLogActorApiKey:
+      type: object
+      description: The API Key used to perform the audit logged action.
+      properties:
+        id:
+          type: string
+          description: The tracking id of the API key.
+        type:
+          type: string
+          description: The type of API key. Can be either `user` or `service_account`.
+          enum:
+          - user
+          - service_account
+        user:
+          $ref: '#/components/schemas/AuditLogActorUser'
+        service_account:
+          $ref: '#/components/schemas/AuditLogActorServiceAccount'
   securitySchemes:
     ApiKeyAuth:
       type: http

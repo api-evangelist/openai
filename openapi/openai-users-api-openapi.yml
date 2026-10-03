@@ -358,29 +358,22 @@ components:
       x-oaiMeta:
         name: The user object
         example: "{\n    \"object\": \"organization.user\",\n    \"id\": \"user_abc\",\n    \"name\": \"First Last\",\n    \"email\": \"user@example.com\",\n    \"role\": \"owner\",\n    \"added_at\": 1711471533\n}\n"
-    UserRoleUpdateRequest:
+    UserDeleteResponse:
       type: object
       properties:
-        role:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: '`owner` or `reader`'
-        role_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: Role ID to assign to the user.
-        technical_level:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: Technical level metadata.
-        developer_persona:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: Developer persona metadata.
+        object:
+          type: string
+          enum:
+          - organization.user.deleted
+          x-stainless-const: true
+        id:
+          type: string
+        deleted:
+          type: boolean
+      required:
+      - object
+      - id
+      - deleted
     UserListResponse:
       type: object
       properties:
@@ -407,22 +400,29 @@ components:
       - object
       - data
       - has_more
-    UserDeleteResponse:
+    UserRoleUpdateRequest:
       type: object
       properties:
-        object:
-          type: string
-          enum:
-          - organization.user.deleted
-          x-stainless-const: true
-        id:
-          type: string
-        deleted:
-          type: boolean
-      required:
-      - object
-      - id
-      - deleted
+        role:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: '`owner` or `reader`'
+        role_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Role ID to assign to the user.
+        technical_level:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Technical level metadata.
+        developer_persona:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Developer persona metadata.
   securitySchemes:
     ApiKeyAuth:
       type: http

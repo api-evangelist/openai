@@ -189,6 +189,37 @@ paths:
           response: "{\n    \"object\": \"group.user.deleted\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
+    UserListResource:
+      type: object
+      description: Paginated list of user objects returned when inspecting group membership.
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: Always `list`.
+          x-stainless-const: true
+        data:
+          type: array
+          description: Users in the current page.
+          items:
+            $ref: '#/components/schemas/GroupUser'
+        has_more:
+          type: boolean
+          description: Whether more users are available when paginating.
+        next:
+          description: Cursor to fetch the next page of results, or `null` when no further users are available.
+          anyOf:
+          - type: string
+          - type: 'null'
+      required:
+      - object
+      - data
+      - has_more
+      - next
+      x-oaiMeta:
+        name: Group user list
+        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"user_abc123\",\n            \"name\": \"Ada Lovelace\",\n            \"email\": \"ada@example.com\"\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
     CreateGroupUserBody:
       type: object
       description: Request payload for adding a user to a group.
@@ -223,37 +254,6 @@ components:
       x-oaiMeta:
         name: The group user object
         example: "{\n    \"object\": \"group.user\",\n    \"user_id\": \"user_abc123\",\n    \"group_id\": \"group_01J1F8ABCDXYZ\"\n}\n"
-    UserListResource:
-      type: object
-      description: Paginated list of user objects returned when inspecting group membership.
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: Always `list`.
-          x-stainless-const: true
-        data:
-          type: array
-          description: Users in the current page.
-          items:
-            $ref: '#/components/schemas/GroupUser'
-        has_more:
-          type: boolean
-          description: Whether more users are available when paginating.
-        next:
-          description: Cursor to fetch the next page of results, or `null` when no further users are available.
-          anyOf:
-          - type: string
-          - type: 'null'
-      required:
-      - object
-      - data
-      - has_more
-      - next
-      x-oaiMeta:
-        name: Group user list
-        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"user_abc123\",\n            \"name\": \"Ada Lovelace\",\n            \"email\": \"ada@example.com\"\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
     GroupUserDeletedResource:
       type: object
       description: Confirmation payload returned after removing a user from a group.

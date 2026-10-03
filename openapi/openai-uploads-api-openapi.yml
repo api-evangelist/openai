@@ -206,156 +206,6 @@ paths:
           response: "{\n  \"id\": \"part_def456\",\n  \"object\": \"upload.part\",\n  \"created_at\": 1719185911,\n  \"upload_id\": \"upload_abc123\"\n}\n"
 components:
   schemas:
-    Upload:
-      type: object
-      title: Upload
-      description: 'The Upload object can accept byte chunks in the form of Parts.
-
-        '
-      properties:
-        id:
-          type: string
-          description: The Upload unique identifier, which can be referenced in API endpoints.
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) for when the Upload was created.
-        filename:
-          type: string
-          description: The name of the file to be uploaded.
-        bytes:
-          type: integer
-          description: The intended number of bytes to be uploaded.
-        purpose:
-          type: string
-          description: The intended purpose of the file. [Please refer here](/docs/api-reference/files/object#files/object-purpose) for acceptable values.
-        status:
-          type: string
-          description: The status of the Upload.
-          enum:
-          - pending
-          - completed
-          - cancelled
-          - expired
-        expires_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) for when the Upload will expire.
-        object:
-          type: string
-          description: The object type, which is always "upload".
-          enum:
-          - upload
-          x-stainless-const: true
-        file:
-          allOf:
-          - $ref: '#/components/schemas/OpenAIFile'
-          - nullable: true
-            description: The ready File object after the Upload is completed.
-      required:
-      - bytes
-      - created_at
-      - expires_at
-      - filename
-      - id
-      - purpose
-      - status
-      x-oaiMeta:
-        name: The upload object
-        example: "{\n  \"id\": \"upload_abc123\",\n  \"object\": \"upload\",\n  \"bytes\": 2147483648,\n  \"created_at\": 1719184911,\n  \"filename\": \"training_examples.jsonl\",\n  \"purpose\": \"fine-tune\",\n  \"status\": \"completed\",\n  \"expires_at\": 1719127296,\n  \"file\": {\n    \"id\": \"file-xyz321\",\n    \"object\": \"file\",\n    \"bytes\": 2147483648,\n    \"created_at\": 1719186911,\n    \"filename\": \"training_examples.jsonl\",\n    \"purpose\": \"fine-tune\",\n  }\n}\n"
-    OpenAIFile:
-      title: OpenAIFile
-      description: The `File` object represents a document that has been uploaded to OpenAI.
-      properties:
-        id:
-          type: string
-          description: The file identifier, which can be referenced in the API endpoints.
-        bytes:
-          type: integer
-          description: The size of the file, in bytes.
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) for when the file was created.
-        expires_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) for when the file will expire.
-        filename:
-          type: string
-          description: The name of the file.
-        object:
-          type: string
-          description: The object type, which is always `file`.
-          enum:
-          - file
-          x-stainless-const: true
-        purpose:
-          type: string
-          description: The intended purpose of the file. Supported values are `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`, and `user_data`.
-          enum:
-          - assistants
-          - assistants_output
-          - batch
-          - batch_output
-          - fine-tune
-          - fine-tune-results
-          - vision
-          - user_data
-        status:
-          type: string
-          deprecated: true
-          description: Deprecated. The current status of the file, which can be either `uploaded`, `processed`, or `error`.
-          enum:
-          - uploaded
-          - processed
-          - error
-        status_details:
-          type: string
-          deprecated: true
-          description: Deprecated. For details on why a fine-tuning training file failed validation, see the `error` field on `fine_tuning.job`.
-      required:
-      - id
-      - object
-      - bytes
-      - created_at
-      - filename
-      - purpose
-      - status
-      x-oaiMeta:
-        name: The file object
-        example: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"file\",\n  \"bytes\": 120000,\n  \"created_at\": 1677610602,\n  \"expires_at\": 1680202602,\n  \"filename\": \"salesOverview.pdf\",\n  \"purpose\": \"assistants\",\n}\n"
-    UploadPart:
-      type: object
-      title: UploadPart
-      description: 'The upload Part represents a chunk of bytes we can add to an Upload object.
-
-        '
-      properties:
-        id:
-          type: string
-          description: The upload Part unique identifier, which can be referenced in API endpoints.
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) for when the Part was created.
-        upload_id:
-          type: string
-          description: The ID of the Upload object that this Part was added to.
-        object:
-          type: string
-          description: The object type, which is always `upload.part`.
-          enum:
-          - upload.part
-          x-stainless-const: true
-      required:
-      - created_at
-      - id
-      - object
-      - upload_id
-      x-oaiMeta:
-        name: The upload part object
-        example: "{\n    \"id\": \"part_def456\",\n    \"object\": \"upload.part\",\n    \"created_at\": 1719186911,\n    \"upload_id\": \"upload_abc123\"\n}\n"
     CompleteUploadRequest:
       type: object
       additionalProperties: false
@@ -453,6 +303,156 @@ components:
           format: binary
       required:
       - data
+    Upload:
+      type: object
+      title: Upload
+      description: 'The Upload object can accept byte chunks in the form of Parts.
+
+        '
+      properties:
+        id:
+          type: string
+          description: The Upload unique identifier, which can be referenced in API endpoints.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the Upload was created.
+        filename:
+          type: string
+          description: The name of the file to be uploaded.
+        bytes:
+          type: integer
+          description: The intended number of bytes to be uploaded.
+        purpose:
+          type: string
+          description: The intended purpose of the file. [Please refer here](/docs/api-reference/files/object#files/object-purpose) for acceptable values.
+        status:
+          type: string
+          description: The status of the Upload.
+          enum:
+          - pending
+          - completed
+          - cancelled
+          - expired
+        expires_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the Upload will expire.
+        object:
+          type: string
+          description: The object type, which is always "upload".
+          enum:
+          - upload
+          x-stainless-const: true
+        file:
+          allOf:
+          - $ref: '#/components/schemas/OpenAIFile'
+          - nullable: true
+            description: The ready File object after the Upload is completed.
+      required:
+      - bytes
+      - created_at
+      - expires_at
+      - filename
+      - id
+      - purpose
+      - status
+      x-oaiMeta:
+        name: The upload object
+        example: "{\n  \"id\": \"upload_abc123\",\n  \"object\": \"upload\",\n  \"bytes\": 2147483648,\n  \"created_at\": 1719184911,\n  \"filename\": \"training_examples.jsonl\",\n  \"purpose\": \"fine-tune\",\n  \"status\": \"completed\",\n  \"expires_at\": 1719127296,\n  \"file\": {\n    \"id\": \"file-xyz321\",\n    \"object\": \"file\",\n    \"bytes\": 2147483648,\n    \"created_at\": 1719186911,\n    \"filename\": \"training_examples.jsonl\",\n    \"purpose\": \"fine-tune\",\n  }\n}\n"
+    UploadPart:
+      type: object
+      title: UploadPart
+      description: 'The upload Part represents a chunk of bytes we can add to an Upload object.
+
+        '
+      properties:
+        id:
+          type: string
+          description: The upload Part unique identifier, which can be referenced in API endpoints.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the Part was created.
+        upload_id:
+          type: string
+          description: The ID of the Upload object that this Part was added to.
+        object:
+          type: string
+          description: The object type, which is always `upload.part`.
+          enum:
+          - upload.part
+          x-stainless-const: true
+      required:
+      - created_at
+      - id
+      - object
+      - upload_id
+      x-oaiMeta:
+        name: The upload part object
+        example: "{\n    \"id\": \"part_def456\",\n    \"object\": \"upload.part\",\n    \"created_at\": 1719186911,\n    \"upload_id\": \"upload_abc123\"\n}\n"
+    OpenAIFile:
+      title: OpenAIFile
+      description: The `File` object represents a document that has been uploaded to OpenAI.
+      properties:
+        id:
+          type: string
+          description: The file identifier, which can be referenced in the API endpoints.
+        bytes:
+          type: integer
+          description: The size of the file, in bytes.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the file was created.
+        expires_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the file will expire.
+        filename:
+          type: string
+          description: The name of the file.
+        object:
+          type: string
+          description: The object type, which is always `file`.
+          enum:
+          - file
+          x-stainless-const: true
+        purpose:
+          type: string
+          description: The intended purpose of the file. Supported values are `assistants`, `assistants_output`, `batch`, `batch_output`, `fine-tune`, `fine-tune-results`, `vision`, and `user_data`.
+          enum:
+          - assistants
+          - assistants_output
+          - batch
+          - batch_output
+          - fine-tune
+          - fine-tune-results
+          - vision
+          - user_data
+        status:
+          type: string
+          deprecated: true
+          description: Deprecated. The current status of the file, which can be either `uploaded`, `processed`, or `error`.
+          enum:
+          - uploaded
+          - processed
+          - error
+        status_details:
+          type: string
+          deprecated: true
+          description: Deprecated. For details on why a fine-tuning training file failed validation, see the `error` field on `fine_tuning.job`.
+      required:
+      - id
+      - object
+      - bytes
+      - created_at
+      - filename
+      - purpose
+      - status
+      x-oaiMeta:
+        name: The file object
+        example: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"file\",\n  \"bytes\": 120000,\n  \"created_at\": 1677610602,\n  \"expires_at\": 1680202602,\n  \"filename\": \"salesOverview.pdf\",\n  \"purpose\": \"assistants\",\n}\n"
   securitySchemes:
     ApiKeyAuth:
       type: http
