@@ -71,15 +71,6 @@ paths:
           response: "{\n  \"id\": \"modr-0d9740456c391e43c445bf0f010940c7\",\n  \"model\": \"omni-moderation-latest\",\n  \"results\": [\n    {\n      \"flagged\": true,\n      \"categories\": {\n        \"harassment\": true,\n        \"harassment/threatening\": true,\n        \"sexual\": false,\n        \"hate\": false,\n        \"hate/threatening\": false,\n        \"illicit\": false,\n        \"illicit/violent\": false,\n        \"self-harm/intent\": false,\n        \"self-harm/instructions\": false,\n        \"self-harm\": false,\n        \"sexual/minors\": false,\n        \"violence\": true,\n        \"violence/graphic\": true\n      },\n      \"category_scores\": {\n        \"harassment\": 0.8189693396524255,\n        \"harassment/threatening\": 0.804985420696006,\n        \"sexual\": 1.573112165348997e-6,\n        \"hate\": 0.007562942636942845,\n        \"hate/threatening\": 0.004208854591835476,\n        \"illicit\": 0.030535955153511665,\n        \"illicit/violent\": 0.008925306722380033,\n        \"self-harm/intent\": 0.00023023930975076432,\n        \"self-harm/instructions\": 0.0002293869201073356,\n        \"self-harm\": 0.012598046106750154,\n        \"sexual/minors\": 2.212566909570261e-8,\n        \"violence\": 0.9999992735124786,\n        \"violence/graphic\": 0.843064871157054\n      },\n      \"category_applied_input_types\": {\n        \"harassment\": [\n          \"text\"\n        ],\n        \"harassment/threatening\": [\n          \"text\"\n        ],\n        \"sexual\": [\n          \"text\",\n          \"image\"\n        ],\n        \"hate\": [\n          \"text\"\n        ],\n        \"hate/threatening\": [\n          \"text\"\n        ],\n        \"illicit\": [\n          \"text\"\n        ],\n        \"illicit/violent\": [\n          \"text\"\n        ],\n        \"self-harm/intent\": [\n          \"text\",\n          \"image\"\n        ],\n        \"self-harm/instructions\": [\n          \"text\",\n          \"image\"\n        ],\n        \"self-harm\": [\n          \"text\",\n          \"image\"\n        ],\n        \"sexual/minors\": [\n          \"text\"\n        ],\n        \"violence\": [\n          \"text\",\n          \"image\"\n        ],\n        \"violence/graphic\": [\n          \"text\",\n          \"image\"\n        ]\n      }\n    }\n  ]\n}\n"
 components:
   schemas:
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
     CreateModerationRequest:
       type: object
       properties:
@@ -165,6 +156,15 @@ components:
           x-oaiTypeLabel: string
       required:
       - input
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
     CreateModerationResponse:
       type: object
       description: Represents if a given text input is potentially harmful.
@@ -436,26 +436,14 @@ components:
       x-oaiMeta:
         name: The moderation object
         example: "{\n  \"id\": \"modr-0d9740456c391e43c445bf0f010940c7\",\n  \"model\": \"omni-moderation-latest\",\n  \"results\": [\n    {\n      \"flagged\": true,\n      \"categories\": {\n        \"harassment\": true,\n        \"harassment/threatening\": true,\n        \"sexual\": false,\n        \"hate\": false,\n        \"hate/threatening\": false,\n        \"illicit\": false,\n        \"illicit/violent\": false,\n        \"self-harm/intent\": false,\n        \"self-harm/instructions\": false,\n        \"self-harm\": false,\n        \"sexual/minors\": false,\n        \"violence\": true,\n        \"violence/graphic\": true\n      },\n      \"category_scores\": {\n        \"harassment\": 0.8189693396524255,\n        \"harassment/threatening\": 0.804985420696006,\n        \"sexual\": 1.573112165348997e-6,\n        \"hate\": 0.007562942636942845,\n        \"hate/threatening\": 0.004208854591835476,\n        \"illicit\": 0.030535955153511665,\n        \"illicit/violent\": 0.008925306722380033,\n        \"self-harm/intent\": 0.00023023930975076432,\n        \"self-harm/instructions\": 0.0002293869201073356,\n        \"self-harm\": 0.012598046106750154,\n        \"sexual/minors\": 2.212566909570261e-8,\n        \"violence\": 0.9999992735124786,\n        \"violence/graphic\": 0.843064871157054\n      },\n      \"category_applied_input_types\": {\n        \"harassment\": [\n          \"text\"\n        ],\n        \"harassment/threatening\": [\n          \"text\"\n        ],\n        \"sexual\": [\n          \"text\",\n          \"image\"\n        ],\n        \"hate\": [\n          \"text\"\n        ],\n        \"hate/threatening\": [\n          \"text\"\n        ],\n        \"illicit\": [\n          \"text\"\n        ],\n        \"illicit/violent\": [\n          \"text\"\n        ],\n        \"self-harm/intent\": [\n          \"text\",\n          \"image\"\n        ],\n        \"self-harm/instructions\": [\n          \"text\",\n          \"image\"\n        ],\n        \"self-harm\": [\n          \"text\",\n          \"image\"\n        ],\n        \"sexual/minors\": [\n          \"text\"\n        ],\n        \"violence\": [\n          \"text\",\n          \"image\"\n        ],\n        \"violence/graphic\": [\n          \"text\",\n          \"image\"\n        ]\n      }\n    }\n  ]\n}\n"
-    ErrorResponse:
-      type: object
+    _MisalignmentSteer:
       properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
+        message:
           type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
+          description: The public continuation instruction.
       type: object
-      required: []
+      required:
+      - message
     Error:
       type: object
       properties:
@@ -478,36 +466,27 @@ components:
       - message
       - param
       - code
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
+    ErrorResponse:
       type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
       required:
-      - message
+      - error
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
   responses:
-    InferenceServiceUnavailable:
-      description: The service is temporarily unavailable. A server_is_overloaded error means the requested model is temporarily overloaded; retry after a brief delay.
-      headers:
-        Retry-After:
-          description: The minimum number of seconds to wait before retrying. This header is returned when the server has computed a retry delay and may be omitted.
-          schema:
-            type: integer
-            minimum: 1
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          examples:
-            serverOverloaded:
-              summary: The requested model is temporarily overloaded
-              value:
-                error:
-                  message: The model is temporarily overloaded. Please retry your request after a brief delay.
-                  type: service_unavailable_error
-                  param: null
-                  code: server_is_overloaded
     InferenceRateLimited:
       description: The request was rejected because a rate limit was exceeded. A slow_down error means traffic increased too quickly; reduce your request rate, then increase it gradually.
       headers:
@@ -529,6 +508,27 @@ components:
                   type: rate_limit_error
                   param: null
                   code: slow_down
+    InferenceServiceUnavailable:
+      description: The service is temporarily unavailable. A server_is_overloaded error means the requested model is temporarily overloaded; retry after a brief delay.
+      headers:
+        Retry-After:
+          description: The minimum number of seconds to wait before retrying. This header is returned when the server has computed a retry delay and may be omitted.
+          schema:
+            type: integer
+            minimum: 1
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            serverOverloaded:
+              summary: The requested model is temporarily overloaded
+              value:
+                error:
+                  message: The model is temporarily overloaded. Please retry your request after a brief delay.
+                  type: service_unavailable_error
+                  param: null
+                  code: server_is_overloaded
   securitySchemes:
     ApiKeyAuth:
       type: http

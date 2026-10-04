@@ -147,30 +147,22 @@ components:
           description: The desired organization data retention type.
       required:
       - retention_type
-    OrganizationDataRetention:
+    UpdateProjectDataRetentionBody:
       type: object
-      description: Represents the organization's data retention control setting.
+      description: Parameters for updating project data retention controls.
       properties:
-        object:
+        retention_type:
           type: string
           enum:
-          - organization.data_retention
-          description: The object type, which is always `organization.data_retention`.
-          x-stainless-const: true
-        type:
-          type: string
-          enum:
+          - organization_default
+          - none
           - zero_data_retention
           - modified_abuse_monitoring
           - enhanced_zero_data_retention
           - enhanced_modified_abuse_monitoring
-          description: The configured organization data retention type.
+          description: The desired project data retention type.
       required:
-      - object
-      - type
-      x-oaiMeta:
-        name: The organization data retention object
-        example: "{\n    \"object\": \"organization.data_retention\",\n    \"type\": \"modified_abuse_monitoring\"\n}\n"
+      - retention_type
     ProjectDataRetention:
       type: object
       description: Represents a project's data retention control setting.
@@ -197,22 +189,30 @@ components:
       x-oaiMeta:
         name: The project data retention object
         example: "{\n    \"object\": \"project.data_retention\",\n    \"type\": \"organization_default\"\n}\n"
-    UpdateProjectDataRetentionBody:
+    OrganizationDataRetention:
       type: object
-      description: Parameters for updating project data retention controls.
+      description: Represents the organization's data retention control setting.
       properties:
-        retention_type:
+        object:
           type: string
           enum:
-          - organization_default
-          - none
+          - organization.data_retention
+          description: The object type, which is always `organization.data_retention`.
+          x-stainless-const: true
+        type:
+          type: string
+          enum:
           - zero_data_retention
           - modified_abuse_monitoring
           - enhanced_zero_data_retention
           - enhanced_modified_abuse_monitoring
-          description: The desired project data retention type.
+          description: The configured organization data retention type.
       required:
-      - retention_type
+      - object
+      - type
+      x-oaiMeta:
+        name: The organization data retention object
+        example: "{\n    \"object\": \"organization.data_retention\",\n    \"type\": \"modified_abuse_monitoring\"\n}\n"
   securitySchemes:
     ApiKeyAuth:
       type: http

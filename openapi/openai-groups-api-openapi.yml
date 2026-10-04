@@ -201,41 +201,6 @@ paths:
           response: "{\n    \"object\": \"group.deleted\",\n    \"id\": \"group_01J1F8ABCDXYZ\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    CreateGroupBody:
-      type: object
-      description: Request payload for creating a new group in the organization.
-      properties:
-        name:
-          type: string
-          description: Human readable name for the group.
-          minLength: 1
-          maxLength: 255
-      required:
-      - name
-      x-oaiMeta:
-        example: "{\n    \"name\": \"Support Team\"\n}\n"
-    UpdateGroupBody:
-      type: object
-      description: Request payload for updating the details of an existing group.
-      properties:
-        name:
-          type: string
-          description: New display name for the group.
-          minLength: 1
-          maxLength: 255
-      required:
-      - name
-      x-oaiMeta:
-        example: "{\n    \"name\": \"Escalations\"\n}\n"
     GroupResponse:
       type: object
       description: Details about an organization group.
@@ -268,44 +233,15 @@ components:
       x-oaiMeta:
         name: Group
         example: "{\n    \"id\": \"group_01J1F8ABCDXYZ\",\n    \"name\": \"Support Team\",\n    \"created_at\": 1711471533,\n    \"is_scim_managed\": false,\n    \"group_type\": \"group\"\n}\n"
-    GroupListResource:
-      type: object
-      description: Paginated list of organization groups.
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: Always `list`.
-          x-stainless-const: true
-        data:
-          type: array
-          description: Groups returned in the current page.
-          items:
-            $ref: '#/components/schemas/GroupResponse'
-        has_more:
-          type: boolean
-          description: Whether additional groups are available when paginating.
-        next:
-          description: Cursor to fetch the next page of results, or `null` if there are no more results.
-          anyOf:
-          - type: string
-          - type: 'null'
-      required:
-      - object
-      - data
-      - has_more
-      - next
-      x-oaiMeta:
-        name: Group list
-        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"group_01J1F8ABCDXYZ\",\n            \"name\": \"Support Team\",\n            \"created_at\": 1711471533,\n            \"is_scim_managed\": false\n        },\n        {\n            \"id\": \"group_01J1F8PQRMNO\",\n            \"name\": \"Sales\",\n            \"created_at\": 1711472599,\n            \"is_scim_managed\": true\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
     MisalignmentErrorDetailsResource:
       properties:
         error_type:
@@ -341,6 +277,27 @@ components:
       - deleted
       x-oaiMeta:
         example: "{\n    \"object\": \"group.deleted\",\n    \"id\": \"group_01J1F8ABCDXYZ\",\n    \"deleted\": true\n}\n"
+    CreateGroupBody:
+      type: object
+      description: Request payload for creating a new group in the organization.
+      properties:
+        name:
+          type: string
+          description: Human readable name for the group.
+          minLength: 1
+          maxLength: 255
+      required:
+      - name
+      x-oaiMeta:
+        example: "{\n    \"name\": \"Support Team\"\n}\n"
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
     Error:
       type: object
       properties:
@@ -363,14 +320,26 @@ components:
       - message
       - param
       - code
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
+    ErrorResponse:
       type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
       required:
-      - message
+      - error
+    UpdateGroupBody:
+      type: object
+      description: Request payload for updating the details of an existing group.
+      properties:
+        name:
+          type: string
+          description: New display name for the group.
+          minLength: 1
+          maxLength: 255
+      required:
+      - name
+      x-oaiMeta:
+        example: "{\n    \"name\": \"Escalations\"\n}\n"
     GroupResourceWithSuccess:
       type: object
       description: Response returned after updating a group.
@@ -395,6 +364,37 @@ components:
       - is_scim_managed
       x-oaiMeta:
         example: "{\n    \"id\": \"group_01J1F8ABCDXYZ\",\n    \"name\": \"Escalations\",\n    \"created_at\": 1711471533,\n    \"is_scim_managed\": false\n}\n"
+    GroupListResource:
+      type: object
+      description: Paginated list of organization groups.
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: Always `list`.
+          x-stainless-const: true
+        data:
+          type: array
+          description: Groups returned in the current page.
+          items:
+            $ref: '#/components/schemas/GroupResponse'
+        has_more:
+          type: boolean
+          description: Whether additional groups are available when paginating.
+        next:
+          description: Cursor to fetch the next page of results, or `null` if there are no more results.
+          anyOf:
+          - type: string
+          - type: 'null'
+      required:
+      - object
+      - data
+      - has_more
+      - next
+      x-oaiMeta:
+        name: Group list
+        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"group_01J1F8ABCDXYZ\",\n            \"name\": \"Support Team\",\n            \"created_at\": 1711471533,\n            \"is_scim_managed\": false\n        },\n        {\n            \"id\": \"group_01J1F8PQRMNO\",\n            \"name\": \"Sales\",\n            \"created_at\": 1711472599,\n            \"is_scim_managed\": true\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
   responses:
     TooManyRequests:
       description: The request was rejected because a rate limit was exceeded.

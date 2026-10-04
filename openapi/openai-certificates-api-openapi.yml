@@ -442,7 +442,66 @@ paths:
             curl: "curl https://api.openai.com/v1/organization/projects/proj_abc/certificates/deactivate \\\n-H \"Authorization: Bearer $OPENAI_ADMIN_KEY\" \\\n-H \"Content-Type: application/json\" \\\n-d '{\n  \"certificate_ids\": [\"cert_abc\", \"cert_def\"]\n}'\n"
           response: "{\n  \"object\": \"organization.project.certificate.deactivation\",\n  \"data\": [\n    {\n      \"object\": \"organization.project.certificate\",\n      \"id\": \"cert_abc\",\n      \"name\": \"My Example Certificate\",\n      \"active\": false,\n      \"created_at\": 1234567,\n      \"certificate_details\": {\n        \"valid_at\": 12345667,\n        \"expires_at\": 12345678\n      }\n    },\n    {\n      \"object\": \"organization.project.certificate\",\n      \"id\": \"cert_def\",\n      \"name\": \"My Example Certificate 2\",\n      \"active\": false,\n      \"created_at\": 1234567,\n      \"certificate_details\": {\n        \"valid_at\": 12345667,\n        \"expires_at\": 12345678\n      }\n    },\n  ],\n}\n"
 components:
+  responses:
+    TooManyRequests:
+      description: The request was rejected because a rate limit was exceeded.
+      headers:
+        Retry-After:
+          description: The minimum number of seconds to wait before retrying. This header is returned when the server has computed a retry delay and may be omitted for 429 responses that require user action.
+          schema:
+            type: integer
+            minimum: 1
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   schemas:
+    DeleteCertificateResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          description: The object type, must be `certificate.deleted`.
+          enum:
+          - certificate.deleted
+          x-stainless-const: true
+        id:
+          type: string
+          description: The ID of the certificate that was deleted.
+      required:
+      - object
+      - id
+    ModifyCertificateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The updated name for the certificate
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    OrganizationCertificateActivationResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.certificate.activation
+          description: The organization certificate activation result type.
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationCertificate'
+      required:
+      - object
+      - data
     ListProjectCertificatesResponse:
       type: object
       properties:
@@ -473,87 +532,22 @@ components:
       - has_more
       - first_id
       - last_id
-    ListCertificatesResponse:
+    OrganizationProjectCertificateDeactivationResponse:
       type: object
       properties:
+        object:
+          type: string
+          enum:
+          - organization.project.certificate.deactivation
+          description: The project certificate deactivation result type.
+          x-stainless-const: true
         data:
           type: array
           items:
-            $ref: '#/components/schemas/OrganizationCertificate'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          example: cert_abc
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          example: cert_abc
-        has_more:
-          type: boolean
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
+            $ref: '#/components/schemas/OrganizationProjectCertificate'
       required:
       - object
       - data
-      - has_more
-      - first_id
-      - last_id
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
-    OrganizationProjectCertificate:
-      type: object
-      description: Represents an individual certificate configured at the project level.
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.certificate
-          description: The object type, which is always `organization.project.certificate`.
-          x-stainless-const: true
-        id:
-          type: string
-          description: The identifier, which can be referenced in API endpoints
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The name of the certificate.
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) of when the certificate was uploaded.
-        certificate_details:
-          type: object
-          properties:
-            valid_at:
-              type: integer
-              format: unixtime
-              description: The Unix timestamp (in seconds) of when the certificate becomes valid.
-            expires_at:
-              type: integer
-              format: unixtime
-              description: The Unix timestamp (in seconds) of when the certificate expires.
-        active:
-          type: boolean
-          description: Whether the certificate is currently active at the project level.
-      required:
-      - object
-      - id
-      - name
-      - created_at
-      - certificate_details
-      - active
     OrganizationCertificateDeactivationResponse:
       type: object
       properties:
@@ -567,6 +561,47 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/OrganizationCertificate'
+      required:
+      - object
+      - data
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
+    ToggleCertificatesRequest:
+      type: object
+      properties:
+        certificate_ids:
+          type: array
+          items:
+            type: string
+            example: cert_abc
+          minItems: 1
+          maxItems: 10
+      required:
+      - certificate_ids
+    OrganizationProjectCertificateActivationResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.certificate.activation
+          description: The project certificate activation result type.
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationProjectCertificate'
       required:
       - object
       - data
@@ -613,59 +648,6 @@ components:
       - created_at
       - certificate_details
       - active
-    OrganizationProjectCertificateDeactivationResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.certificate.deactivation
-          description: The project certificate deactivation result type.
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationProjectCertificate'
-      required:
-      - object
-      - data
-    DeleteCertificateResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          description: The object type, must be `certificate.deleted`.
-          enum:
-          - certificate.deleted
-          x-stainless-const: true
-        id:
-          type: string
-          description: The ID of the certificate that was deleted.
-      required:
-      - object
-      - id
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
     Error:
       type: object
       properties:
@@ -688,6 +670,36 @@ components:
       - message
       - param
       - code
+    ListCertificatesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationCertificate'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: cert_abc
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: cert_abc
+        has_more:
+          type: boolean
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+      required:
+      - object
+      - data
+      - has_more
+      - first_id
+      - last_id
     Certificate:
       type: object
       description: Represents an individual `certificate` uploaded to the organization.
@@ -758,44 +770,14 @@ components:
           description: The certificate content in PEM format
       required:
       - certificate
-    OrganizationCertificateActivationResponse:
-      type: object
+    _MisalignmentSteer:
       properties:
-        object:
+        message:
           type: string
-          enum:
-          - organization.certificate.activation
-          description: The organization certificate activation result type.
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationCertificate'
+          description: The public continuation instruction.
+      type: object
       required:
-      - object
-      - data
-    ModifyCertificateRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The updated name for the certificate
-    OrganizationProjectCertificateActivationResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.certificate.activation
-          description: The project certificate activation result type.
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationProjectCertificate'
-      required:
-      - object
-      - data
+      - message
     ErrorResponse:
       type: object
       properties:
@@ -803,31 +785,49 @@ components:
           $ref: '#/components/schemas/Error'
       required:
       - error
-    ToggleCertificatesRequest:
+    OrganizationProjectCertificate:
       type: object
+      description: Represents an individual certificate configured at the project level.
       properties:
-        certificate_ids:
-          type: array
-          items:
-            type: string
-            example: cert_abc
-          minItems: 1
-          maxItems: 10
+        object:
+          type: string
+          enum:
+          - organization.project.certificate
+          description: The object type, which is always `organization.project.certificate`.
+          x-stainless-const: true
+        id:
+          type: string
+          description: The identifier, which can be referenced in API endpoints
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The name of the certificate.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) of when the certificate was uploaded.
+        certificate_details:
+          type: object
+          properties:
+            valid_at:
+              type: integer
+              format: unixtime
+              description: The Unix timestamp (in seconds) of when the certificate becomes valid.
+            expires_at:
+              type: integer
+              format: unixtime
+              description: The Unix timestamp (in seconds) of when the certificate expires.
+        active:
+          type: boolean
+          description: Whether the certificate is currently active at the project level.
       required:
-      - certificate_ids
-  responses:
-    TooManyRequests:
-      description: The request was rejected because a rate limit was exceeded.
-      headers:
-        Retry-After:
-          description: The minimum number of seconds to wait before retrying. This header is returned when the server has computed a retry delay and may be omitted for 429 responses that require user action.
-          schema:
-            type: integer
-            minimum: 1
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
+      - object
+      - id
+      - name
+      - created_at
+      - certificate_details
+      - active
   securitySchemes:
     ApiKeyAuth:
       type: http

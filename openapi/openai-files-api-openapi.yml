@@ -278,6 +278,26 @@ components:
       - id
       - object
       - deleted
+    FileExpirationAfter:
+      type: object
+      title: File expiration policy
+      description: The expiration policy for a file. By default, files with `purpose=batch` expire after 30 days and all other files are persisted until they are manually deleted.
+      properties:
+        anchor:
+          description: 'Anchor timestamp after which the expiration policy applies. Supported anchors: `created_at`.'
+          type: string
+          enum:
+          - created_at
+          x-stainless-const: true
+        seconds:
+          description: The number of seconds after the anchor time that the file will expire. Must be between 3600 (1 hour) and 2592000 (30 days).
+          type: integer
+          format: int64
+          minimum: 3600
+          maximum: 2592000
+      required:
+      - anchor
+      - seconds
     CreateFileRequest:
       type: object
       additionalProperties: false
@@ -420,26 +440,6 @@ components:
       - id
       - object
       - deleted
-    FileExpirationAfter:
-      type: object
-      title: File expiration policy
-      description: The expiration policy for a file. By default, files with `purpose=batch` expire after 30 days and all other files are persisted until they are manually deleted.
-      properties:
-        anchor:
-          description: 'Anchor timestamp after which the expiration policy applies. Supported anchors: `created_at`.'
-          type: string
-          enum:
-          - created_at
-          x-stainless-const: true
-        seconds:
-          description: The number of seconds after the anchor time that the file will expire. Must be between 3600 (1 hour) and 2592000 (30 days).
-          type: integer
-          format: int64
-          minimum: 3600
-          maximum: 2592000
-      required:
-      - anchor
-      - seconds
   securitySchemes:
     ApiKeyAuth:
       type: http

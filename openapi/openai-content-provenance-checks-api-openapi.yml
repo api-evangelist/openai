@@ -47,6 +47,13 @@ paths:
       - Content Provenance Checks
 components:
   schemas:
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
     _MisalignmentErrorType:
       anyOf:
       - type: string
@@ -56,11 +63,17 @@ components:
         - potentially_unintended_data_access
         - potentially_unintended_destructive_activity
         - other
-    ProvenanceDetectionResultApi:
+    ProvenanceCheckObject:
       type: string
       enum:
-      - detected
-      - not_detected
+      - content_provenance_check
+    C2PAValidationStateApi:
+      type: string
+      enum:
+      - trusted
+      - valid
+      - invalid
+      - not_present
     C2PAProvenanceResult:
       properties:
         type:
@@ -101,59 +114,11 @@ components:
       - issuer
       - model
       - generated_at
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
-    C2PAValidationStateApi:
+    ProvenanceDetectionResultApi:
       type: string
       enum:
-      - trusted
-      - valid
-      - invalid
-      - not_present
-    ProvenanceCheckObject:
-      type: string
-      enum:
-      - content_provenance_check
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
+      - detected
+      - not_detected
     _MisalignmentSteer:
       properties:
         message:
@@ -192,6 +157,28 @@ components:
       - outcome
       - model
       - generated_at
+    Error:
+      type: object
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
     CreateContentProvenanceBody:
       properties:
         file:
@@ -224,6 +211,19 @@ components:
       - object
       - created_at
       - results
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
   responses:
     TooManyRequests:
       description: The request was rejected because a rate limit was exceeded.

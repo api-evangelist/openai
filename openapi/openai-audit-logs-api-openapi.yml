@@ -140,6 +140,339 @@ paths:
           response: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"audit_log-xxx_yyyymmdd\",\n            \"type\": \"project.archived\",\n            \"effective_at\": 1722461446,\n            \"actor\": {\n                \"type\": \"api_key\",\n                \"api_key\": {\n                    \"type\": \"user\",\n                    \"user\": {\n                        \"id\": \"user-xxx\",\n                        \"email\": \"user@example.com\"\n                    }\n                }\n            },\n            \"project.archived\": {\n                \"id\": \"proj_abc\"\n            },\n        },\n        {\n            \"id\": \"audit_log-yyy__20240101\",\n            \"type\": \"api_key.updated\",\n            \"effective_at\": 1720804190,\n            \"actor\": {\n                \"type\": \"session\",\n                \"session\": {\n                    \"user\": {\n                        \"id\": \"user-xxx\",\n                        \"email\": \"user@example.com\"\n                    },\n                    \"ip_address\": \"127.0.0.1\",\n                    \"user_agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\",\n                    \"ja3\": \"a497151ce4338a12c4418c44d375173e\",\n                    \"ja4\": \"q13d0313h3_55b375c5d22e_c7319ce65786\",\n                    \"ip_address_details\": {\n                      \"country\": \"US\",\n                      \"city\": \"San Francisco\",\n                      \"region\": \"California\",\n                      \"region_code\": \"CA\",\n                      \"asn\": \"1234\",\n                      \"latitude\": \"37.77490\",\n                      \"longitude\": \"-122.41940\"\n                    }\n                }\n            },\n            \"api_key.updated\": {\n                \"id\": \"key_xxxx\",\n                \"data\": {\n                    \"scopes\": [\"resource_2.operation_2\"]\n                }\n            },\n        }\n    ],\n    \"first_id\": \"audit_log-xxx__20240101\",\n    \"last_id\": \"audit_log_yyy__20240101\",\n    \"has_more\": true\n}\n"
 components:
   schemas:
+    AuditLogActorServiceAccount:
+      type: object
+      description: The service account that performed the audit logged action.
+      properties:
+        id:
+          type: string
+          description: The service account id.
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    ListAuditLogsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditLog'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: audit_log-defb456h8dks
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: audit_log-hnbkd8s93s
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
+    AzureExternalStorageProviderResponse:
+      properties:
+        type:
+          type: string
+          enum:
+          - azure
+          default: azure
+          x-stainless-const: true
+        tenant_id:
+          type: string
+        subscription_id:
+          type: string
+        resource_group:
+          type: string
+        account_name:
+          type: string
+        container:
+          type: string
+        region:
+          type: string
+      type: object
+      required:
+      - type
+      - tenant_id
+      - subscription_id
+      - resource_group
+      - account_name
+      - container
+      - region
+    AuditLogEventType:
+      type: string
+      description: The event type.
+      enum:
+      - api_key.created
+      - api_key.updated
+      - api_key.deleted
+      - certificate.created
+      - certificate.updated
+      - certificate.deleted
+      - certificates.activated
+      - certificates.deactivated
+      - checkpoint.permission.created
+      - checkpoint.permission.deleted
+      - external_key.registered
+      - external_key.removed
+      - external_storage.registered
+      - external_storage.removed
+      - group.created
+      - group.updated
+      - group.deleted
+      - invite.sent
+      - invite.accepted
+      - invite.deleted
+      - ip_allowlist.created
+      - ip_allowlist.updated
+      - ip_allowlist.deleted
+      - ip_allowlist.config.activated
+      - ip_allowlist.config.deactivated
+      - login.succeeded
+      - login.failed
+      - logout.succeeded
+      - logout.failed
+      - organization.updated
+      - project.created
+      - project.updated
+      - project.archived
+      - project.deleted
+      - rate_limit.updated
+      - rate_limit.deleted
+      - resource.deleted
+      - tunnel.created
+      - tunnel.updated
+      - tunnel.deleted
+      - workload_identity_provider.created
+      - workload_identity_provider.updated
+      - workload_identity_provider.deleted
+      - workload_identity_provider_mapping.created
+      - workload_identity_provider_mapping.updated
+      - workload_identity_provider_mapping.deleted
+      - role.created
+      - role.updated
+      - role.deleted
+      - role.assignment.created
+      - role.assignment.deleted
+      - role.bound_to_resource
+      - role.unbound_from_resource
+      - scim.enabled
+      - scim.disabled
+      - service_account.created
+      - service_account.updated
+      - service_account.deleted
+      - user.added
+      - user.updated
+      - user.deleted
+      - tenant.metadata.updated
+      - tenant.microsoft_entra_mapping.upserted
+      - tenant.microsoft_entra_mapping.deleted
+      - tenant.workload_identity.provider.created
+      - tenant.workload_identity.provider.updated
+      - tenant.workload_identity.provider.archived
+      - tenant.workload_identity.mapping.created
+      - tenant.workload_identity.mapping.updated
+      - tenant.workload_identity.mapping.archived
+      - tenant.workload_identity.binding.created
+      - tenant.workload_identity.principal.provisioned
+      - tenant.workload_identity.access_token.issued
+      - tenant.admin_api_key.created
+      - tenant.admin_api_key.updated
+      - tenant.admin_api_key.deleted
+      - tenant.project_api_key.created
+      - tenant.trusted_access.business_verification.started
+      - tenant.trusted_access.application.submitted
+      - tenant.chatgpt_access_token.revoked
+      - tenant.migration.completed
+      - tenant.sso.migrated
+      - tenant.domains.migrated
+      - tenant.sso_connection.created
+      - tenant.sso_connection.updated
+      - tenant.sso_connection.deleted
+      - tenant.sso_connection.setup.started
+      - tenant.policy.created
+      - tenant.policy.updated
+      - tenant.policy.deleted
+      - tenant.policy.attached
+      - tenant.policy.detached
+      - tenant.principal_authentication_policy.resolved
+      - tenant.scim.setup.started
+      - tenant.scim.deletion.requested
+      - tenant.scim.directory.created
+      - tenant.product_access_policy.updated
+      - tenant.resource_share_grant.created
+      - tenant.resource_share_grant.updated
+      - tenant.resource_share_grant.accepted
+      - tenant.resource_share_grant.declined
+      - tenant.resource_share_grant.revoked
+      - tenant.resource_share_grant.deleted
+      - tenant.service_account.updated
+      - tenant.service_account.deleted
+      - tenant.service_account.token.revoked
+      - tenant.billing.overage_limit.updated
+      - tenant.billing.alerts.updated
+      - tenant.billing.info.updated
+      - tenant.usage_limit.workspace.updated
+      - tenant.usage_limit.group.updated
+      - tenant.usage_limit.user.updated
+      - tenant.usage_limit.increase_request.updated
+      - tenant.usage_limit.increase_request.resolved
+      - tenant.group.created
+      - tenant.group.updated
+      - tenant.group.deleted
+      - tenant.group.member.added
+      - tenant.group.member.removed
+      - tenant.migration_rollout.status.updated
+      - tenant.migration_rollout.tier.updated
+      - tenant.role.metadata.updated
+      - tenant.custom_role.created
+      - tenant.custom_role.updated
+      - tenant.custom_role.deleted
+      - tenant.role_assignment.created
+      - tenant.role_assignment.deleted
+      - tenant.resource_role_assignment.created
+      - tenant.resource_role_assignment.deleted
+      - tenant.resource_access.updated
+      - tenant.resource_access.deleted
+      - tenant.ads_account.onboarding.redemption
+      - tenant.session_policy.created
+      - tenant.session_policy.updated
+      - tenant.session_policy.deleted
+      - tenant.session_revocation.started
+      - tenant.third_party_app_policy.updated
+      - tenant.user.added
+      - tenant.user.updated
+      - tenant.user.removed
+      - tenant.user.looked_up
+      - tenant.user.invited
+      - tenant.membership.revoked
+      - tenant.api_organization_invite.upserted
+      - tenant.api_organization_invite.deleted
+      - tenant.chatgpt_workspace_invite.upserted
+      - tenant.membership.accepted
+      - tenant.membership.declined
+      - tenant.workspace_invite_email_settings.updated
+    AuditLogActor:
+      type: object
+      description: The actor who performed the audit logged action.
+      properties:
+        type:
+          type: string
+          description: The type of actor. Is either `session` or `api_key`.
+          enum:
+          - session
+          - api_key
+        session:
+          $ref: '#/components/schemas/AuditLogActorSession'
+        api_key:
+          $ref: '#/components/schemas/AuditLogActorApiKey'
+    AuditLogActorUser:
+      type: object
+      description: The user who performed the audit logged action.
+      properties:
+        id:
+          type: string
+          description: The user id.
+        email:
+          type: string
+          description: The user email.
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    AuditLogActorApiKey:
+      type: object
+      description: The API Key used to perform the audit logged action.
+      properties:
+        id:
+          type: string
+          description: The tracking id of the API key.
+        type:
+          type: string
+          description: The type of API key. Can be either `user` or `service_account`.
+          enum:
+          - user
+          - service_account
+        user:
+          $ref: '#/components/schemas/AuditLogActorUser'
+        service_account:
+          $ref: '#/components/schemas/AuditLogActorServiceAccount'
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+    Error:
+      type: object
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
+    provider:
+      oneOf:
+      - $ref: '#/components/schemas/AwsExternalStorageProviderResponse'
+      - $ref: '#/components/schemas/AzureExternalStorageProviderResponse'
+      - $ref: '#/components/schemas/GcpExternalStorageProviderResponse'
+      discriminator:
+        propertyName: type
+    AuditLogActorSession:
+      type: object
+      description: The session in which the audit logged action was performed.
+      properties:
+        user:
+          $ref: '#/components/schemas/AuditLogActorUser'
+        ip_address:
+          type: string
+          description: The IP address from which the action was performed.
     AuditLog:
       type: object
       description: A log of a user action or configuration change within this organization.
@@ -962,239 +1295,32 @@ components:
       x-oaiMeta:
         name: The audit log object
         example: "{\n    \"id\": \"req_xxx_20240101\",\n    \"type\": \"api_key.created\",\n    \"effective_at\": 1720804090,\n    \"actor\": {\n        \"type\": \"session\",\n        \"session\": {\n            \"user\": {\n                \"id\": \"user-xxx\",\n                \"email\": \"user@example.com\"\n            },\n            \"ip_address\": \"127.0.0.1\",\n            \"user_agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\"\n        }\n    },\n    \"api_key.created\": {\n        \"id\": \"key_xxxx\",\n        \"data\": {\n            \"scopes\": [\"resource.operation\"]\n        }\n    }\n}\n"
-    provider:
-      oneOf:
-      - $ref: '#/components/schemas/AwsExternalStorageProviderResponse'
-      - $ref: '#/components/schemas/AzureExternalStorageProviderResponse'
-      - $ref: '#/components/schemas/GcpExternalStorageProviderResponse'
-      discriminator:
-        propertyName: type
-    AuditLogEventType:
-      type: string
-      description: The event type.
-      enum:
-      - api_key.created
-      - api_key.updated
-      - api_key.deleted
-      - certificate.created
-      - certificate.updated
-      - certificate.deleted
-      - certificates.activated
-      - certificates.deactivated
-      - checkpoint.permission.created
-      - checkpoint.permission.deleted
-      - external_key.registered
-      - external_key.removed
-      - external_storage.registered
-      - external_storage.removed
-      - group.created
-      - group.updated
-      - group.deleted
-      - invite.sent
-      - invite.accepted
-      - invite.deleted
-      - ip_allowlist.created
-      - ip_allowlist.updated
-      - ip_allowlist.deleted
-      - ip_allowlist.config.activated
-      - ip_allowlist.config.deactivated
-      - login.succeeded
-      - login.failed
-      - logout.succeeded
-      - logout.failed
-      - organization.updated
-      - project.created
-      - project.updated
-      - project.archived
-      - project.deleted
-      - rate_limit.updated
-      - rate_limit.deleted
-      - resource.deleted
-      - tunnel.created
-      - tunnel.updated
-      - tunnel.deleted
-      - workload_identity_provider.created
-      - workload_identity_provider.updated
-      - workload_identity_provider.deleted
-      - workload_identity_provider_mapping.created
-      - workload_identity_provider_mapping.updated
-      - workload_identity_provider_mapping.deleted
-      - role.created
-      - role.updated
-      - role.deleted
-      - role.assignment.created
-      - role.assignment.deleted
-      - role.bound_to_resource
-      - role.unbound_from_resource
-      - scim.enabled
-      - scim.disabled
-      - service_account.created
-      - service_account.updated
-      - service_account.deleted
-      - user.added
-      - user.updated
-      - user.deleted
-      - tenant.metadata.updated
-      - tenant.microsoft_entra_mapping.upserted
-      - tenant.microsoft_entra_mapping.deleted
-      - tenant.workload_identity.provider.created
-      - tenant.workload_identity.provider.updated
-      - tenant.workload_identity.provider.archived
-      - tenant.workload_identity.mapping.created
-      - tenant.workload_identity.mapping.updated
-      - tenant.workload_identity.mapping.archived
-      - tenant.workload_identity.binding.created
-      - tenant.workload_identity.principal.provisioned
-      - tenant.workload_identity.access_token.issued
-      - tenant.admin_api_key.created
-      - tenant.admin_api_key.updated
-      - tenant.admin_api_key.deleted
-      - tenant.project_api_key.created
-      - tenant.trusted_access.business_verification.started
-      - tenant.trusted_access.application.submitted
-      - tenant.chatgpt_access_token.revoked
-      - tenant.migration.completed
-      - tenant.sso.migrated
-      - tenant.domains.migrated
-      - tenant.sso_connection.created
-      - tenant.sso_connection.updated
-      - tenant.sso_connection.deleted
-      - tenant.sso_connection.setup.started
-      - tenant.policy.created
-      - tenant.policy.updated
-      - tenant.policy.deleted
-      - tenant.policy.attached
-      - tenant.policy.detached
-      - tenant.principal_authentication_policy.resolved
-      - tenant.scim.setup.started
-      - tenant.scim.deletion.requested
-      - tenant.scim.directory.created
-      - tenant.product_access_policy.updated
-      - tenant.resource_share_grant.created
-      - tenant.resource_share_grant.updated
-      - tenant.resource_share_grant.accepted
-      - tenant.resource_share_grant.declined
-      - tenant.resource_share_grant.revoked
-      - tenant.resource_share_grant.deleted
-      - tenant.service_account.updated
-      - tenant.service_account.deleted
-      - tenant.service_account.token.revoked
-      - tenant.billing.overage_limit.updated
-      - tenant.billing.alerts.updated
-      - tenant.billing.info.updated
-      - tenant.usage_limit.workspace.updated
-      - tenant.usage_limit.group.updated
-      - tenant.usage_limit.user.updated
-      - tenant.usage_limit.increase_request.updated
-      - tenant.usage_limit.increase_request.resolved
-      - tenant.group.created
-      - tenant.group.updated
-      - tenant.group.deleted
-      - tenant.group.member.added
-      - tenant.group.member.removed
-      - tenant.migration_rollout.status.updated
-      - tenant.migration_rollout.tier.updated
-      - tenant.role.metadata.updated
-      - tenant.custom_role.created
-      - tenant.custom_role.updated
-      - tenant.custom_role.deleted
-      - tenant.role_assignment.created
-      - tenant.role_assignment.deleted
-      - tenant.resource_role_assignment.created
-      - tenant.resource_role_assignment.deleted
-      - tenant.resource_access.updated
-      - tenant.resource_access.deleted
-      - tenant.ads_account.onboarding.redemption
-      - tenant.session_policy.created
-      - tenant.session_policy.updated
-      - tenant.session_policy.deleted
-      - tenant.session_revocation.started
-      - tenant.third_party_app_policy.updated
-      - tenant.user.added
-      - tenant.user.updated
-      - tenant.user.removed
-      - tenant.user.looked_up
-      - tenant.user.invited
-      - tenant.membership.revoked
-      - tenant.api_organization_invite.upserted
-      - tenant.api_organization_invite.deleted
-      - tenant.chatgpt_workspace_invite.upserted
-      - tenant.membership.accepted
-      - tenant.membership.declined
-      - tenant.workspace_invite_email_settings.updated
-    AuditLogActorServiceAccount:
-      type: object
-      description: The service account that performed the audit logged action.
-      properties:
-        id:
-          type: string
-          description: The service account id.
-    AzureExternalStorageProviderResponse:
+    AwsExternalStorageProviderResponse:
       properties:
         type:
           type: string
           enum:
-          - azure
-          default: azure
+          - aws
+          default: aws
           x-stainless-const: true
-        tenant_id:
-          type: string
-        subscription_id:
-          type: string
-        resource_group:
-          type: string
-        account_name:
-          type: string
-        container:
+        account_id:
           type: string
         region:
+          type: string
+        bucket:
+          type: string
+        role_arn:
+          type: string
+        external_id:
           type: string
       type: object
       required:
       - type
-      - tenant_id
-      - subscription_id
-      - resource_group
-      - account_name
-      - container
+      - account_id
       - region
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    ListAuditLogsResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuditLog'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          example: audit_log-defb456h8dks
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          example: audit_log-hnbkd8s93s
-        has_more:
-          type: boolean
-      required:
-      - object
-      - data
-      - has_more
+      - bucket
+      - role_arn
+      - external_id
     GcpExternalStorageProviderResponse:
       properties:
         type:
@@ -1224,132 +1350,6 @@ components:
       - workload_identity_provider_id
       - region
       - audience
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    AuditLogActorUser:
-      type: object
-      description: The user who performed the audit logged action.
-      properties:
-        id:
-          type: string
-          description: The user id.
-        email:
-          type: string
-          description: The user email.
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
-    AuditLogActor:
-      type: object
-      description: The actor who performed the audit logged action.
-      properties:
-        type:
-          type: string
-          description: The type of actor. Is either `session` or `api_key`.
-          enum:
-          - session
-          - api_key
-        session:
-          $ref: '#/components/schemas/AuditLogActorSession'
-        api_key:
-          $ref: '#/components/schemas/AuditLogActorApiKey'
-    AuditLogActorApiKey:
-      type: object
-      description: The API Key used to perform the audit logged action.
-      properties:
-        id:
-          type: string
-          description: The tracking id of the API key.
-        type:
-          type: string
-          description: The type of API key. Can be either `user` or `service_account`.
-          enum:
-          - user
-          - service_account
-        user:
-          $ref: '#/components/schemas/AuditLogActorUser'
-        service_account:
-          $ref: '#/components/schemas/AuditLogActorServiceAccount'
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
-    AwsExternalStorageProviderResponse:
-      properties:
-        type:
-          type: string
-          enum:
-          - aws
-          default: aws
-          x-stainless-const: true
-        account_id:
-          type: string
-        region:
-          type: string
-        bucket:
-          type: string
-        role_arn:
-          type: string
-        external_id:
-          type: string
-      type: object
-      required:
-      - type
-      - account_id
-      - region
-      - bucket
-      - role_arn
-      - external_id
-    AuditLogActorSession:
-      type: object
-      description: The session in which the audit logged action was performed.
-      properties:
-        user:
-          $ref: '#/components/schemas/AuditLogActorUser'
-        ip_address:
-          type: string
-          description: The IP address from which the action was performed.
   responses:
     TooManyRequests:
       description: The request was rejected because a rate limit was exceeded.

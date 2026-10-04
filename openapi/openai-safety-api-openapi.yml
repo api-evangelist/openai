@@ -79,35 +79,6 @@ paths:
       - Safety
 components:
   schemas:
-    SafetyCaseResource:
-      properties:
-        id:
-          type: string
-        object:
-          type: string
-          enum:
-          - safety.case
-          default: safety.case
-          x-stainless-const: true
-        created_at:
-          type: integer
-          format: unixtime
-        entity_identifier:
-          type: string
-        reason:
-          anyOf:
-          - type: string
-          - type: 'null'
-        notice:
-          $ref: '#/components/schemas/SafetyCaseNotice'
-      type: object
-      required:
-      - id
-      - object
-      - created_at
-      - entity_identifier
-      - reason
-      - notice
     SafetyAlertResource:
       properties:
         id:
@@ -148,18 +119,6 @@ components:
       - request_paused
       - error_type
       - reason
-    SafetyAlertErrorType:
-      type: string
-      enum:
-      - potentially_unintended_data_transfer
-      - potentially_unintended_data_access
-      - potentially_unintended_destructive_activity
-      - other
-    SafetyCaseNoticeType:
-      type: string
-      enum:
-      - warning
-      - deactivation
     SafetyCaseNotice:
       properties:
         type:
@@ -167,6 +126,47 @@ components:
       type: object
       required:
       - type
+    SafetyAlertErrorType:
+      type: string
+      enum:
+      - potentially_unintended_data_transfer
+      - potentially_unintended_data_access
+      - potentially_unintended_destructive_activity
+      - other
+    SafetyCaseResource:
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          enum:
+          - safety.case
+          default: safety.case
+          x-stainless-const: true
+        created_at:
+          type: integer
+          format: unixtime
+        entity_identifier:
+          type: string
+        reason:
+          anyOf:
+          - type: string
+          - type: 'null'
+        notice:
+          $ref: '#/components/schemas/SafetyCaseNotice'
+      type: object
+      required:
+      - id
+      - object
+      - created_at
+      - entity_identifier
+      - reason
+      - notice
+    SafetyCaseNoticeType:
+      type: string
+      enum:
+      - warning
+      - deactivation
   securitySchemes:
     ApiKeyAuth:
       type: http

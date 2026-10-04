@@ -685,253 +685,6 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse-2'
 components:
   schemas:
-    RotateMcpOauthTokenEndpointAuthParamClientSecretBasic:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - client_secret_basic
-          default: client_secret_basic
-          x-stainless-const: true
-          description: The type of the object. Always `client_secret_basic`.
-        client_secret:
-          type:
-          - string
-          - 'null'
-          minLength: 0
-          maxLength: 1048576
-          description: The replacement OAuth client secret. Omit or pass `null` to keep the stored secret. This secret is never returned in resources.
-      required:
-      - type
-      additionalProperties: false
-      description: Updates credentials sent using HTTP Basic authentication.
-    CreateVaultCredentialAuthParamEnvironmentVariable:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - environment_variable
-          default: environment_variable
-          x-stainless-const: true
-          description: The type of the object. Always `environment_variable`.
-        secret_name:
-          type: string
-          minLength: 1
-          maxLength: 1048576
-          description: The environment variable name that receives the placeholder, such as `SERVICE_API_KEY`. Use ASCII letters, digits, and underscores, starting with a letter or underscore. Names starting with `CODEX_` and managed proxy or certificate variable names are reserved.
-        secret_value:
-          type: string
-          minLength: 1
-          maxLength: 1048576
-          description: The write-only secret to store. Never returned in credential resources or supplied directly to sandbox code. Must be nonempty and must not contain carriage returns, newlines, or NUL bytes.
-        networking:
-          $ref: '#/components/schemas/VaultCredentialNetworkingParam'
-          description: The destinations where the proxy can substitute this secret. The environment network policy must also allow them.
-      required:
-      - type
-      - secret_name
-      - secret_value
-      - networking
-      additionalProperties: false
-      description: An HTTP credential for OpenAI-hosted environments only. The sandbox receives an environment variable containing a placeholder, not the secret. Use the placeholder unchanged in outgoing requests. The egress proxy replaces the placeholder with the secret for allowed HTTPS destinations on ports 443 and 8443. Sandbox code cannot read the real secret or use it for local computation, such as signing a request.
-    McpOauthTokenEndpointAuthResource:
-      oneOf:
-      - $ref: '#/components/schemas/McpOauthTokenEndpointAuthResourceNone'
-      - $ref: '#/components/schemas/McpOauthTokenEndpointAuthResourceClientSecretBasic'
-      - $ref: '#/components/schemas/McpOauthTokenEndpointAuthResourceClientSecretPost'
-      discriminator:
-        propertyName: type
-        mapping:
-          none: '#/components/schemas/McpOauthTokenEndpointAuthResourceNone'
-          client_secret_basic: '#/components/schemas/McpOauthTokenEndpointAuthResourceClientSecretBasic'
-          client_secret_post: '#/components/schemas/McpOauthTokenEndpointAuthResourceClientSecretPost'
-      x-oai-discriminator-values:
-      - none
-      - client_secret_basic
-      - client_secret_post
-      description: The client authentication method used for OAuth token refresh.
-    VaultCredentialListResource:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          default: list
-          x-stainless-const: true
-          description: The object type, which is always `list`.
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/VaultCredentialResource'
-          minItems: 0
-          maxItems: 2000
-          description: The resources returned in this page, in the requested sort order.
-        first_id:
-          type:
-          - string
-          - 'null'
-          minLength: 0
-          description: The ID of the first resource in `data`, or `null` if the page is empty.
-        last_id:
-          type:
-          - string
-          - 'null'
-          minLength: 0
-          description: The ID of the last resource in `data`, or `null` if the page is empty. Pass this as `after` with the same order and filters.
-        has_more:
-          type: boolean
-          description: Whether there are more resources to retrieve after this page.
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
-      additionalProperties: false
-      description: A page of Agents API resources, with IDs for retrieving additional pages.
-    McpOauthTokenEndpointAuthResourceClientSecretBasic:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - client_secret_basic
-          default: client_secret_basic
-          x-stainless-const: true
-          description: The type of the object. Always `client_secret_basic`.
-      required:
-      - type
-      additionalProperties: false
-      description: Sends the client ID and secret using HTTP Basic authentication.
-    RotateVaultCredentialParams:
-      type: object
-      properties:
-        auth:
-          $ref: '#/components/schemas/RotateVaultCredentialAuthParam'
-          description: Replacement values for the credential's existing authentication method.
-        metadata:
-          type: object
-          additionalProperties:
-            type: string
-            minLength: 0
-            maxLength: 512
-          propertyNames:
-            type: string
-            minLength: 1
-            maxLength: 64
-          minProperties: 0
-          maxProperties: 16
-          description: Replaces all metadata. Omit to preserve it, or pass {} to clear it. Up to 16 string key-value pairs, with keys up to 64 and values up to 512 characters.
-      additionalProperties: false
-      description: Metadata, secret, expiry, and OAuth refresh scope updates for an existing vault credential. Supply at least one of `auth` or `metadata`.
-    VaultCredentialNetworkingResourceUnrestricted:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - unrestricted
-          default: unrestricted
-          x-stainless-const: true
-          description: The type of the object. Always `unrestricted`.
-      required:
-      - type
-      additionalProperties: false
-      description: Allows substitution for destinations permitted by the environment network policy. Requires `environment.network.access` to be `restricted`, with explicit `allowed_domains`.
-    CreateVaultCredentialAuthParamMcpOauth:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - mcp_oauth
-          default: mcp_oauth
-          x-stainless-const: true
-          description: The type of the object. Always `mcp_oauth`.
-        mcp_server_url:
-          type: string
-          minLength: 0
-          maxLength: 1048576
-          description: The HTTPS MCP server URL authorized by this credential.
-        access_token:
-          type: string
-          minLength: 0
-          maxLength: 1048576
-          description: A write-only OAuth access token; never returned by credential resources.
-        expires_at:
-          type:
-          - string
-          - 'null'
-          minLength: 0
-          maxLength: 1048576
-          description: When the OAuth access token expires, as an RFC 3339 timestamp, if known.
-        refresh:
-          anyOf:
-          - $ref: '#/components/schemas/CreateMcpOauthRefreshParam'
-          - type: 'null'
-          description: Optional refresh configuration for an HTTPS OAuth token endpoint.
-      required:
-      - type
-      - mcp_server_url
-      - access_token
-      additionalProperties: false
-      description: An OAuth credential for an HTTPS MCP destination.
-    RotateMcpOauthTokenEndpointAuthParam:
-      oneOf:
-      - $ref: '#/components/schemas/RotateMcpOauthTokenEndpointAuthParamClientSecretBasic'
-      - $ref: '#/components/schemas/RotateMcpOauthTokenEndpointAuthParamClientSecretPost'
-      discriminator:
-        propertyName: type
-        mapping:
-          client_secret_basic: '#/components/schemas/RotateMcpOauthTokenEndpointAuthParamClientSecretBasic'
-          client_secret_post: '#/components/schemas/RotateMcpOauthTokenEndpointAuthParamClientSecretPost'
-      x-oai-discriminator-values:
-      - client_secret_basic
-      - client_secret_post
-      description: Client-secret updates that preserve the credential's OAuth authentication method.
-    VaultListResource:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          default: list
-          x-stainless-const: true
-          description: The object type, which is always `list`.
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/VaultResource'
-          minItems: 0
-          maxItems: 2000
-          description: The resources returned in this page, in the requested sort order.
-        first_id:
-          type:
-          - string
-          - 'null'
-          minLength: 0
-          description: The ID of the first resource in `data`, or `null` if the page is empty.
-        last_id:
-          type:
-          - string
-          - 'null'
-          minLength: 0
-          description: The ID of the last resource in `data`, or `null` if the page is empty. Pass this as `after` with the same order and filters.
-        has_more:
-          type: boolean
-          description: Whether there are more resources to retrieve after this page.
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
-      additionalProperties: false
-      description: A page of Agents API resources, with IDs for retrieving additional pages.
     RotateVaultCredentialAuthParamMcpOauth:
       type: object
       properties:
@@ -965,400 +718,6 @@ components:
       - type
       additionalProperties: false
       description: Rotate an OAuth credential for an HTTPS MCP destination.
-    ListOrderParam:
-      type: string
-      enum:
-      - asc
-      - desc
-      x-enumDescriptions:
-      - Returns resources in ascending order.
-      - Returns resources in descending order.
-      description: The order in which paginated resources are returned.
-    VaultStatusFilterParam:
-      oneOf:
-      - $ref: '#/components/schemas/VaultStatusParam'
-      - type: array
-        items:
-          $ref: '#/components/schemas/VaultStatusParam'
-        minItems: 0
-        maxItems: 16384
-      description: One or more lifecycle statuses to include when listing vaults or credentials.
-    RotateMcpOauthRefreshParam:
-      type: object
-      properties:
-        refresh_token:
-          type:
-          - string
-          - 'null'
-          minLength: 0
-          maxLength: 1048576
-          description: The replacement refresh token. Omit or pass `null` to keep the stored token. This secret is never returned in resources.
-        scope:
-          type:
-          - string
-          - 'null'
-          minLength: 0
-          maxLength: 1048576
-          description: Replacement space-separated OAuth scopes for refresh requests. Omit to keep the scopes, or pass `null` to stop sending a scope parameter.
-        token_endpoint_auth:
-          anyOf:
-          - $ref: '#/components/schemas/RotateMcpOauthTokenEndpointAuthParam'
-          - type: 'null'
-          description: Client-secret updates for the existing token endpoint authentication method.
-      additionalProperties: false
-      description: Updates to an MCP credential's existing OAuth refresh configuration.
-    CreateVaultCredentialParams:
-      type: object
-      properties:
-        name:
-          type: string
-          minLength: 1
-          maxLength: 1048576
-          description: The name is trimmed before storage. It must contain 1 to 256 UTF-8 bytes after trimming.
-        auth:
-          $ref: '#/components/schemas/CreateVaultCredentialAuthParam'
-          description: The authentication method and write-only secret values to store.
-        metadata:
-          type: object
-          additionalProperties:
-            type: string
-            minLength: 0
-            maxLength: 512
-          propertyNames:
-            type: string
-            minLength: 1
-            maxLength: 64
-          minProperties: 0
-          maxProperties: 16
-          description: Up to 16 string key-value pairs, with keys up to 64 and values up to 512 characters. Defaults to an empty map.
-      required:
-      - auth
-      - name
-      additionalProperties: false
-      description: Parameters for storing a credential for an MCP server or an OpenAI-hosted environment.
-    ErrorBodyResource:
-      type: object
-      properties:
-        type:
-          type: string
-          minLength: 0
-          description: The error type.
-        code:
-          type: string
-          minLength: 0
-          description: A machine-readable error code.
-        message:
-          type: string
-          minLength: 0
-          description: A human-readable error message.
-        param:
-          type:
-          - string
-          - 'null'
-          minLength: 0
-          description: The request parameter that caused the error, or null for a request-wide error.
-      required:
-      - type
-      - code
-      - message
-      - param
-      additionalProperties: false
-      description: Details about an API error.
-    VaultStatusParam:
-      type: string
-      enum:
-      - active
-      - archived
-      description: Whether a vault or credential is active or archived.
-    VaultCredentialAuthResourceMcpOauth:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - mcp_oauth
-          default: mcp_oauth
-          x-stainless-const: true
-          description: The type of the object. Always `mcp_oauth`.
-        mcp_server_url:
-          type: string
-          minLength: 0
-          description: The HTTPS MCP server URL authorized by this credential.
-        expires_at:
-          type:
-          - string
-          - 'null'
-          minLength: 0
-          description: When the OAuth access token expires, as an RFC 3339 timestamp, if known.
-        refresh:
-          anyOf:
-          - $ref: '#/components/schemas/McpOauthRefreshResource'
-          - type: 'null'
-          description: Public refresh metadata without refresh tokens or OAuth client secrets.
-      required:
-      - type
-      - mcp_server_url
-      - expires_at
-      - refresh
-      additionalProperties: false
-      description: Public metadata for an OAuth credential; tokens and client secrets are never returned.
-    CreateMcpOauthTokenEndpointAuthParamNone:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - none
-          default: none
-          x-stainless-const: true
-          description: The type of the object. Always `none`.
-      required:
-      - type
-      additionalProperties: false
-      description: Sends the client ID without a client secret.
-    CreateVaultCredentialAuthParam:
-      oneOf:
-      - $ref: '#/components/schemas/CreateVaultCredentialAuthParamMcpOauth'
-      - $ref: '#/components/schemas/CreateVaultCredentialAuthParamStaticBearer'
-      - $ref: '#/components/schemas/CreateVaultCredentialAuthParamEnvironmentVariable'
-      discriminator:
-        propertyName: type
-        mapping:
-          mcp_oauth: '#/components/schemas/CreateVaultCredentialAuthParamMcpOauth'
-          static_bearer: '#/components/schemas/CreateVaultCredentialAuthParamStaticBearer'
-          environment_variable: '#/components/schemas/CreateVaultCredentialAuthParamEnvironmentVariable'
-      x-oai-discriminator-values:
-      - mcp_oauth
-      - static_bearer
-      - environment_variable
-      description: Authentication credentials for an MCP server or an OpenAI-hosted environment.
-    VaultResource:
-      type: object
-      properties:
-        id:
-          type: string
-          minLength: 0
-          description: The ID of the vault.
-        object:
-          type: string
-          enum:
-          - vault
-          default: vault
-          x-stainless-const: true
-          description: The object type. Always `vault`.
-        name:
-          type:
-          - string
-          - 'null'
-          minLength: 0
-          description: The human-readable name of the vault, if set.
-        metadata:
-          type: object
-          additionalProperties:
-            type: string
-            minLength: 0
-          propertyNames:
-            type: string
-            minLength: 0
-          minProperties: 0
-          description: Key-value pairs associated with the vault, such as an application or team identifier.
-        created_at:
-          type: integer
-          format: int64
-          description: The Unix timestamp, in seconds, when the vault was created.
-      required:
-      - id
-      - object
-      - name
-      - metadata
-      - created_at
-      additionalProperties: false
-      description: A collection of credentials for MCP servers and OpenAI-hosted environments.
-    CreateVaultCredentialAuthParamStaticBearer:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - static_bearer
-          default: static_bearer
-          x-stainless-const: true
-          description: The type of the object. Always `static_bearer`.
-        mcp_server_url:
-          type: string
-          minLength: 0
-          maxLength: 1048576
-          description: The HTTPS MCP server URL authorized by this credential.
-        token:
-          type: string
-          minLength: 0
-          maxLength: 1048576
-          description: The bearer token to store. This secret is never returned in credential resources.
-      required:
-      - type
-      - mcp_server_url
-      - token
-      additionalProperties: false
-      description: A bearer token for an MCP server, without automatic OAuth refresh.
-    VaultCredentialNetworkingParamUnrestricted:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - unrestricted
-          default: unrestricted
-          x-stainless-const: true
-          description: The type of the object. Always `unrestricted`.
-      required:
-      - type
-      additionalProperties: false
-      description: Allows substitution for destinations permitted by the environment network policy. Requires `environment.network.access` to be `restricted`, with explicit `allowed_domains`.
-    DeletedVaultCredentialResource:
-      type: object
-      properties:
-        id:
-          type: string
-          minLength: 0
-          description: The ID of the deleted credential.
-        object:
-          type: string
-          enum:
-          - vault.credential.deleted
-          default: vault.credential.deleted
-          x-stainless-const: true
-          description: The object type. Always `vault.credential.deleted`.
-        deleted:
-          type: boolean
-          description: Whether the resource was deleted. Always `true`.
-      required:
-      - id
-      - object
-      - deleted
-      additionalProperties: false
-      description: Confirmation that a vault credential was deleted.
-    VaultCredentialAuthResourceStaticBearer:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - static_bearer
-          default: static_bearer
-          x-stainless-const: true
-          description: The type of the object. Always `static_bearer`.
-        mcp_server_url:
-          type: string
-          minLength: 0
-          description: The HTTPS MCP server URL authorized by this credential.
-      required:
-      - type
-      - mcp_server_url
-      additionalProperties: false
-      description: Metadata for a bearer-token credential, without automatic OAuth refresh.
-    VaultCredentialNetworkingResource:
-      oneOf:
-      - $ref: '#/components/schemas/VaultCredentialNetworkingResourceUnrestricted'
-      - $ref: '#/components/schemas/VaultCredentialNetworkingResourceLimited'
-      discriminator:
-        propertyName: type
-        mapping:
-          unrestricted: '#/components/schemas/VaultCredentialNetworkingResourceUnrestricted'
-          limited: '#/components/schemas/VaultCredentialNetworkingResourceLimited'
-      x-oai-discriminator-values:
-      - unrestricted
-      - limited
-      description: Destination permissions for an environment-variable credential. These do not grant network access to the environment.
-    VaultCredentialNetworkingParamLimited:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - limited
-          default: limited
-          x-stainless-const: true
-          description: The type of the object. Always `limited`.
-        allowed_hosts:
-          type: array
-          items:
-            type: string
-            minLength: 0
-            maxLength: 1048576
-          minItems: 1
-          maxItems: 16
-          description: The 1 to 16 distinct allowed hostnames or IPv4 addresses, normalized to lowercase. Entries contain no scheme, path, port, or wildcard. IPv6 addresses are not supported.
-      required:
-      - type
-      - allowed_hosts
-      additionalProperties: false
-      description: Allows substitution only for the listed hosts. The environment network policy must also allow these hosts.
-    VaultCredentialAuthResourceEnvironmentVariable:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - environment_variable
-          default: environment_variable
-          x-stainless-const: true
-          description: The type of the object. Always `environment_variable`.
-        secret_name:
-          type: string
-          minLength: 0
-          description: The environment variable name that receives the placeholder in the sandbox.
-        networking:
-          $ref: '#/components/schemas/VaultCredentialNetworkingResource'
-          description: The destinations where the proxy can substitute the secret, subject to the environment network policy.
-      required:
-      - type
-      - secret_name
-      - networking
-      additionalProperties: false
-      description: Metadata for an HTTP credential used only in OpenAI-hosted environments. Sandbox code receives a placeholder. The proxy substitutes the secret for allowed HTTPS destinations on ports 443 and 8443. The real secret is not available to sandbox code for local computation and is never returned in this resource.
-    DeletedVaultResource:
-      type: object
-      properties:
-        id:
-          type: string
-          minLength: 0
-          description: The ID of the deleted vault.
-        object:
-          type: string
-          enum:
-          - vault.deleted
-          default: vault.deleted
-          x-stainless-const: true
-          description: The object type. Always `vault.deleted`.
-        deleted:
-          type: boolean
-          description: Whether the resource was deleted. Always `true`.
-      required:
-      - id
-      - object
-      - deleted
-      additionalProperties: false
-      description: Confirmation that a vault was deleted.
-    CreateMcpOauthTokenEndpointAuthParamClientSecretPost:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - client_secret_post
-          default: client_secret_post
-          x-stainless-const: true
-          description: The type of the object. Always `client_secret_post`.
-        client_secret:
-          type: string
-          minLength: 0
-          maxLength: 1048576
-          description: The OAuth client secret to store. Never returned in credential resources.
-      required:
-      - type
-      - client_secret
-      additionalProperties: false
-      description: Sends the client ID and secret in the token request body.
     RotateMcpOauthTokenEndpointAuthParamClientSecretPost:
       type: object
       properties:
@@ -1410,56 +769,29 @@ components:
       - type
       additionalProperties: false
       description: Sends the client ID without a client secret.
-    CreateMcpOauthTokenEndpointAuthParam:
-      oneOf:
-      - $ref: '#/components/schemas/CreateMcpOauthTokenEndpointAuthParamNone'
-      - $ref: '#/components/schemas/CreateMcpOauthTokenEndpointAuthParamClientSecretBasic'
-      - $ref: '#/components/schemas/CreateMcpOauthTokenEndpointAuthParamClientSecretPost'
-      discriminator:
-        propertyName: type
-        mapping:
-          none: '#/components/schemas/CreateMcpOauthTokenEndpointAuthParamNone'
-          client_secret_basic: '#/components/schemas/CreateMcpOauthTokenEndpointAuthParamClientSecretBasic'
-          client_secret_post: '#/components/schemas/CreateMcpOauthTokenEndpointAuthParamClientSecretPost'
-      x-oai-discriminator-values:
-      - none
-      - client_secret_basic
-      - client_secret_post
-      description: Client authentication credentials for OAuth token refresh.
-    McpOauthTokenEndpointAuthResourceClientSecretPost:
+    VaultCredentialNetworkingResourceLimited:
       type: object
       properties:
         type:
           type: string
           enum:
-          - client_secret_post
-          default: client_secret_post
+          - limited
+          default: limited
           x-stainless-const: true
-          description: The type of the object. Always `client_secret_post`.
+          description: The type of the object. Always `limited`.
+        allowed_hosts:
+          type: array
+          items:
+            type: string
+            minLength: 0
+          minItems: 1
+          maxItems: 16
+          description: The 1 to 16 distinct allowed hostnames or IPv4 addresses, normalized to lowercase. Entries contain no scheme, path, port, or wildcard. IPv6 addresses are not supported.
       required:
       - type
+      - allowed_hosts
       additionalProperties: false
-      description: Sends the client ID and secret in the token request body.
-    RotateVaultCredentialAuthParamEnvironmentVariable:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - environment_variable
-          default: environment_variable
-          x-stainless-const: true
-          description: The type of the object. Always `environment_variable`.
-        secret_value:
-          type: string
-          minLength: 1
-          maxLength: 1048576
-          description: The write-only replacement secret. Never returned in credential resources or supplied directly to sandbox code. Must be nonempty and must not contain carriage returns, newlines, or NUL bytes.
-      required:
-      - type
-      - secret_value
-      additionalProperties: false
-      description: Replace the secret for an OpenAI-hosted environment credential. The environment variable name and networking configuration remain unchanged.
+      description: Allows substitution only for the listed hosts. The environment network policy must also allow these hosts.
     CreateVaultParams:
       type: object
       properties:
@@ -1485,7 +817,7 @@ components:
           description: Key-value pairs to associate with the vault, such as an application or team identifier.
       additionalProperties: false
       description: Parameters for creating a vault to store credentials used by agent tools.
-    VaultCredentialNetworkingResourceLimited:
+    VaultCredentialNetworkingParamLimited:
       type: object
       properties:
         type:
@@ -1500,6 +832,7 @@ components:
           items:
             type: string
             minLength: 0
+            maxLength: 1048576
           minItems: 1
           maxItems: 16
           description: The 1 to 16 distinct allowed hostnames or IPv4 addresses, normalized to lowercase. Entries contain no scheme, path, port, or wildcard. IPv6 addresses are not supported.
@@ -1508,26 +841,42 @@ components:
       - allowed_hosts
       additionalProperties: false
       description: Allows substitution only for the listed hosts. The environment network policy must also allow these hosts.
-    RotateVaultCredentialAuthParamStaticBearer:
+    CreateMcpOauthTokenEndpointAuthParam:
+      oneOf:
+      - $ref: '#/components/schemas/CreateMcpOauthTokenEndpointAuthParamNone'
+      - $ref: '#/components/schemas/CreateMcpOauthTokenEndpointAuthParamClientSecretBasic'
+      - $ref: '#/components/schemas/CreateMcpOauthTokenEndpointAuthParamClientSecretPost'
+      discriminator:
+        propertyName: type
+        mapping:
+          none: '#/components/schemas/CreateMcpOauthTokenEndpointAuthParamNone'
+          client_secret_basic: '#/components/schemas/CreateMcpOauthTokenEndpointAuthParamClientSecretBasic'
+          client_secret_post: '#/components/schemas/CreateMcpOauthTokenEndpointAuthParamClientSecretPost'
+      x-oai-discriminator-values:
+      - none
+      - client_secret_basic
+      - client_secret_post
+      description: Client authentication credentials for OAuth token refresh.
+    RotateVaultCredentialAuthParamEnvironmentVariable:
       type: object
       properties:
         type:
           type: string
           enum:
-          - static_bearer
-          default: static_bearer
+          - environment_variable
+          default: environment_variable
           x-stainless-const: true
-          description: The type of the object. Always `static_bearer`.
-        token:
+          description: The type of the object. Always `environment_variable`.
+        secret_value:
           type: string
-          minLength: 0
+          minLength: 1
           maxLength: 1048576
-          description: The replacement bearer token. This secret is never returned in credential resources.
+          description: The write-only replacement secret. Never returned in credential resources or supplied directly to sandbox code. Must be nonempty and must not contain carriage returns, newlines, or NUL bytes.
       required:
       - type
-      - token
+      - secret_value
       additionalProperties: false
-      description: Replace the bearer token for the credential's MCP server.
+      description: Replace the secret for an OpenAI-hosted environment credential. The environment variable name and networking configuration remain unchanged.
     VaultCredentialResource:
       type: object
       properties:
@@ -1582,6 +931,750 @@ components:
       - updated_at
       additionalProperties: false
       description: Metadata for a stored credential. Secret values are never returned.
+    VaultCredentialListResource:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          default: list
+          x-stainless-const: true
+          description: The object type, which is always `list`.
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/VaultCredentialResource'
+          minItems: 0
+          maxItems: 2000
+          description: The resources returned in this page, in the requested sort order.
+        first_id:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          description: The ID of the first resource in `data`, or `null` if the page is empty.
+        last_id:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          description: The ID of the last resource in `data`, or `null` if the page is empty. Pass this as `after` with the same order and filters.
+        has_more:
+          type: boolean
+          description: Whether there are more resources to retrieve after this page.
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+      additionalProperties: false
+      description: A page of Agents API resources, with IDs for retrieving additional pages.
+    RotateVaultCredentialAuthParamStaticBearer:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - static_bearer
+          default: static_bearer
+          x-stainless-const: true
+          description: The type of the object. Always `static_bearer`.
+        token:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+          description: The replacement bearer token. This secret is never returned in credential resources.
+      required:
+      - type
+      - token
+      additionalProperties: false
+      description: Replace the bearer token for the credential's MCP server.
+    ErrorResponse-2:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorBodyResource'
+          description: The error returned by the API.
+      required:
+      - error
+      additionalProperties: false
+      description: An API error response.
+    ListOrderParam:
+      type: string
+      enum:
+      - asc
+      - desc
+      x-enumDescriptions:
+      - Returns resources in ascending order.
+      - Returns resources in descending order.
+      description: The order in which paginated resources are returned.
+    VaultCredentialNetworkingParam:
+      oneOf:
+      - $ref: '#/components/schemas/VaultCredentialNetworkingParamUnrestricted'
+      - $ref: '#/components/schemas/VaultCredentialNetworkingParamLimited'
+      discriminator:
+        propertyName: type
+        mapping:
+          unrestricted: '#/components/schemas/VaultCredentialNetworkingParamUnrestricted'
+          limited: '#/components/schemas/VaultCredentialNetworkingParamLimited'
+      x-oai-discriminator-values:
+      - unrestricted
+      - limited
+      description: Destination permissions for an environment-variable credential. These do not grant network access to the environment.
+    VaultCredentialNetworkingResourceUnrestricted:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - unrestricted
+          default: unrestricted
+          x-stainless-const: true
+          description: The type of the object. Always `unrestricted`.
+      required:
+      - type
+      additionalProperties: false
+      description: Allows substitution for destinations permitted by the environment network policy. Requires `environment.network.access` to be `restricted`, with explicit `allowed_domains`.
+    RotateMcpOauthRefreshParam:
+      type: object
+      properties:
+        refresh_token:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          maxLength: 1048576
+          description: The replacement refresh token. Omit or pass `null` to keep the stored token. This secret is never returned in resources.
+        scope:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          maxLength: 1048576
+          description: Replacement space-separated OAuth scopes for refresh requests. Omit to keep the scopes, or pass `null` to stop sending a scope parameter.
+        token_endpoint_auth:
+          anyOf:
+          - $ref: '#/components/schemas/RotateMcpOauthTokenEndpointAuthParam'
+          - type: 'null'
+          description: Client-secret updates for the existing token endpoint authentication method.
+      additionalProperties: false
+      description: Updates to an MCP credential's existing OAuth refresh configuration.
+    McpOauthRefreshResource:
+      type: object
+      properties:
+        token_endpoint:
+          type: string
+          minLength: 0
+          description: The HTTPS OAuth token endpoint used for refresh.
+        client_id:
+          type: string
+          minLength: 0
+          description: The OAuth client ID used when requesting a new access token.
+        resource:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          description: The resource URI sent to the OAuth token endpoint during refresh, if configured.
+        scope:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          description: Space-separated OAuth scopes requested during refresh, if configured.
+        token_endpoint_auth:
+          $ref: '#/components/schemas/McpOauthTokenEndpointAuthResource'
+          description: How the OAuth client authenticates to the token endpoint, excluding its client secret.
+      required:
+      - token_endpoint
+      - client_id
+      - resource
+      - scope
+      - token_endpoint_auth
+      additionalProperties: false
+      description: Configuration used to refresh an MCP OAuth access token, excluding secret values.
+    VaultCredentialAuthResource:
+      oneOf:
+      - $ref: '#/components/schemas/VaultCredentialAuthResourceMcpOauth'
+      - $ref: '#/components/schemas/VaultCredentialAuthResourceStaticBearer'
+      - $ref: '#/components/schemas/VaultCredentialAuthResourceEnvironmentVariable'
+      discriminator:
+        propertyName: type
+        mapping:
+          mcp_oauth: '#/components/schemas/VaultCredentialAuthResourceMcpOauth'
+          static_bearer: '#/components/schemas/VaultCredentialAuthResourceStaticBearer'
+          environment_variable: '#/components/schemas/VaultCredentialAuthResourceEnvironmentVariable'
+      x-oai-discriminator-values:
+      - mcp_oauth
+      - static_bearer
+      - environment_variable
+      description: The authentication configuration of a vault credential, excluding secrets.
+    CreateMcpOauthTokenEndpointAuthParamNone:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - none
+          default: none
+          x-stainless-const: true
+          description: The type of the object. Always `none`.
+      required:
+      - type
+      additionalProperties: false
+      description: Sends the client ID without a client secret.
+    VaultCredentialAuthResourceStaticBearer:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - static_bearer
+          default: static_bearer
+          x-stainless-const: true
+          description: The type of the object. Always `static_bearer`.
+        mcp_server_url:
+          type: string
+          minLength: 0
+          description: The HTTPS MCP server URL authorized by this credential.
+      required:
+      - type
+      - mcp_server_url
+      additionalProperties: false
+      description: Metadata for a bearer-token credential, without automatic OAuth refresh.
+    VaultCredentialAuthResourceMcpOauth:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - mcp_oauth
+          default: mcp_oauth
+          x-stainless-const: true
+          description: The type of the object. Always `mcp_oauth`.
+        mcp_server_url:
+          type: string
+          minLength: 0
+          description: The HTTPS MCP server URL authorized by this credential.
+        expires_at:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          description: When the OAuth access token expires, as an RFC 3339 timestamp, if known.
+        refresh:
+          anyOf:
+          - $ref: '#/components/schemas/McpOauthRefreshResource'
+          - type: 'null'
+          description: Public refresh metadata without refresh tokens or OAuth client secrets.
+      required:
+      - type
+      - mcp_server_url
+      - expires_at
+      - refresh
+      additionalProperties: false
+      description: Public metadata for an OAuth credential; tokens and client secrets are never returned.
+    CreateMcpOauthTokenEndpointAuthParamClientSecretPost:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - client_secret_post
+          default: client_secret_post
+          x-stainless-const: true
+          description: The type of the object. Always `client_secret_post`.
+        client_secret:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+          description: The OAuth client secret to store. Never returned in credential resources.
+      required:
+      - type
+      - client_secret
+      additionalProperties: false
+      description: Sends the client ID and secret in the token request body.
+    CreateVaultCredentialAuthParamStaticBearer:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - static_bearer
+          default: static_bearer
+          x-stainless-const: true
+          description: The type of the object. Always `static_bearer`.
+        mcp_server_url:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+          description: The HTTPS MCP server URL authorized by this credential.
+        token:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+          description: The bearer token to store. This secret is never returned in credential resources.
+      required:
+      - type
+      - mcp_server_url
+      - token
+      additionalProperties: false
+      description: A bearer token for an MCP server, without automatic OAuth refresh.
+    RotateMcpOauthTokenEndpointAuthParam:
+      oneOf:
+      - $ref: '#/components/schemas/RotateMcpOauthTokenEndpointAuthParamClientSecretBasic'
+      - $ref: '#/components/schemas/RotateMcpOauthTokenEndpointAuthParamClientSecretPost'
+      discriminator:
+        propertyName: type
+        mapping:
+          client_secret_basic: '#/components/schemas/RotateMcpOauthTokenEndpointAuthParamClientSecretBasic'
+          client_secret_post: '#/components/schemas/RotateMcpOauthTokenEndpointAuthParamClientSecretPost'
+      x-oai-discriminator-values:
+      - client_secret_basic
+      - client_secret_post
+      description: Client-secret updates that preserve the credential's OAuth authentication method.
+    RotateVaultCredentialParams:
+      type: object
+      properties:
+        auth:
+          $ref: '#/components/schemas/RotateVaultCredentialAuthParam'
+          description: Replacement values for the credential's existing authentication method.
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+            minLength: 0
+            maxLength: 512
+          propertyNames:
+            type: string
+            minLength: 1
+            maxLength: 64
+          minProperties: 0
+          maxProperties: 16
+          description: Replaces all metadata. Omit to preserve it, or pass {} to clear it. Up to 16 string key-value pairs, with keys up to 64 and values up to 512 characters.
+      additionalProperties: false
+      description: Metadata, secret, expiry, and OAuth refresh scope updates for an existing vault credential. Supply at least one of `auth` or `metadata`.
+    VaultCredentialAuthResourceEnvironmentVariable:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - environment_variable
+          default: environment_variable
+          x-stainless-const: true
+          description: The type of the object. Always `environment_variable`.
+        secret_name:
+          type: string
+          minLength: 0
+          description: The environment variable name that receives the placeholder in the sandbox.
+        networking:
+          $ref: '#/components/schemas/VaultCredentialNetworkingResource'
+          description: The destinations where the proxy can substitute the secret, subject to the environment network policy.
+      required:
+      - type
+      - secret_name
+      - networking
+      additionalProperties: false
+      description: Metadata for an HTTP credential used only in OpenAI-hosted environments. Sandbox code receives a placeholder. The proxy substitutes the secret for allowed HTTPS destinations on ports 443 and 8443. The real secret is not available to sandbox code for local computation and is never returned in this resource.
+    CreateVaultCredentialParams:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 1048576
+          description: The name is trimmed before storage. It must contain 1 to 256 UTF-8 bytes after trimming.
+        auth:
+          $ref: '#/components/schemas/CreateVaultCredentialAuthParam'
+          description: The authentication method and write-only secret values to store.
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+            minLength: 0
+            maxLength: 512
+          propertyNames:
+            type: string
+            minLength: 1
+            maxLength: 64
+          minProperties: 0
+          maxProperties: 16
+          description: Up to 16 string key-value pairs, with keys up to 64 and values up to 512 characters. Defaults to an empty map.
+      required:
+      - auth
+      - name
+      additionalProperties: false
+      description: Parameters for storing a credential for an MCP server or an OpenAI-hosted environment.
+    McpOauthTokenEndpointAuthResourceClientSecretPost:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - client_secret_post
+          default: client_secret_post
+          x-stainless-const: true
+          description: The type of the object. Always `client_secret_post`.
+      required:
+      - type
+      additionalProperties: false
+      description: Sends the client ID and secret in the token request body.
+    ErrorBodyResource:
+      type: object
+      properties:
+        type:
+          type: string
+          minLength: 0
+          description: The error type.
+        code:
+          type: string
+          minLength: 0
+          description: A machine-readable error code.
+        message:
+          type: string
+          minLength: 0
+          description: A human-readable error message.
+        param:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          description: The request parameter that caused the error, or null for a request-wide error.
+      required:
+      - type
+      - code
+      - message
+      - param
+      additionalProperties: false
+      description: Details about an API error.
+    VaultStatusFilterParam:
+      oneOf:
+      - $ref: '#/components/schemas/VaultStatusParam'
+      - type: array
+        items:
+          $ref: '#/components/schemas/VaultStatusParam'
+        minItems: 0
+        maxItems: 16384
+      description: One or more lifecycle statuses to include when listing vaults or credentials.
+    VaultStatusParam:
+      type: string
+      enum:
+      - active
+      - archived
+      description: Whether a vault or credential is active or archived.
+    VaultResource:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 0
+          description: The ID of the vault.
+        object:
+          type: string
+          enum:
+          - vault
+          default: vault
+          x-stainless-const: true
+          description: The object type. Always `vault`.
+        name:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          description: The human-readable name of the vault, if set.
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+            minLength: 0
+          propertyNames:
+            type: string
+            minLength: 0
+          minProperties: 0
+          description: Key-value pairs associated with the vault, such as an application or team identifier.
+        created_at:
+          type: integer
+          format: int64
+          description: The Unix timestamp, in seconds, when the vault was created.
+      required:
+      - id
+      - object
+      - name
+      - metadata
+      - created_at
+      additionalProperties: false
+      description: A collection of credentials for MCP servers and OpenAI-hosted environments.
+    DeletedVaultCredentialResource:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 0
+          description: The ID of the deleted credential.
+        object:
+          type: string
+          enum:
+          - vault.credential.deleted
+          default: vault.credential.deleted
+          x-stainless-const: true
+          description: The object type. Always `vault.credential.deleted`.
+        deleted:
+          type: boolean
+          description: Whether the resource was deleted. Always `true`.
+      required:
+      - id
+      - object
+      - deleted
+      additionalProperties: false
+      description: Confirmation that a vault credential was deleted.
+    CreateVaultCredentialAuthParamMcpOauth:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - mcp_oauth
+          default: mcp_oauth
+          x-stainless-const: true
+          description: The type of the object. Always `mcp_oauth`.
+        mcp_server_url:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+          description: The HTTPS MCP server URL authorized by this credential.
+        access_token:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+          description: A write-only OAuth access token; never returned by credential resources.
+        expires_at:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          maxLength: 1048576
+          description: When the OAuth access token expires, as an RFC 3339 timestamp, if known.
+        refresh:
+          anyOf:
+          - $ref: '#/components/schemas/CreateMcpOauthRefreshParam'
+          - type: 'null'
+          description: Optional refresh configuration for an HTTPS OAuth token endpoint.
+      required:
+      - type
+      - mcp_server_url
+      - access_token
+      additionalProperties: false
+      description: An OAuth credential for an HTTPS MCP destination.
+    RotateMcpOauthTokenEndpointAuthParamClientSecretBasic:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - client_secret_basic
+          default: client_secret_basic
+          x-stainless-const: true
+          description: The type of the object. Always `client_secret_basic`.
+        client_secret:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          maxLength: 1048576
+          description: The replacement OAuth client secret. Omit or pass `null` to keep the stored secret. This secret is never returned in resources.
+      required:
+      - type
+      additionalProperties: false
+      description: Updates credentials sent using HTTP Basic authentication.
+    CreateVaultCredentialAuthParamEnvironmentVariable:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - environment_variable
+          default: environment_variable
+          x-stainless-const: true
+          description: The type of the object. Always `environment_variable`.
+        secret_name:
+          type: string
+          minLength: 1
+          maxLength: 1048576
+          description: The environment variable name that receives the placeholder, such as `SERVICE_API_KEY`. Use ASCII letters, digits, and underscores, starting with a letter or underscore. Names starting with `CODEX_` and managed proxy or certificate variable names are reserved.
+        secret_value:
+          type: string
+          minLength: 1
+          maxLength: 1048576
+          description: The write-only secret to store. Never returned in credential resources or supplied directly to sandbox code. Must be nonempty and must not contain carriage returns, newlines, or NUL bytes.
+        networking:
+          $ref: '#/components/schemas/VaultCredentialNetworkingParam'
+          description: The destinations where the proxy can substitute this secret. The environment network policy must also allow them.
+      required:
+      - type
+      - secret_name
+      - secret_value
+      - networking
+      additionalProperties: false
+      description: An HTTP credential for OpenAI-hosted environments only. The sandbox receives an environment variable containing a placeholder, not the secret. Use the placeholder unchanged in outgoing requests. The egress proxy replaces the placeholder with the secret for allowed HTTPS destinations on ports 443 and 8443. Sandbox code cannot read the real secret or use it for local computation, such as signing a request.
+    VaultCredentialNetworkingResource:
+      oneOf:
+      - $ref: '#/components/schemas/VaultCredentialNetworkingResourceUnrestricted'
+      - $ref: '#/components/schemas/VaultCredentialNetworkingResourceLimited'
+      discriminator:
+        propertyName: type
+        mapping:
+          unrestricted: '#/components/schemas/VaultCredentialNetworkingResourceUnrestricted'
+          limited: '#/components/schemas/VaultCredentialNetworkingResourceLimited'
+      x-oai-discriminator-values:
+      - unrestricted
+      - limited
+      description: Destination permissions for an environment-variable credential. These do not grant network access to the environment.
+    VaultCredentialNetworkingParamUnrestricted:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - unrestricted
+          default: unrestricted
+          x-stainless-const: true
+          description: The type of the object. Always `unrestricted`.
+      required:
+      - type
+      additionalProperties: false
+      description: Allows substitution for destinations permitted by the environment network policy. Requires `environment.network.access` to be `restricted`, with explicit `allowed_domains`.
+    McpOauthTokenEndpointAuthResource:
+      oneOf:
+      - $ref: '#/components/schemas/McpOauthTokenEndpointAuthResourceNone'
+      - $ref: '#/components/schemas/McpOauthTokenEndpointAuthResourceClientSecretBasic'
+      - $ref: '#/components/schemas/McpOauthTokenEndpointAuthResourceClientSecretPost'
+      discriminator:
+        propertyName: type
+        mapping:
+          none: '#/components/schemas/McpOauthTokenEndpointAuthResourceNone'
+          client_secret_basic: '#/components/schemas/McpOauthTokenEndpointAuthResourceClientSecretBasic'
+          client_secret_post: '#/components/schemas/McpOauthTokenEndpointAuthResourceClientSecretPost'
+      x-oai-discriminator-values:
+      - none
+      - client_secret_basic
+      - client_secret_post
+      description: The client authentication method used for OAuth token refresh.
+    CreateMcpOauthTokenEndpointAuthParamClientSecretBasic:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - client_secret_basic
+          default: client_secret_basic
+          x-stainless-const: true
+          description: The type of the object. Always `client_secret_basic`.
+        client_secret:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+          description: The OAuth client secret to store. Never returned in credential resources.
+      required:
+      - type
+      - client_secret
+      additionalProperties: false
+      description: Sends the client ID and secret using HTTP Basic authentication.
+    McpOauthTokenEndpointAuthResourceClientSecretBasic:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - client_secret_basic
+          default: client_secret_basic
+          x-stainless-const: true
+          description: The type of the object. Always `client_secret_basic`.
+      required:
+      - type
+      additionalProperties: false
+      description: Sends the client ID and secret using HTTP Basic authentication.
+    DeletedVaultResource:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 0
+          description: The ID of the deleted vault.
+        object:
+          type: string
+          enum:
+          - vault.deleted
+          default: vault.deleted
+          x-stainless-const: true
+          description: The object type. Always `vault.deleted`.
+        deleted:
+          type: boolean
+          description: Whether the resource was deleted. Always `true`.
+      required:
+      - id
+      - object
+      - deleted
+      additionalProperties: false
+      description: Confirmation that a vault was deleted.
+    VaultListResource:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          default: list
+          x-stainless-const: true
+          description: The object type, which is always `list`.
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/VaultResource'
+          minItems: 0
+          maxItems: 2000
+          description: The resources returned in this page, in the requested sort order.
+        first_id:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          description: The ID of the first resource in `data`, or `null` if the page is empty.
+        last_id:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          description: The ID of the last resource in `data`, or `null` if the page is empty. Pass this as `after` with the same order and filters.
+        has_more:
+          type: boolean
+          description: Whether there are more resources to retrieve after this page.
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+      additionalProperties: false
+      description: A page of Agents API resources, with IDs for retrieving additional pages.
+    CreateVaultCredentialAuthParam:
+      oneOf:
+      - $ref: '#/components/schemas/CreateVaultCredentialAuthParamMcpOauth'
+      - $ref: '#/components/schemas/CreateVaultCredentialAuthParamStaticBearer'
+      - $ref: '#/components/schemas/CreateVaultCredentialAuthParamEnvironmentVariable'
+      discriminator:
+        propertyName: type
+        mapping:
+          mcp_oauth: '#/components/schemas/CreateVaultCredentialAuthParamMcpOauth'
+          static_bearer: '#/components/schemas/CreateVaultCredentialAuthParamStaticBearer'
+          environment_variable: '#/components/schemas/CreateVaultCredentialAuthParamEnvironmentVariable'
+      x-oai-discriminator-values:
+      - mcp_oauth
+      - static_bearer
+      - environment_variable
+      description: Authentication credentials for an MCP server or an OpenAI-hosted environment.
     CreateMcpOauthRefreshParam:
       type: object
       properties:
@@ -1624,99 +1717,6 @@ components:
       - token_endpoint_auth
       additionalProperties: false
       description: Configuration for refreshing the access token of an MCP OAuth credential.
-    ErrorResponse-2:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/ErrorBodyResource'
-          description: The error returned by the API.
-      required:
-      - error
-      additionalProperties: false
-      description: An API error response.
-    VaultCredentialAuthResource:
-      oneOf:
-      - $ref: '#/components/schemas/VaultCredentialAuthResourceMcpOauth'
-      - $ref: '#/components/schemas/VaultCredentialAuthResourceStaticBearer'
-      - $ref: '#/components/schemas/VaultCredentialAuthResourceEnvironmentVariable'
-      discriminator:
-        propertyName: type
-        mapping:
-          mcp_oauth: '#/components/schemas/VaultCredentialAuthResourceMcpOauth'
-          static_bearer: '#/components/schemas/VaultCredentialAuthResourceStaticBearer'
-          environment_variable: '#/components/schemas/VaultCredentialAuthResourceEnvironmentVariable'
-      x-oai-discriminator-values:
-      - mcp_oauth
-      - static_bearer
-      - environment_variable
-      description: The authentication configuration of a vault credential, excluding secrets.
-    CreateMcpOauthTokenEndpointAuthParamClientSecretBasic:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - client_secret_basic
-          default: client_secret_basic
-          x-stainless-const: true
-          description: The type of the object. Always `client_secret_basic`.
-        client_secret:
-          type: string
-          minLength: 0
-          maxLength: 1048576
-          description: The OAuth client secret to store. Never returned in credential resources.
-      required:
-      - type
-      - client_secret
-      additionalProperties: false
-      description: Sends the client ID and secret using HTTP Basic authentication.
-    McpOauthRefreshResource:
-      type: object
-      properties:
-        token_endpoint:
-          type: string
-          minLength: 0
-          description: The HTTPS OAuth token endpoint used for refresh.
-        client_id:
-          type: string
-          minLength: 0
-          description: The OAuth client ID used when requesting a new access token.
-        resource:
-          type:
-          - string
-          - 'null'
-          minLength: 0
-          description: The resource URI sent to the OAuth token endpoint during refresh, if configured.
-        scope:
-          type:
-          - string
-          - 'null'
-          minLength: 0
-          description: Space-separated OAuth scopes requested during refresh, if configured.
-        token_endpoint_auth:
-          $ref: '#/components/schemas/McpOauthTokenEndpointAuthResource'
-          description: How the OAuth client authenticates to the token endpoint, excluding its client secret.
-      required:
-      - token_endpoint
-      - client_id
-      - resource
-      - scope
-      - token_endpoint_auth
-      additionalProperties: false
-      description: Configuration used to refresh an MCP OAuth access token, excluding secret values.
-    VaultCredentialNetworkingParam:
-      oneOf:
-      - $ref: '#/components/schemas/VaultCredentialNetworkingParamUnrestricted'
-      - $ref: '#/components/schemas/VaultCredentialNetworkingParamLimited'
-      discriminator:
-        propertyName: type
-        mapping:
-          unrestricted: '#/components/schemas/VaultCredentialNetworkingParamUnrestricted'
-          limited: '#/components/schemas/VaultCredentialNetworkingParamLimited'
-      x-oai-discriminator-values:
-      - unrestricted
-      - limited
-      description: Destination permissions for an environment-variable credential. These do not grant network access to the environment.
   securitySchemes:
     ApiKeyAuth:
       type: http

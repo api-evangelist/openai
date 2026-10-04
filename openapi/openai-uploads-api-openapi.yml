@@ -202,18 +202,26 @@ paths:
           response: "{\n  \"id\": \"part_def456\",\n  \"object\": \"upload.part\",\n  \"created_at\": 1719185911,\n  \"upload_id\": \"upload_abc123\"\n}\n"
 components:
   schemas:
-    AddUploadPartRequest:
+    FileExpirationAfter:
       type: object
-      additionalProperties: false
+      title: File expiration policy
+      description: The expiration policy for a file. By default, files with `purpose=batch` expire after 30 days and all other files are persisted until they are manually deleted.
       properties:
-        data:
-          description: 'The chunk of bytes for this Part.
-
-            '
+        anchor:
+          description: 'Anchor timestamp after which the expiration policy applies. Supported anchors: `created_at`.'
           type: string
-          format: binary
+          enum:
+          - created_at
+          x-stainless-const: true
+        seconds:
+          description: The number of seconds after the anchor time that the file will expire. Must be between 3600 (1 hour) and 2592000 (30 days).
+          type: integer
+          format: int64
+          minimum: 3600
+          maximum: 2592000
       required:
-      - data
+      - anchor
+      - seconds
     CompleteUploadRequest:
       type: object
       additionalProperties: false
@@ -232,37 +240,65 @@ components:
           type: string
       required:
       - part_ids
-    UploadPart:
+    CreateUploadRequest:
       type: object
-      title: UploadPart
-      description: 'The upload Part represents a chunk of bytes we can add to an Upload object.
-
-        '
+      additionalProperties: false
       properties:
-        id:
+        filename:
+          description: 'The name of the file to upload.
+
+            '
           type: string
-          description: The upload Part unique identifier, which can be referenced in API endpoints.
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) for when the Part was created.
-        upload_id:
+        purpose:
+          description: 'The intended purpose of the uploaded file.
+
+
+            See the [documentation on File
+
+            purposes](https://developers.openai.com/api/reference/resources/files/methods/create#%28resource%29%20files%20%3E%20%28method%29%20create%20%3E%20%28params%29%200%20%3E%20%28param%29%20purpose%20%3E%20%28schema%29).
+
+            '
           type: string
-          description: The ID of the Upload object that this Part was added to.
-        object:
-          type: string
-          description: The object type, which is always `upload.part`.
           enum:
-          - upload.part
-          x-stainless-const: true
+          - assistants
+          - batch
+          - fine-tune
+          - vision
+        bytes:
+          description: 'The number of bytes in the file you are uploading.
+
+            '
+          type: integer
+        mime_type:
+          description: 'The MIME type of the file.
+
+
+
+            This must fall within the supported MIME types for your file purpose. See
+
+            the supported MIME types for assistants and vision.
+
+            '
+          type: string
+        expires_after:
+          $ref: '#/components/schemas/FileExpirationAfter'
       required:
-      - created_at
-      - id
-      - object
-      - upload_id
-      x-oaiMeta:
-        name: The upload part object
-        example: "{\n    \"id\": \"part_def456\",\n    \"object\": \"upload.part\",\n    \"created_at\": 1719186911,\n    \"upload_id\": \"upload_abc123\"\n}\n"
+      - filename
+      - purpose
+      - bytes
+      - mime_type
+    AddUploadPartRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        data:
+          description: 'The chunk of bytes for this Part.
+
+            '
+          type: string
+          format: binary
+      required:
+      - data
     OpenAIFile:
       title: OpenAIFile
       description: The `File` object represents a document that has been uploaded to OpenAI.
@@ -325,73 +361,37 @@ components:
       x-oaiMeta:
         name: The file object
         example: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"file\",\n  \"bytes\": 120000,\n  \"created_at\": 1677610602,\n  \"expires_at\": 1680202602,\n  \"filename\": \"salesOverview.pdf\",\n  \"purpose\": \"assistants\",\n}\n"
-    CreateUploadRequest:
+    UploadPart:
       type: object
-      additionalProperties: false
+      title: UploadPart
+      description: 'The upload Part represents a chunk of bytes we can add to an Upload object.
+
+        '
       properties:
-        filename:
-          description: 'The name of the file to upload.
-
-            '
+        id:
           type: string
-        purpose:
-          description: 'The intended purpose of the uploaded file.
-
-
-            See the [documentation on File
-
-            purposes](https://developers.openai.com/api/reference/resources/files/methods/create#%28resource%29%20files%20%3E%20%28method%29%20create%20%3E%20%28params%29%200%20%3E%20%28param%29%20purpose%20%3E%20%28schema%29).
-
-            '
-          type: string
-          enum:
-          - assistants
-          - batch
-          - fine-tune
-          - vision
-        bytes:
-          description: 'The number of bytes in the file you are uploading.
-
-            '
+          description: The upload Part unique identifier, which can be referenced in API endpoints.
+        created_at:
           type: integer
-        mime_type:
-          description: 'The MIME type of the file.
-
-
-
-            This must fall within the supported MIME types for your file purpose. See
-
-            the supported MIME types for assistants and vision.
-
-            '
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the Part was created.
+        upload_id:
           type: string
-        expires_after:
-          $ref: '#/components/schemas/FileExpirationAfter'
-      required:
-      - filename
-      - purpose
-      - bytes
-      - mime_type
-    FileExpirationAfter:
-      type: object
-      title: File expiration policy
-      description: The expiration policy for a file. By default, files with `purpose=batch` expire after 30 days and all other files are persisted until they are manually deleted.
-      properties:
-        anchor:
-          description: 'Anchor timestamp after which the expiration policy applies. Supported anchors: `created_at`.'
+          description: The ID of the Upload object that this Part was added to.
+        object:
           type: string
+          description: The object type, which is always `upload.part`.
           enum:
-          - created_at
+          - upload.part
           x-stainless-const: true
-        seconds:
-          description: The number of seconds after the anchor time that the file will expire. Must be between 3600 (1 hour) and 2592000 (30 days).
-          type: integer
-          format: int64
-          minimum: 3600
-          maximum: 2592000
       required:
-      - anchor
-      - seconds
+      - created_at
+      - id
+      - object
+      - upload_id
+      x-oaiMeta:
+        name: The upload part object
+        example: "{\n    \"id\": \"part_def456\",\n    \"object\": \"upload.part\",\n    \"created_at\": 1719186911,\n    \"upload_id\": \"upload_abc123\"\n}\n"
     Upload:
       type: object
       title: Upload

@@ -63,6 +63,49 @@ paths:
           response: "{\n  \"id\": \"cmpl-7iA7iJjj8V2zOkCGvWF2hAkDWBQZe\",\n  \"object\": \"text_completion\",\n  \"created\": 1690759702,\n  \"choices\": [\n    {\n      \"text\": \"This\",\n      \"index\": 0,\n      \"logprobs\": null,\n      \"finish_reason\": null\n    }\n  ],\n  \"model\": \"gpt-3.5-turbo-instruct\"\n  \"system_fingerprint\": \"fp_44709d6fcb\",\n}\n"
 components:
   schemas:
+    ChatCompletionStreamOptions:
+      anyOf:
+      - description: 'Options for streaming response. Only set this when you set `stream: true`.
+
+          '
+        type: object
+        properties:
+          include_usage:
+            type: boolean
+            description: 'If set, an additional chunk will be streamed before the `data: [DONE]`
+
+              message. The `usage` field on this chunk shows the token usage statistics
+
+              for the entire request, and the `choices` field will always be an empty
+
+              array.
+
+
+              All other chunks will also include a `usage` field, but with a null
+
+              value. **NOTE:** If the stream is interrupted, you may not receive the
+
+              final usage chunk which contains the total token usage for the request.
+
+              '
+          include_obfuscation:
+            type: boolean
+            description: 'When true, stream obfuscation will be enabled. Stream obfuscation adds
+
+              random characters to an `obfuscation` field on streaming delta events to
+
+              normalize payload sizes as a mitigation to certain side-channel attacks.
+
+              These obfuscation fields are included by default, but add a small amount
+
+              of overhead to the data stream. You can set `include_obfuscation` to
+
+              false to optimize for bandwidth if you trust the network links between
+
+              your application and the OpenAI API.
+
+              '
+      - type: 'null'
     _MisalignmentErrorType:
       anyOf:
       - type: string
@@ -72,6 +115,144 @@ components:
         - potentially_unintended_data_access
         - potentially_unintended_destructive_activity
         - other
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
+    CreateCompletionResponse:
+      type: object
+      description: 'Represents a completion response from the API. Note: both the streamed and non-streamed response objects share the same shape (unlike the chat endpoint).
+
+        '
+      properties:
+        id:
+          type: string
+          description: A unique identifier for the completion.
+        choices:
+          type: array
+          description: The list of completion choices the model generated for the input prompt.
+          items:
+            type: object
+            required:
+            - finish_reason
+            - index
+            - logprobs
+            - text
+            properties:
+              finish_reason:
+                type: string
+                description: 'The reason the model stopped generating tokens. This will be `stop` if the model hit a natural stop point or a provided stop sequence,
+
+                  `length` if the maximum number of tokens specified in the request was reached,
+
+                  or `content_filter` if content was omitted due to a flag from our content filters.
+
+                  '
+                enum:
+                - stop
+                - length
+                - content_filter
+              index:
+                type: integer
+              logprobs:
+                anyOf:
+                - type: object
+                  properties:
+                    text_offset:
+                      type: array
+                      items:
+                        type: integer
+                    token_logprobs:
+                      type: array
+                      items:
+                        type: number
+                    tokens:
+                      type: array
+                      items:
+                        type: string
+                    top_logprobs:
+                      type: array
+                      items:
+                        type: object
+                        additionalProperties:
+                          type: number
+                - type: 'null'
+              text:
+                type: string
+        created:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) of when the completion was created.
+        model:
+          type: string
+          description: The model used for completion.
+        system_fingerprint:
+          type: string
+          description: 'This fingerprint represents the backend configuration that the model runs with.
+
+
+            Can be used in conjunction with the `seed` request parameter to understand when backend changes have been made that might impact determinism.
+
+            '
+        object:
+          type: string
+          description: The object type, which is always "text_completion"
+          enum:
+          - text_completion
+          x-stainless-const: true
+        usage:
+          $ref: '#/components/schemas/CompletionUsage'
+      required:
+      - id
+      - object
+      - created
+      - model
+      - choices
+      x-oaiMeta:
+        name: The completion object
+        legacy: true
+        example: "{\n  \"id\": \"cmpl-uqkvlQyYK7bGYrRHQ0eXlWi7\",\n  \"object\": \"text_completion\",\n  \"created\": 1589478378,\n  \"model\": \"gpt-3.5-turbo-instruct\",\n  \"choices\": [\n    {\n      \"text\": \"\\n\\nThis is indeed a test\",\n      \"index\": 0,\n      \"logprobs\": null,\n      \"finish_reason\": \"length\"\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 5,\n    \"completion_tokens\": 7,\n    \"total_tokens\": 12\n  }\n}\n"
+    StopConfiguration:
+      description: 'Not supported with latest reasoning models `o3` and `o4-mini`.
+
+
+        Up to 4 sequences where the API will stop generating further tokens. The
+
+        returned text will not contain the stop sequence.
+
+        '
+      default: null
+      nullable: true
+      oneOf:
+      - type: string
+        default: <|endoftext|>
+        example: '
+
+          '
+        nullable: true
+      - type: array
+        minItems: 1
+        maxItems: 4
+        items:
+          type: string
+          example: '["\n"]'
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
     CreateCompletionRequest:
       type: object
       properties:
@@ -284,186 +465,6 @@ components:
       required:
       - model
       - prompt
-    StopConfiguration:
-      description: 'Not supported with latest reasoning models `o3` and `o4-mini`.
-
-
-        Up to 4 sequences where the API will stop generating further tokens. The
-
-        returned text will not contain the stop sequence.
-
-        '
-      default: null
-      nullable: true
-      oneOf:
-      - type: string
-        default: <|endoftext|>
-        example: '
-
-          '
-        nullable: true
-      - type: array
-        minItems: 1
-        maxItems: 4
-        items:
-          type: string
-          example: '["\n"]'
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    CreateCompletionResponse:
-      type: object
-      description: 'Represents a completion response from the API. Note: both the streamed and non-streamed response objects share the same shape (unlike the chat endpoint).
-
-        '
-      properties:
-        id:
-          type: string
-          description: A unique identifier for the completion.
-        choices:
-          type: array
-          description: The list of completion choices the model generated for the input prompt.
-          items:
-            type: object
-            required:
-            - finish_reason
-            - index
-            - logprobs
-            - text
-            properties:
-              finish_reason:
-                type: string
-                description: 'The reason the model stopped generating tokens. This will be `stop` if the model hit a natural stop point or a provided stop sequence,
-
-                  `length` if the maximum number of tokens specified in the request was reached,
-
-                  or `content_filter` if content was omitted due to a flag from our content filters.
-
-                  '
-                enum:
-                - stop
-                - length
-                - content_filter
-              index:
-                type: integer
-              logprobs:
-                anyOf:
-                - type: object
-                  properties:
-                    text_offset:
-                      type: array
-                      items:
-                        type: integer
-                    token_logprobs:
-                      type: array
-                      items:
-                        type: number
-                    tokens:
-                      type: array
-                      items:
-                        type: string
-                    top_logprobs:
-                      type: array
-                      items:
-                        type: object
-                        additionalProperties:
-                          type: number
-                - type: 'null'
-              text:
-                type: string
-        created:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) of when the completion was created.
-        model:
-          type: string
-          description: The model used for completion.
-        system_fingerprint:
-          type: string
-          description: 'This fingerprint represents the backend configuration that the model runs with.
-
-
-            Can be used in conjunction with the `seed` request parameter to understand when backend changes have been made that might impact determinism.
-
-            '
-        object:
-          type: string
-          description: The object type, which is always "text_completion"
-          enum:
-          - text_completion
-          x-stainless-const: true
-        usage:
-          $ref: '#/components/schemas/CompletionUsage'
-      required:
-      - id
-      - object
-      - created
-      - model
-      - choices
-      x-oaiMeta:
-        name: The completion object
-        legacy: true
-        example: "{\n  \"id\": \"cmpl-uqkvlQyYK7bGYrRHQ0eXlWi7\",\n  \"object\": \"text_completion\",\n  \"created\": 1589478378,\n  \"model\": \"gpt-3.5-turbo-instruct\",\n  \"choices\": [\n    {\n      \"text\": \"\\n\\nThis is indeed a test\",\n      \"index\": 0,\n      \"logprobs\": null,\n      \"finish_reason\": \"length\"\n    }\n  ],\n  \"usage\": {\n    \"prompt_tokens\": 5,\n    \"completion_tokens\": 7,\n    \"total_tokens\": 12\n  }\n}\n"
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
-    ChatCompletionStreamOptions:
-      anyOf:
-      - description: 'Options for streaming response. Only set this when you set `stream: true`.
-
-          '
-        type: object
-        properties:
-          include_usage:
-            type: boolean
-            description: 'If set, an additional chunk will be streamed before the `data: [DONE]`
-
-              message. The `usage` field on this chunk shows the token usage statistics
-
-              for the entire request, and the `choices` field will always be an empty
-
-              array.
-
-
-              All other chunks will also include a `usage` field, but with a null
-
-              value. **NOTE:** If the stream is interrupted, you may not receive the
-
-              final usage chunk which contains the total token usage for the request.
-
-              '
-          include_obfuscation:
-            type: boolean
-            description: 'When true, stream obfuscation will be enabled. Stream obfuscation adds
-
-              random characters to an `obfuscation` field on streaming delta events to
-
-              normalize payload sizes as a mitigation to certain side-channel attacks.
-
-              These obfuscation fields are included by default, but add a small amount
-
-              of overhead to the data stream. You can set `include_obfuscation` to
-
-              false to optimize for bandwidth if you trust the network links between
-
-              your application and the OpenAI API.
-
-              '
-      - type: 'null'
     Error:
       type: object
       properties:
@@ -486,14 +487,13 @@ components:
       - message
       - param
       - code
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
+    ErrorResponse:
       type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
       required:
-      - message
+      - error
     CompletionUsage:
       type: object
       description: Usage statistics for the completion request.
@@ -574,27 +574,6 @@ components:
       - completion_tokens
       - total_tokens
   responses:
-    InferenceServiceUnavailable:
-      description: The service is temporarily unavailable. A server_is_overloaded error means the requested model is temporarily overloaded; retry after a brief delay.
-      headers:
-        Retry-After:
-          description: The minimum number of seconds to wait before retrying. This header is returned when the server has computed a retry delay and may be omitted.
-          schema:
-            type: integer
-            minimum: 1
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          examples:
-            serverOverloaded:
-              summary: The requested model is temporarily overloaded
-              value:
-                error:
-                  message: The model is temporarily overloaded. Please retry your request after a brief delay.
-                  type: service_unavailable_error
-                  param: null
-                  code: server_is_overloaded
     InferenceRateLimited:
       description: The request was rejected because a rate limit was exceeded. A slow_down error means traffic increased too quickly; reduce your request rate, then increase it gradually.
       headers:
@@ -616,6 +595,27 @@ components:
                   type: rate_limit_error
                   param: null
                   code: slow_down
+    InferenceServiceUnavailable:
+      description: The service is temporarily unavailable. A server_is_overloaded error means the requested model is temporarily overloaded; retry after a brief delay.
+      headers:
+        Retry-After:
+          description: The minimum number of seconds to wait before retrying. This header is returned when the server has computed a retry delay and may be omitted.
+          schema:
+            type: integer
+            minimum: 1
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            serverOverloaded:
+              summary: The requested model is temporarily overloaded
+              value:
+                error:
+                  message: The model is temporarily overloaded. Please retry your request after a brief delay.
+                  type: service_unavailable_error
+                  param: null
+                  code: server_is_overloaded
   securitySchemes:
     ApiKeyAuth:
       type: http
