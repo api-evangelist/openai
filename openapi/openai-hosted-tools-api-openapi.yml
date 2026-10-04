@@ -83,14 +83,6 @@ paths:
           response: "{\n    \"file_search\": {\n        \"enabled\": true\n    },\n    \"web_search\": {\n        \"enabled\": true\n    },\n    \"image_generation\": {\n        \"enabled\": false\n    },\n    \"mcp\": {\n        \"enabled\": true\n    },\n    \"code_interpreter\": {\n        \"enabled\": true\n    }\n}\n"
 components:
   schemas:
-    HostedToolPermissionUpdate:
-      type: object
-      properties:
-        enabled:
-          type: boolean
-          description: Whether to enable the hosted tool for the project.
-      required:
-      - enabled
     ProjectHostedToolPermissionsUpdateRequest:
       type: object
       properties:
@@ -126,6 +118,14 @@ components:
         enabled:
           type: boolean
           description: Whether the hosted tool is enabled for the project.
+      required:
+      - enabled
+    HostedToolPermissionUpdate:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: Whether to enable the hosted tool for the project.
       required:
       - enabled
     ProjectHostedToolPermissions:

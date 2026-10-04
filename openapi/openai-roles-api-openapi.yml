@@ -406,35 +406,46 @@ paths:
           response: "{\n    \"object\": \"role.deleted\",\n    \"id\": \"role_01J1F8PROJ\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
-    Error:
+    PublicRoleListResource:
       type: object
+      description: Paginated list of roles available on an organization or project.
       properties:
-        code:
+        object:
+          type: string
+          enum:
+          - list
+          description: Always `list`.
+          x-stainless-const: true
+        data:
+          type: array
+          description: Roles returned in the current page.
+          items:
+            $ref: '#/components/schemas/Role'
+        has_more:
+          type: boolean
+          description: Whether more roles are available when paginating.
+        next:
+          description: Cursor to fetch the next page of results, or `null` when there are no additional roles.
           anyOf:
           - type: string
           - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
       required:
-      - type
-      - message
-      - param
-      - code
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
+      - object
+      - data
+      - has_more
+      - next
+      x-oaiMeta:
+        name: Role list
+        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"object\": \"role\",\n            \"id\": \"role_01J1F8ROLE01\",\n            \"name\": \"API Group Manager\",\n            \"description\": \"Allows managing organization groups\",\n            \"permissions\": [\n                \"api.groups.read\",\n                \"api.groups.write\"\n            ],\n            \"resource_type\": \"api.organization\",\n            \"predefined_role\": false\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
     Role:
       type: object
       description: Details about a role that can be assigned through the public Roles API.
@@ -478,6 +489,36 @@ components:
       x-oaiMeta:
         name: The role object
         example: "{\n    \"object\": \"role\",\n    \"id\": \"role_01J1F8ROLE01\",\n    \"name\": \"API Group Manager\",\n    \"description\": \"Allows managing organization groups\",\n    \"permissions\": [\n        \"api.groups.read\",\n        \"api.groups.write\"\n    ],\n    \"resource_type\": \"api.organization\",\n    \"predefined_role\": false\n}\n"
+    PublicUpdateOrganizationRoleBody:
+      type: object
+      description: Request payload for updating an existing role.
+      properties:
+        permissions:
+          description: Updated set of permissions for the role.
+          anyOf:
+          - type: array
+            items:
+              type: string
+          - type: 'null'
+        description:
+          description: New description for the role.
+          anyOf:
+          - type: string
+          - type: 'null'
+        role_name:
+          description: New name for the role.
+          anyOf:
+          - type: string
+          - type: 'null'
+      x-oaiMeta:
+        example: "{\n    \"role_name\": \"API Group Manager\",\n    \"permissions\": [\n        \"api.groups.read\",\n        \"api.groups.write\"\n    ],\n    \"description\": \"Allows managing organization groups\"\n}\n"
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
     RoleDeletedResource:
       type: object
       description: Confirmation payload returned after deleting a role.
@@ -514,29 +555,36 @@ components:
           description: An optional public continuation instruction.
       type: object
       required: []
-    PublicUpdateOrganizationRoleBody:
+    Error:
       type: object
-      description: Request payload for updating an existing role.
       properties:
-        permissions:
-          description: Updated set of permissions for the role.
-          anyOf:
-          - type: array
-            items:
-              type: string
-          - type: 'null'
-        description:
-          description: New description for the role.
+        code:
           anyOf:
           - type: string
           - type: 'null'
-        role_name:
-          description: New name for the role.
+        message:
+          type: string
+        param:
           anyOf:
           - type: string
           - type: 'null'
-      x-oaiMeta:
-        example: "{\n    \"role_name\": \"API Group Manager\",\n    \"permissions\": [\n        \"api.groups.read\",\n        \"api.groups.write\"\n    ],\n    \"description\": \"Allows managing organization groups\"\n}\n"
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
     PublicCreateOrganizationRoleBody:
       type: object
       description: Request payload for creating a custom role.
@@ -559,54 +607,6 @@ components:
       - permissions
       x-oaiMeta:
         example: "{\n    \"role_name\": \"API Group Manager\",\n    \"permissions\": [\n        \"api.groups.read\",\n        \"api.groups.write\"\n    ],\n    \"description\": \"Allows managing organization groups\"\n}\n"
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
-    PublicRoleListResource:
-      type: object
-      description: Paginated list of roles available on an organization or project.
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: Always `list`.
-          x-stainless-const: true
-        data:
-          type: array
-          description: Roles returned in the current page.
-          items:
-            $ref: '#/components/schemas/Role'
-        has_more:
-          type: boolean
-          description: Whether more roles are available when paginating.
-        next:
-          description: Cursor to fetch the next page of results, or `null` when there are no additional roles.
-          anyOf:
-          - type: string
-          - type: 'null'
-      required:
-      - object
-      - data
-      - has_more
-      - next
-      x-oaiMeta:
-        name: Role list
-        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"object\": \"role\",\n            \"id\": \"role_01J1F8ROLE01\",\n            \"name\": \"API Group Manager\",\n            \"description\": \"Allows managing organization groups\",\n            \"permissions\": [\n                \"api.groups.read\",\n                \"api.groups.write\"\n            ],\n            \"resource_type\": \"api.organization\",\n            \"predefined_role\": false\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
   responses:
     TooManyRequests:
       description: The request was rejected because a rate limit was exceeded.

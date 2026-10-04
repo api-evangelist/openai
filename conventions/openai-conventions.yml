@@ -39,6 +39,7 @@ idempotency:
   supported: false
   mechanism: request header / body token declared in the OpenAPI
   evidence: Idempotency-Key on 1 of 209 mutating operations
+  scope: ["none"]
   what_exists_instead:
   - Webhook consumers dedupe on the `webhook-id` header (https://platform.openai.com/docs/guides/webhooks). That protects the inbound direction
     only.
@@ -49,6 +50,7 @@ idempotency:
     paths.
   header: Idempotency-Key
   verified: derived
+  scope: []
 pagination:
   style: cursor
   request_params:

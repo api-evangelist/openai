@@ -125,6 +125,34 @@ paths:
           response: "{\n  \"id\": \"ft:gpt-4o-mini:acemeco:suffix:abc123\",\n  \"object\": \"model\",\n  \"deleted\": true\n}\n"
 components:
   schemas:
+    ListModelsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Model'
+      required:
+      - object
+      - data
+    DeleteModelResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        deleted:
+          type: boolean
+        object:
+          type: string
+      required:
+      - id
+      - object
+      - deleted
     Model:
       title: Model
       description: Describes an OpenAI model offering that can be used with the API.
@@ -159,34 +187,6 @@ components:
       x-oaiMeta:
         name: The model object
         example: "{\n  \"id\": \"gpt-6-astra\",\n  \"object\": \"model\",\n  \"created\": 1686935002,\n  \"owned_by\": \"openai\",\n  \"shutdown_date\": \"2026-10-23\"\n}\n"
-    DeleteModelResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        deleted:
-          type: boolean
-        object:
-          type: string
-      required:
-      - id
-      - object
-      - deleted
-    ListModelsResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Model'
-      required:
-      - object
-      - data
   securitySchemes:
     ApiKeyAuth:
       type: http

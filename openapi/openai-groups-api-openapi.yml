@@ -201,35 +201,15 @@ paths:
           response: "{\n    \"object\": \"group.deleted\",\n    \"id\": \"group_01J1F8ABCDXYZ\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
     CreateGroupBody:
       type: object
       description: Request payload for creating a new group in the organization.
@@ -243,6 +223,19 @@ components:
       - name
       x-oaiMeta:
         example: "{\n    \"name\": \"Support Team\"\n}\n"
+    UpdateGroupBody:
+      type: object
+      description: Request payload for updating the details of an existing group.
+      properties:
+        name:
+          type: string
+          description: New display name for the group.
+          minLength: 1
+          maxLength: 255
+      required:
+      - name
+      x-oaiMeta:
+        example: "{\n    \"name\": \"Escalations\"\n}\n"
     GroupResponse:
       type: object
       description: Details about an organization group.
@@ -306,6 +299,26 @@ components:
       x-oaiMeta:
         name: Group list
         example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"group_01J1F8ABCDXYZ\",\n            \"name\": \"Support Team\",\n            \"created_at\": 1711471533,\n            \"is_scim_managed\": false\n        },\n        {\n            \"id\": \"group_01J1F8PQRMNO\",\n            \"name\": \"Sales\",\n            \"created_at\": 1711472599,\n            \"is_scim_managed\": true\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
     GroupDeletedResource:
       type: object
       description: Confirmation payload returned after deleting a group.
@@ -328,28 +341,28 @@ components:
       - deleted
       x-oaiMeta:
         example: "{\n    \"object\": \"group.deleted\",\n    \"id\": \"group_01J1F8ABCDXYZ\",\n    \"deleted\": true\n}\n"
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
+    Error:
       type: object
-      required: []
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
     _MisalignmentSteer:
       properties:
         message:
@@ -382,19 +395,6 @@ components:
       - is_scim_managed
       x-oaiMeta:
         example: "{\n    \"id\": \"group_01J1F8ABCDXYZ\",\n    \"name\": \"Escalations\",\n    \"created_at\": 1711471533,\n    \"is_scim_managed\": false\n}\n"
-    UpdateGroupBody:
-      type: object
-      description: Request payload for updating the details of an existing group.
-      properties:
-        name:
-          type: string
-          description: New display name for the group.
-          minLength: 1
-          maxLength: 255
-      required:
-      - name
-      x-oaiMeta:
-        example: "{\n    \"name\": \"Escalations\"\n}\n"
   responses:
     TooManyRequests:
       description: The request was rejected because a rate limit was exceeded.

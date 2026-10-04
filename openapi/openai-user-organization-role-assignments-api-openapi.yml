@@ -183,28 +183,6 @@ paths:
           response: "{\n    \"object\": \"user.role.deleted\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
     PublicAssignOrganizationGroupRoleBody:
       type: object
       description: Request payload for assigning a role to a group or user.
@@ -216,6 +194,15 @@ components:
       - role_id
       x-oaiMeta:
         example: "{\n    \"role_id\": \"role_01J1F8ROLE01\"\n}\n"
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
     RoleListResource:
       type: object
       description: Paginated list of roles assigned to a principal.
@@ -254,6 +241,35 @@ components:
           $ref: '#/components/schemas/Error'
       required:
       - error
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
+    DeletedRoleAssignmentResource:
+      type: object
+      description: Confirmation payload returned after unassigning a role.
+      properties:
+        object:
+          type: string
+          description: Identifier for the deleted assignment, such as `group.role.deleted` or `user.role.deleted`.
+        deleted:
+          type: boolean
+          description: Whether the assignment was removed.
+      required:
+      - object
+      - deleted
+      x-oaiMeta:
+        name: Role assignment deletion confirmation
+        example: "{\n    \"object\": \"group.role.deleted\",\n    \"deleted\": true\n}\n"
     User:
       type: object
       description: Represents an individual `user` within an organization.
@@ -397,49 +413,28 @@ components:
       x-oaiMeta:
         name: The user object
         example: "{\n    \"object\": \"organization.user\",\n    \"id\": \"user_abc\",\n    \"name\": \"First Last\",\n    \"email\": \"user@example.com\",\n    \"role\": \"owner\",\n    \"added_at\": 1711471533\n}\n"
-    Role:
+    Error:
       type: object
-      description: Details about a role that can be assigned through the public Roles API.
       properties:
-        object:
-          type: string
-          enum:
-          - role
-          description: Always `role`.
-          x-stainless-const: true
-        id:
-          type: string
-          description: Identifier for the role.
-        name:
-          type: string
-          description: Unique name for the role.
-        description:
-          description: Optional description of the role.
+        code:
           anyOf:
           - type: string
           - type: 'null'
-        permissions:
-          type: array
-          description: Permissions granted by the role.
-          items:
-            type: string
-        resource_type:
+        message:
           type: string
-          description: Resource type the role is bound to (for example `api.organization` or `api.project`).
-        predefined_role:
-          type: boolean
-          description: Whether the role is predefined and managed by OpenAI.
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
       required:
-      - object
-      - id
-      - name
-      - description
-      - permissions
-      - resource_type
-      - predefined_role
-      x-oaiMeta:
-        name: The role object
-        example: "{\n    \"object\": \"role\",\n    \"id\": \"role_01J1F8ROLE01\",\n    \"name\": \"API Group Manager\",\n    \"description\": \"Allows managing organization groups\",\n    \"permissions\": [\n        \"api.groups.read\",\n        \"api.groups.write\"\n    ],\n    \"resource_type\": \"api.organization\",\n    \"predefined_role\": false\n}\n"
+      - type
+      - message
+      - param
+      - code
     AssignedRoleDetails:
       type: object
       description: Detailed information about a role assignment entry returned when listing assignments.
@@ -523,6 +518,57 @@ components:
       - created_by_user_obj
       - metadata
       - assignment_sources
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+    Role:
+      type: object
+      description: Details about a role that can be assigned through the public Roles API.
+      properties:
+        object:
+          type: string
+          enum:
+          - role
+          description: Always `role`.
+          x-stainless-const: true
+        id:
+          type: string
+          description: Identifier for the role.
+        name:
+          type: string
+          description: Unique name for the role.
+        description:
+          description: Optional description of the role.
+          anyOf:
+          - type: string
+          - type: 'null'
+        permissions:
+          type: array
+          description: Permissions granted by the role.
+          items:
+            type: string
+        resource_type:
+          type: string
+          description: Resource type the role is bound to (for example `api.organization` or `api.project`).
+        predefined_role:
+          type: boolean
+          description: Whether the role is predefined and managed by OpenAI.
+      required:
+      - object
+      - id
+      - name
+      - description
+      - permissions
+      - resource_type
+      - predefined_role
+      x-oaiMeta:
+        name: The role object
+        example: "{\n    \"object\": \"role\",\n    \"id\": \"role_01J1F8ROLE01\",\n    \"name\": \"API Group Manager\",\n    \"description\": \"Allows managing organization groups\",\n    \"permissions\": [\n        \"api.groups.read\",\n        \"api.groups.write\"\n    ],\n    \"resource_type\": \"api.organization\",\n    \"predefined_role\": false\n}\n"
     UserRoleAssignment:
       type: object
       description: Role assignment linking a user to a role.
@@ -544,52 +590,6 @@ components:
       x-oaiMeta:
         name: The user role object
         example: "{\n    \"object\": \"user.role\",\n    \"user\": {\n        \"object\": \"organization.user\",\n        \"id\": \"user_abc123\",\n        \"name\": \"Ada Lovelace\",\n        \"email\": \"ada@example.com\",\n        \"role\": \"owner\",\n        \"added_at\": 1711470000\n    },\n    \"role\": {\n        \"object\": \"role\",\n        \"id\": \"role_01J1F8ROLE01\",\n        \"name\": \"API Group Manager\",\n        \"description\": \"Allows managing organization groups\",\n        \"permissions\": [\n            \"api.groups.read\",\n            \"api.groups.write\"\n        ],\n        \"resource_type\": \"api.organization\",\n        \"predefined_role\": false\n    }\n}\n"
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    DeletedRoleAssignmentResource:
-      type: object
-      description: Confirmation payload returned after unassigning a role.
-      properties:
-        object:
-          type: string
-          description: Identifier for the deleted assignment, such as `group.role.deleted` or `user.role.deleted`.
-        deleted:
-          type: boolean
-          description: Whether the assignment was removed.
-      required:
-      - object
-      - deleted
-      x-oaiMeta:
-        name: Role assignment deletion confirmation
-        example: "{\n    \"object\": \"group.role.deleted\",\n    \"deleted\": true\n}\n"
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
   responses:
     TooManyRequests:
       description: The request was rejected because a rate limit was exceeded.

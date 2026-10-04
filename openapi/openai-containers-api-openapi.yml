@@ -349,93 +349,6 @@ paths:
       - Containers
 components:
   schemas:
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
-    ContainerNetworkPolicyAllowlistParam:
-      properties:
-        type:
-          type: string
-          enum:
-          - allowlist
-          description: Allow outbound network access only to specified domains. Always `allowlist`.
-          default: allowlist
-          x-stainless-const: true
-        allowed_domains:
-          items:
-            type: string
-          type: array
-          minItems: 1
-          description: A list of allowed domains when type is `allowlist`.
-        domain_secrets:
-          items:
-            $ref: '#/components/schemas/ContainerNetworkPolicyDomainSecretParam'
-          type: array
-          minItems: 1
-          description: Optional domain-scoped secrets for allowlisted domains.
-      type: object
-      required:
-      - type
-      - allowed_domains
-    SkillReferenceParam:
-      properties:
-        type:
-          type: string
-          enum:
-          - skill_reference
-          description: References a skill created with the /v1/skills endpoint.
-          default: skill_reference
-          x-stainless-const: true
-        skill_id:
-          type: string
-          maxLength: 64
-          minLength: 1
-          description: The ID of the referenced skill.
-        version:
-          type: string
-          description: Optional skill version. Use a positive integer or 'latest'. Omit for default.
-      type: object
-      required:
-      - type
-      - skill_id
-    ContainerNetworkPolicyDisabledParam:
-      properties:
-        type:
-          type: string
-          enum:
-          - disabled
-          description: Disable outbound network access. Always `disabled`.
-          default: disabled
-          x-stainless-const: true
-      type: object
-      required:
-      - type
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
     ContainerFileListResource:
       type: object
       properties:
@@ -464,103 +377,6 @@ components:
       - first_id
       - last_id
       - has_more
-    CreateContainerFileBody:
-      type: object
-      properties:
-        file_id:
-          type: string
-          description: Name of the file to create.
-        file:
-          description: 'The File object (not file name) to be uploaded.
-
-            '
-          type: string
-          format: binary
-      required: []
-    ContainerNetworkPolicyDomainSecretParam:
-      properties:
-        domain:
-          type: string
-          minLength: 1
-          description: The domain associated with the secret.
-        name:
-          type: string
-          minLength: 1
-          description: The name of the secret to inject for the domain.
-        value:
-          type: string
-          maxLength: 10485760
-          minLength: 1
-          description: The secret value to inject for the domain.
-      type: object
-      required:
-      - domain
-      - name
-      - value
-    CreateContainerBody:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the container to create.
-        file_ids:
-          type: array
-          description: IDs of files to copy to the container.
-          items:
-            type: string
-        expires_after:
-          type: object
-          description: Container expiration time in seconds relative to the 'anchor' time.
-          properties:
-            anchor:
-              type: string
-              enum:
-              - last_active_at
-              description: Time anchor for the expiration time. Currently only 'last_active_at' is supported.
-            minutes:
-              type: integer
-          required:
-          - anchor
-          - minutes
-        skills:
-          type: array
-          description: An optional list of skills referenced by id or inline data.
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/SkillReferenceParam'
-            - $ref: '#/components/schemas/InlineSkillParam'
-            discriminator:
-              propertyName: type
-        memory_limit:
-          type: string
-          enum:
-          - 1g
-          - 4g
-          - 16g
-          - 64g
-          description: Optional memory limit for the container. Defaults to "1g".
-        network_policy:
-          description: Network access policy for the container.
-          oneOf:
-          - $ref: '#/components/schemas/ContainerNetworkPolicyDisabledParam'
-          - $ref: '#/components/schemas/ContainerNetworkPolicyAllowlistParam'
-          discriminator:
-            propertyName: type
-      required:
-      - name
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
     ContainerResource:
       type: object
       title: The container object
@@ -650,42 +466,27 @@ components:
         - potentially_unintended_data_access
         - potentially_unintended_destructive_activity
         - other
-    ContainerListResource:
-      type: object
+    SkillReferenceParam:
       properties:
-        object:
+        type:
           type: string
           enum:
-          - list
-          description: The type of object returned, must be 'list'.
-        data:
-          type: array
-          description: A list of containers.
-          items:
-            $ref: '#/components/schemas/ContainerResource'
-        first_id:
+          - skill_reference
+          description: References a skill created with the /v1/skills endpoint.
+          default: skill_reference
+          x-stainless-const: true
+        skill_id:
           type: string
-          description: The ID of the first container in the list.
-        last_id:
+          maxLength: 64
+          minLength: 1
+          description: The ID of the referenced skill.
+        version:
           type: string
-          description: The ID of the last container in the list.
-        has_more:
-          type: boolean
-          description: Whether there are more containers available.
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
+          description: Optional skill version. Use a positive integer or 'latest'. Omit for default.
       type: object
       required:
-      - message
+      - type
+      - skill_id
     InlineSkillSourceParam:
       properties:
         type:
@@ -713,6 +514,81 @@ components:
       - media_type
       - data
       description: Inline skill payload
+    InlineSkillParam:
+      properties:
+        type:
+          type: string
+          enum:
+          - inline
+          description: Defines an inline skill for this request.
+          default: inline
+          x-stainless-const: true
+        name:
+          type: string
+          description: The name of the skill.
+        description:
+          type: string
+          description: The description of the skill.
+        source:
+          $ref: '#/components/schemas/InlineSkillSourceParam'
+          description: Inline skill payload
+      type: object
+      required:
+      - type
+      - name
+      - description
+      - source
+    CreateContainerBody:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the container to create.
+        file_ids:
+          type: array
+          description: IDs of files to copy to the container.
+          items:
+            type: string
+        expires_after:
+          type: object
+          description: Container expiration time in seconds relative to the 'anchor' time.
+          properties:
+            anchor:
+              type: string
+              enum:
+              - last_active_at
+              description: Time anchor for the expiration time. Currently only 'last_active_at' is supported.
+            minutes:
+              type: integer
+          required:
+          - anchor
+          - minutes
+        skills:
+          type: array
+          description: An optional list of skills referenced by id or inline data.
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/SkillReferenceParam'
+            - $ref: '#/components/schemas/InlineSkillParam'
+            discriminator:
+              propertyName: type
+        memory_limit:
+          type: string
+          enum:
+          - 1g
+          - 4g
+          - 16g
+          - 64g
+          description: Optional memory limit for the container. Defaults to "1g".
+        network_policy:
+          description: Network access policy for the container.
+          oneOf:
+          - $ref: '#/components/schemas/ContainerNetworkPolicyDisabledParam'
+          - $ref: '#/components/schemas/ContainerNetworkPolicyAllowlistParam'
+          discriminator:
+            propertyName: type
+      required:
+      - name
     ContainerFileResource:
       type: object
       title: The container file object
@@ -750,30 +626,154 @@ components:
       x-oaiMeta:
         name: The container file object
         example: "{\n    \"id\": \"cfile_682e0e8a43c88191a7978f477a09bdf5\",\n    \"object\": \"container.file\",\n    \"created_at\": 1747848842,\n    \"bytes\": 880,\n    \"container_id\": \"cntr_682e0e7318108198aa783fd921ff305e08e78805b9fdbb04\",\n    \"path\": \"/mnt/data/88e12fa445d32636f190a0b33daed6cb-tsconfig.json\",\n    \"source\": \"user\"\n}\n"
-    InlineSkillParam:
+    CreateContainerFileBody:
+      type: object
+      properties:
+        file_id:
+          type: string
+          description: Name of the file to create.
+        file:
+          description: 'The File object (not file name) to be uploaded.
+
+            '
+          type: string
+          format: binary
+      required: []
+    ContainerNetworkPolicyAllowlistParam:
       properties:
         type:
           type: string
           enum:
-          - inline
-          description: Defines an inline skill for this request.
-          default: inline
+          - allowlist
+          description: Allow outbound network access only to specified domains. Always `allowlist`.
+          default: allowlist
           x-stainless-const: true
-        name:
-          type: string
-          description: The name of the skill.
-        description:
-          type: string
-          description: The description of the skill.
-        source:
-          $ref: '#/components/schemas/InlineSkillSourceParam'
-          description: Inline skill payload
+        allowed_domains:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          description: A list of allowed domains when type is `allowlist`.
+        domain_secrets:
+          items:
+            $ref: '#/components/schemas/ContainerNetworkPolicyDomainSecretParam'
+          type: array
+          minItems: 1
+          description: Optional domain-scoped secrets for allowlisted domains.
       type: object
       required:
       - type
+      - allowed_domains
+    ContainerListResource:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: The type of object returned, must be 'list'.
+        data:
+          type: array
+          description: A list of containers.
+          items:
+            $ref: '#/components/schemas/ContainerResource'
+        first_id:
+          type: string
+          description: The ID of the first container in the list.
+        last_id:
+          type: string
+          description: The ID of the last container in the list.
+        has_more:
+          type: boolean
+          description: Whether there are more containers available.
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
+    Error:
+      type: object
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+    ContainerNetworkPolicyDomainSecretParam:
+      properties:
+        domain:
+          type: string
+          minLength: 1
+          description: The domain associated with the secret.
+        name:
+          type: string
+          minLength: 1
+          description: The name of the secret to inject for the domain.
+        value:
+          type: string
+          maxLength: 10485760
+          minLength: 1
+          description: The secret value to inject for the domain.
+      type: object
+      required:
+      - domain
       - name
-      - description
-      - source
+      - value
+    ContainerNetworkPolicyDisabledParam:
+      properties:
+        type:
+          type: string
+          enum:
+          - disabled
+          description: Disable outbound network access. Always `disabled`.
+          default: disabled
+          x-stainless-const: true
+      type: object
+      required:
+      - type
   responses:
     TooManyRequests:
       description: The request was rejected because a rate limit was exceeded.

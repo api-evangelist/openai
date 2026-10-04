@@ -278,6 +278,70 @@ components:
       - id
       - object
       - deleted
+    CreateFileRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        file:
+          description: 'The File object (not file name) to be uploaded.
+
+            '
+          type: string
+          format: binary
+        purpose:
+          description: 'The intended purpose of the uploaded file. One of:
+
+            - `assistants`: Used in the Assistants API
+
+            - `batch`: Used in the Batch API
+
+            - `fine-tune`: Used for fine-tuning
+
+            - `vision`: Images used for vision fine-tuning
+
+            - `user_data`: Flexible file type for any purpose
+
+            - `evals`: Used for eval data sets
+
+            '
+          type: string
+          enum:
+          - assistants
+          - batch
+          - fine-tune
+          - vision
+          - user_data
+          - evals
+        expires_after:
+          $ref: '#/components/schemas/FileExpirationAfter'
+      required:
+      - file
+      - purpose
+    ListFilesResponse_2:
+      type: object
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpenAIFile_2'
+        first_id:
+          type: string
+          example: file-abc123
+        last_id:
+          type: string
+          example: file-abc456
+        has_more:
+          type: boolean
+          example: false
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
     OpenAIFile_2:
       title: OpenAIFile
       description: The `File` object represents a document that has been uploaded to OpenAI.
@@ -376,70 +440,6 @@ components:
       required:
       - anchor
       - seconds
-    CreateFileRequest:
-      type: object
-      additionalProperties: false
-      properties:
-        file:
-          description: 'The File object (not file name) to be uploaded.
-
-            '
-          type: string
-          format: binary
-        purpose:
-          description: 'The intended purpose of the uploaded file. One of:
-
-            - `assistants`: Used in the Assistants API
-
-            - `batch`: Used in the Batch API
-
-            - `fine-tune`: Used for fine-tuning
-
-            - `vision`: Images used for vision fine-tuning
-
-            - `user_data`: Flexible file type for any purpose
-
-            - `evals`: Used for eval data sets
-
-            '
-          type: string
-          enum:
-          - assistants
-          - batch
-          - fine-tune
-          - vision
-          - user_data
-          - evals
-        expires_after:
-          $ref: '#/components/schemas/FileExpirationAfter'
-      required:
-      - file
-      - purpose
-    ListFilesResponse_2:
-      type: object
-      properties:
-        object:
-          type: string
-          example: list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OpenAIFile_2'
-        first_id:
-          type: string
-          example: file-abc123
-        last_id:
-          type: string
-          example: file-abc456
-        has_more:
-          type: boolean
-          example: false
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
   securitySchemes:
     ApiKeyAuth:
       type: http

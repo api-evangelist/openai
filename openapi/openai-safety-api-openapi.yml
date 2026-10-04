@@ -79,11 +79,6 @@ paths:
       - Safety
 components:
   schemas:
-    SafetyCaseNoticeType:
-      type: string
-      enum:
-      - warning
-      - deactivation
     SafetyCaseResource:
       properties:
         id:
@@ -153,13 +148,6 @@ components:
       - request_paused
       - error_type
       - reason
-    SafetyCaseNotice:
-      properties:
-        type:
-          $ref: '#/components/schemas/SafetyCaseNoticeType'
-      type: object
-      required:
-      - type
     SafetyAlertErrorType:
       type: string
       enum:
@@ -167,6 +155,18 @@ components:
       - potentially_unintended_data_access
       - potentially_unintended_destructive_activity
       - other
+    SafetyCaseNoticeType:
+      type: string
+      enum:
+      - warning
+      - deactivation
+    SafetyCaseNotice:
+      properties:
+        type:
+          $ref: '#/components/schemas/SafetyCaseNoticeType'
+      type: object
+      required:
+      - type
   securitySchemes:
     ApiKeyAuth:
       type: http

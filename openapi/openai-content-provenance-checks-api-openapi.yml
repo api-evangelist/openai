@@ -47,28 +47,20 @@ paths:
       - Content Provenance Checks
 components:
   schemas:
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    ProvenanceDetectionResultApi:
+      type: string
+      enum:
+      - detected
+      - not_detected
     C2PAProvenanceResult:
       properties:
         type:
@@ -116,29 +108,6 @@ components:
           $ref: '#/components/schemas/Error'
       required:
       - error
-    ProvenanceResource:
-      properties:
-        object:
-          $ref: '#/components/schemas/ProvenanceCheckObject'
-          description: The object type. Always `content_provenance_check` for this endpoint.
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp, in seconds, when the provenance check was created.
-        results:
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/C2PAProvenanceResult'
-            - $ref: '#/components/schemas/SynthIDProvenanceResult'
-            discriminator:
-              propertyName: type
-          type: array
-          description: The provenance results that apply to the uploaded file. Image results include C2PA and SynthID; audio results include SynthID.
-      type: object
-      required:
-      - object
-      - created_at
-      - results
     MisalignmentErrorDetailsResource:
       properties:
         error_type:
@@ -152,19 +121,47 @@ components:
           description: An optional public continuation instruction.
       type: object
       required: []
+    C2PAValidationStateApi:
+      type: string
+      enum:
+      - trusted
+      - valid
+      - invalid
+      - not_present
     ProvenanceCheckObject:
       type: string
       enum:
       - content_provenance_check
-    CreateContentProvenanceBody:
+    Error:
+      type: object
       properties:
-        file:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
           type: string
-          format: binary
-          description: The image or audio file to check for supported OpenAI provenance signals.
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
       type: object
       required:
-      - file
+      - message
     SynthIDProvenanceResult:
       properties:
         type:
@@ -195,35 +192,38 @@ components:
       - outcome
       - model
       - generated_at
-    ProvenanceDetectionResultApi:
-      type: string
-      enum:
-      - detected
-      - not_detected
-    C2PAValidationStateApi:
-      type: string
-      enum:
-      - trusted
-      - valid
-      - invalid
-      - not_present
-    _MisalignmentSteer:
+    CreateContentProvenanceBody:
       properties:
-        message:
+        file:
           type: string
-          description: The public continuation instruction.
+          format: binary
+          description: The image or audio file to check for supported OpenAI provenance signals.
       type: object
       required:
-      - message
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
+      - file
+    ProvenanceResource:
+      properties:
+        object:
+          $ref: '#/components/schemas/ProvenanceCheckObject'
+          description: The object type. Always `content_provenance_check` for this endpoint.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp, in seconds, when the provenance check was created.
+        results:
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/C2PAProvenanceResult'
+            - $ref: '#/components/schemas/SynthIDProvenanceResult'
+            discriminator:
+              propertyName: type
+          type: array
+          description: The provenance results that apply to the uploaded file. Image results include C2PA and SynthID; audio results include SynthID.
+      type: object
+      required:
+      - object
+      - created_at
+      - results
   responses:
     TooManyRequests:
       description: The request was rejected because a rate limit was exceeded.

@@ -396,64 +396,40 @@ paths:
           response: "{\n    \"id\": \"alert_abc123\",\n    \"object\": \"organization.spend_alert.deleted\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
-    ProjectSpendAlertDeletedResource:
+    ProjectSpendAlertListResource:
       type: object
-      description: Confirmation payload returned after deleting a project spend alert.
+      description: Paginated list of project spend alerts.
       properties:
-        id:
-          type: string
-          description: The deleted spend alert ID.
         object:
           type: string
           enum:
-          - project.spend_alert.deleted
-          description: Always `project.spend_alert.deleted`.
+          - list
+          description: Always `list`.
           x-stainless-const: true
-        deleted:
+        data:
+          type: array
+          description: Spend alerts returned in the current page.
+          items:
+            $ref: '#/components/schemas/ProjectSpendAlert'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The ID of the first spend alert in this page.
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The ID of the last spend alert in this page.
+        has_more:
           type: boolean
-          description: Whether the spend alert was deleted.
+          description: Whether more spend alerts are available when paginating.
       required:
-      - id
       - object
-      - deleted
-    OrganizationSpendAlert:
-      type: object
-      description: Represents a spend alert configured at the organization level.
-      properties:
-        id:
-          type: string
-          description: The identifier, which can be referenced in API endpoints.
-        object:
-          type: string
-          enum:
-          - organization.spend_alert
-          description: The object type, which is always `organization.spend_alert`.
-          x-stainless-const: true
-        threshold_amount:
-          type: integer
-          description: The alert threshold amount, in cents.
-        currency:
-          type: string
-          enum:
-          - USD
-          description: The currency for the threshold amount.
-        interval:
-          type: string
-          enum:
-          - month
-          description: The time interval for evaluating spend against the threshold.
-        notification_channel:
-          $ref: '#/components/schemas/SpendAlertNotificationChannel'
-      required:
-      - id
-      - object
-      - threshold_amount
-      - currency
-      - interval
-      - notification_channel
-      x-oaiMeta:
-        name: The organization spend alert object
-        example: "{\n    \"id\": \"alert_abc123\",\n    \"object\": \"organization.spend_alert\",\n    \"threshold_amount\": 100000,\n    \"currency\": \"USD\",\n    \"interval\": \"month\",\n    \"notification_channel\": {\n        \"type\": \"email\",\n        \"recipients\": [\"finance@example.com\"],\n        \"subject_prefix\": \"OpenAI spend alert\"\n    }\n}\n"
+      - data
+      - first_id
+      - last_id
+      - has_more
     OrganizationSpendAlertListResource:
       type: object
       description: Paginated list of organization spend alerts.
@@ -488,29 +464,6 @@ components:
       - first_id
       - last_id
       - has_more
-    SpendAlertNotificationChannel:
-      type: object
-      description: Email notification settings for a spend alert.
-      properties:
-        type:
-          type: string
-          enum:
-          - email
-          description: The notification channel type. Currently only `email` is supported.
-          x-stainless-const: true
-        recipients:
-          type: array
-          description: Email addresses that receive the spend alert notification.
-          items:
-            type: string
-        subject_prefix:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: Optional subject prefix for alert emails.
-      required:
-      - type
-      - recipients
     CreateSpendAlertBody:
       type: object
       description: Parameters for creating or updating a spend alert.
@@ -574,40 +527,87 @@ components:
       x-oaiMeta:
         name: The project spend alert object
         example: "{\n    \"id\": \"alert_abc123\",\n    \"object\": \"project.spend_alert\",\n    \"threshold_amount\": 100000,\n    \"currency\": \"USD\",\n    \"interval\": \"month\",\n    \"notification_channel\": {\n        \"type\": \"email\",\n        \"recipients\": [\"finance@example.com\"],\n        \"subject_prefix\": \"OpenAI spend alert\"\n    }\n}\n"
-    ProjectSpendAlertListResource:
+    OrganizationSpendAlert:
       type: object
-      description: Paginated list of project spend alerts.
+      description: Represents a spend alert configured at the organization level.
       properties:
+        id:
+          type: string
+          description: The identifier, which can be referenced in API endpoints.
         object:
           type: string
           enum:
-          - list
-          description: Always `list`.
+          - organization.spend_alert
+          description: The object type, which is always `organization.spend_alert`.
           x-stainless-const: true
-        data:
-          type: array
-          description: Spend alerts returned in the current page.
-          items:
-            $ref: '#/components/schemas/ProjectSpendAlert'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The ID of the first spend alert in this page.
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The ID of the last spend alert in this page.
-        has_more:
-          type: boolean
-          description: Whether more spend alerts are available when paginating.
+        threshold_amount:
+          type: integer
+          description: The alert threshold amount, in cents.
+        currency:
+          type: string
+          enum:
+          - USD
+          description: The currency for the threshold amount.
+        interval:
+          type: string
+          enum:
+          - month
+          description: The time interval for evaluating spend against the threshold.
+        notification_channel:
+          $ref: '#/components/schemas/SpendAlertNotificationChannel'
       required:
+      - id
       - object
-      - data
-      - first_id
-      - last_id
-      - has_more
+      - threshold_amount
+      - currency
+      - interval
+      - notification_channel
+      x-oaiMeta:
+        name: The organization spend alert object
+        example: "{\n    \"id\": \"alert_abc123\",\n    \"object\": \"organization.spend_alert\",\n    \"threshold_amount\": 100000,\n    \"currency\": \"USD\",\n    \"interval\": \"month\",\n    \"notification_channel\": {\n        \"type\": \"email\",\n        \"recipients\": [\"finance@example.com\"],\n        \"subject_prefix\": \"OpenAI spend alert\"\n    }\n}\n"
+    ProjectSpendAlertDeletedResource:
+      type: object
+      description: Confirmation payload returned after deleting a project spend alert.
+      properties:
+        id:
+          type: string
+          description: The deleted spend alert ID.
+        object:
+          type: string
+          enum:
+          - project.spend_alert.deleted
+          description: Always `project.spend_alert.deleted`.
+          x-stainless-const: true
+        deleted:
+          type: boolean
+          description: Whether the spend alert was deleted.
+      required:
+      - id
+      - object
+      - deleted
+    SpendAlertNotificationChannel:
+      type: object
+      description: Email notification settings for a spend alert.
+      properties:
+        type:
+          type: string
+          enum:
+          - email
+          description: The notification channel type. Currently only `email` is supported.
+          x-stainless-const: true
+        recipients:
+          type: array
+          description: Email addresses that receive the spend alert notification.
+          items:
+            type: string
+        subject_prefix:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Optional subject prefix for alert emails.
+      required:
+      - type
+      - recipients
     OrganizationSpendAlertDeletedResource:
       type: object
       description: Confirmation payload returned after deleting an organization spend alert.

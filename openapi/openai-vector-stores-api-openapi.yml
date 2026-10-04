@@ -730,65 +730,86 @@ paths:
           response: "{\n  \"object\": \"vector_store.search_results.page\",\n  \"search_query\": \"What is the return policy?\",\n  \"data\": [\n    {\n      \"file_id\": \"file_123\",\n      \"filename\": \"document.pdf\",\n      \"score\": 0.95,\n      \"attributes\": {\n        \"author\": \"John Doe\",\n        \"date\": \"2023-01-01\"\n      },\n      \"content\": [\n        {\n          \"type\": \"text\",\n          \"text\": \"Relevant chunk\"\n        }\n      ]\n    },\n    {\n      \"file_id\": \"file_456\",\n      \"filename\": \"notes.txt\",\n      \"score\": 0.89,\n      \"attributes\": {\n        \"author\": \"Jane Smith\",\n        \"date\": \"2023-01-02\"\n      },\n      \"content\": [\n        {\n          \"type\": \"text\",\n          \"text\": \"Sample text content from the vector store.\"\n        }\n      ]\n    }\n  ],\n  \"has_more\": false,\n  \"next_page\": null\n}\n"
 components:
   schemas:
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
-    VectorStoreSearchResultsPage:
+    VectorStoreSearchRequest:
       type: object
       additionalProperties: false
       properties:
-        object:
+        query:
+          description: A query string for a search
+          oneOf:
+          - type: string
+          - type: array
+            items:
+              type: string
+              description: A list of queries to search for.
+              minItems: 1
+        rewrite_query:
+          description: Whether to rewrite the natural language query for vector search.
+          type: boolean
+          default: false
+        max_num_results:
+          description: The maximum number of results to return. This number should be between 1 and 50 inclusive.
+          type: integer
+          default: 10
+          minimum: 1
+          maximum: 50
+        filters:
+          description: A filter to apply based on file attributes.
+          oneOf:
+          - $ref: '#/components/schemas/ComparisonFilter'
+          - $ref: '#/components/schemas/CompoundFilter'
+        ranking_options:
+          description: Ranking options for search.
+          type: object
+          additionalProperties: false
+          properties:
+            ranker:
+              description: Enable re-ranking; set to `none` to disable, which can help reduce latency.
+              type: string
+              enum:
+              - none
+              - auto
+              - default-2024-11-15
+              default: auto
+            score_threshold:
+              type: number
+              minimum: 0
+              maximum: 1
+              default: 0
+      required:
+      - query
+      x-oaiMeta:
+        name: Vector store search request
+    VectorStoreSearchResultContentObject:
+      type: object
+      additionalProperties: false
+      properties:
+        type:
+          description: The type of content.
           type: string
           enum:
-          - vector_store.search_results.page
-          description: The object type, which is always `vector_store.search_results.page`
-          x-stainless-const: true
-        search_query:
-          type: array
-          items:
-            type: string
-            description: The query used for this search.
-            minItems: 1
-        data:
-          type: array
-          description: The list of search result items.
-          items:
-            $ref: '#/components/schemas/VectorStoreSearchResultItem'
-        has_more:
-          type: boolean
-          description: Indicates if there are more results to fetch.
-        next_page:
-          anyOf:
-          - type: string
-            description: The token for the next page, if any.
-          - type: 'null'
+          - text
+        text:
+          description: The text content returned from search.
+          type: string
       required:
-      - object
-      - search_query
-      - data
-      - has_more
-      - next_page
+      - type
+      - text
       x-oaiMeta:
-        name: Vector store search results page
+        name: Vector store search result content object
+    CreateVectorStoreFileRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        file_id:
+          description: A [File](https://developers.openai.com/api/reference/resources/files) ID that the vector store should use. Useful for tools like `file_search` that can access files. For multi-file ingestion, we recommend [`file_batches`](https://developers.openai.com/api/reference/resources/vector_stores/subresources/file_batches/methods/create) to minimize per-vector-store write requests.
+          type: string
+        chunking_strategy:
+          $ref: '#/components/schemas/ChunkingStrategyRequestParam'
+        attributes:
+          $ref: '#/components/schemas/VectorStoreFileAttributes'
+      required:
+      - file_id
     VectorStoreFileBatchObject:
       type: object
       title: Vector store file batch
@@ -853,6 +874,90 @@ components:
         name: The vector store files batch object
         beta: true
         example: "{\n  \"id\": \"vsfb_123\",\n  \"object\": \"vector_store.files_batch\",\n  \"created_at\": 1698107661,\n  \"vector_store_id\": \"vs_abc123\",\n  \"status\": \"completed\",\n  \"file_counts\": {\n    \"in_progress\": 0,\n    \"completed\": 100,\n    \"failed\": 0,\n    \"cancelled\": 0,\n    \"total\": 100\n  }\n}\n"
+    CreateVectorStoreRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        file_ids:
+          description: A list of [File](https://developers.openai.com/api/reference/resources/files) IDs that the vector store should use. Useful for tools like `file_search` that can access files.
+          type: array
+          maxItems: 500
+          items:
+            type: string
+        name:
+          description: The name of the vector store.
+          type: string
+        description:
+          description: A description for the vector store. Can be used to describe the vector store's purpose.
+          type: string
+        expires_after:
+          $ref: '#/components/schemas/VectorStoreExpirationAfter'
+        chunking_strategy:
+          type: object
+          description: The chunking strategy used to chunk the file(s). If not set, will use the `auto` strategy. Only applicable if `file_ids` is non-empty.
+          oneOf:
+          - $ref: '#/components/schemas/AutoChunkingStrategyRequestParam'
+          - $ref: '#/components/schemas/StaticChunkingStrategyRequestParam'
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+    StaticChunkingStrategyRequestParam:
+      type: object
+      title: Static Chunking Strategy
+      description: Customize your own chunking strategy by setting chunk size and chunk overlap.
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          description: Always `static`.
+          enum:
+          - static
+          x-stainless-const: true
+        static:
+          $ref: '#/components/schemas/StaticChunkingStrategy'
+      required:
+      - type
+      - static
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+    ListVectorStoreFilesResponse:
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/VectorStoreFileObject'
+        first_id:
+          type: string
+          example: file-abc123
+        last_id:
+          type: string
+          example: file-abc456
+        has_more:
+          type: boolean
+          example: false
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
     VectorStoreFileAttributes:
       anyOf:
       - type: object
@@ -879,94 +984,7 @@ components:
           - type: boolean
         x-oaiTypeLabel: map
       - type: 'null'
-    StaticChunkingStrategyResponseParam:
-      type: object
-      title: Static Chunking Strategy
-      additionalProperties: false
-      properties:
-        type:
-          type: string
-          description: Always `static`.
-          enum:
-          - static
-          x-stainless-const: true
-        static:
-          $ref: '#/components/schemas/StaticChunkingStrategy'
-      required:
-      - type
-      - static
-    UpdateVectorStoreRequest:
-      type: object
-      additionalProperties: false
-      properties:
-        name:
-          description: The name of the vector store.
-          type: string
-          nullable: true
-        expires_after:
-          allOf:
-          - $ref: '#/components/schemas/VectorStoreExpirationAfter'
-          - nullable: true
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    VectorStoreSearchRequest:
-      type: object
-      additionalProperties: false
-      properties:
-        query:
-          description: A query string for a search
-          oneOf:
-          - type: string
-          - type: array
-            items:
-              type: string
-              description: A list of queries to search for.
-              minItems: 1
-        rewrite_query:
-          description: Whether to rewrite the natural language query for vector search.
-          type: boolean
-          default: false
-        max_num_results:
-          description: The maximum number of results to return. This number should be between 1 and 50 inclusive.
-          type: integer
-          default: 10
-          minimum: 1
-          maximum: 50
-        filters:
-          description: A filter to apply based on file attributes.
-          oneOf:
-          - $ref: '#/components/schemas/ComparisonFilter'
-          - $ref: '#/components/schemas/CompoundFilter'
-        ranking_options:
-          description: Ranking options for search.
-          type: object
-          additionalProperties: false
-          properties:
-            ranker:
-              description: Enable re-ranking; set to `none` to disable, which can help reduce latency.
-              type: string
-              enum:
-              - none
-              - auto
-              - default-2024-11-15
-              default: auto
-            score_threshold:
-              type: number
-              minimum: 0
-              maximum: 1
-              default: 0
-      required:
-      - query
-      x-oaiMeta:
-        name: Vector store search request
-    ListVectorStoreFilesResponse:
+    ListVectorStoresResponse:
       properties:
         object:
           type: string
@@ -974,13 +992,13 @@ components:
         data:
           type: array
           items:
-            $ref: '#/components/schemas/VectorStoreFileObject'
+            $ref: '#/components/schemas/VectorStoreObject'
         first_id:
           type: string
-          example: file-abc123
+          example: vs_abc123
         last_id:
           type: string
-          example: file-abc456
+          example: vs_abc456
         has_more:
           type: boolean
           example: false
@@ -990,102 +1008,19 @@ components:
       - first_id
       - last_id
       - has_more
-    UpdateVectorStoreFileAttributesRequest:
-      type: object
-      additionalProperties: false
+    MisalignmentErrorDetailsResource:
       properties:
-        attributes:
-          $ref: '#/components/schemas/VectorStoreFileAttributes'
-      required:
-      - attributes
-      x-oaiMeta:
-        name: Update vector store file attributes request
-    ComparisonFilter:
-      type: object
-      additionalProperties: false
-      title: Comparison Filter
-      description: 'A filter used to compare a specified attribute key to a given value using a defined comparison operation.
-
-        '
-      properties:
-        type:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
           type: string
-          default: eq
-          enum:
-          - eq
-          - ne
-          - gt
-          - gte
-          - lt
-          - lte
-          - in
-          - nin
-          description: 'Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
-
-            - `eq`: equals
-
-            - `ne`: not equal
-
-            - `gt`: greater than
-
-            - `gte`: greater than or equal
-
-            - `lt`: less than
-
-            - `lte`: less than or equal
-
-            - `in`: in
-
-            - `nin`: not in
-
-            '
-        key:
-          type: string
-          description: The key to compare against the value.
-        value:
-          oneOf:
-          - type: string
-          - type: number
-          - type: boolean
-          - type: array
-            items:
-              oneOf:
-              - type: string
-              - type: number
-          description: The value to compare against the attribute key; supports string, number, or boolean types.
-      required:
-      - type
-      - key
-      - value
-      x-oaiMeta:
-        name: ComparisonFilter
-    CreateVectorStoreFileBatchRequest:
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
       type: object
-      additionalProperties: false
-      properties:
-        file_ids:
-          description: A list of [File](https://developers.openai.com/api/reference/resources/files) IDs that the vector store should use. Useful for tools like `file_search` that can access files. If `attributes` or `chunking_strategy` are provided, they will be applied to all files in the batch. The maximum batch size is 2000 files. This endpoint is recommended for multi-file ingestion and helps reduce per-vector-store write request pressure. Mutually exclusive with `files`.
-          type: array
-          minItems: 1
-          maxItems: 2000
-          items:
-            type: string
-        files:
-          description: A list of objects that each include a `file_id` plus optional `attributes` or `chunking_strategy`. Use this when you need to override metadata for specific files. The global `attributes` or `chunking_strategy` will be ignored and must be specified for each file. The maximum batch size is 2000 files. This endpoint is recommended for multi-file ingestion and helps reduce per-vector-store write request pressure. Mutually exclusive with `file_ids`.
-          type: array
-          minItems: 1
-          maxItems: 2000
-          items:
-            $ref: '#/components/schemas/CreateVectorStoreFileRequest'
-        chunking_strategy:
-          $ref: '#/components/schemas/ChunkingStrategyRequestParam'
-        attributes:
-          $ref: '#/components/schemas/VectorStoreFileAttributes'
-      anyOf:
-      - required:
-        - file_ids
-      - required:
-        - files
+      required: []
     VectorStoreFileContentResponse:
       type: object
       description: Represents the parsed content of a vector store file.
@@ -1121,36 +1056,181 @@ components:
       - data
       - has_more
       - next_page
-    CreateVectorStoreFileRequest:
+    OtherChunkingStrategyResponseParam:
+      type: object
+      title: Other Chunking Strategy
+      description: This is returned when the chunking strategy is unknown. Typically, this is because the file was indexed before the `chunking_strategy` concept was introduced in the API.
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          description: Always `other`.
+          enum:
+          - other
+          x-stainless-const: true
+      required:
+      - type
+    Error:
+      type: object
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
+    VectorStoreExpirationAfter:
+      type: object
+      title: Vector store expiration policy
+      description: The expiration policy for a vector store.
+      properties:
+        anchor:
+          description: 'Anchor timestamp after which the expiration policy applies. Supported anchors: `last_active_at`.'
+          type: string
+          enum:
+          - last_active_at
+          x-stainless-const: true
+        days:
+          description: The number of days after the anchor time that the vector store will expire.
+          type: integer
+          minimum: 1
+          maximum: 365
+      required:
+      - anchor
+      - days
+    AutoChunkingStrategyRequestParam:
+      type: object
+      title: Auto Chunking Strategy
+      description: The default strategy. This strategy currently uses a `max_chunk_size_tokens` of `800` and `chunk_overlap_tokens` of `400`.
+      additionalProperties: false
+      properties:
+        type:
+          type: string
+          description: Always `auto`.
+          enum:
+          - auto
+          x-stainless-const: true
+      required:
+      - type
+    Metadata:
+      anyOf:
+      - type: object
+        description: 'Set of 16 key-value pairs that can be attached to an object. This can be
+
+          useful for storing additional information about the object in a structured
+
+          format, and querying for objects via API or the dashboard.
+
+
+          Keys are strings with a maximum length of 64 characters. Values are strings
+
+          with a maximum length of 512 characters.
+
+          '
+        additionalProperties:
+          type: string
+        x-oaiTypeLabel: map
+      - type: 'null'
+    CreateVectorStoreFileBatchRequest:
       type: object
       additionalProperties: false
       properties:
-        file_id:
-          description: A [File](https://developers.openai.com/api/reference/resources/files) ID that the vector store should use. Useful for tools like `file_search` that can access files. For multi-file ingestion, we recommend [`file_batches`](https://developers.openai.com/api/reference/resources/vector_stores/subresources/file_batches/methods/create) to minimize per-vector-store write requests.
-          type: string
+        file_ids:
+          description: A list of [File](https://developers.openai.com/api/reference/resources/files) IDs that the vector store should use. Useful for tools like `file_search` that can access files. If `attributes` or `chunking_strategy` are provided, they will be applied to all files in the batch. The maximum batch size is 2000 files. This endpoint is recommended for multi-file ingestion and helps reduce per-vector-store write request pressure. Mutually exclusive with `files`.
+          type: array
+          minItems: 1
+          maxItems: 2000
+          items:
+            type: string
+        files:
+          description: A list of objects that each include a `file_id` plus optional `attributes` or `chunking_strategy`. Use this when you need to override metadata for specific files. The global `attributes` or `chunking_strategy` will be ignored and must be specified for each file. The maximum batch size is 2000 files. This endpoint is recommended for multi-file ingestion and helps reduce per-vector-store write request pressure. Mutually exclusive with `file_ids`.
+          type: array
+          minItems: 1
+          maxItems: 2000
+          items:
+            $ref: '#/components/schemas/CreateVectorStoreFileRequest'
         chunking_strategy:
           $ref: '#/components/schemas/ChunkingStrategyRequestParam'
         attributes:
           $ref: '#/components/schemas/VectorStoreFileAttributes'
-      required:
-      - file_id
-    VectorStoreSearchResultContentObject:
+      anyOf:
+      - required:
+        - file_ids
+      - required:
+        - files
+    VectorStoreSearchResultItem:
       type: object
       additionalProperties: false
       properties:
-        type:
-          description: The type of content.
+        file_id:
+          type: string
+          description: The ID of the vector store file.
+        filename:
+          type: string
+          description: The name of the vector store file.
+        score:
+          type: number
+          description: The similarity score for the result.
+          minimum: 0
+          maximum: 1
+        attributes:
+          $ref: '#/components/schemas/VectorStoreFileAttributes'
+        content:
+          type: array
+          description: Content chunks from the file.
+          items:
+            $ref: '#/components/schemas/VectorStoreSearchResultContentObject'
+      required:
+      - file_id
+      - filename
+      - score
+      - attributes
+      - content
+      x-oaiMeta:
+        name: Vector store search result item
+    DeleteVectorStoreResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        deleted:
+          type: boolean
+        object:
           type: string
           enum:
-          - text
-        text:
-          description: The text content returned from search.
-          type: string
+          - vector_store.deleted
+          x-stainless-const: true
       required:
-      - type
-      - text
-      x-oaiMeta:
-        name: Vector store search result content object
+      - id
+      - object
+      - deleted
+    UpdateVectorStoreRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          description: The name of the vector store.
+          type: string
+          nullable: true
+        expires_after:
+          allOf:
+          - $ref: '#/components/schemas/VectorStoreExpirationAfter'
+          - nullable: true
+        metadata:
+          $ref: '#/components/schemas/Metadata'
     CompoundFilter:
       $recursiveAnchor: true
       type: object
@@ -1178,25 +1258,6 @@ components:
       - filters
       x-oaiMeta:
         name: CompoundFilter
-    Metadata:
-      anyOf:
-      - type: object
-        description: 'Set of 16 key-value pairs that can be attached to an object. This can be
-
-          useful for storing additional information about the object in a structured
-
-          format, and querying for objects via API or the dashboard.
-
-
-          Keys are strings with a maximum length of 64 characters. Values are strings
-
-          with a maximum length of 512 characters.
-
-          '
-        additionalProperties:
-          type: string
-        x-oaiTypeLabel: map
-      - type: 'null'
     VectorStoreObject:
       type: object
       title: Vector store
@@ -1281,10 +1342,9 @@ components:
       x-oaiMeta:
         name: The vector store object
         example: "{\n  \"id\": \"vs_123\",\n  \"object\": \"vector_store\",\n  \"created_at\": 1698107661,\n  \"usage_bytes\": 123456,\n  \"last_active_at\": 1698107661,\n  \"name\": \"my_vector_store\",\n  \"status\": \"completed\",\n  \"file_counts\": {\n    \"in_progress\": 0,\n    \"completed\": 100,\n    \"cancelled\": 0,\n    \"failed\": 0,\n    \"total\": 100\n  },\n  \"last_used_at\": 1698107661\n}\n"
-    StaticChunkingStrategyRequestParam:
+    StaticChunkingStrategyResponseParam:
       type: object
       title: Static Chunking Strategy
-      description: Customize your own chunking strategy by setting chunk size and chunk overlap.
       additionalProperties: false
       properties:
         type:
@@ -1369,104 +1429,119 @@ components:
         name: The vector store file object
         beta: true
         example: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"vector_store.file\",\n  \"usage_bytes\": 1234,\n  \"created_at\": 1698107661,\n  \"vector_store_id\": \"vs_abc123\",\n  \"status\": \"completed\",\n  \"last_error\": null,\n  \"chunking_strategy\": {\n    \"type\": \"static\",\n    \"static\": {\n      \"max_chunk_size_tokens\": 800,\n      \"chunk_overlap_tokens\": 400\n    }\n  }\n}\n"
-    DeleteVectorStoreResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        deleted:
-          type: boolean
-        object:
-          type: string
-          enum:
-          - vector_store.deleted
-          x-stainless-const: true
-      required:
-      - id
-      - object
-      - deleted
-    OtherChunkingStrategyResponseParam:
-      type: object
-      title: Other Chunking Strategy
-      description: This is returned when the chunking strategy is unknown. Typically, this is because the file was indexed before the `chunking_strategy` concept was introduced in the API.
-      additionalProperties: false
-      properties:
-        type:
-          type: string
-          description: Always `other`.
-          enum:
-          - other
-          x-stainless-const: true
-      required:
-      - type
-    AutoChunkingStrategyRequestParam:
-      type: object
-      title: Auto Chunking Strategy
-      description: The default strategy. This strategy currently uses a `max_chunk_size_tokens` of `800` and `chunk_overlap_tokens` of `400`.
-      additionalProperties: false
-      properties:
-        type:
-          type: string
-          description: Always `auto`.
-          enum:
-          - auto
-          x-stainless-const: true
-      required:
-      - type
-    ListVectorStoresResponse:
-      properties:
-        object:
-          type: string
-          example: list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/VectorStoreObject'
-        first_id:
-          type: string
-          example: vs_abc123
-        last_id:
-          type: string
-          example: vs_abc456
-        has_more:
-          type: boolean
-          example: false
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
-    VectorStoreSearchResultItem:
+    UpdateVectorStoreFileAttributesRequest:
       type: object
       additionalProperties: false
       properties:
-        file_id:
-          type: string
-          description: The ID of the vector store file.
-        filename:
-          type: string
-          description: The name of the vector store file.
-        score:
-          type: number
-          description: The similarity score for the result.
-          minimum: 0
-          maximum: 1
         attributes:
           $ref: '#/components/schemas/VectorStoreFileAttributes'
-        content:
-          type: array
-          description: Content chunks from the file.
-          items:
-            $ref: '#/components/schemas/VectorStoreSearchResultContentObject'
       required:
-      - file_id
-      - filename
-      - score
       - attributes
-      - content
       x-oaiMeta:
-        name: Vector store search result item
+        name: Update vector store file attributes request
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    ComparisonFilter:
+      type: object
+      additionalProperties: false
+      title: Comparison Filter
+      description: 'A filter used to compare a specified attribute key to a given value using a defined comparison operation.
+
+        '
+      properties:
+        type:
+          type: string
+          default: eq
+          enum:
+          - eq
+          - ne
+          - gt
+          - gte
+          - lt
+          - lte
+          - in
+          - nin
+          description: 'Specifies the comparison operator: `eq`, `ne`, `gt`, `gte`, `lt`, `lte`, `in`, `nin`.
+
+            - `eq`: equals
+
+            - `ne`: not equal
+
+            - `gt`: greater than
+
+            - `gte`: greater than or equal
+
+            - `lt`: less than
+
+            - `lte`: less than or equal
+
+            - `in`: in
+
+            - `nin`: not in
+
+            '
+        key:
+          type: string
+          description: The key to compare against the value.
+        value:
+          oneOf:
+          - type: string
+          - type: number
+          - type: boolean
+          - type: array
+            items:
+              oneOf:
+              - type: string
+              - type: number
+          description: The value to compare against the attribute key; supports string, number, or boolean types.
+      required:
+      - type
+      - key
+      - value
+      x-oaiMeta:
+        name: ComparisonFilter
+    VectorStoreSearchResultsPage:
+      type: object
+      additionalProperties: false
+      properties:
+        object:
+          type: string
+          enum:
+          - vector_store.search_results.page
+          description: The object type, which is always `vector_store.search_results.page`
+          x-stainless-const: true
+        search_query:
+          type: array
+          items:
+            type: string
+            description: The query used for this search.
+            minItems: 1
+        data:
+          type: array
+          description: The list of search result items.
+          items:
+            $ref: '#/components/schemas/VectorStoreSearchResultItem'
+        has_more:
+          type: boolean
+          description: Indicates if there are more results to fetch.
+        next_page:
+          anyOf:
+          - type: string
+            description: The token for the next page, if any.
+          - type: 'null'
+      required:
+      - object
+      - search_query
+      - data
+      - has_more
+      - next_page
+      x-oaiMeta:
+        name: Vector store search results page
     DeleteVectorStoreFileResponse:
       type: object
       properties:
@@ -1483,27 +1558,6 @@ components:
       - id
       - object
       - deleted
-    ChunkingStrategyRequestParam:
-      type: object
-      description: The chunking strategy used to chunk the file(s). If not set, will use the `auto` strategy.
-      oneOf:
-      - $ref: '#/components/schemas/AutoChunkingStrategyRequestParam'
-      - $ref: '#/components/schemas/StaticChunkingStrategyRequestParam'
-      discriminator:
-        propertyName: type
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
     StaticChunkingStrategy:
       type: object
       additionalProperties: false
@@ -1524,68 +1578,14 @@ components:
       required:
       - max_chunk_size_tokens
       - chunk_overlap_tokens
-    CreateVectorStoreRequest:
+    ChunkingStrategyRequestParam:
       type: object
-      additionalProperties: false
-      properties:
-        file_ids:
-          description: A list of [File](https://developers.openai.com/api/reference/resources/files) IDs that the vector store should use. Useful for tools like `file_search` that can access files.
-          type: array
-          maxItems: 500
-          items:
-            type: string
-        name:
-          description: The name of the vector store.
-          type: string
-        description:
-          description: A description for the vector store. Can be used to describe the vector store's purpose.
-          type: string
-        expires_after:
-          $ref: '#/components/schemas/VectorStoreExpirationAfter'
-        chunking_strategy:
-          type: object
-          description: The chunking strategy used to chunk the file(s). If not set, will use the `auto` strategy. Only applicable if `file_ids` is non-empty.
-          oneOf:
-          - $ref: '#/components/schemas/AutoChunkingStrategyRequestParam'
-          - $ref: '#/components/schemas/StaticChunkingStrategyRequestParam'
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
-    VectorStoreExpirationAfter:
-      type: object
-      title: Vector store expiration policy
-      description: The expiration policy for a vector store.
-      properties:
-        anchor:
-          description: 'Anchor timestamp after which the expiration policy applies. Supported anchors: `last_active_at`.'
-          type: string
-          enum:
-          - last_active_at
-          x-stainless-const: true
-        days:
-          description: The number of days after the anchor time that the vector store will expire.
-          type: integer
-          minimum: 1
-          maximum: 365
-      required:
-      - anchor
-      - days
+      description: The chunking strategy used to chunk the file(s). If not set, will use the `auto` strategy.
+      oneOf:
+      - $ref: '#/components/schemas/AutoChunkingStrategyRequestParam'
+      - $ref: '#/components/schemas/StaticChunkingStrategyRequestParam'
+      discriminator:
+        propertyName: type
   responses:
     TooManyRequests:
       description: The request was rejected because a rate limit was exceeded.

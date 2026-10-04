@@ -915,6 +915,31 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
+    ListMessageFilesResponse:
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/MessageFileObject'
+        first_id:
+          type: string
+          example: file-abc123
+        last_id:
+          type: string
+          example: file-abc456
+        has_more:
+          type: boolean
+          example: false
+      required:
+      - object
+      - data
+      - items
+      - first_id
+      - last_id
+      - has_more
     MessageFileObject:
       type: object
       title: Message files
@@ -943,105 +968,93 @@ components:
         name: The message file object
         beta: true
         example: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"thread.message.file\",\n  \"created_at\": 1698107661,\n  \"message_id\": \"message_QLoItBbqwyAJEzlTy4y9kOMM\",\n  \"file_id\": \"file-abc123\"\n}\n"
-    ListMessageFilesResponse:
-      properties:
-        object:
-          type: string
-          example: list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/MessageFileObject'
-        first_id:
-          type: string
-          example: file-abc123
-        last_id:
-          type: string
-          example: file-abc456
-        has_more:
-          type: boolean
-          example: false
-      required:
-      - object
-      - data
-      - items
-      - first_id
-      - last_id
-      - has_more
-    ListRunStepsResponse:
-      properties:
-        object:
-          type: string
-          example: list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/RunStepObject'
-        first_id:
-          type: string
-          example: step_abc123
-        last_id:
-          type: string
-          example: step_abc456
-        has_more:
-          type: boolean
-          example: false
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
-    MessageObject:
+    RunStepObject:
       type: object
-      title: The message object
-      description: Represents a message within a [thread](/docs/api-reference/threads).
+      title: Run steps
+      description: 'Represents a step in execution of a run.
+
+        '
       properties:
         id:
-          description: The identifier, which can be referenced in API endpoints.
+          description: The identifier of the run step, which can be referenced in API endpoints.
           type: string
         object:
-          description: The object type, which is always `thread.message`.
+          description: The object type, which is always `thread.run.step`.
           type: string
           enum:
-          - thread.message
+          - thread.run.step
         created_at:
-          description: The Unix timestamp (in seconds) for when the message was created.
+          description: The Unix timestamp (in seconds) for when the run step was created.
           type: integer
-        thread_id:
-          description: The [thread](/docs/api-reference/threads) ID that this message belongs to.
+        assistant_id:
+          description: The ID of the [assistant](/docs/api-reference/assistants) associated with the run step.
           type: string
-        role:
-          description: The entity that produced the message. One of `user` or `assistant`.
+        thread_id:
+          description: The ID of the [thread](/docs/api-reference/threads) that was run.
+          type: string
+        run_id:
+          description: The ID of the [run](/docs/api-reference/runs) that this run step is a part of.
+          type: string
+        type:
+          description: The type of run step, which can be either `message_creation` or `tool_calls`.
           type: string
           enum:
-          - user
-          - assistant
-        content:
-          description: The content of the message in array of text and/or images.
-          type: array
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/MessageContentImageFileObject'
-            - $ref: '#/components/schemas/MessageContentTextObject'
-            x-oaiExpandable: true
-        assistant_id:
-          description: If applicable, the ID of the [assistant](/docs/api-reference/assistants) that authored this message.
+          - message_creation
+          - tool_calls
+        status:
+          description: The status of the run step, which can be either `in_progress`, `cancelled`, `failed`, `completed`, or `expired`.
+          type: string
+          enum:
+          - in_progress
+          - cancelled
+          - failed
+          - completed
+          - expired
+        step_details:
+          type: object
+          description: The details of the run step.
+          oneOf:
+          - $ref: '#/components/schemas/RunStepDetailsMessageCreationObject'
+          - $ref: '#/components/schemas/RunStepDetailsToolCallsObject'
+          x-oaiExpandable: true
+        last_error:
           type:
-          - string
+          - object
           - 'null'
-        run_id:
-          description: If applicable, the ID of the [run](/docs/api-reference/runs) associated with the authoring of this message.
+          description: The last error associated with this run step. Will be `null` if there are no errors.
+          properties:
+            code:
+              type: string
+              description: One of `server_error` or `rate_limit_exceeded`.
+              enum:
+              - server_error
+              - rate_limit_exceeded
+            message:
+              type: string
+              description: A human-readable description of the error.
+          required:
+          - code
+          - message
+        expired_at:
+          description: The Unix timestamp (in seconds) for when the run step expired. A step is considered expired if the parent run is expired.
           type:
-          - string
+          - integer
           - 'null'
-        file_ids:
-          description: A list of [file](/docs/api-reference/files) IDs that the assistant should use. Useful for tools like retrieval and code_interpreter that can access files. A maximum of 10 files can be attached to a message.
-          default: []
-          maxItems: 10
-          type: array
-          items:
-            type: string
+        cancelled_at:
+          description: The Unix timestamp (in seconds) for when the run step was cancelled.
+          type:
+          - integer
+          - 'null'
+        failed_at:
+          description: The Unix timestamp (in seconds) for when the run step failed.
+          type:
+          - integer
+          - 'null'
+        completed_at:
+          description: The Unix timestamp (in seconds) for when the run step completed.
+          type:
+          - integer
+          - 'null'
         metadata:
           description: 'Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
 
@@ -1050,21 +1063,44 @@ components:
           - object
           - 'null'
           x-oaiTypeLabel: map
+        usage:
+          $ref: '#/components/schemas/RunStepCompletionUsage'
       required:
       - id
       - object
       - created_at
-      - thread_id
-      - role
-      - content
       - assistant_id
+      - thread_id
       - run_id
-      - file_ids
+      - type
+      - status
+      - step_details
+      - last_error
+      - expired_at
+      - cancelled_at
+      - failed_at
+      - completed_at
       - metadata
+      - usage
       x-oaiMeta:
-        name: The message object
+        name: The run step object
         beta: true
-        example: "{\n  \"id\": \"msg_abc123\",\n  \"object\": \"thread.message\",\n  \"created_at\": 1698983503,\n  \"thread_id\": \"thread_abc123\",\n  \"role\": \"assistant\",\n  \"content\": [\n    {\n      \"type\": \"text\",\n      \"text\": {\n        \"value\": \"Hi! How can I help you today?\",\n        \"annotations\": []\n      }\n    }\n  ],\n  \"file_ids\": [],\n  \"assistant_id\": \"asst_abc123\",\n  \"run_id\": \"run_abc123\",\n  \"metadata\": {}\n}\n"
+        example: "{\n  \"id\": \"step_abc123\",\n  \"object\": \"thread.run.step\",\n  \"created_at\": 1699063291,\n  \"run_id\": \"run_abc123\",\n  \"assistant_id\": \"asst_abc123\",\n  \"thread_id\": \"thread_abc123\",\n  \"type\": \"message_creation\",\n  \"status\": \"completed\",\n  \"cancelled_at\": null,\n  \"completed_at\": 1699063291,\n  \"expired_at\": null,\n  \"failed_at\": null,\n  \"last_error\": null,\n  \"step_details\": {\n    \"type\": \"message_creation\",\n    \"message_creation\": {\n      \"message_id\": \"msg_abc123\"\n    }\n  },\n  \"usage\": {\n    \"prompt_tokens\": 123,\n    \"completion_tokens\": 456,\n    \"total_tokens\": 579\n  }\n}\n"
+    DeleteThreadResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        deleted:
+          type: boolean
+        object:
+          type: string
+          enum:
+          - thread.deleted
+      required:
+      - id
+      - object
+      - deleted
     RunObject:
       type: object
       title: A run on a thread
@@ -1222,6 +1258,79 @@ components:
         name: The run object
         beta: true
         example: "{\n  \"id\": \"run_abc123\",\n  \"object\": \"thread.run\",\n  \"created_at\": 1698107661,\n  \"assistant_id\": \"asst_abc123\",\n  \"thread_id\": \"thread_abc123\",\n  \"status\": \"completed\",\n  \"started_at\": 1699073476,\n  \"expires_at\": null,\n  \"cancelled_at\": null,\n  \"failed_at\": null,\n  \"completed_at\": 1699073498,\n  \"last_error\": null,\n  \"model\": \"gpt-4\",\n  \"instructions\": null,\n  \"tools\": [{\"type\": \"retrieval\"}, {\"type\": \"code_interpreter\"}],\n  \"file_ids\": [],\n  \"metadata\": {},\n  \"usage\": {\n    \"prompt_tokens\": 123,\n    \"completion_tokens\": 456,\n    \"total_tokens\": 579\n  }\n}\n"
+    MessageObject:
+      type: object
+      title: The message object
+      description: Represents a message within a [thread](/docs/api-reference/threads).
+      properties:
+        id:
+          description: The identifier, which can be referenced in API endpoints.
+          type: string
+        object:
+          description: The object type, which is always `thread.message`.
+          type: string
+          enum:
+          - thread.message
+        created_at:
+          description: The Unix timestamp (in seconds) for when the message was created.
+          type: integer
+        thread_id:
+          description: The [thread](/docs/api-reference/threads) ID that this message belongs to.
+          type: string
+        role:
+          description: The entity that produced the message. One of `user` or `assistant`.
+          type: string
+          enum:
+          - user
+          - assistant
+        content:
+          description: The content of the message in array of text and/or images.
+          type: array
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/MessageContentImageFileObject'
+            - $ref: '#/components/schemas/MessageContentTextObject'
+            x-oaiExpandable: true
+        assistant_id:
+          description: If applicable, the ID of the [assistant](/docs/api-reference/assistants) that authored this message.
+          type:
+          - string
+          - 'null'
+        run_id:
+          description: If applicable, the ID of the [run](/docs/api-reference/runs) associated with the authoring of this message.
+          type:
+          - string
+          - 'null'
+        file_ids:
+          description: A list of [file](/docs/api-reference/files) IDs that the assistant should use. Useful for tools like retrieval and code_interpreter that can access files. A maximum of 10 files can be attached to a message.
+          default: []
+          maxItems: 10
+          type: array
+          items:
+            type: string
+        metadata:
+          description: 'Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
+
+            '
+          type:
+          - object
+          - 'null'
+          x-oaiTypeLabel: map
+      required:
+      - id
+      - object
+      - created_at
+      - thread_id
+      - role
+      - content
+      - assistant_id
+      - run_id
+      - file_ids
+      - metadata
+      x-oaiMeta:
+        name: The message object
+        beta: true
+        example: "{\n  \"id\": \"msg_abc123\",\n  \"object\": \"thread.message\",\n  \"created_at\": 1698983503,\n  \"thread_id\": \"thread_abc123\",\n  \"role\": \"assistant\",\n  \"content\": [\n    {\n      \"type\": \"text\",\n      \"text\": {\n        \"value\": \"Hi! How can I help you today?\",\n        \"annotations\": []\n      }\n    }\n  ],\n  \"file_ids\": [],\n  \"assistant_id\": \"asst_abc123\",\n  \"run_id\": \"run_abc123\",\n  \"metadata\": {}\n}\n"
     ListMessagesResponse:
       properties:
         object:
@@ -1246,139 +1355,55 @@ components:
       - first_id
       - last_id
       - has_more
-    RunStepObject:
+    ListRunsResponse:
       type: object
-      title: Run steps
-      description: 'Represents a step in execution of a run.
-
-        '
       properties:
-        id:
-          description: The identifier of the run step, which can be referenced in API endpoints.
-          type: string
         object:
-          description: The object type, which is always `thread.run.step`.
           type: string
-          enum:
-          - thread.run.step
-        created_at:
-          description: The Unix timestamp (in seconds) for when the run step was created.
-          type: integer
-        assistant_id:
-          description: The ID of the [assistant](/docs/api-reference/assistants) associated with the run step.
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RunObject'
+        first_id:
           type: string
-        thread_id:
-          description: The ID of the [thread](/docs/api-reference/threads) that was run.
+          example: run_abc123
+        last_id:
           type: string
-        run_id:
-          description: The ID of the [run](/docs/api-reference/runs) that this run step is a part of.
-          type: string
-        type:
-          description: The type of run step, which can be either `message_creation` or `tool_calls`.
-          type: string
-          enum:
-          - message_creation
-          - tool_calls
-        status:
-          description: The status of the run step, which can be either `in_progress`, `cancelled`, `failed`, `completed`, or `expired`.
-          type: string
-          enum:
-          - in_progress
-          - cancelled
-          - failed
-          - completed
-          - expired
-        step_details:
-          type: object
-          description: The details of the run step.
-          oneOf:
-          - $ref: '#/components/schemas/RunStepDetailsMessageCreationObject'
-          - $ref: '#/components/schemas/RunStepDetailsToolCallsObject'
-          x-oaiExpandable: true
-        last_error:
-          type:
-          - object
-          - 'null'
-          description: The last error associated with this run step. Will be `null` if there are no errors.
-          properties:
-            code:
-              type: string
-              description: One of `server_error` or `rate_limit_exceeded`.
-              enum:
-              - server_error
-              - rate_limit_exceeded
-            message:
-              type: string
-              description: A human-readable description of the error.
-          required:
-          - code
-          - message
-        expired_at:
-          description: The Unix timestamp (in seconds) for when the run step expired. A step is considered expired if the parent run is expired.
-          type:
-          - integer
-          - 'null'
-        cancelled_at:
-          description: The Unix timestamp (in seconds) for when the run step was cancelled.
-          type:
-          - integer
-          - 'null'
-        failed_at:
-          description: The Unix timestamp (in seconds) for when the run step failed.
-          type:
-          - integer
-          - 'null'
-        completed_at:
-          description: The Unix timestamp (in seconds) for when the run step completed.
-          type:
-          - integer
-          - 'null'
-        metadata:
-          description: 'Set of 16 key-value pairs that can be attached to an object. This can be useful for storing additional information about the object in a structured format. Keys can be a maximum of 64 characters long and values can be a maxium of 512 characters long.
-
-            '
-          type:
-          - object
-          - 'null'
-          x-oaiTypeLabel: map
-        usage:
-          $ref: '#/components/schemas/RunStepCompletionUsage'
-      required:
-      - id
-      - object
-      - created_at
-      - assistant_id
-      - thread_id
-      - run_id
-      - type
-      - status
-      - step_details
-      - last_error
-      - expired_at
-      - cancelled_at
-      - failed_at
-      - completed_at
-      - metadata
-      - usage
-      x-oaiMeta:
-        name: The run step object
-        beta: true
-        example: "{\n  \"id\": \"step_abc123\",\n  \"object\": \"thread.run.step\",\n  \"created_at\": 1699063291,\n  \"run_id\": \"run_abc123\",\n  \"assistant_id\": \"asst_abc123\",\n  \"thread_id\": \"thread_abc123\",\n  \"type\": \"message_creation\",\n  \"status\": \"completed\",\n  \"cancelled_at\": null,\n  \"completed_at\": 1699063291,\n  \"expired_at\": null,\n  \"failed_at\": null,\n  \"last_error\": null,\n  \"step_details\": {\n    \"type\": \"message_creation\",\n    \"message_creation\": {\n      \"message_id\": \"msg_abc123\"\n    }\n  },\n  \"usage\": {\n    \"prompt_tokens\": 123,\n    \"completion_tokens\": 456,\n    \"total_tokens\": 579\n  }\n}\n"
-    DeleteThreadResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        deleted:
+          example: run_abc456
+        has_more:
           type: boolean
+          example: false
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    ListRunStepsResponse:
+      properties:
         object:
           type: string
-          enum:
-          - thread.deleted
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/RunStepObject'
+        first_id:
+          type: string
+          example: step_abc123
+        last_id:
+          type: string
+          example: step_abc456
+        has_more:
+          type: boolean
+          example: false
       required:
-      - id
       - object
-      - deleted
+      - data
+      - first_id
+      - last_id
+      - has_more
     ThreadObject:
       type: object
       title: Thread
@@ -1412,31 +1437,6 @@ components:
         name: The thread object
         beta: true
         example: "{\n  \"id\": \"thread_abc123\",\n  \"object\": \"thread\",\n  \"created_at\": 1698107661,\n  \"metadata\": {}\n}\n"
-    ListRunsResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          example: list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/RunObject'
-        first_id:
-          type: string
-          example: run_abc123
-        last_id:
-          type: string
-          example: run_abc456
-        has_more:
-          type: boolean
-          example: false
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
   securitySchemes:
     ApiKeyAuth:
       type: http

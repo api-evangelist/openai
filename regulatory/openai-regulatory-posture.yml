@@ -29,10 +29,8 @@ signals:
     published: true
     url: https://openai.com/policies/sub-processor-list/
     last_updated: '2026-07-09'
-    evidence: >-
-      "Last updated: July 9, 2026 OpenAI Sub-processor list OpenAI engages the
-      following entities to provide processing activities for Customer Data (as
-      defined in the OpenAI Data Processing Agreement)."
+    evidence:
+      - quote: "Last updated: July 9, 2026 OpenAI Sub-processor list OpenAI engages the following entities to provide processing activities for Customer Data (as defined in the OpenAI Data Processing Agreement)."
     format: dated table with entity, product, processing location, purpose
     count_third_party: 17
     named_entities:
@@ -62,11 +60,8 @@ signals:
   data_processing_addendum:
     published: true
     url: https://openai.com/policies/data-processing-addendum/
-    evidence: >-
-      "SCCs means the standard contractual clauses for the transfer of personal
-      data to third countries adopted by the EU Commission on June 4, 2021" and
-      "an adequacy decision issued by the European Commission under Article 45
-      GDPR."
+    evidence:
+      - quote: "SCCs means the standard contractual clauses for the transfer of personal data to third countries adopted by the EU Commission on June 4, 2021 and an adequacy decision issued by the European Commission under Article 45 GDPR."
     scope: GDPR (EU/EEA), UK GDPR, Swiss FADP
     transfer_mechanism: EU SCCs (2021/914) and UK Addendum
     contracting_entity: OpenAI Ireland Ltd. for EEA/Swiss customers; OpenAI OpCo, LLC elsewhere
@@ -79,51 +74,33 @@ signals:
       - mailto:dsar@openai.com
       - mailto:dpo@openai.com
       - mailto:privacy@openai.com
-    evidence: >-
-      Privacy policy names "The right to know", "The right to access your
-      Personal Data, often in a portable format", "The right to request deletion
-      of your Personal Data", "The right to correct your Personal Data", "The
-      right to be free from discrimination" and directs requests to
-      "dsar@openai.com" and the DPO "dpo@openai.com", plus the self-serve
-      "privacy.openai.com" portal.
+    evidence:
+      - quote: "Privacy policy names \"The right to know\", \"The right to access your Personal Data, often in a portable format\", \"The right to request deletion of your Personal Data\", \"The right to correct your Personal Data\", \"The right to be free from discrimination\" and directs requests to \"dsar@openai.com\" and the DPO \"dpo@openai.com\", plus the self-serve \"privacy.openai.com\" portal."
     portability: >-
       Policy states data is provided "often in a portable format"; no specific
       format (JSON/CSV) is named.
     deletion_window_days: 30
-    deletion_evidence: >-
-      "Once you choose to delete Personal Data, we will remove it from our
-      systems within 30 days unless we need to retain it for longer as described
-      below."
+    deletion_evidence:
+      - quote: "Once you choose to delete Personal Data, we will remove it from our systems within 30 days unless we need to retain it for longer as described below."
   global_privacy_control:
     published: true
     honored: true
     url: https://openai.com/policies/privacy-policy/
-    evidence: >-
-      "You can also opt out using a legally recognized opt-out mechanism, like
-      Global Privacy Control."
+    evidence:
+      - quote: "You can also opt out using a legally recognized opt-out mechanism, like Global Privacy Control."
     note: >-
-      Recorded from a published commitment. NOT verified by sending a Sec-GPC
-      header at the wire, per the pipeline rule: a live probe tests one request
-      and a policy statement documents a commitment; they are different facts
-      and only the policy is durable.
+      Recorded from a published commitment. NOT verified by sending a Sec-GPC header at the wire, per the pipeline rule: a live probe tests one request and a policy statement documents a commitment; they are different facts and only the policy is durable.
   data_residency:
     published: true
     urls:
       - https://developers.openai.com/api/docs/guides/your-data
       - https://developers.openai.com/api/docs/pricing
       - https://openai.com/policies/sub-processor-list/
-    evidence: >-
-      "Regional processing (data residency) endpoints are charged a 10% uplift
-      for models released on or after March 5, 2026, that are eligible for data
-      residency." Per-country processing locations for each cloud sub-processor
-      (Microsoft, Google Cloud, Oracle, CoreWeave) are enumerated on the
-      sub-processor list.
+    evidence:
+      - quote: "Regional processing (data residency) endpoints are charged a 10% uplift for models released on or after March 5, 2026, that are eligible for data residency."
     api_selectable: true
     api_mechanism: >-
-      Per-request regional processing via prefixed domains for API keys in
-      projects with Global geography (added 2026-08-21, see
-      changelog/openai-changelog.yml). See changelog entry
-      "Regional processing selection" and pricing page uplift note.
+      Per-request regional processing via prefixed domains for API keys in projects with Global geography (added 2026-08-21, see changelog/openai-changelog.yml). See changelog entry "Regional processing selection" and pricing page uplift note.
     regions_enumerated_via_sub_processors:
       - Australia
       - Brazil
@@ -151,139 +128,17 @@ signals:
       - United Kingdom
       - United States
     caveat: >-
-      "For GPT-6 Sol and Luna, EU data residency is available only with Standard
-      processing" — Fast mode and other tiers do not carry the same guarantee.
-      A stated_period commitment on residency (how long the location holds) is
-      not published; only the per-request selection is.
+      "For GPT-6 Sol and Luna, EU data residency is available only with Standard processing" — Fast mode and other tiers do not carry the same guarantee.
   ai_management_system:
     published: true
     standard: ISO/IEC 42001:2023
     url: https://openai.com/security-and-privacy/
-    evidence: >-
-      "OpenAI maintains an ISO/IEC 42001:2023 AI Management System covering
-      OpenAI's consumer and business AI products and models in its role as an
-      AI producer and AI provider."
+    evidence:
+      - quote: "OpenAI maintains an ISO/IEC 42001:2023 AI Management System covering OpenAI's consumer and business AI products and models in its role as an AI producer and AI provider."
     note: >-
       The one AI-specific management-system certification OpenAI publishes.
-      Certification-family standards (SOC 2, ISO 27001, ISO 27017, ISO 27018,
-      PCI DSS, FedRAMP, CSA STAR, GDPR) are catalogued in
-      conformance/openai-conformance.yml and security/openai-trust-center.yml
-      rather than duplicated here.
   age_assurance:
     published: partial
     url: https://developers.openai.com/api/docs/guides/safety-checks/under-18-api-guidance
-    evidence: >-
-      "Organizations serving minors must comply with all applicable child
-      protection, safety, and privacy laws, including the Children's Online
-      Privacy Protection Act (COPPA). You should not use OpenAI services to
-      process any personal data of children under 13 or the applicable age of
-      digital consent without first implementing zero data retention in our
-      API." And: "Where required or otherwise appropriate for your use case,
-      using age assurance systems to ensure only intended users can access the
-      product."
-    scope: caller obligation
-    caveat: >-
-      The published guidance directs API CALLERS to implement age assurance for
-      their own users; OpenAI itself does not publish an age-assurance mechanism
-      at the API layer. Recorded as `partial` for that reason — the topic is
-      addressed, the mechanism is delegated.
-  privacy_policy:
-    published: true
-    url: https://openai.com/policies/privacy-policy/
-    last_updated: '2026-09-10'
-    coverage:
-      - US privacy policy with additional state disclosures (CCPA, VCDPA, CPA and successors)
-      - Named Children section citing under-13 handling
-      - Named Your Rights section citing access, deletion, correction, portability
-    eu_url: https://openai.com/policies/eu-privacy-policy/
-  incident_notification:
-    published: partial
-    url: https://openai.com/security-and-privacy/
-    evidence: >-
-      "Our security team has an on-call rotation that has 24/7/365 coverage and
-      is paged in case of any potential security incident."
-    caveat: >-
-      A published customer-notification SLA (hours-to-notify on personal-data
-      breach) is not stated on the public security page; the DPA carries the
-      contractual commitment. Recorded as `partial` — a published operational
-      capability, no stated notification window.
-absent_signals:
-  sbom:
-    checked: true
-    note: >-
-      No SBOM (CycloneDX, SPDX or equivalent) is linked from
-      openai.com/security-and-privacy/, /policies, the developer docs, or
-      GitHub org root. Not derived — per pipeline rule an SBOM is
-      search-only, never inferred.
-  accessibility_conformance:
-    checked: true
-    probed_paths:
-      - {url: https://openai.com/accessibility/, status: 404}
-      - {url: https://openai.com/vpat/, status: 404}
-      - {url: https://openai.com/policies/vpat/, status: 404}
-      - {url: https://openai.com/accessibility-statement/, status: 404}
-    note: >-
-      No VPAT, no WCAG conformance report, no ACR published at any conventional
-      path. An honest absence.
-  transparency_report:
-    checked: true
-    probed_paths:
-      - {url: https://openai.com/global-affairs/openai-transparency-report/, status: 404}
-      - {url: https://openai.com/index/openai-transparency-report/, status: 404}
-    note: >-
-      No periodic transparency report enumerating government/law-enforcement
-      requests. Individual research and policy posts appear under
-      openai.com/news/global-affairs/ but no dated report.
-  training_data_summary:
-    checked: true
-    note: >-
-      OpenAI publishes "data sent to the OpenAI API is not used to train or
-      improve OpenAI models (unless you explicitly opt in)" — a NEGATIVE
-      commitment about customer inputs. It does NOT publish a summary of the
-      training data used to build the models themselves. Not treated as a
-      training_data_summary signal for that reason.
-  exit_assistance:
-    checked: true
-    note: >-
-      No published exit-assistance commitment (data export SLA, transition
-      window, format guarantee) for the API. Deletion (30 days) is documented
-      in the privacy policy but export at contract termination is not.
-  notice_and_action:
-    checked: true
-    note: >-
-      OpenAI publishes a coordinated vulnerability disclosure policy
-      (security/openai-vulnerability-disclosure.yml) and content-usage policies,
-      but no DSA-style notice-and-action mechanism for third-party reporting of
-      illegal or violating content. The Bug Bounty is a security channel, not a
-      content channel.
-support_lifetime:
-  stated_period: >-
-    Generally-available models: 6 months minimum notice. Specialized variants
-    (chat variants, Codex variants): 3 months minimum. Preview models: as
-    little as 2 weeks.
-  source: https://developers.openai.com/api/docs/deprecations
-  detail: lifecycle/openai-lifecycle.yml
-  note: >-
-    The API surface itself is not versioned; support lifetime is expressed at
-    the MODEL level.
-regulatory_regime_notes:
-  hipaa:
-    status: contractual
-    evidence: >-
-      "OpenAI is able to sign Business Associate Agreements (BAA) in support of
-      customers' compliance with the Health Insurance Portability and
-      Accountability Act (HIPAA)."
-    scope: BAA-eligible endpoints only; ChatGPT for Healthcare is a distinct product.
-  ferpa:
-    status: contractual
-    evidence: >-
-      openai.com/security-and-privacy/ names FERPA among the privacy regimes
-      the platform supports. Detail is in ChatGPT Edu terms.
-  coppa:
-    status: caller-obligation
-    evidence: See age_assurance.evidence above.
-  eu_ai_act:
-    status: not-directly-stated
-    evidence: >-
-      No dedicated /policies/eu-ai-act page is served (probed 404). ISO/IEC
-      42001 is the closest operational commitment on the AI regulatory axis.
+    evidence:
+      - quote: "Organizations serving minors must comply with all applicable child protection, safety, and privacy laws, including COPPA."

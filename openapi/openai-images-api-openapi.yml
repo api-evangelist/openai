@@ -183,155 +183,6 @@ paths:
           response: "{\n  \"created\": 1589478378,\n  \"data\": [\n    {\n      \"url\": \"https://...\"\n    },\n    {\n      \"url\": \"https://...\"\n    }\n  ]\n}\n"
 components:
   schemas:
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
-    ImagesResponse:
-      type: object
-      title: Image generation response
-      description: The response from the image generation endpoint.
-      properties:
-        created:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) of when the image was created.
-        data:
-          type: array
-          description: The list of generated images.
-          items:
-            $ref: '#/components/schemas/Image'
-        background:
-          type: string
-          description: The background parameter used for the image generation. Either `transparent` or `opaque`.
-          enum:
-          - transparent
-          - opaque
-        output_format:
-          type: string
-          description: The output format of the image generation. Either `png`, `webp`, or `jpeg`.
-          enum:
-          - png
-          - webp
-          - jpeg
-        size:
-          anyOf:
-          - type: string
-          - type: string
-            enum:
-            - 1024x1024
-            - 1024x1536
-            - 1536x1024
-          description: The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
-        quality:
-          type: string
-          description: The quality of the image generated. One of `low`, `medium`, `high`, `xhigh`, or `max`.
-          enum:
-          - low
-          - medium
-          - high
-          - xhigh
-          - max
-        usage:
-          $ref: '#/components/schemas/ImageGenUsage'
-      required:
-      - created
-      x-oaiMeta:
-        name: The image generation response
-        group: images
-        example: "{\n  \"created\": 1713833628,\n  \"data\": [\n    {\n      \"b64_json\": \"...\"\n    }\n  ],\n  \"background\": \"transparent\",\n  \"output_format\": \"png\",\n  \"size\": \"1024x1024\",\n  \"quality\": \"high\",\n  \"usage\": {\n    \"total_tokens\": 100,\n    \"input_tokens\": 50,\n    \"output_tokens\": 50,\n    \"input_tokens_details\": {\n      \"text_tokens\": 10,\n      \"image_tokens\": 40\n    }\n  }\n}\n"
-    CreateImageVariationRequest:
-      type: object
-      properties:
-        image:
-          description: The image to use as the basis for the variation(s). Must be a valid PNG file, less than 4MB, and square.
-          type: string
-          format: binary
-        model:
-          anyOf:
-          - type: string
-          - type: string
-            enum:
-            - dall-e-2
-            x-stainless-const: true
-          x-oaiTypeLabel: string
-          default: dall-e-2
-          example: dall-e-2
-          nullable: true
-          description: The model to use for image generation. Only `dall-e-2` is supported at this time.
-        n:
-          type: integer
-          minimum: 1
-          maximum: 10
-          default: 1
-          example: 1
-          nullable: true
-          description: The number of images to generate. Must be between 1 and 10.
-        response_format:
-          type: string
-          enum:
-          - url
-          - b64_json
-          default: url
-          example: url
-          nullable: true
-          description: The format in which the generated images are returned. Must be one of `url` or `b64_json`. URLs are only valid for 60 minutes after the image has been generated.
-        size:
-          type: string
-          enum:
-          - 256x256
-          - 512x512
-          - 1024x1024
-          default: 1024x1024
-          example: 1024x1024
-          nullable: true
-          description: The size of the generated images. Must be one of `256x256`, `512x512`, or `1024x1024`.
-        user:
-          type: string
-          example: user-1234
-          description: 'A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
-
-            '
-      required:
-      - image
-    InputFidelity:
-      type: string
-      enum:
-      - high
-      - low
-      description: Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
-    Image:
-      type: object
-      description: Represents the content or the URL of an image generated by the OpenAI API.
-      properties:
-        b64_json:
-          type: string
-          description: The base64-encoded JSON of the generated image. Returned by default for the GPT image models, and only present if `response_format` is set to `b64_json` for `dall-e-2` and `dall-e-3`.
-        url:
-          type: string
-          format: uri
-          description: When using `dall-e-2` or `dall-e-3`, the URL of the generated image if `response_format` is set to `url` (default value). Unsupported for the GPT image models.
-        revised_prompt:
-          type: string
-          description: For `dall-e-3` only, the revised prompt that was used to generate the image.
     ImagesUsage:
       type: object
       description: 'For the GPT image models only, the token usage information for the image generation.
@@ -367,30 +218,46 @@ components:
             image_tokens:
               type: integer
               description: The number of image tokens in the input prompt.
-    ErrorResponse:
-      type: object
+    ImageGenUsage:
       properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    ImageEditPartialImageEvent:
+        input_tokens:
+          type: integer
+          description: The number of tokens (images and text) in the input prompt.
+        total_tokens:
+          type: integer
+          description: The total number of tokens (images and text) used for the image generation.
+        output_tokens:
+          type: integer
+          description: The number of output tokens generated by the model.
+        output_tokens_details:
+          $ref: '#/components/schemas/ImageGenOutputTokensDetails'
+        input_tokens_details:
+          $ref: '#/components/schemas/ImageGenInputUsageDetails'
       type: object
-      description: 'Emitted when a partial image is available during image editing streaming.
+      required:
+      - input_tokens
+      - total_tokens
+      - output_tokens
+      - input_tokens_details
+      title: Image generation usage
+      description: For `gpt-image-1` only, the token usage information for the image generation.
+    ImageEditCompletedEvent:
+      type: object
+      description: 'Emitted when image editing has completed and the final image is available.
 
         '
       properties:
         type:
           type: string
-          description: 'The type of the event. Always `image_edit.partial_image`.
+          description: 'The type of the event. Always `image_edit.completed`.
 
             '
           enum:
-          - image_edit.partial_image
+          - image_edit.completed
           x-stainless-const: true
         b64_json:
           type: string
-          description: 'Base64-encoded partial image data, suitable for rendering as an image.
+          description: 'Base64-encoded final edited image data, suitable for rendering as an image.
 
             '
         created_at:
@@ -411,7 +278,7 @@ components:
           description: The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
         quality:
           type: string
-          description: 'The quality setting for the requested edited image.
+          description: 'The quality setting for the edited image.
 
             '
           enum:
@@ -423,7 +290,7 @@ components:
           - auto
         background:
           type: string
-          description: 'The background setting for the requested edited image.
+          description: 'The background setting for the edited image.
 
             '
           enum:
@@ -432,18 +299,15 @@ components:
           - auto
         output_format:
           type: string
-          description: 'The output format for the requested edited image.
+          description: 'The output format for the edited image.
 
             '
           enum:
           - png
           - webp
           - jpeg
-        partial_image_index:
-          type: integer
-          description: '0-based index for the partial image (streaming).
-
-            '
+        usage:
+          $ref: '#/components/schemas/ImagesUsage'
       required:
       - type
       - b64_json
@@ -452,11 +316,34 @@ components:
       - quality
       - background
       - output_format
-      - partial_image_index
+      - usage
       x-oaiMeta:
-        name: image_edit.partial_image
+        name: image_edit.completed
         group: images
-        example: "{\n  \"type\": \"image_edit.partial_image\",\n  \"b64_json\": \"...\",\n  \"created_at\": 1620000000,\n  \"size\": \"1024x1024\",\n  \"quality\": \"high\",\n  \"background\": \"transparent\",\n  \"output_format\": \"png\",\n  \"partial_image_index\": 0\n}\n"
+        example: "{\n  \"type\": \"image_edit.completed\",\n  \"b64_json\": \"...\",\n  \"created_at\": 1620000000,\n  \"size\": \"1024x1024\",\n  \"quality\": \"high\",\n  \"background\": \"transparent\",\n  \"output_format\": \"png\",\n  \"usage\": {\n    \"total_tokens\": 100,\n    \"input_tokens\": 50,\n    \"output_tokens\": 50,\n    \"input_tokens_details\": {\n      \"text_tokens\": 10,\n      \"image_tokens\": 40\n    }\n  }\n}\n"
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+    ImageEditStreamEvent:
+      anyOf:
+      - $ref: '#/components/schemas/ImageEditPartialImageEvent'
+      - $ref: '#/components/schemas/ImageEditCompletedEvent'
+      discriminator:
+        propertyName: type
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
     CreateImageRequest:
       type: object
       properties:
@@ -619,6 +506,454 @@ components:
             '
       required:
       - prompt
+    CreateImageVariationRequest:
+      type: object
+      properties:
+        image:
+          description: The image to use as the basis for the variation(s). Must be a valid PNG file, less than 4MB, and square.
+          type: string
+          format: binary
+        model:
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - dall-e-2
+            x-stainless-const: true
+          x-oaiTypeLabel: string
+          default: dall-e-2
+          example: dall-e-2
+          nullable: true
+          description: The model to use for image generation. Only `dall-e-2` is supported at this time.
+        n:
+          type: integer
+          minimum: 1
+          maximum: 10
+          default: 1
+          example: 1
+          nullable: true
+          description: The number of images to generate. Must be between 1 and 10.
+        response_format:
+          type: string
+          enum:
+          - url
+          - b64_json
+          default: url
+          example: url
+          nullable: true
+          description: The format in which the generated images are returned. Must be one of `url` or `b64_json`. URLs are only valid for 60 minutes after the image has been generated.
+        size:
+          type: string
+          enum:
+          - 256x256
+          - 512x512
+          - 1024x1024
+          default: 1024x1024
+          example: 1024x1024
+          nullable: true
+          description: The size of the generated images. Must be one of `256x256`, `512x512`, or `1024x1024`.
+        user:
+          type: string
+          example: user-1234
+          description: 'A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. [Learn more](https://developers.openai.com/api/docs/guides/safety-best-practices#implement-safety-identifiers).
+
+            '
+      required:
+      - image
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
+    Error:
+      type: object
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
+    InputFidelity:
+      type: string
+      enum:
+      - high
+      - low
+      description: Control how much effort the model will exert to match the style and features, especially facial features, of input images. This parameter is only supported for `gpt-image-1` and `gpt-image-1.5` and later models, unsupported for `gpt-image-1-mini`. Supports `high` and `low`. Defaults to `low`.
+    PartialImages:
+      anyOf:
+      - type: integer
+        maximum: 3
+        minimum: 0
+        default: 0
+        example: 1
+        description: 'The number of partial images to generate. This parameter is used for
+
+          streaming responses that return partial images. Value must be between 0 and 3.
+
+          When set to 0, the response will be a single image sent in one streaming event.
+
+
+          Note that the final image may be sent before the full number of partial images
+
+          are generated if the full image is generated more quickly.
+
+          '
+      - type: 'null'
+    ImageGenOutputTokensDetails:
+      properties:
+        image_tokens:
+          type: integer
+          description: The number of image output tokens generated by the model.
+        text_tokens:
+          type: integer
+          description: The number of text output tokens generated by the model.
+      type: object
+      required:
+      - image_tokens
+      - text_tokens
+      title: Image generation output token details
+      description: The output token details for the image generation.
+    ImageEditPartialImageEvent:
+      type: object
+      description: 'Emitted when a partial image is available during image editing streaming.
+
+        '
+      properties:
+        type:
+          type: string
+          description: 'The type of the event. Always `image_edit.partial_image`.
+
+            '
+          enum:
+          - image_edit.partial_image
+          x-stainless-const: true
+        b64_json:
+          type: string
+          description: 'Base64-encoded partial image data, suitable for rendering as an image.
+
+            '
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp when the event was created.
+
+            '
+        size:
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - 1024x1024
+            - 1024x1536
+            - 1536x1024
+            - auto
+          description: The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+        quality:
+          type: string
+          description: 'The quality setting for the requested edited image.
+
+            '
+          enum:
+          - low
+          - medium
+          - high
+          - xhigh
+          - max
+          - auto
+        background:
+          type: string
+          description: 'The background setting for the requested edited image.
+
+            '
+          enum:
+          - transparent
+          - opaque
+          - auto
+        output_format:
+          type: string
+          description: 'The output format for the requested edited image.
+
+            '
+          enum:
+          - png
+          - webp
+          - jpeg
+        partial_image_index:
+          type: integer
+          description: '0-based index for the partial image (streaming).
+
+            '
+      required:
+      - type
+      - b64_json
+      - created_at
+      - size
+      - quality
+      - background
+      - output_format
+      - partial_image_index
+      x-oaiMeta:
+        name: image_edit.partial_image
+        group: images
+        example: "{\n  \"type\": \"image_edit.partial_image\",\n  \"b64_json\": \"...\",\n  \"created_at\": 1620000000,\n  \"size\": \"1024x1024\",\n  \"quality\": \"high\",\n  \"background\": \"transparent\",\n  \"output_format\": \"png\",\n  \"partial_image_index\": 0\n}\n"
+    ImageGenPartialImageEvent:
+      type: object
+      description: 'Emitted when a partial image is available during image generation streaming.
+
+        '
+      properties:
+        type:
+          type: string
+          description: 'The type of the event. Always `image_generation.partial_image`.
+
+            '
+          enum:
+          - image_generation.partial_image
+          x-stainless-const: true
+        b64_json:
+          type: string
+          description: 'Base64-encoded partial image data, suitable for rendering as an image.
+
+            '
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp when the event was created.
+
+            '
+        size:
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - 1024x1024
+            - 1024x1536
+            - 1536x1024
+            - auto
+          description: The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+        quality:
+          type: string
+          description: 'The quality setting for the requested image.
+
+            '
+          enum:
+          - low
+          - medium
+          - high
+          - xhigh
+          - max
+          - auto
+        background:
+          type: string
+          description: 'The background setting for the requested image.
+
+            '
+          enum:
+          - transparent
+          - opaque
+          - auto
+        output_format:
+          type: string
+          description: 'The output format for the requested image.
+
+            '
+          enum:
+          - png
+          - webp
+          - jpeg
+        partial_image_index:
+          type: integer
+          description: '0-based index for the partial image (streaming).
+
+            '
+      required:
+      - type
+      - b64_json
+      - created_at
+      - size
+      - quality
+      - background
+      - output_format
+      - partial_image_index
+      x-oaiMeta:
+        name: image_generation.partial_image
+        group: images
+        example: "{\n  \"type\": \"image_generation.partial_image\",\n  \"b64_json\": \"...\",\n  \"created_at\": 1620000000,\n  \"size\": \"1024x1024\",\n  \"quality\": \"high\",\n  \"background\": \"transparent\",\n  \"output_format\": \"png\",\n  \"partial_image_index\": 0\n}\n"
+    ImageGenInputUsageDetails:
+      properties:
+        text_tokens:
+          type: integer
+          description: The number of text tokens in the input prompt.
+        image_tokens:
+          type: integer
+          description: The number of image tokens in the input prompt.
+      type: object
+      required:
+      - text_tokens
+      - image_tokens
+      title: Input usage details
+      description: The input tokens detailed information for the image generation.
+    ImageGenStreamEvent:
+      anyOf:
+      - $ref: '#/components/schemas/ImageGenPartialImageEvent'
+      - $ref: '#/components/schemas/ImageGenCompletedEvent'
+      discriminator:
+        propertyName: type
+    ImageGenCompletedEvent:
+      type: object
+      description: 'Emitted when image generation has completed and the final image is available.
+
+        '
+      properties:
+        type:
+          type: string
+          description: 'The type of the event. Always `image_generation.completed`.
+
+            '
+          enum:
+          - image_generation.completed
+          x-stainless-const: true
+        b64_json:
+          type: string
+          description: 'Base64-encoded image data, suitable for rendering as an image.
+
+            '
+        created_at:
+          type: integer
+          format: unixtime
+          description: 'The Unix timestamp when the event was created.
+
+            '
+        size:
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - 1024x1024
+            - 1024x1536
+            - 1536x1024
+            - auto
+          description: The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+        quality:
+          type: string
+          description: 'The quality setting for the generated image.
+
+            '
+          enum:
+          - low
+          - medium
+          - high
+          - xhigh
+          - max
+          - auto
+        background:
+          type: string
+          description: 'The background setting for the generated image.
+
+            '
+          enum:
+          - transparent
+          - opaque
+          - auto
+        output_format:
+          type: string
+          description: 'The output format for the generated image.
+
+            '
+          enum:
+          - png
+          - webp
+          - jpeg
+        usage:
+          $ref: '#/components/schemas/ImagesUsage'
+      required:
+      - type
+      - b64_json
+      - created_at
+      - size
+      - quality
+      - background
+      - output_format
+      - usage
+      x-oaiMeta:
+        name: image_generation.completed
+        group: images
+        example: "{\n  \"type\": \"image_generation.completed\",\n  \"b64_json\": \"...\",\n  \"created_at\": 1620000000,\n  \"size\": \"1024x1024\",\n  \"quality\": \"high\",\n  \"background\": \"transparent\",\n  \"output_format\": \"png\",\n  \"usage\": {\n    \"total_tokens\": 100,\n    \"input_tokens\": 50,\n    \"output_tokens\": 50,\n    \"input_tokens_details\": {\n      \"text_tokens\": 10,\n      \"image_tokens\": 40\n    }\n  }\n}\n"
+    ImagesResponse:
+      type: object
+      title: Image generation response
+      description: The response from the image generation endpoint.
+      properties:
+        created:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) of when the image was created.
+        data:
+          type: array
+          description: The list of generated images.
+          items:
+            $ref: '#/components/schemas/Image'
+        background:
+          type: string
+          description: The background parameter used for the image generation. Either `transparent` or `opaque`.
+          enum:
+          - transparent
+          - opaque
+        output_format:
+          type: string
+          description: The output format of the image generation. Either `png`, `webp`, or `jpeg`.
+          enum:
+          - png
+          - webp
+          - jpeg
+        size:
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - 1024x1024
+            - 1024x1536
+            - 1536x1024
+          description: The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
+        quality:
+          type: string
+          description: The quality of the image generated. One of `low`, `medium`, `high`, `xhigh`, or `max`.
+          enum:
+          - low
+          - medium
+          - high
+          - xhigh
+          - max
+        usage:
+          $ref: '#/components/schemas/ImageGenUsage'
+      required:
+      - created
+      x-oaiMeta:
+        name: The image generation response
+        group: images
+        example: "{\n  \"created\": 1713833628,\n  \"data\": [\n    {\n      \"b64_json\": \"...\"\n    }\n  ],\n  \"background\": \"transparent\",\n  \"output_format\": \"png\",\n  \"size\": \"1024x1024\",\n  \"quality\": \"high\",\n  \"usage\": {\n    \"total_tokens\": 100,\n    \"input_tokens\": 50,\n    \"output_tokens\": 50,\n    \"input_tokens_details\": {\n      \"text_tokens\": 10,\n      \"image_tokens\": 40\n    }\n  }\n}\n"
     EditImageBodyJsonParam:
       type: object
       description: 'JSON request body for image edits.
@@ -781,382 +1116,20 @@ components:
       required:
       - images
       - prompt
-    ImageGenUsage:
-      properties:
-        input_tokens:
-          type: integer
-          description: The number of tokens (images and text) in the input prompt.
-        total_tokens:
-          type: integer
-          description: The total number of tokens (images and text) used for the image generation.
-        output_tokens:
-          type: integer
-          description: The number of output tokens generated by the model.
-        output_tokens_details:
-          $ref: '#/components/schemas/ImageGenOutputTokensDetails'
-        input_tokens_details:
-          $ref: '#/components/schemas/ImageGenInputUsageDetails'
+    Image:
       type: object
-      required:
-      - input_tokens
-      - total_tokens
-      - output_tokens
-      - input_tokens_details
-      title: Image generation usage
-      description: For `gpt-image-1` only, the token usage information for the image generation.
-    PartialImages:
-      anyOf:
-      - type: integer
-        maximum: 3
-        minimum: 0
-        default: 0
-        example: 1
-        description: 'The number of partial images to generate. This parameter is used for
-
-          streaming responses that return partial images. Value must be between 0 and 3.
-
-          When set to 0, the response will be a single image sent in one streaming event.
-
-
-          Note that the final image may be sent before the full number of partial images
-
-          are generated if the full image is generated more quickly.
-
-          '
-      - type: 'null'
-    ImageRefParam:
-      type: object
-      description: 'Reference an input image by either URL or uploaded file ID.
-
-        Provide exactly one of `image_url` or `file_id`.
-
-        '
+      description: Represents the content or the URL of an image generated by the OpenAI API.
       properties:
-        image_url:
+        b64_json:
+          type: string
+          description: The base64-encoded JSON of the generated image. Returned by default for the GPT image models, and only present if `response_format` is set to `b64_json` for `dall-e-2` and `dall-e-3`.
+        url:
           type: string
           format: uri
-          maxLength: 20971520
-          description: A fully qualified URL or base64-encoded data URL.
-          example: https://example.com/source-image.png
-        file_id:
+          description: When using `dall-e-2` or `dall-e-3`, the URL of the generated image if `response_format` is set to `url` (default value). Unsupported for the GPT image models.
+        revised_prompt:
           type: string
-          description: The File API ID of an uploaded image to use as input.
-          example: file-abc123
-      anyOf:
-      - required:
-        - image_url
-      - required:
-        - file_id
-      not:
-        required:
-        - image_url
-        - file_id
-      additionalProperties: false
-    ImageEditCompletedEvent:
-      type: object
-      description: 'Emitted when image editing has completed and the final image is available.
-
-        '
-      properties:
-        type:
-          type: string
-          description: 'The type of the event. Always `image_edit.completed`.
-
-            '
-          enum:
-          - image_edit.completed
-          x-stainless-const: true
-        b64_json:
-          type: string
-          description: 'Base64-encoded final edited image data, suitable for rendering as an image.
-
-            '
-        created_at:
-          type: integer
-          format: unixtime
-          description: 'The Unix timestamp when the event was created.
-
-            '
-        size:
-          anyOf:
-          - type: string
-          - type: string
-            enum:
-            - 1024x1024
-            - 1024x1536
-            - 1536x1024
-            - auto
-          description: The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
-        quality:
-          type: string
-          description: 'The quality setting for the edited image.
-
-            '
-          enum:
-          - low
-          - medium
-          - high
-          - xhigh
-          - max
-          - auto
-        background:
-          type: string
-          description: 'The background setting for the edited image.
-
-            '
-          enum:
-          - transparent
-          - opaque
-          - auto
-        output_format:
-          type: string
-          description: 'The output format for the edited image.
-
-            '
-          enum:
-          - png
-          - webp
-          - jpeg
-        usage:
-          $ref: '#/components/schemas/ImagesUsage'
-      required:
-      - type
-      - b64_json
-      - created_at
-      - size
-      - quality
-      - background
-      - output_format
-      - usage
-      x-oaiMeta:
-        name: image_edit.completed
-        group: images
-        example: "{\n  \"type\": \"image_edit.completed\",\n  \"b64_json\": \"...\",\n  \"created_at\": 1620000000,\n  \"size\": \"1024x1024\",\n  \"quality\": \"high\",\n  \"background\": \"transparent\",\n  \"output_format\": \"png\",\n  \"usage\": {\n    \"total_tokens\": 100,\n    \"input_tokens\": 50,\n    \"output_tokens\": 50,\n    \"input_tokens_details\": {\n      \"text_tokens\": 10,\n      \"image_tokens\": 40\n    }\n  }\n}\n"
-    ImageGenStreamEvent:
-      anyOf:
-      - $ref: '#/components/schemas/ImageGenPartialImageEvent'
-      - $ref: '#/components/schemas/ImageGenCompletedEvent'
-      discriminator:
-        propertyName: type
-    ImageGenInputUsageDetails:
-      properties:
-        text_tokens:
-          type: integer
-          description: The number of text tokens in the input prompt.
-        image_tokens:
-          type: integer
-          description: The number of image tokens in the input prompt.
-      type: object
-      required:
-      - text_tokens
-      - image_tokens
-      title: Input usage details
-      description: The input tokens detailed information for the image generation.
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    ImageGenOutputTokensDetails:
-      properties:
-        image_tokens:
-          type: integer
-          description: The number of image output tokens generated by the model.
-        text_tokens:
-          type: integer
-          description: The number of text output tokens generated by the model.
-      type: object
-      required:
-      - image_tokens
-      - text_tokens
-      title: Image generation output token details
-      description: The output token details for the image generation.
-    ImageGenCompletedEvent:
-      type: object
-      description: 'Emitted when image generation has completed and the final image is available.
-
-        '
-      properties:
-        type:
-          type: string
-          description: 'The type of the event. Always `image_generation.completed`.
-
-            '
-          enum:
-          - image_generation.completed
-          x-stainless-const: true
-        b64_json:
-          type: string
-          description: 'Base64-encoded image data, suitable for rendering as an image.
-
-            '
-        created_at:
-          type: integer
-          format: unixtime
-          description: 'The Unix timestamp when the event was created.
-
-            '
-        size:
-          anyOf:
-          - type: string
-          - type: string
-            enum:
-            - 1024x1024
-            - 1024x1536
-            - 1536x1024
-            - auto
-          description: The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
-        quality:
-          type: string
-          description: 'The quality setting for the generated image.
-
-            '
-          enum:
-          - low
-          - medium
-          - high
-          - xhigh
-          - max
-          - auto
-        background:
-          type: string
-          description: 'The background setting for the generated image.
-
-            '
-          enum:
-          - transparent
-          - opaque
-          - auto
-        output_format:
-          type: string
-          description: 'The output format for the generated image.
-
-            '
-          enum:
-          - png
-          - webp
-          - jpeg
-        usage:
-          $ref: '#/components/schemas/ImagesUsage'
-      required:
-      - type
-      - b64_json
-      - created_at
-      - size
-      - quality
-      - background
-      - output_format
-      - usage
-      x-oaiMeta:
-        name: image_generation.completed
-        group: images
-        example: "{\n  \"type\": \"image_generation.completed\",\n  \"b64_json\": \"...\",\n  \"created_at\": 1620000000,\n  \"size\": \"1024x1024\",\n  \"quality\": \"high\",\n  \"background\": \"transparent\",\n  \"output_format\": \"png\",\n  \"usage\": {\n    \"total_tokens\": 100,\n    \"input_tokens\": 50,\n    \"output_tokens\": 50,\n    \"input_tokens_details\": {\n      \"text_tokens\": 10,\n      \"image_tokens\": 40\n    }\n  }\n}\n"
-    ImageEditStreamEvent:
-      anyOf:
-      - $ref: '#/components/schemas/ImageEditPartialImageEvent'
-      - $ref: '#/components/schemas/ImageEditCompletedEvent'
-      discriminator:
-        propertyName: type
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
-    ImageGenPartialImageEvent:
-      type: object
-      description: 'Emitted when a partial image is available during image generation streaming.
-
-        '
-      properties:
-        type:
-          type: string
-          description: 'The type of the event. Always `image_generation.partial_image`.
-
-            '
-          enum:
-          - image_generation.partial_image
-          x-stainless-const: true
-        b64_json:
-          type: string
-          description: 'Base64-encoded partial image data, suitable for rendering as an image.
-
-            '
-        created_at:
-          type: integer
-          format: unixtime
-          description: 'The Unix timestamp when the event was created.
-
-            '
-        size:
-          anyOf:
-          - type: string
-          - type: string
-            enum:
-            - 1024x1024
-            - 1024x1536
-            - 1536x1024
-            - auto
-          description: The image dimensions as a `WIDTHxHEIGHT` string, for example `1536x864`.
-        quality:
-          type: string
-          description: 'The quality setting for the requested image.
-
-            '
-          enum:
-          - low
-          - medium
-          - high
-          - xhigh
-          - max
-          - auto
-        background:
-          type: string
-          description: 'The background setting for the requested image.
-
-            '
-          enum:
-          - transparent
-          - opaque
-          - auto
-        output_format:
-          type: string
-          description: 'The output format for the requested image.
-
-            '
-          enum:
-          - png
-          - webp
-          - jpeg
-        partial_image_index:
-          type: integer
-          description: '0-based index for the partial image (streaming).
-
-            '
-      required:
-      - type
-      - b64_json
-      - created_at
-      - size
-      - quality
-      - background
-      - output_format
-      - partial_image_index
-      x-oaiMeta:
-        name: image_generation.partial_image
-        group: images
-        example: "{\n  \"type\": \"image_generation.partial_image\",\n  \"b64_json\": \"...\",\n  \"created_at\": 1620000000,\n  \"size\": \"1024x1024\",\n  \"quality\": \"high\",\n  \"background\": \"transparent\",\n  \"output_format\": \"png\",\n  \"partial_image_index\": 0\n}\n"
+          description: For `dall-e-3` only, the revised prompt that was used to generate the image.
     CreateImageEditRequest:
       type: object
       properties:
@@ -1349,14 +1322,41 @@ components:
       required:
       - prompt
       - image
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
+    ErrorResponse:
       type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
       required:
-      - message
+      - error
+    ImageRefParam:
+      type: object
+      description: 'Reference an input image by either URL or uploaded file ID.
+
+        Provide exactly one of `image_url` or `file_id`.
+
+        '
+      properties:
+        image_url:
+          type: string
+          format: uri
+          maxLength: 20971520
+          description: A fully qualified URL or base64-encoded data URL.
+          example: https://example.com/source-image.png
+        file_id:
+          type: string
+          description: The File API ID of an uploaded image to use as input.
+          example: file-abc123
+      anyOf:
+      - required:
+        - image_url
+      - required:
+        - file_id
+      not:
+        required:
+        - image_url
+        - file_id
+      additionalProperties: false
   responses:
     InferenceServiceUnavailable:
       description: The service is temporarily unavailable. A server_is_overloaded error means the requested model is temporarily overloaded; retry after a brief delay.

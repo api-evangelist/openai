@@ -191,44 +191,38 @@ paths:
           response: "{\n    \"object\": \"organization.user.deleted\",\n    \"id\": \"user_abc\",\n    \"deleted\": true\n}\n"
 components:
   schemas:
-    Error:
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    UserRoleUpdateRequest:
       type: object
       properties:
-        code:
+        role:
           anyOf:
           - type: string
           - type: 'null'
-        message:
-          type: string
-        param:
+          description: '`owner` or `reader`'
+        role_id:
           anyOf:
           - type: string
           - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
-    UserDeleteResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.user.deleted
-          x-stainless-const: true
-        id:
-          type: string
-        deleted:
-          type: boolean
-      required:
-      - object
-      - id
-      - deleted
+          description: Role ID to assign to the user.
+        technical_level:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Technical level metadata.
+        developer_persona:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: Developer persona metadata.
     ErrorResponse:
       type: object
       properties:
@@ -236,6 +230,19 @@ components:
           $ref: '#/components/schemas/Error'
       required:
       - error
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
     User:
       type: object
       description: Represents an individual `user` within an organization.
@@ -379,29 +386,47 @@ components:
       x-oaiMeta:
         name: The user object
         example: "{\n    \"object\": \"organization.user\",\n    \"id\": \"user_abc\",\n    \"name\": \"First Last\",\n    \"email\": \"user@example.com\",\n    \"role\": \"owner\",\n    \"added_at\": 1711471533\n}\n"
-    UserRoleUpdateRequest:
+    Error:
       type: object
       properties:
-        role:
+        code:
           anyOf:
           - type: string
           - type: 'null'
-          description: '`owner` or `reader`'
-        role_id:
+        message:
+          type: string
+        param:
           anyOf:
           - type: string
           - type: 'null'
-          description: Role ID to assign to the user.
-        technical_level:
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+    PermissionErrorResponse:
+      type: object
+      properties:
+        error:
+          description: Details about the permission error.
           anyOf:
+          - $ref: '#/components/schemas/Error'
           - type: string
-          - type: 'null'
-          description: Technical level metadata.
-        developer_persona:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: Developer persona metadata.
+            description: An explanation of the missing API permissions.
+      required:
+      - error
     UserListResponse:
       type: object
       properties:
@@ -428,47 +453,22 @@ components:
       - object
       - data
       - has_more
-    PermissionErrorResponse:
+    UserDeleteResponse:
       type: object
       properties:
-        error:
-          description: Details about the permission error.
-          anyOf:
-          - $ref: '#/components/schemas/Error'
-          - type: string
-            description: An explanation of the missing API permissions.
-      required:
-      - error
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
+        object:
           type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    _MisalignmentSteer:
-      properties:
-        message:
+          enum:
+          - organization.user.deleted
+          x-stainless-const: true
+        id:
           type: string
-          description: The public continuation instruction.
-      type: object
+        deleted:
+          type: boolean
       required:
-      - message
+      - object
+      - id
+      - deleted
   securitySchemes:
     ApiKeyAuth:
       type: http
