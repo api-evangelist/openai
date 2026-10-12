@@ -1,0 +1,19 @@
+# DERIVED by build-integration-preconfigs.py (roadmap#949). Overlay on the PARTNER's contract:
+# where algolia's enum names openai, and what that value is.
+overlay: 1.0.0
+info:
+  title: openai as a processor-connection in algolia's contract
+  version: 1.0.0
+extends: https://raw.githubusercontent.com/api-evangelist/algolia/refs/heads/main/openapi/algolia-agent-studio-api-openapi.yml
+actions:
+- target: $.components.schemas.ProviderName
+  update:
+    x-apievangelist-integration:
+      values:
+        openai:
+          provider: openai
+          relationship: processor-connection
+          evidence: https://github.com/api-evangelist/algolia/blob/main/openapi/algolia-agent-studio-api-openapi.yml
+      method: derived
+      generated: '2026-10-12'
+      generator: build-integration-preconfigs.py
