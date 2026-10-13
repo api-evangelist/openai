@@ -1,0 +1,110 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI Google Forms response to Google Sheet
+  summary: Send Google Forms responses to OpenAI and add the answer to a Google Sheet
+  description: Reads the newest Google Forms response, sends it as a prompt to an OpenAI chat completion, and appends the response id and generated text to a Google Sheet. Recreated from the Zapier template
+    linked in x-integration.
+  version: 1.0.0
+sourceDescriptions:
+- name: googleFormsResponses
+  url: https://raw.githubusercontent.com/api-evangelist/google-forms/refs/heads/main/openapi/google-forms-responses-api-openapi.yml
+  type: openapi
+- name: openaiChat
+  url: https://raw.githubusercontent.com/api-evangelist/openai/refs/heads/main/openapi/openai-chat-completions-api-openapi.yml
+  type: openapi
+- name: googleSheetsValues
+  url: https://raw.githubusercontent.com/api-evangelist/google-sheets/refs/heads/main/openapi/google-sheets-values-api-openapi.yml
+  type: openapi
+workflows:
+- workflowId: google-forms-response-to-sheet
+  summary: Send Google Forms responses to OpenAI and add the answer to a Google Sheet
+  description: Reads the newest Google Forms response, sends it as a prompt to an OpenAI chat completion, and appends the response id and generated text to a Google Sheet. Recreated from the Zapier template
+    linked in x-integration.
+  inputs:
+    type: object
+    properties:
+      formId:
+        type: string
+      questionId:
+        type: string
+        description: Question whose answer is the prompt
+      spreadsheetId:
+        type: string
+      range:
+        type: string
+      model:
+        type: string
+        description: OpenAI model id
+  steps:
+  - stepId: list-responses
+    description: Read the form responses.
+    operationId: $sourceDescriptions.googleFormsResponses.listFormResponses
+    parameters:
+    - name: formId
+      in: path
+      value: $inputs.formId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      responseId: $response.body#/responses/0/responseId
+      prompt: $response.body#/responses/0/answers
+  - stepId: generate-text
+    description: Generate the text with an OpenAI chat completion.
+    operationId: $sourceDescriptions.openaiChat.createChatCompletion
+    requestBody:
+      contentType: application/json
+      payload:
+        model: $inputs.model
+        messages:
+        - role: developer
+          content: Answer the following form submission.
+        - role: user
+          content: $steps.list-responses.outputs.prompt
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      text: $response.body#/choices/0/message/content
+  - stepId: append-row
+    description: Append the response and generated answer to the sheet.
+    operationId: $sourceDescriptions.googleSheetsValues.appendValues
+    parameters:
+    - name: spreadsheetId
+      in: path
+      value: $inputs.spreadsheetId
+    - name: range
+      in: path
+      value: $inputs.range
+    - name: valueInputOption
+      in: query
+      value: USER_ENTERED
+    requestBody:
+      contentType: application/json
+      payload:
+        values:
+        - - $steps.list-responses.outputs.responseId
+          - $steps.list-responses.outputs.prompt
+          - $steps.generate-text.outputs.text
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      updatedRange: $response.body#/updates/updatedRange
+  outputs:
+    updatedRange: $steps.append-row.outputs.updatedRange
+x-integration:
+  partner: google-forms
+  template: https://zapier.com/apps/google-forms/integrations/google-sheets/255609446/send-prompts-to-chatgpt-for-google-forms-responses-and-add-the-chatgpt-response-to-a-google-sheet
+  edge_evidence: https://zapier.com/apps/google-forms/integrations/google-sheets/255609446/send-prompts-to-chatgpt-for-google-forms-responses-and-add-the-chatgpt-response-to-a-google-sheet
+  edge_type: marketplace
+  method: generated
+  generated: '2026-10-13'
+  generator: claude-opus-5.5 market-workflows
+  guessed_steps:
+  - step: list-responses
+    cause: partner-contract
+    why: answers is a map keyed by question id; the whole map is passed as the prompt because a pointer cannot select $inputs.questionId
+  - step: generate-text
+    cause: provider-contract
+    why: createChatCompletion 200 may be JSON or an event stream; the content path is taken from the schema
+  - step: append-row
+    cause: partner-contract
+    why: AppendValuesResponse updates.updatedRange path not confirmed in the excerpt read

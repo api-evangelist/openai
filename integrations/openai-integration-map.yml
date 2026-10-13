@@ -1,0 +1,259 @@
+# DERIVED by derive-integration-map.py (roadmap#949): each integration workflow, step by step,
+# resolved to spec file -> tag -> business capability (Turbo EA, CC BY 4.0) and the operation's
+# phrasing intent. Read from our own files; an unmapped link says why.
+slug: openai
+workflows:
+- file: openai-google-business-profile-review-reply.yml
+  title: OpenAI Google Business Profile review reply
+  partner: google-business-profile
+  template: https://zapier.com/apps/google-business-profile/integrations/google-business-profile/1800781/automatically-reply-to-google-business-profile-reviews-with-chatgpt
+  repos:
+  - google-business-profile
+  - openai
+  steps:
+  - step: list-reviews
+    repo: google-business-profile
+    spec_file: google-business-profile-accounts-api-openapi.yml
+    operationId: listReviews
+    tag: Accounts
+    capability_id: BC-400.60
+    capability: Digital Marketing Management
+    capability_l1: BC-400
+    intent: null
+    effect: null
+    unmapped: null
+  - step: generate-text
+    repo: openai
+    spec_file: openai-chat-completions-api-openapi.yml
+    operationId: createChatCompletion
+    tag: Chat Completions
+    capability_id: null
+    capability: null
+    capability_l1: null
+    intent: null
+    effect: null
+    unmapped: no capability edge for this spec file
+  - step: reply-to-review
+    repo: google-business-profile
+    spec_file: google-business-profile-accounts-api-openapi.yml
+    operationId: replyToReview
+    tag: Accounts
+    capability_id: BC-400.60
+    capability: Digital Marketing Management
+    capability_l1: BC-400
+    intent: null
+    effect: null
+    unmapped: null
+  connects:
+    google-business-profile:
+      capabilities:
+      - BC-400.60
+      tags:
+      - Accounts
+    openai:
+      capabilities: []
+      tags:
+      - Chat Completions
+  intents: []
+- file: openai-google-forms-response-to-sheet.yml
+  title: OpenAI Google Forms response to Google Sheet
+  partner: google-forms
+  template: https://zapier.com/apps/google-forms/integrations/google-sheets/255609446/send-prompts-to-chatgpt-for-google-forms-responses-and-add-the-chatgpt-response-to-a-google-sheet
+  repos:
+  - google-forms
+  - openai
+  - google-sheets
+  steps:
+  - step: list-responses
+    repo: google-forms
+    spec_file: google-forms-responses-api-openapi.yml
+    operationId: listFormResponses
+    tag: Responses
+    capability_id: null
+    capability: null
+    capability_l1: null
+    intent: null
+    effect: null
+    unmapped: no capability edge for this spec file
+  - step: generate-text
+    repo: openai
+    spec_file: openai-chat-completions-api-openapi.yml
+    operationId: createChatCompletion
+    tag: Chat Completions
+    capability_id: null
+    capability: null
+    capability_l1: null
+    intent: null
+    effect: null
+    unmapped: no capability edge for this spec file
+  - step: append-row
+    repo: google-sheets
+    spec_file: google-sheets-values-api-openapi.yml
+    operationId: appendValues
+    tag: Values
+    capability_id: null
+    capability: null
+    capability_l1: null
+    intent: null
+    effect: null
+    unmapped: no capability edge for this spec file
+  connects:
+    google-forms:
+      capabilities: []
+      tags:
+      - Responses
+    openai:
+      capabilities: []
+      tags:
+      - Chat Completions
+    google-sheets:
+      capabilities: []
+      tags:
+      - Values
+  intents: []
+- file: openai-jotform-submission-conversation.yml
+  title: OpenAI Jotform submission conversation
+  partner: jotform
+  template: https://zapier.com/apps/chatgpt/integrations/jotform/1352771/create-chatgpt-conversations-from-new-jotform-submissions
+  repos:
+  - jotform
+  - openai
+  steps:
+  - step: list-submissions
+    repo: jotform
+    spec_file: jotform-submission-api-openapi.yml
+    operationId: getFormSubmissions
+    tag: Submission
+    capability_id: null
+    capability: null
+    capability_l1: null
+    intent: null
+    effect: null
+    unmapped: no capability edge for this spec file
+  - step: create-conversation
+    repo: openai
+    spec_file: openai-conversations-api-openapi.yml
+    operationId: createConversation
+    tag: Conversations
+    capability_id: null
+    capability: null
+    capability_l1: null
+    intent: Create a conversation
+    effect: write
+    unmapped: no capability edge for this spec file
+  connects:
+    jotform:
+      capabilities: []
+      tags:
+      - Submission
+    openai:
+      capabilities: []
+      tags:
+      - Conversations
+  intents:
+  - Create a conversation
+- file: openai-microsoft-outlook-reply-draft.yml
+  title: OpenAI Microsoft Outlook reply draft
+  partner: microsoft-outlook
+  template: https://zapier.com/apps/microsoft-outlook/integrations/microsoft-outlook/1533281/create-email-copy-with-chatgpt-from-new-microsoft-outlook-emails-and-save-as-drafts
+  repos:
+  - microsoft-outlook
+  - openai
+  steps:
+  - step: list-messages
+    repo: microsoft-outlook
+    spec_file: microsoft-outlook-messages-api-openapi.yml
+    operationId: listMessages
+    tag: Messages
+    capability_id: null
+    capability: null
+    capability_l1: null
+    intent: null
+    effect: null
+    unmapped: no capability edge for this spec file
+  - step: generate-text
+    repo: openai
+    spec_file: openai-chat-completions-api-openapi.yml
+    operationId: createChatCompletion
+    tag: Chat Completions
+    capability_id: null
+    capability: null
+    capability_l1: null
+    intent: null
+    effect: null
+    unmapped: no capability edge for this spec file
+  - step: create-reply-draft
+    repo: microsoft-outlook
+    spec_file: microsoft-outlook-messages-api-openapi.yml
+    operationId: createReplyDraft
+    tag: Messages
+    capability_id: null
+    capability: null
+    capability_l1: null
+    intent: null
+    effect: null
+    unmapped: no capability edge for this spec file
+  connects:
+    microsoft-outlook:
+      capabilities: []
+      tags:
+      - Messages
+    openai:
+      capabilities: []
+      tags:
+      - Chat Completions
+  intents: []
+- file: openai-slack-channel-assistant.yml
+  title: OpenAI Slack channel assistant
+  partner: slack
+  template: https://zapier.com/apps/slack/integrations/slack/1605917/create-a-slack-assistant-with-chatgpt
+  repos:
+  - slack
+  - openai
+  steps:
+  - step: read-history
+    repo: slack
+    spec_file: slack-conversations-api-openapi.yml
+    operationId: getConversationsHistory
+    tag: Conversations
+    capability_id: null
+    capability: null
+    capability_l1: null
+    intent: Read a channel's message history
+    effect: read
+    unmapped: no capability edge for this spec file
+  - step: generate-text
+    repo: openai
+    spec_file: openai-chat-completions-api-openapi.yml
+    operationId: createChatCompletion
+    tag: Chat Completions
+    capability_id: null
+    capability: null
+    capability_l1: null
+    intent: null
+    effect: null
+    unmapped: no capability edge for this spec file
+  - step: post-reply
+    repo: slack
+    spec_file: slack-chat-api-openapi.yml
+    operationId: postChatPostmessage
+    tag: Chat
+    capability_id: null
+    capability: null
+    capability_l1: null
+    intent: Send a message to a channel
+    effect: write
+    unmapped: no capability edge for this spec file
+  connects:
+    slack:
+      capabilities: []
+      tags:
+      - Chat
+      - Conversations
+    openai:
+      capabilities: []
+      tags:
+      - Chat Completions
+  intents:
+  - Read a channel's message history
+  - Send a message to a channel

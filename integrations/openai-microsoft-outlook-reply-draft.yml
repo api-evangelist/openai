@@ -1,0 +1,88 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI Microsoft Outlook reply draft
+  summary: Draft Outlook replies with OpenAI from new Microsoft Outlook emails
+  description: Reads the newest Outlook message, writes reply copy with an OpenAI chat completion, and saves it as a reply draft. Recreated from the Zapier template linked in x-integration.
+  version: 1.0.0
+sourceDescriptions:
+- name: outlookMessages
+  url: https://raw.githubusercontent.com/api-evangelist/microsoft-outlook/refs/heads/main/openapi/microsoft-outlook-messages-api-openapi.yml
+  type: openapi
+- name: openaiChat
+  url: https://raw.githubusercontent.com/api-evangelist/openai/refs/heads/main/openapi/openai-chat-completions-api-openapi.yml
+  type: openapi
+workflows:
+- workflowId: microsoft-outlook-reply-draft
+  summary: Draft Outlook replies with OpenAI from new Microsoft Outlook emails
+  description: Reads the newest Outlook message, writes reply copy with an OpenAI chat completion, and saves it as a reply draft. Recreated from the Zapier template linked in x-integration.
+  inputs:
+    type: object
+    properties:
+      model:
+        type: string
+        description: OpenAI model id
+  steps:
+  - stepId: list-messages
+    description: Read the newest message.
+    operationId: $sourceDescriptions.outlookMessages.listMessages
+    parameters:
+    - name: $top
+      in: query
+      value: 1
+    - name: $orderby
+      in: query
+      value: receivedDateTime desc
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      messageId: $response.body#/value/0/id
+      subject: $response.body#/value/0/subject
+      preview: $response.body#/value/0/bodyPreview
+  - stepId: generate-text
+    description: Generate the text with an OpenAI chat completion.
+    operationId: $sourceDescriptions.openaiChat.createChatCompletion
+    requestBody:
+      contentType: application/json
+      payload:
+        model: $inputs.model
+        messages:
+        - role: developer
+          content: Write a concise, professional email reply to the following message.
+        - role: user
+          content: $steps.list-messages.outputs.preview
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      text: $response.body#/choices/0/message/content
+  - stepId: create-reply-draft
+    description: Save the generated copy as a reply draft.
+    operationId: $sourceDescriptions.outlookMessages.createReplyDraft
+    parameters:
+    - name: message-id
+      in: path
+      value: $steps.list-messages.outputs.messageId
+    requestBody:
+      contentType: application/json
+      payload:
+        comment: $steps.generate-text.outputs.text
+    successCriteria:
+    - condition: $statusCode == 201
+    outputs:
+      draftId: $response.body#/id
+  outputs:
+    draftId: $steps.create-reply-draft.outputs.draftId
+x-integration:
+  partner: microsoft-outlook
+  template: https://zapier.com/apps/microsoft-outlook/integrations/microsoft-outlook/1533281/create-email-copy-with-chatgpt-from-new-microsoft-outlook-emails-and-save-as-drafts
+  edge_evidence: https://zapier.com/apps/microsoft-outlook/integrations/microsoft-outlook/1533281/create-email-copy-with-chatgpt-from-new-microsoft-outlook-emails-and-save-as-drafts
+  edge_type: marketplace
+  method: generated
+  generated: '2026-10-13'
+  generator: claude-opus-5.5 market-workflows
+  guessed_steps:
+  - step: list-messages
+    cause: partner-contract
+    why: query parameter names $top/$orderby come from shared parameter refs not read; subject/bodyPreview paths assumed from the Graph Message shape
+  - step: generate-text
+    cause: provider-contract
+    why: createChatCompletion 200 may be JSON or an event stream; the content path is taken from the schema

@@ -1,0 +1,93 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI Slack channel assistant
+  summary: Answer the latest Slack channel message with OpenAI
+  description: Reads the latest message in a Slack channel, generates an answer with an OpenAI chat completion, and posts it back as a thread reply. Recreated from the Zapier template linked in x-integration.
+  version: 1.0.0
+sourceDescriptions:
+- name: slackConversations
+  url: https://raw.githubusercontent.com/api-evangelist/slack/refs/heads/main/openapi/slack-conversations-api-openapi.yml
+  type: openapi
+- name: openaiChat
+  url: https://raw.githubusercontent.com/api-evangelist/openai/refs/heads/main/openapi/openai-chat-completions-api-openapi.yml
+  type: openapi
+- name: slackChat
+  url: https://raw.githubusercontent.com/api-evangelist/slack/refs/heads/main/openapi/slack-chat-api-openapi.yml
+  type: openapi
+workflows:
+- workflowId: slack-channel-assistant
+  summary: Answer the latest Slack channel message with OpenAI
+  description: Reads the latest message in a Slack channel, generates an answer with an OpenAI chat completion, and posts it back as a thread reply. Recreated from the Zapier template linked in x-integration.
+  inputs:
+    type: object
+    properties:
+      channel:
+        type: string
+      model:
+        type: string
+        description: OpenAI model id
+  steps:
+  - stepId: read-history
+    description: Read the latest channel message.
+    operationId: $sourceDescriptions.slackConversations.getConversationsHistory
+    parameters:
+    - name: channel
+      in: query
+      value: $inputs.channel
+    - name: limit
+      in: query
+      value: 1
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      text: $response.body#/messages/0/text
+      ts: $response.body#/messages/0/ts
+  - stepId: generate-text
+    description: Generate the text with an OpenAI chat completion.
+    operationId: $sourceDescriptions.openaiChat.createChatCompletion
+    requestBody:
+      contentType: application/json
+      payload:
+        model: $inputs.model
+        messages:
+        - role: developer
+          content: You are a helpful Slack assistant. Answer the message.
+        - role: user
+          content: $steps.read-history.outputs.text
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      text: $response.body#/choices/0/message/content
+  - stepId: post-reply
+    description: Post the answer in the message thread.
+    operationId: $sourceDescriptions.slackChat.postChatPostmessage
+    requestBody:
+      contentType: application/x-www-form-urlencoded
+      payload:
+        channel: $inputs.channel
+        thread_ts: $steps.read-history.outputs.ts
+        text: $steps.generate-text.outputs.text
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      ts: $response.body#/ts
+  outputs:
+    replyTs: $steps.post-reply.outputs.ts
+x-integration:
+  partner: slack
+  template: https://zapier.com/apps/slack/integrations/slack/1605917/create-a-slack-assistant-with-chatgpt
+  edge_evidence: https://zapier.com/apps/slack/integrations/slack/1605917/create-a-slack-assistant-with-chatgpt
+  edge_type: marketplace
+  method: generated
+  generated: '2026-10-13'
+  generator: claude-opus-5.5 market-workflows
+  guessed_steps:
+  - step: read-history
+    cause: partner-contract
+    why: messages/0/text and ts response paths not confirmed against the 200 schema
+  - step: generate-text
+    cause: provider-contract
+    why: createChatCompletion 200 may be JSON or an event stream; the content path is taken from the schema
+  - step: post-reply
+    cause: partner-contract
+    why: the /ts output path is not confirmed against the 200 schema

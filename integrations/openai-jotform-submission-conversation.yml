@@ -1,0 +1,68 @@
+arazzo: 1.0.1
+info:
+  title: OpenAI Jotform submission conversation
+  summary: Create OpenAI conversations from new Jotform submissions
+  description: Reads the newest submission of a Jotform form and opens an OpenAI conversation seeded with it as a user message. Recreated from the Zapier template linked in x-integration.
+  version: 1.0.0
+sourceDescriptions:
+- name: jotformSubmission
+  url: https://raw.githubusercontent.com/api-evangelist/jotform/refs/heads/main/openapi/jotform-submission-api-openapi.yml
+  type: openapi
+- name: openaiConversations
+  url: https://raw.githubusercontent.com/api-evangelist/openai/refs/heads/main/openapi/openai-conversations-api-openapi.yml
+  type: openapi
+workflows:
+- workflowId: jotform-submission-conversation
+  summary: Create OpenAI conversations from new Jotform submissions
+  description: Reads the newest submission of a Jotform form and opens an OpenAI conversation seeded with it as a user message. Recreated from the Zapier template linked in x-integration.
+  inputs:
+    type: object
+    properties:
+      formId:
+        type: string
+  steps:
+  - stepId: list-submissions
+    description: Read the form submissions.
+    operationId: $sourceDescriptions.jotformSubmission.getFormSubmissions
+    parameters:
+    - name: formID
+      in: path
+      value: $inputs.formId
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      submissionId: $response.body#/content/0/id
+      answers: $response.body#/content/0/answers
+  - stepId: create-conversation
+    description: Open an OpenAI conversation seeded with the submission.
+    operationId: $sourceDescriptions.openaiConversations.createConversation
+    requestBody:
+      contentType: application/json
+      payload:
+        metadata:
+          jotform_submission: $steps.list-submissions.outputs.submissionId
+        items:
+        - type: message
+          role: user
+          content: $steps.list-submissions.outputs.answers
+    successCriteria:
+    - condition: $statusCode == 200
+    outputs:
+      conversationId: $response.body#/id
+  outputs:
+    conversationId: $steps.create-conversation.outputs.conversationId
+x-integration:
+  partner: jotform
+  template: https://zapier.com/apps/chatgpt/integrations/jotform/1352771/create-chatgpt-conversations-from-new-jotform-submissions
+  edge_evidence: https://zapier.com/apps/chatgpt/integrations/jotform/1352771/create-chatgpt-conversations-from-new-jotform-submissions
+  edge_type: marketplace
+  method: generated
+  generated: '2026-10-13'
+  generator: claude-opus-5.5 market-workflows
+  guessed_steps:
+  - step: list-submissions
+    cause: partner-contract
+    why: getFormSubmissions 200 declares no schema; the content/0/id and answers paths and the formID parameter name (from a shared ref) are not settled by the spec
+  - step: create-conversation
+    cause: provider-contract
+    why: answers is an object; passing it as message content assumes serialization the spec does not define
