@@ -44,22 +44,21 @@ accessModel:
 created: '2024-04-14'
 modified: '2026-09-16'
 position: Consuming
-description: OpenAI publishes a single unversioned REST API at https://api.openai.com/v1 covering text
-  and reasoning (Responses, Chat Completions), embeddings, images, audio and speech, video, moderation,
-  file storage, vector stores and file search, containers, batch inference at half price, fine-tuning,
-  evals, ChatKit, agent skills, and a full organization administration plane for projects, users, groups,
-  roles, API keys, certificates, usage and audit logs. The contract is OpenAPI 3.1.0 with 242 operations,
-  published by OpenAI itself under MIT at github.com/openai/openai-openapi. Realtime is a separate WebSocket
-  surface at wss://api.openai.com/v1/realtime. Authentication is a project-scoped bearer API key; OAuth
-  2.0 / OIDC at auth.openai.com grants user identity only, not API authority. First-party SDKs ship for
-  Python, JavaScript, Go, Java, .NET and Ruby, alongside the Codex CLI and an anonymous documentation
-  MCP server at developers.openai.com/mcp.
+description: OpenAI publishes a single unversioned REST API at https://api.openai.com/v1 covering text and reasoning (Responses, Chat Completions),
+  embeddings, images, audio and speech, video, moderation, file storage, vector stores and file search, containers, batch inference at half price,
+  fine-tuning, evals, ChatKit, agent skills, and a full organization administration plane for projects, users, groups, roles, API keys, certificates,
+  usage and audit logs. The contract is OpenAPI 3.1.0 with 242 operations, published by OpenAI itself under MIT at github.com/openai/openai-openapi.
+  Realtime is a separate WebSocket surface at wss://api.openai.com/v1/realtime. Authentication is a project-scoped bearer API key; OAuth 2.0 /
+  OIDC at auth.openai.com grants user identity only, not API authority. First-party SDKs ship for Python, JavaScript, Go, Java, .NET and Ruby,
+  alongside the Codex CLI and an anonymous documentation MCP server at developers.openai.com/mcp.
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 specificationVersion: '0.23'
 image: https://openai.com/favicon.ico
 common:
+- type: IntegrationEdges
+  url: integrations/openai-integration-edges.yml
 - type: Pricing
   url: https://developers.openai.com/api/docs/pricing.md
 - type: Spectral
@@ -315,19 +314,13 @@ common:
       timeFrame: month
       description: User based pricing.
     elements:
-    - name: Unlimited GPT5 messages, with generous access to GPT5 thinking, and access to GPT5 proplus
-        the flexibility to add credits as needed
+    - name: Unlimited GPT5 messages, with generous access to GPT5 thinking, and access to GPT5 proplus the flexibility to add credits as needed
     - name: A secure, dedicated workspace with essential admin controls, SAML SSO, and MFA
-    - name: Team data is excluded from training by default, with encryption at rest and in transit. Learn
-        more`
-    - name: Support for compliance with GDPR, CCPA, and other privacy laws. Aligned with CSA STAR` and
-        SOC 2 Type 2 Trust Services Criteria.
-    - name: Connectors to apps for more personalized answersGoogle Drive, SharePoint, GitHub, Notion,
-        and more
-    - name: Business features like data analysis, record mode, canvas, projects, tasks, custom workspace
-        GPTs, and deep research
-    - name: Includes access to Codex and ChatGPT agent for reasoning and taking action across your documents,
-        tools, and codebases
+    - name: Team data is excluded from training by default, with encryption at rest and in transit. Learn more`
+    - name: Support for compliance with GDPR, CCPA, and other privacy laws. Aligned with CSA STAR` and SOC 2 Type 2 Trust Services Criteria.
+    - name: Connectors to apps for more personalized answersGoogle Drive, SharePoint, GitHub, Notion, and more
+    - name: Business features like data analysis, record mode, canvas, projects, tasks, custom workspace GPTs, and deep research
+    - name: Includes access to Codex and ChatGPT agent for reasoning and taking action across your documents, tools, and codebases
     description: A secure, collaborative workspace for startups and growing teams
   - id: enterprise
     name: Enterprise
@@ -342,14 +335,12 @@ common:
       description: User based pricing.
     elements:
     - name: Expanded context window that supports longer inputs and larger files
-    - name: Enterprise-level security and controls, including SCIM, user analytics, domain verification,
-        and role-based access controls
-    - name: Advanced data privacy with custom data retention policies, encryption at rest and in transit,
-        and no training on your business data by default. Learn more`
+    - name: Enterprise-level security and controls, including SCIM, user analytics, domain verification, and role-based access controls
+    - name: Advanced data privacy with custom data retention policies, encryption at rest and in transit, and no training on your business data
+        by default. Learn more`
     - name: Support for data residency in seven regions
     - name: 24/7 priority support, SLAs, custom legal terms, and access to AI advisors for eligible customers
-    - name: Built for scale with volume discounts, invoicing and ACH billing, and support for unlimited
-        users
+    - name: Built for scale with volume discounts, invoicing and ACH billing, and support for unlimited users
     description: Enterprise-grade AI, security, and support at scale
   name: Plans
   type: Plans
@@ -977,49 +968,36 @@ common:
   url: https://openai.com/api/
   data:
   - name: Conversational AI
-    description: Build chatbots, virtual assistants, and customer support agents using Chat Completions
-      or Responses API.
+    description: Build chatbots, virtual assistants, and customer support agents using Chat Completions or Responses API.
   - name: Content Generation
-    description: Generate marketing copy, articles, product descriptions, and creative writing with controllable
-      tone and style.
+    description: Generate marketing copy, articles, product descriptions, and creative writing with controllable tone and style.
   - name: Code Generation
-    description: Automate code writing, debugging, refactoring, and documentation generation across programming
-      languages.
+    description: Automate code writing, debugging, refactoring, and documentation generation across programming languages.
   - name: Document Analysis
-    description: Extract, summarize, and answer questions from uploaded documents using Assistants with
-      file search.
+    description: Extract, summarize, and answer questions from uploaded documents using Assistants with file search.
   - name: Voice Agents
     description: Build real-time voice-based AI agents for customer service, sales, and interactive experiences.
   - name: Semantic Search
-    description: Implement intelligent search using embeddings and vector stores for knowledge bases and
-      document retrieval.
+    description: Implement intelligent search using embeddings and vector stores for knowledge bases and document retrieval.
   - name: Content Moderation
-    description: Automatically classify and filter harmful content across text and images using the Moderations
-      API.
+    description: Automatically classify and filter harmful content across text and images using the Moderations API.
   - name: Data Extraction
-    description: Extract structured data from unstructured text using function calling and structured
-      outputs.
+    description: Extract structured data from unstructured text using function calling and structured outputs.
 - type: Integrations
   url: https://platform.openai.com/docs/libraries
   data:
   - name: Python SDK
-    description: Official Python client library for accessing all OpenAI API endpoints with async support
-      and streaming.
+    description: Official Python client library for accessing all OpenAI API endpoints with async support and streaming.
   - name: Node.js SDK
-    description: Official TypeScript and JavaScript client library for server-side and edge runtime OpenAI
-      API integration.
+    description: Official TypeScript and JavaScript client library for server-side and edge runtime OpenAI API integration.
   - name: Microsoft Azure OpenAI
-    description: Run OpenAI models on Azure infrastructure with enterprise security, compliance, and regional
-      data residency.
+    description: Run OpenAI models on Azure infrastructure with enterprise security, compliance, and regional data residency.
   - name: LangChain
-    description: Framework integration for building LLM-powered applications with chains, agents, and
-      retrieval-augmented generation.
+    description: Framework integration for building LLM-powered applications with chains, agents, and retrieval-augmented generation.
   - name: Vercel AI SDK
-    description: Integration with Vercel AI SDK for building streaming AI-powered web applications with
-      React and Next.js.
+    description: Integration with Vercel AI SDK for building streaming AI-powered web applications with React and Next.js.
   - name: Zapier
-    description: No-code automation integration connecting OpenAI to thousands of apps for automated AI-powered
-      workflows.
+    description: No-code automation integration connecting OpenAI to thousands of apps for automated AI-powered workflows.
 - name: Agent Skills
   url: https://github.com/openai/skills
   type: AgentSkills
@@ -1118,13 +1096,10 @@ apis:
     type: Documentation
   - url: https://developers.openai.com/api/docs/guides/migrate-to-responses/
     type: Documentation
-  description: >-
-    The Responses API is OpenAI's most advanced interface for generating model responses. It combines
-    the strengths of the Chat Completions and Assistants APIs into a single streamlined interface, supporting
-    text and image inputs, text outputs, and built-in tools like web search, file search, computer use,
-    code interpreter, and image generation. The upstream OpenAI OpenAPI spec exposes Responses as a dedicated
-    tag group with create/retrieve/list/cancel/delete/stream operations plus input items management. Recommended
-    for all new projects.
+  description: The Responses API is OpenAI's most advanced interface for generating model responses. It combines the strengths of the Chat Completions
+    and Assistants APIs into a single streamlined interface, supporting text and image inputs, text outputs, and built-in tools like web search,
+    file search, computer use, code interpreter, and image generation. The upstream OpenAI OpenAPI spec exposes Responses as a dedicated tag group
+    with create/retrieve/list/cancel/delete/stream operations plus input items management. Recommended for all new projects.
 - aid: openai:openai-moderations-api
   name: OpenAI Moderations API
   tags:
@@ -1138,11 +1113,9 @@ apis:
     type: Documentation
   - url: https://platform.openai.com/docs/guides/moderation
     type: Documentation
-  description: >-
-    The Moderations API can be used to check whether text or images are potentially harmful. It classifies
-    content across several categories including harassment, hate speech, sexual content, self-harm, violence,
-    and illicit content. The moderation endpoint is free to use and supports the omni-moderation-latest
-    model for multi-modal inputs.
+  description: The Moderations API can be used to check whether text or images are potentially harmful. It classifies content across several categories
+    including harassment, hate speech, sexual content, self-harm, violence, and illicit content. The moderation endpoint is free to use and supports
+    the omni-moderation-latest model for multi-modal inputs.
 - aid: openai:openai-batch-api
   name: OpenAI Batch API
   tags:
@@ -1156,11 +1129,9 @@ apis:
     type: Documentation
   - url: https://platform.openai.com/docs/guides/batch
     type: Documentation
-  description: >-
-    The Batch API enables asynchronous processing of requests with 50% cost discount, higher rate limits,
-    and completion within 24 hours. It supports /v1/responses, /v1/chat/completions, /v1/embeddings, /v1/completions,
-    and /v1/moderations endpoints. A single batch may include up to 50,000 requests with a batch input
-    file size up to 200 MB.
+  description: The Batch API enables asynchronous processing of requests with 50% cost discount, higher rate limits, and completion within 24
+    hours. It supports /v1/responses, /v1/chat/completions, /v1/embeddings, /v1/completions, and /v1/moderations endpoints. A single batch may
+    include up to 50,000 requests with a batch input file size up to 200 MB.
 - aid: openai:openai-vector-stores-api
   name: OpenAI Vector Stores API
   tags:
@@ -1175,11 +1146,9 @@ apis:
     type: Documentation
   - url: https://platform.openai.com/docs/guides/retrieval
     type: Documentation
-  description: >-
-    Vector stores are collections of processed files that power semantic search for the file_search tool
-    in the Responses and Assistants APIs. When you add a file to a vector store it is automatically chunked,
-    embedded, and indexed. You can query a vector store using natural language to retrieve relevant chunks
-    with similarity scores.
+  description: Vector stores are collections of processed files that power semantic search for the file_search tool in the Responses and Assistants
+    APIs. When you add a file to a vector store it is automatically chunked, embedded, and indexed. You can query a vector store using natural
+    language to retrieve relevant chunks with similarity scores.
 - aid: openai:openai-uploads-api
   name: OpenAI Uploads API
   tags:
@@ -1194,10 +1163,9 @@ apis:
   properties:
   - url: https://platform.openai.com/docs/api-reference/uploads
     type: Documentation
-  description: >-
-    The Uploads API creates an intermediate Upload object that you can add Parts to, enabling large file
-    uploads. Currently an Upload can accept at most 8 GB in total and expires after an hour. Once you
-    complete the Upload, a File object is created that can be used across the platform.
+  description: The Uploads API creates an intermediate Upload object that you can add Parts to, enabling large file uploads. Currently an Upload
+    can accept at most 8 GB in total and expires after an hour. Once you complete the Upload, a File object is created that can be used across
+    the platform.
 - aid: openai:openai-realtime-api
   name: OpenAI Realtime API
   tags:
@@ -1232,13 +1200,11 @@ apis:
     type: GitHubRepository
   - url: asyncapi/openai-realtime-asyncapi.yml
     type: AsyncAPI
-  description: >-
-    The Realtime API enables low-latency, bidirectional communication with models that natively support
-    speech-to-speech interactions as well as multimodal inputs (audio, images, and text) and outputs (audio
-    and text). It supports WebRTC, WebSocket, and SIP connection methods for real-time voice agents and
-    conversational interfaces. The Realtime API is represented as a dedicated tag group in the upstream
-    OpenAI OpenAPI specification with operations covering client/server events, translation client secrets,
-    and voice call lifecycle (accept, hangup, refer, reject).
+  description: The Realtime API enables low-latency, bidirectional communication with models that natively support speech-to-speech interactions
+    as well as multimodal inputs (audio, images, and text) and outputs (audio and text). It supports WebRTC, WebSocket, and SIP connection methods
+    for real-time voice agents and conversational interfaces. The Realtime API is represented as a dedicated tag group in the upstream OpenAI
+    OpenAPI specification with operations covering client/server events, translation client secrets, and voice call lifecycle (accept, hangup,
+    refer, reject).
 - aid: openai:openai-evals-api
   name: OpenAI Evals API
   tags:
@@ -1253,11 +1219,9 @@ apis:
     type: Documentation
   - url: https://platform.openai.com/docs/guides/evals
     type: Documentation
-  description: >-
-    The Evals API allows you to programmatically configure and run evaluations to test model outputs against
-    your expectations. Evaluations ensure model responses meet style and content criteria you specify,
-    and are essential for building reliable LLM applications, especially when upgrading or trying new
-    models.
+  description: The Evals API allows you to programmatically configure and run evaluations to test model outputs against your expectations. Evaluations
+    ensure model responses meet style and content criteria you specify, and are essential for building reliable LLM applications, especially when
+    upgrading or trying new models.
 - aid: openai:openai-videos-api
   name: OpenAI Videos API
   tags:
@@ -1276,11 +1240,9 @@ apis:
     type: Documentation
   - url: https://platform.openai.com/docs/guides/video-generation
     type: Documentation
-  description: >-
-    The Videos API enables programmatic creation, extension, and remixing of videos using Sora models.
-    It provides endpoints for creating a new render job from a text prompt, checking video status, downloading
-    finished MP4 files, listing videos with pagination, and deleting videos from storage. Supported models
-    include sora-2 and sora-2-pro.
+  description: The Videos API enables programmatic creation, extension, and remixing of videos using Sora models. It provides endpoints for creating
+    a new render job from a text prompt, checking video status, downloading finished MP4 files, listing videos with pagination, and deleting videos
+    from storage. Supported models include sora-2 and sora-2-pro.
 - aid: openai:openai-conversations-api
   name: OpenAI Conversations API
   tags:
@@ -1294,11 +1256,9 @@ apis:
     type: Documentation
   - url: https://developers.openai.com/api/docs/guides/conversation-state/
     type: Documentation
-  description: >-
-    The Conversations API allows you to create and manage stateful conversations for use with the Responses
-    API. A conversation object contains an id, a created_at timestamp, and metadata. Because conversations
-    are stateful, managing context across conversations is handled automatically, and the /responses/compact
-    endpoint can shrink context for long-running conversations.
+  description: The Conversations API allows you to create and manage stateful conversations for use with the Responses API. A conversation object
+    contains an id, a created_at timestamp, and metadata. Because conversations are stateful, managing context across conversations is handled
+    automatically, and the /responses/compact endpoint can shrink context for long-running conversations.
 - aid: openai:openai-containers-api
   name: OpenAI Containers API
   tags:
@@ -1315,11 +1275,9 @@ apis:
     type: Documentation
   - url: https://developers.openai.com/api/docs/guides/tools-code-interpreter/
     type: Documentation
-  description: >-
-    The Containers API manages sandboxed containers used by Code Interpreter for running Python, data
-    work, file transforms, and iterative debugging. Containers can be created explicitly or auto-managed,
-    with configurable memory limits of 1g, 4g, 16g, or 64g. Container files can be uploaded, listed, retrieved,
-    and downloaded. Containers expire after 20 minutes of inactivity.
+  description: The Containers API manages sandboxed containers used by Code Interpreter for running Python, data work, file transforms, and iterative
+    debugging. Containers can be created explicitly or auto-managed, with configurable memory limits of 1g, 4g, 16g, or 64g. Container files can
+    be uploaded, listed, retrieved, and downloaded. Containers expire after 20 minutes of inactivity.
 - aid: openai:openai-chatkit-api
   name: OpenAI ChatKit API
   tags:
@@ -1336,11 +1294,9 @@ apis:
     type: Documentation
   - url: https://github.com/openai/chatkit-js
     type: GitHubRepository
-  description: >-
-    ChatKit is the best way to build agentic chat experiences. It provides session and thread management
-    for building internal knowledge base assistants, research companions, support agents, and more. ChatKit
-    sessions include resolved feature configuration for automatic thread titling, file upload, and history
-    settings. Threads have statuses including active, locked, and closed.
+  description: ChatKit is the best way to build agentic chat experiences. It provides session and thread management for building internal knowledge
+    base assistants, research companions, support agents, and more. ChatKit sessions include resolved feature configuration for automatic thread
+    titling, file upload, and history settings. Threads have statuses including active, locked, and closed.
 - aid: openai:openai-skills-api
   name: OpenAI Skills API
   tags:
@@ -1355,11 +1311,9 @@ apis:
     type: Documentation
   - url: https://github.com/openai/skills
     type: GitHubRepository
-  description: >-
-    The Skills API surfaces OpenAI's Agent Skills — discoverable folders of instructions, scripts, and
-    resources that agents (notably Codex) can use to perform specific tasks. Operations cover creating,
-    retrieving, updating, deleting, and versioning skills as well as retrieving skill content. The companion
-    github.com/openai/skills repository hosts a catalog of system, curated, and experimental skills.
+  description: The Skills API surfaces OpenAI's Agent Skills — discoverable folders of instructions, scripts, and resources that agents (notably
+    Codex) can use to perform specific tasks. Operations cover creating, retrieving, updating, deleting, and versioning skills as well as retrieving
+    skill content. The companion github.com/openai/skills repository hosts a catalog of system, curated, and experimental skills.
 - aid: openai:openai-agents-sdk
   name: OpenAI Agents SDK
   tags:
@@ -1375,11 +1329,9 @@ apis:
     type: GitHubRepository
   - url: https://github.com/openai/openai-agents-js
     type: GitHubRepository
-  description: >-
-    The OpenAI Agents SDK is a lightweight framework for building multi-agent workflows in Python and
-    TypeScript. Primitives include agents (LLMs with instructions, tools, guardrails), handoffs between
-    specialists, guardrails for safety checks, sessions for conversation history, tracing for run observability,
-    and realtime agents for voice workflows. The SDK is provider-agnostic and supports OpenAI Responses
+  description: The OpenAI Agents SDK is a lightweight framework for building multi-agent workflows in Python and TypeScript. Primitives include
+    agents (LLMs with instructions, tools, guardrails), handoffs between specialists, guardrails for safety checks, sessions for conversation
+    history, tracing for run observability, and realtime agents for voice workflows. The SDK is provider-agnostic and supports OpenAI Responses
     and Chat Completions plus other LLM providers.
 - aid: openai:openai-codex
   name: OpenAI Codex
@@ -1399,10 +1351,9 @@ apis:
     type: Documentation
   - url: https://github.com/openai/codex
     type: GitHubRepository
-  description: >-
-    OpenAI Codex is a lightweight coding agent that runs in the terminal, with companion IDE extensions,
-    a desktop app, and a web experience at chatgpt.com/codex. Codex authenticates with a ChatGPT Plus/Pro/Business/Edu/Enterprise
-    account or an API key, and integrates with the Skills catalog for repeatable task workflows.
+  description: OpenAI Codex is a lightweight coding agent that runs in the terminal, with companion IDE extensions, a desktop app, and a web experience
+    at chatgpt.com/codex. Codex authenticates with a ChatGPT Plus/Pro/Business/Edu/Enterprise account or an API key, and integrates with the Skills
+    catalog for repeatable task workflows.
 - aid: openai:openai-assistants-api
   name: OpenAI Assistants API
   description: Build Assistants that can call models and use tools.
@@ -1419,8 +1370,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -1481,8 +1430,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -1543,8 +1490,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -1605,8 +1550,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -1667,8 +1610,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -1731,8 +1672,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -1781,9 +1720,8 @@ apis:
     url: https://platform.openai.com/docs/api-reference/completions
 - aid: openai:openai-completions-api
   name: OpenAI Completions API
-  description: >-
-    Given a prompt, the model will return one or more predicted completions, and can also return the probabilities
-    of alternative tokens at each position.
+  description: Given a prompt, the model will return one or more predicted completions, and can also return the probabilities of alternative tokens
+    at each position.
   humanURL: https://platform.openai.com/docs/assistants/overview
   baseURL: https://api.openai.com
   tags:
@@ -1795,8 +1733,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -1857,8 +1793,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -1919,8 +1853,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -1969,9 +1901,7 @@ apis:
     url: https://platform.openai.com/docs/api-reference/completions
 - aid: openai:openai-embeddings-api
   name: OpenAI Embeddings API
-  description: >-
-    Get a vector representation of a given input that can be easily consumed by machine learning models
-    and algorithms.
+  description: Get a vector representation of a given input that can be easily consumed by machine learning models and algorithms.
   humanURL: https://platform.openai.com/docs/assistants/overview
   baseURL: https://api.openai.com
   tags:
@@ -1983,8 +1913,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -2045,8 +1973,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -2095,8 +2021,7 @@ apis:
     url: https://platform.openai.com/docs/api-reference/completions
 - aid: openai:openai-files-api
   name: OpenAI Files API
-  description: >-
-    Files are used to upload documents that can be used with features like Assistants and Fine-tuning.
+  description: Files are used to upload documents that can be used with features like Assistants and Fine-tuning.
   humanURL: https://platform.openai.com/docs/assistants/overview
   baseURL: https://api.openai.com
   tags:
@@ -2110,8 +2035,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -2174,8 +2097,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -2224,9 +2145,7 @@ apis:
     url: https://platform.openai.com/docs/api-reference/completions
 - aid: openai:openai-group-organization-role-assignments-api
   name: OpenAI Group organization role assignments API
-  description: >-
-    The Group organization role assignments API from OpenAI — 2 operation(s) for group organization role
-    assignments.
+  description: The Group organization role assignments API from OpenAI — 2 operation(s) for group organization role assignments.
   humanURL: https://platform.openai.com/docs/assistants/overview
   baseURL: https://api.openai.com
   tags:
@@ -2238,8 +2157,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -2302,8 +2219,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -2366,8 +2281,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -2430,8 +2343,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -2492,8 +2403,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -2554,8 +2463,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -2616,8 +2523,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -2678,8 +2583,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -2728,8 +2631,7 @@ apis:
     url: https://platform.openai.com/docs/api-reference/completions
 - aid: openai:openai-project-group-role-assignments-api
   name: OpenAI Project group role assignments API
-  description: >-
-    The Project group role assignments API from OpenAI — 2 operation(s) for project group role assignments.
+  description: The Project group role assignments API from OpenAI — 2 operation(s) for project group role assignments.
   humanURL: https://platform.openai.com/docs/assistants/overview
   baseURL: https://api.openai.com
   tags:
@@ -2741,8 +2643,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -2805,8 +2705,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -2855,8 +2753,7 @@ apis:
     url: https://platform.openai.com/docs/api-reference/completions
 - aid: openai:openai-project-user-role-assignments-api
   name: OpenAI Project user role assignments API
-  description: >-
-    The Project user role assignments API from OpenAI — 2 operation(s) for project user role assignments.
+  description: The Project user role assignments API from OpenAI — 2 operation(s) for project user role assignments.
   humanURL: https://platform.openai.com/docs/assistants/overview
   baseURL: https://api.openai.com
   tags:
@@ -2868,8 +2765,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -2932,8 +2827,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -2996,8 +2889,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -3058,8 +2949,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -3120,8 +3009,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -3182,8 +3069,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -3244,8 +3129,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -3306,8 +3189,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -3368,8 +3249,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -3418,9 +3297,7 @@ apis:
     url: https://platform.openai.com/docs/api-reference/completions
 - aid: openai:openai-user-organization-role-assignments-api
   name: OpenAI User organization role assignments API
-  description: >-
-    The User organization role assignments API from OpenAI — 2 operation(s) for user organization role
-    assignments.
+  description: The User organization role assignments API from OpenAI — 2 operation(s) for user organization role assignments.
   humanURL: https://platform.openai.com/docs/assistants/overview
   baseURL: https://api.openai.com
   tags:
@@ -3432,8 +3309,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -3496,8 +3371,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -3560,8 +3433,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -3624,8 +3495,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation
@@ -3698,8 +3567,7 @@ apis:
     url: json-schema/openai-session-resource-schema.json
 - aid: openai:openai-content-provenance-checks-api
   name: OpenAI Content Provenance Checks API
-  description: >-
-    The Content Provenance Checks API from OpenAI — 1 operation(s) for content provenance checks.
+  description: The Content Provenance Checks API from OpenAI — 1 operation(s) for content provenance checks.
   humanURL: https://platform.openai.com/docs/api-reference/responses
   baseURL: https://api.openai.com
   tags:
@@ -3889,7 +3757,8 @@ apis:
     url: json-schema/openai-webhook-event-type-list-resource-schema.json
 - aid: openai:openai-decisions-api
   name: OpenAI Decisions API
-  description: The Decisions API from OpenAI — 1 operation(s) for decisions. Ask classification or scoring questions about the same input and get the answers back in order (public beta).
+  description: The Decisions API from OpenAI — 1 operation(s) for decisions. Ask classification or scoring questions about the same input and
+    get the answers back in order (public beta).
   humanURL: https://developers.openai.com/api/docs/guides/decisions
   baseURL: https://api.openai.com
   tags:
@@ -3901,6 +3770,10 @@ apis:
     url: https://developers.openai.com/api/docs/guides/decisions
   - type: GitHubRepository
     url: https://github.com/openai/openai-openapi
+  - type: JSONSchema
+    url: json-schema/openai-decision-request-schema.json
+  - type: JSONSchema
+    url: json-schema/openai-decision-response-schema.json
 - aid: openai:openai-chat-completions-api
   name: OpenAI Chat Completions API
   description: Given a list of messages comprising a conversation, the model will return a response.
@@ -3915,8 +3788,6 @@ apis:
     url: https://platform.openai.com/docs/assistants/overview
   - type: Documentation
     url: https://platform.openai.com/docs/api-reference/assistants
-  - type: GraphQL
-    url: graphql/openai-graphql.md
   - type: Documentation
     url: https://platform.openai.com/docs/guides/text-to-speech
   - type: Documentation

@@ -1,0 +1,325 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/openai/main/json-schema/openai-decision-response-schema.json",
+  "title": "DecisionResponse",
+  "x-generated": "2026-10-13",
+  "x-method": "derived",
+  "x-generator": "derive-json-schema.py",
+  "x-source": "openapi/openai-decisions-api-openapi.yml#/components/schemas/DecisionResponse",
+  "type": "object",
+  "properties": {
+    "model": {
+      "type": "string",
+      "minLength": 0
+    },
+    "answers": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/AnswerResource"
+      },
+      "minItems": 0,
+      "maxItems": 2000
+    },
+    "usage": {
+      "$ref": "#/$defs/ResponseUsageResource"
+    }
+  },
+  "required": [
+    "model",
+    "answers",
+    "usage"
+  ],
+  "additionalProperties": false,
+  "$defs": {
+    "AnswerResource": {
+      "oneOf": [
+        {
+          "$ref": "#/$defs/AnswerResourcePredicate"
+        },
+        {
+          "$ref": "#/$defs/AnswerResourceChoice"
+        },
+        {
+          "$ref": "#/$defs/AnswerResourceScore"
+        },
+        {
+          "$ref": "#/$defs/AnswerResourceRefusal"
+        }
+      ],
+      "x-oai-discriminator-values": [
+        "predicate",
+        "choice",
+        "score",
+        "refusal"
+      ],
+      "description": "A completed question always includes its name, including null when unnamed."
+    },
+    "AnswerResourceChoice": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "choice"
+          ],
+          "default": "choice",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `choice`."
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0
+        },
+        "choice": {
+          "$ref": "#/$defs/ChoiceValueResource"
+        },
+        "probabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ChoiceProbabilityResource"
+          },
+          "minItems": 0,
+          "maxItems": 2000
+        },
+        "confidence": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "choice",
+        "probabilities",
+        "confidence"
+      ],
+      "additionalProperties": false
+    },
+    "AnswerResourcePredicate": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "predicate"
+          ],
+          "default": "predicate",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `predicate`."
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0
+        },
+        "probability": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "probability"
+      ],
+      "additionalProperties": false
+    },
+    "AnswerResourceRefusal": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "refusal"
+          ],
+          "default": "refusal",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `refusal`."
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0
+        }
+      },
+      "required": [
+        "type",
+        "name"
+      ],
+      "additionalProperties": false,
+      "description": "The model declined to answer this question. Other questions in the same request can still receive answers."
+    },
+    "AnswerResourceScore": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": [
+            "score"
+          ],
+          "default": "score",
+          "x-stainless-const": true,
+          "description": "The type of the object. Always `score`."
+        },
+        "name": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 0
+        },
+        "score": {
+          "type": "number"
+        },
+        "probabilities": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/ScoreProbabilityResource"
+          },
+          "minItems": 0,
+          "maxItems": 2000
+        },
+        "confidence": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "type",
+        "name",
+        "score",
+        "probabilities",
+        "confidence"
+      ],
+      "additionalProperties": false
+    },
+    "ChoiceProbabilityResource": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "$ref": "#/$defs/ChoiceValueResource"
+        },
+        "probability": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "value",
+        "probability"
+      ],
+      "additionalProperties": false
+    },
+    "ChoiceValueResource": {
+      "oneOf": [
+        {
+          "type": "string",
+          "minLength": 0
+        },
+        {
+          "type": "boolean"
+        }
+      ],
+      "description": "Choice values are typed: a string and a boolean with the same text are distinct."
+    },
+    "InputTokensDetailsResource": {
+      "type": "object",
+      "properties": {
+        "cached_tokens": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "cache_write_tokens": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "cached_tokens",
+        "cache_write_tokens"
+      ],
+      "additionalProperties": false
+    },
+    "OutputTokensDetailsResource": {
+      "type": "object",
+      "properties": {
+        "reasoning_tokens": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "reasoning_tokens"
+      ],
+      "additionalProperties": false
+    },
+    "ResponseUsageResource": {
+      "type": "object",
+      "properties": {
+        "input_tokens": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "input_tokens_details": {
+          "$ref": "#/$defs/InputTokensDetailsResource"
+        },
+        "output_tokens": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        },
+        "output_tokens_details": {
+          "$ref": "#/$defs/OutputTokensDetailsResource"
+        },
+        "total_tokens": {
+          "type": "integer",
+          "format": "int64",
+          "minimum": -2147483648,
+          "maximum": 2147483647
+        }
+      },
+      "required": [
+        "input_tokens",
+        "input_tokens_details",
+        "output_tokens",
+        "output_tokens_details",
+        "total_tokens"
+      ],
+      "additionalProperties": false
+    },
+    "ScoreProbabilityResource": {
+      "type": "object",
+      "properties": {
+        "value": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "label": {
+          "type": "string",
+          "minLength": 0
+        },
+        "probability": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "value",
+        "label",
+        "probability"
+      ],
+      "additionalProperties": false
+    }
+  }
+}
