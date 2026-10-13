@@ -12,7 +12,7 @@ capability_model:
   attribution: Turbo EA Capabilities by Vincent Verdet — Turbo EA, https://github.com/vincentmakes/turbo-ea-capabilities,
     CC BY 4.0
   notice: NOTICE
-edge_count: 14
+edge_count: 15
 edges:
 - tag: Fine Tuning
   spec_file: openai-fine-tuning-api-openapi.yml
@@ -101,6 +101,16 @@ edges:
     modify-user Modifies a user's role in the organization
   reason: User account lifecycle and role modification in the organization admin plane — identity and
     access management, not HR employee records.
+- tag: Webhook Endpoints
+  spec_file: openai-webhook-endpoints-api-openapi.yml
+  capability_id: BC-4270.80
+  capability_id_l1: BC-4270
+  capability_name: Webhook & Event Subscription Management
+  confidence: 0.8
+  evidence: POST /webhook_endpoints 'Create Webhook Endpoint'; 'Rotate Webhook Endpoint Signing Secret';
+    'Test Webhook Endpoint'
+  reason: Full lifecycle of outbound webhook subscriptions and their delivery/signing configuration, which
+    is exactly Webhook & Event Subscription Management in the developer-platform capability.
 - tag: Groups
   spec_file: openai-groups-api-openapi.yml
   capability_id: BC-620.20
