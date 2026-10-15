@@ -448,6 +448,72 @@
     detected: '2026-10-12'
   status: not-a-workflow
   arazzo: null
+- slug: openai-visual-studio-code-marketplace
+  label: Visual Studio Code Marketplace
+  partner: vs-code-marketplace
+  partner_name: Visual Studio Code Marketplace
+  type: marketplace
+  marketplace: vscode
+  channel: partner-built
+  evidence: https://marketplace.visualstudio.com/publishers/openai
+  source: edge
+  relationship: platform-app
+  status: not-a-workflow
+  arazzo: null
+- slug: openai-hightouch
+  label: Hightouch
+  partner: hightouch
+  partner_name: Hightouch
+  type: coverage
+  marketplace: coverage
+  channel: partner-built
+  evidence: https://hightouch.com/docs/destinations/open-ai
+  source: edge
+  relationship: connector-coverage
+  status: not-a-workflow
+  arazzo: null
+- slug: openai-c2pa-content-credentials-conformance-programme
+  label: C2PA (Content Credentials conformance programme)
+  partner_name: C2PA (Content Credentials conformance programme)
+  category: content provenance (Content Credentials) conformance
+  type: register
+  channel: standard-directory
+  evidence: https://github.com/c2pa-org/conformance-public/blob/main/conforming-products/conforming-products-list.json
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: C2PA conforming products list (c2pa-org/conformance-public)
+    spec_file: null
+    role: c2pa-conformant-applicant
+    registered_name: OpenAI OpCo, LLC
+    register_id: OpenAI OpCo, LLC
+    product_types:
+    - generatorProduct
+    assurance_levels:
+    - 1
+    spec_versions:
+    - '2.2'
+    media_types:
+    - application/pdf
+    - audio/mp4
+    - audio/mpeg
+    - audio/wav
+    - image/gif
+    - image/jpeg
+    - image/png
+    - image/webp
+    - video/mp4
+    products:
+    - product: OpenAI Media Service
+      record_id: 019bc403-5cd7-7669-afe6-fdb17177d428
+      conformance_date: '2026-01-28'
+    matched_domain: openai.com
+    matched_by: domain+name-among-holders
+    identity: wikidata Q116374474 'OpenAI OpCo' P856 https://openai.com/
+    detected_by: sweep-media.py
+    detected: '2026-10-15'
+  status: not-a-workflow
+  arazzo: null
 - slug: openai-openrouter
   label: OpenRouter
   partner: openrouter
@@ -503,28 +569,26 @@
   relationship: system-coverage
   status: not-a-workflow
   arazzo: null
-- slug: openai-visual-studio-code-marketplace
-  label: Visual Studio Code Marketplace
-  partner: vs-code-marketplace
-  partner_name: Visual Studio Code Marketplace
-  type: marketplace
-  marketplace: vscode
+- slug: openai-llamaindex
+  label: LlamaIndex
+  partner: llamaindex
+  partner_name: LlamaIndex
+  type: coverage
   channel: partner-built
-  evidence: https://marketplace.visualstudio.com/publishers/openai
+  evidence: https://github.com/run-llama/llama_index/tree/main/llama-index-integrations/embeddings/llama-index-embeddings-openai
   source: edge
-  relationship: platform-app
+  relationship: system-coverage
   status: not-a-workflow
   arazzo: null
-- slug: openai-hightouch
-  label: Hightouch
-  partner: hightouch
-  partner_name: Hightouch
+- slug: openai-langchain
+  label: LangChain
+  partner: langchain
+  partner_name: LangChain
   type: coverage
-  marketplace: coverage
   channel: partner-built
-  evidence: https://hightouch.com/docs/destinations/open-ai
+  evidence: https://github.com/langchain-ai/langchain/tree/master/libs/partners/openai
   source: edge
-  relationship: connector-coverage
+  relationship: system-coverage
   status: not-a-workflow
   arazzo: null
 - slug: openai-pipecat
@@ -560,67 +624,79 @@
   relationship: system-coverage
   status: not-a-workflow
   arazzo: null
-- slug: openai-llamaindex
-  label: LlamaIndex
-  partner: llamaindex
-  partner_name: LlamaIndex
-  type: coverage
-  channel: partner-built
-  evidence: https://github.com/run-llama/llama_index/tree/main/llama-index-integrations/embeddings/llama-index-embeddings-openai
+- slug: openai-zapier
+  label: Zapier
+  partner: zapier
+  partner_name: Zapier
+  type: marketplace
+  marketplace: zapier-directory
+  channel: ipaas-listing
+  evidence: https://zapier.com/apps/chatgpt/integrations
   source: edge
-  relationship: system-coverage
-  status: not-a-workflow
-  arazzo: null
-- slug: openai-langchain
-  label: LangChain
-  partner: langchain
-  partner_name: LangChain
-  type: coverage
-  channel: partner-built
-  evidence: https://github.com/langchain-ai/langchain/tree/master/libs/partners/openai
-  source: edge
-  relationship: system-coverage
-  status: not-a-workflow
-  arazzo: null
-- slug: openai-c2pa-content-credentials-conformance-programme
-  label: C2PA (Content Credentials conformance programme)
-  partner_name: C2PA (Content Credentials conformance programme)
-  category: content provenance (Content Credentials) conformance
-  type: register
-  channel: standard-directory
-  evidence: https://github.com/c2pa-org/conformance-public/blob/main/conforming-products/conforming-products-list.json
-  source: edge
-  relationship: standard-participant
+  relationship: ipaas-bridge
   contract_reference:
-    register: C2PA conforming products list (c2pa-org/conformance-public)
+    register: Zapier app directory (zapier.com/api/v4/apps)
     spec_file: null
-    role: c2pa-conformant-applicant
-    registered_name: OpenAI OpCo, LLC
-    register_id: OpenAI OpCo, LLC
-    product_types:
-    - generatorProduct
-    assurance_levels:
-    - 1
-    spec_versions:
-    - '2.2'
-    media_types:
-    - application/pdf
-    - audio/mp4
-    - audio/mpeg
-    - audio/wav
-    - image/gif
-    - image/jpeg
-    - image/png
-    - image/webp
-    - video/mp4
-    products:
-    - product: OpenAI Media Service
-      record_id: 019bc403-5cd7-7669-afe6-fdb17177d428
-      conformance_date: '2026-01-28'
+    role: ipaas-connector:zapier
+    registered_name: ChatGPT (OpenAI)
     matched_domain: openai.com
     matched_by: domain+name-among-holders
-    identity: wikidata Q116374474 'OpenAI OpCo' P856 https://openai.com/
-    detected_by: sweep-media.py
+    detected_by: sweep-workflow-automation.py
     detected: '2026-10-15'
-  status: not-a-workflow
+    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
+    app_slug: chatgpt
+    beta: false
+    builder: unknown (not in the directory record)
+  status: pending-generation
+  arazzo: null
+- slug: openai-n8n
+  label: n8n
+  partner: n8n
+  partner_name: n8n
+  type: marketplace
+  marketplace: n8n-nodes-base
+  channel: open-source-node
+  evidence: https://github.com/n8n-io/n8n/tree/860f1273ebd73fabbd668cbec2c49ed9b48a286d/packages/nodes-base/nodes/OpenAi
+  source: edge
+  relationship: ipaas-bridge
+  contract_reference:
+    register: n8n built-in nodes (n8n-io/n8n packages/nodes-base)
+    spec_file: null
+    role: ipaas-connector:n8n-nodes-base
+    registered_name: OpenAI
+    matched_domain: openai.com
+    matched_by: domain+name-among-holders
+    detected_by: sweep-workflow-automation.py
+    detected: '2026-10-15'
+    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
+    node_path: OpenAi
+    trigger: false
+    builder: n8n (built-in node)
+  status: pending-generation
+  arazzo: null
+- slug: openai-pipedream
+  label: Pipedream
+  partner: pipedream
+  partner_name: Pipedream
+  type: marketplace
+  marketplace: pipedream-components
+  channel: open-source-node
+  evidence: https://github.com/PipedreamHQ/pipedream/tree/94800dd6de6640b942c65ea7ee655f71ac56d438/components/openai
+  source: edge
+  relationship: ipaas-bridge
+  contract_reference:
+    register: Pipedream components (PipedreamHQ/pipedream components/)
+    spec_file: null
+    role: ipaas-connector:pipedream
+    registered_name: openai
+    matched_domain: openai.com
+    matched_by: domain+name-among-holders
+    detected_by: sweep-workflow-automation.py
+    detected: '2026-10-15'
+    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
+    app_slug: openai
+    actions: true
+    sources: true
+    builder: Pipedream repo (component)
+  status: pending-generation
   arazzo: null

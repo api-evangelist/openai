@@ -11,9 +11,11 @@ checked:
 - https://ddex.net/membership/current-members/
 - https://developers.cloudflare.com/ai-gateway/usage/providers/
 - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json
+- https://github.com/PipedreamHQ/pipedream/tree/94800dd6de6640b942c65ea7ee655f71ac56d438/components/
 - https://github.com/Portkey-AI/gateway/tree/main/src/providers
 - https://github.com/langchain-ai/langchain/tree/master/libs/partners
 - https://github.com/livekit/agents/tree/main/livekit-plugins
+- https://github.com/n8n-io/n8n/tree/860f1273ebd73fabbd668cbec2c49ed9b48a286d/packages/nodes-base/nodes/
 - https://github.com/pipecat-ai/pipecat/tree/main/src/pipecat/services
 - https://github.com/run-llama/llama_index/tree/main/llama-index-integrations
 - https://hightouch.com/docs/destinations/open-ai
@@ -23,6 +25,7 @@ checked:
 - https://n8n.io/integrations/openai/
 - https://openrouter.ai/api/v1/models
 - https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json
+- https://zapier.com/api/v4/apps/
 - https://zapier.com/apps/openai/integrations
 summary: null
 marketplace_apps:
@@ -875,6 +878,92 @@ edges:
     property: schemas.AgentProvider
     detected_by: detect-payment-method-edges.py
     detected: '2026-10-12'
+- partner_name: Visual Studio Code Marketplace
+  partner: vs-code-marketplace
+  partner_match: aggregator
+  type: marketplace
+  marketplace: vscode
+  channel: partner-built
+  relationship: platform-app
+  direction: third-party
+  evidence: https://marketplace.visualstudio.com/publishers/openai
+  listing_count: 2
+  apps:
+  - Codex – OpenAI’s coding agent
+  - Codex Audio
+  publisher_name: OpenAI
+  badges:
+  - Verified publisher
+  - Verified domain
+  detected_by: sweep-devtools.py
+  detected: '2026-10-14'
+- partner_name: Hightouch
+  partner: hightouch
+  partner_match: aggregator
+  marketplace: coverage
+  channel: partner-built
+  direction: partner-built
+  type: coverage
+  relationship: connector-coverage
+  evidence: https://hightouch.com/docs/destinations/open-ai
+  coverage_role:
+  - destination
+  cdp_signals:
+    destination:
+      catalog_entries:
+      - open-ai
+      status: released
+      sync_types:
+      - Events
+      - Segments
+      sync_modes:
+      - add
+      - insert
+      - remove
+  detected_by: sweep-cdp.py
+  first_seen: '2026-10-14'
+- partner_name: C2PA (Content Credentials conformance programme)
+  partner: null
+  partner_match: register
+  type: register
+  direction: partner-built
+  channel: standard-directory
+  relationship: standard-participant
+  evidence: https://github.com/c2pa-org/conformance-public/blob/main/conforming-products/conforming-products-list.json
+  category: content provenance (Content Credentials) conformance
+  contract_reference:
+    register: C2PA conforming products list (c2pa-org/conformance-public)
+    spec_file: null
+    role: c2pa-conformant-applicant
+    registered_name: OpenAI OpCo, LLC
+    register_id: OpenAI OpCo, LLC
+    product_types:
+    - generatorProduct
+    assurance_levels:
+    - 1
+    spec_versions:
+    - '2.2'
+    media_types:
+    - application/pdf
+    - audio/mp4
+    - audio/mpeg
+    - audio/wav
+    - image/gif
+    - image/jpeg
+    - image/png
+    - image/webp
+    - video/mp4
+    products:
+    - product: OpenAI Media Service
+      record_id: 019bc403-5cd7-7669-afe6-fdb17177d428
+      conformance_date: '2026-01-28'
+    matched_domain: openai.com
+    matched_by: domain+name-among-holders
+    identity: wikidata Q116374474 'OpenAI OpCo' P856 https://openai.com/
+    detected_by: sweep-media.py
+    detected: '2026-10-15'
+  detected_by: sweep-media.py
+  first_seen: '2026-10-15'
 - partner_name: OpenRouter
   partner: openrouter
   partner_match: router
@@ -981,50 +1070,44 @@ edges:
   matched_by: verified-token-table
   detected_by: sweep-model-routing.py
   first_seen: '2026-10-13'
-- partner_name: Visual Studio Code Marketplace
-  partner: vs-code-marketplace
-  partner_match: aggregator
-  type: marketplace
-  marketplace: vscode
-  channel: partner-built
-  relationship: platform-app
-  direction: third-party
-  evidence: https://marketplace.visualstudio.com/publishers/openai
-  listing_count: 2
-  apps:
-  - Codex – OpenAI’s coding agent
-  - Codex Audio
-  publisher_name: OpenAI
-  badges:
-  - Verified publisher
-  - Verified domain
-  detected_by: sweep-devtools.py
-  detected: '2026-10-14'
-- partner_name: Hightouch
-  partner: hightouch
-  partner_match: aggregator
-  marketplace: coverage
+- partner_name: LlamaIndex
+  partner: llamaindex
+  partner_match: framework
   channel: partner-built
   direction: partner-built
   type: coverage
-  relationship: connector-coverage
-  evidence: https://hightouch.com/docs/destinations/open-ai
+  relationship: system-coverage
+  evidence: https://github.com/run-llama/llama_index/tree/main/llama-index-integrations/embeddings/llama-index-embeddings-openai
   coverage_role:
-  - destination
-  cdp_signals:
-    destination:
-      catalog_entries:
-      - open-ai
-      status: released
-      sync_types:
-      - Events
-      - Segments
-      sync_modes:
-      - add
-      - insert
-      - remove
-  detected_by: sweep-cdp.py
-  first_seen: '2026-10-14'
+  - embeddings
+  framework_signals:
+    packages:
+    - llama-index-embeddings-openai
+    roles:
+    - embeddings
+    vendor_domain: openai.com
+  matched_by: verified-domain-table
+  detected_by: sweep-rag-vector.py
+  first_seen: '2026-10-15'
+- partner_name: LangChain
+  partner: langchain
+  partner_match: framework
+  channel: partner-built
+  direction: partner-built
+  type: coverage
+  relationship: system-coverage
+  evidence: https://github.com/langchain-ai/langchain/tree/master/libs/partners/openai
+  coverage_role:
+  - embeddings
+  framework_signals:
+    packages:
+    - langchain-openai
+    roles:
+    - embeddings
+    vendor_domain: openai.com
+  matched_by: verified-domain-table
+  detected_by: sweep-rag-vector.py
+  first_seen: '2026-10-15'
 - partner_name: Pipecat
   partner: pipecat-ai
   partner_match: framework
@@ -1090,85 +1173,81 @@ edges:
   matched_by: verified-domain-table
   detected_by: sweep-voice-ai.py
   first_seen: '2026-10-15'
-- partner_name: LlamaIndex
-  partner: llamaindex
-  partner_match: framework
-  channel: partner-built
-  direction: partner-built
-  type: coverage
-  relationship: system-coverage
-  evidence: https://github.com/run-llama/llama_index/tree/main/llama-index-integrations/embeddings/llama-index-embeddings-openai
-  coverage_role:
-  - embeddings
-  framework_signals:
-    packages:
-    - llama-index-embeddings-openai
-    roles:
-    - embeddings
-    vendor_domain: openai.com
-  matched_by: verified-domain-table
-  detected_by: sweep-rag-vector.py
-  first_seen: '2026-10-15'
-- partner_name: LangChain
-  partner: langchain
-  partner_match: framework
-  channel: partner-built
-  direction: partner-built
-  type: coverage
-  relationship: system-coverage
-  evidence: https://github.com/langchain-ai/langchain/tree/master/libs/partners/openai
-  coverage_role:
-  - embeddings
-  framework_signals:
-    packages:
-    - langchain-openai
-    roles:
-    - embeddings
-    vendor_domain: openai.com
-  matched_by: verified-domain-table
-  detected_by: sweep-rag-vector.py
-  first_seen: '2026-10-15'
-- partner_name: C2PA (Content Credentials conformance programme)
-  partner: null
-  partner_match: register
-  type: register
-  direction: partner-built
-  channel: standard-directory
-  relationship: standard-participant
-  evidence: https://github.com/c2pa-org/conformance-public/blob/main/conforming-products/conforming-products-list.json
-  category: content provenance (Content Credentials) conformance
+- partner_name: Zapier
+  partner: zapier
+  partner_match: aggregator
+  type: marketplace
+  marketplace: zapier-directory
+  channel: ipaas-listing
+  relationship: ipaas-bridge
+  direction: third-party
+  evidence: https://zapier.com/apps/chatgpt/integrations
+  category: null
   contract_reference:
-    register: C2PA conforming products list (c2pa-org/conformance-public)
+    register: Zapier app directory (zapier.com/api/v4/apps)
     spec_file: null
-    role: c2pa-conformant-applicant
-    registered_name: OpenAI OpCo, LLC
-    register_id: OpenAI OpCo, LLC
-    product_types:
-    - generatorProduct
-    assurance_levels:
-    - 1
-    spec_versions:
-    - '2.2'
-    media_types:
-    - application/pdf
-    - audio/mp4
-    - audio/mpeg
-    - audio/wav
-    - image/gif
-    - image/jpeg
-    - image/png
-    - image/webp
-    - video/mp4
-    products:
-    - product: OpenAI Media Service
-      record_id: 019bc403-5cd7-7669-afe6-fdb17177d428
-      conformance_date: '2026-01-28'
+    role: ipaas-connector:zapier
+    registered_name: ChatGPT (OpenAI)
     matched_domain: openai.com
     matched_by: domain+name-among-holders
-    identity: wikidata Q116374474 'OpenAI OpCo' P856 https://openai.com/
-    detected_by: sweep-media.py
+    detected_by: sweep-workflow-automation.py
     detected: '2026-10-15'
-  detected_by: sweep-media.py
+    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
+    app_slug: chatgpt
+    beta: false
+    builder: unknown (not in the directory record)
+  detected_by: sweep-workflow-automation.py
+  first_seen: '2026-10-15'
+- partner_name: n8n
+  partner: n8n
+  partner_match: aggregator
+  type: marketplace
+  marketplace: n8n-nodes-base
+  channel: open-source-node
+  relationship: ipaas-bridge
+  direction: third-party
+  evidence: https://github.com/n8n-io/n8n/tree/860f1273ebd73fabbd668cbec2c49ed9b48a286d/packages/nodes-base/nodes/OpenAi
+  category: null
+  contract_reference:
+    register: n8n built-in nodes (n8n-io/n8n packages/nodes-base)
+    spec_file: null
+    role: ipaas-connector:n8n-nodes-base
+    registered_name: OpenAI
+    matched_domain: openai.com
+    matched_by: domain+name-among-holders
+    detected_by: sweep-workflow-automation.py
+    detected: '2026-10-15'
+    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
+    node_path: OpenAi
+    trigger: false
+    builder: n8n (built-in node)
+  detected_by: sweep-workflow-automation.py
+  first_seen: '2026-10-15'
+- partner_name: Pipedream
+  partner: pipedream
+  partner_match: aggregator
+  type: marketplace
+  marketplace: pipedream-components
+  channel: open-source-node
+  relationship: ipaas-bridge
+  direction: third-party
+  evidence: https://github.com/PipedreamHQ/pipedream/tree/94800dd6de6640b942c65ea7ee655f71ac56d438/components/openai
+  category: null
+  contract_reference:
+    register: Pipedream components (PipedreamHQ/pipedream components/)
+    spec_file: null
+    role: ipaas-connector:pipedream
+    registered_name: openai
+    matched_domain: openai.com
+    matched_by: domain+name-among-holders
+    detected_by: sweep-workflow-automation.py
+    detected: '2026-10-15'
+    signal_note: one edge per (provider, platform); actions, triggers and usage counts are context, never read
+    app_slug: openai
+    actions: true
+    sources: true
+    builder: Pipedream repo (component)
+  detected_by: sweep-workflow-automation.py
   first_seen: '2026-10-15'
 templates:
 - title: Automatically reply to Google Business Profile reviews with ChatGPT
