@@ -6,6 +6,7 @@ source:
 - https://composio.dev/toolkits/openai
 - https://monid.ai/tools/openai
 checked:
+- google-workspace/integrations/google-workspace-integration-edges.yml
 - https://api.llmgateway.io/v1/models
 - https://composio.dev/toolkits/openai
 - https://connectors.airbyte.com/files/registries/v0/cloud_registry.json
@@ -31,6 +32,8 @@ checked:
 - https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json
 - https://zapier.com/api/v4/apps/
 - https://zapier.com/apps/openai/integrations
+- microsoft-teams/integrations/microsoft-teams-integration-edges.yml
+- slack/integrations/slack-integration-edges.yml
 summary: null
 marketplace_apps:
 - marketplace: zapier
@@ -1310,6 +1313,59 @@ edges:
     builder: Fivetran
   detected_by: sweep-data-integration.py
   first_seen: '2026-10-18'
+- partner_name: Google Workspace (own)
+  partner: google-workspace
+  partner_match: mirror
+  mirror_match: domain+name-among-holders
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://workspace.google.com/marketplace/app/chatgpt/870214997678
+  mirror_of: google-workspace/integrations/google-workspace-integration-edges.yml
+  apps:
+  - ChatGPT
+  listing_count: 1
+  detected: '2026-10-18'
+  detected_by: mirror-platform-listings.py
+  category: Google Workspace app
+- partner_name: Microsoft Teams (own)
+  partner: microsoft-teams
+  partner_match: mirror
+  mirror_match: domain+name-among-holders
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://appsource.microsoft.com/en-us/product/office/WA200011910
+  mirror_of: microsoft-teams/integrations/microsoft-teams-integration-edges.yml
+  apps:
+  - '@ChatGPT'
+  listing_count: 1
+  detected: '2026-10-18'
+  detected_by: mirror-platform-listings.py
+  category: Microsoft Teams app
+  publisher_verified:
+  - Microsoft 365 Publisher Attestation
+- partner_name: Slack (own)
+  partner: slack
+  partner_match: mirror
+  mirror_match: domain+name-among-holders
+  type: marketplace
+  relationship: platform-app
+  direction: third-party
+  channel: partner-built
+  marketplace: own
+  evidence: https://slack.com/marketplace/A097V82EGG2-chatgpt
+  mirror_of: slack/integrations/slack-integration-edges.yml
+  apps:
+  - ChatGPT
+  listing_count: 1
+  detected: '2026-10-18'
+  detected_by: mirror-platform-listings.py
+  category: Slack app
 templates:
 - title: Automatically reply to Google Business Profile reviews with ChatGPT
   url: https://zapier.com/apps/google-business-profile/integrations/google-business-profile/1800781/automatically-reply-to-google-business-profile-reviews-with-chatgpt
