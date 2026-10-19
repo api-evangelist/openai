@@ -8,9 +8,11 @@ source:
 checked:
 - google-workspace/integrations/google-workspace-integration-edges.yml
 - https://api.llmgateway.io/v1/models
+- https://api.nuget.org/v3
 - https://composio.dev/toolkits/openai
 - https://connectors.airbyte.com/files/registries/v0/cloud_registry.json
 - https://connectors.airbyte.com/files/registries/v0/oss_registry.json
+- https://crates.io/api/v1
 - https://ddex.net/membership/current-members/
 - https://developers.cloudflare.com/ai-gateway/usage/providers/
 - https://fivetran.com/docs-sitemap.xml
@@ -29,7 +31,12 @@ checked:
 - https://monid.ai/tools/openai
 - https://n8n.io/integrations/openai/
 - https://openrouter.ai/api/v1/models
+- https://proxy.golang.org
+- https://pypi.org/pypi
 - https://raw.githubusercontent.com/c2pa-org/conformance-public/main/conforming-products/conforming-products-list.json
+- https://registry.npmjs.org
+- https://repo1.maven.org/maven2
+- https://rubygems.org/api/v1
 - https://zapier.com/api/v4/apps/
 - https://zapier.com/apps/openai/integrations
 - microsoft-teams/integrations/microsoft-teams-integration-edges.yml
@@ -1366,6 +1373,180 @@ edges:
   detected: '2026-10-18'
   detected_by: mirror-platform-listings.py
   category: Slack app
+- partner_name: Maven Central
+  partner: maven-central
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (Java/JVM)
+  evidence: https://central.sonatype.com/artifact/com.openai/openai-java
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: Maven Central (public registry JSON)
+    spec_file: null
+    language: Java/JVM
+    packages:
+    - name: com.openai:openai-java
+      version: 4.85.0
+      released: '2026-10-18'
+      released_field: lastUpdated
+      lapsed: false
+      page: https://central.sonatype.com/artifact/com.openai/openai-java
+      repo_leg: domain:openai.com
+      publisher_leg: groupId:openai.com
+      matched_by: domain+name-among-holders
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: npm registry
+  partner: npm
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (JavaScript/TypeScript)
+  evidence: https://www.npmjs.com/package/@openai/agents
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: npm registry (public registry JSON)
+    spec_file: null
+    language: JavaScript/TypeScript
+    packages:
+    - name: '@openai/agents'
+      version: 0.20.0
+      released: '2026-10-08'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@openai/agents
+      repo_leg: shared-github-org:openai
+      publisher_leg: email:openai.com
+      matched_by: domain+name-among-holders
+    - name: '@openai/apps-sdk-ui'
+      version: 0.2.2
+      released: '2026-08-13'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@openai/apps-sdk-ui
+      repo_leg: shared-github-org:openai
+      publisher_leg: email:openai.com
+      matched_by: domain+name-among-holders
+    - name: '@openai/chatkit'
+      version: 1.9.0
+      released: '2026-08-13'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@openai/chatkit
+      repo_leg: shared-github-org:openai
+      publisher_leg: email:openai.com
+      matched_by: domain+name-among-holders
+    - name: '@openai/chatkit-react'
+      version: 1.6.1
+      released: '2026-08-13'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@openai/chatkit-react
+      repo_leg: shared-github-org:openai
+      publisher_leg: email:openai.com
+      matched_by: domain+name-among-holders
+    - name: '@openai/codex'
+      version: 0.163.0
+      released: '2026-10-17'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/@openai/codex
+      repo_leg: shared-github-org:openai
+      publisher_leg: email:openai.com
+      matched_by: domain+name-among-holders
+    - name: openai
+      version: 7.39.0
+      released: '2026-10-19'
+      released_field: modified
+      lapsed: false
+      page: https://www.npmjs.com/package/openai
+      repo_leg: shared-github-org:openai
+      publisher_leg: email:openai.com
+      matched_by: domain+name-among-holders
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: PyPI
+  partner: pypi
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (Python)
+  evidence: https://pypi.org/project/openai/
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: PyPI (public registry JSON)
+    spec_file: null
+    language: Python
+    packages:
+    - name: openai
+      version: 3.35.1
+      released: '2026-10-18'
+      released_field: upload_time
+      lapsed: false
+      page: https://pypi.org/project/openai/
+      repo_leg: shared-github-org:openai
+      publisher_leg: email:openai.com
+      matched_by: domain+name-among-holders
+    - name: openai-agents
+      version: 0.24.0
+      released: '2026-10-15'
+      released_field: upload_time
+      lapsed: false
+      page: https://pypi.org/project/openai-agents/
+      repo_leg: shared-github-org:openai
+      publisher_leg: email:openai.com
+      matched_by: domain+name-among-holders
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
+- partner_name: RubyGems
+  partner: rubygems
+  partner_match: register
+  type: register
+  direction: provider-built
+  category: official SDK (Ruby)
+  evidence: https://rubygems.org/gems/openai
+  channel: package-registry
+  relationship: distribution-channel
+  contract_reference:
+    register: RubyGems (public registry JSON)
+    spec_file: null
+    language: Ruby
+    packages:
+    - name: openai
+      version: 0.106.0
+      released: '2026-10-17'
+      released_field: version_created_at
+      lapsed: false
+      page: https://rubygems.org/gems/openai
+      repo_leg: shared-github-org:openai
+      publisher_leg: email:openai.com
+      matched_by: domain+name-among-holders
+    current: true
+    signal_note: 'an official package on the registry: distribution, not an integration; lapsed = no release in
+      24 months'
+    detected_by: sweep-official-sdks.py
+    detected: '2026-10-18'
+  detected_by: sweep-official-sdks.py
+  first_seen: '2026-10-18'
 templates:
 - title: Automatically reply to Google Business Profile reviews with ChatGPT
   url: https://zapier.com/apps/google-business-profile/integrations/google-business-profile/1800781/automatically-reply-to-google-business-profile-reviews-with-chatgpt
