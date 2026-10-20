@@ -9,12 +9,14 @@ checked:
 - google-workspace/integrations/google-workspace-integration-edges.yml
 - https://api.llmgateway.io/v1/models
 - https://api.nuget.org/v3
+- https://cloudsecurityalliance.org/star/registry
 - https://composio.dev/toolkits/openai
 - https://connectors.airbyte.com/files/registries/v0/cloud_registry.json
 - https://connectors.airbyte.com/files/registries/v0/oss_registry.json
 - https://crates.io/api/v1
 - https://ddex.net/membership/current-members/
 - https://developers.cloudflare.com/ai-gateway/usage/providers/
+- https://eucoc.cloud/en/public-register/list-of-adherent-services
 - https://fivetran.com/docs-sitemap.xml
 - https://fivetran.com/docs/connectors/partner-built-program
 - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json
@@ -1549,6 +1551,36 @@ edges:
     builder: Pipedream repo (component)
   detected_by: sweep-workflow-automation.py
   first_seen: '2026-10-15'
+- partner_name: Cloud Security Alliance STAR Registry
+  partner: null
+  partner_match: register
+  type: register
+  channel: standard-directory
+  relationship: standard-participant
+  direction: partner-built
+  evidence: https://cloudsecurityalliance.org/star/registry/openai/services/openai-api-chatgpt-enterprise-teams-dall-e
+  category: Cloud security assurance
+  contract_reference:
+    register: CSA STAR Registry (cloudsecurityalliance.org/star/registry)
+    spec_file: null
+    standard: CSA STAR
+    role: star-level-1
+    registered_name: OpenAI
+    registry_id: openai
+    service_url: https://openai.com/about
+    matched_domain: openai.com
+    matched_by: domain+name-among-holders
+    identity_source: the service URL the organisation filed on its STAR listing (no lookup)
+    levels:
+    - STAR Level 1
+    certified_products: []
+    signal_note: STAR Level 1 (CAIQ self-assessment) = participation; certified_products = one entry per STAR Level
+      2 / STAR for AI Level 2 assessment TYPE (third-party certification, attestation, C-STAR, ValidAIted); lapsed
+      = every instance marked (Deprecated) by the registry; service counts never recorded
+    detected_by: sweep-compliance-assurance.py
+    detected: '2026-10-20'
+  detected_by: sweep-compliance-assurance.py
+  first_seen: '2026-10-20'
 templates:
 - title: Automatically reply to Google Business Profile reviews with ChatGPT
   url: https://zapier.com/apps/google-business-profile/integrations/google-business-profile/1800781/automatically-reply-to-google-business-profile-reviews-with-chatgpt
