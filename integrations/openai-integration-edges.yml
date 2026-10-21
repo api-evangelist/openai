@@ -9,7 +9,6 @@ checked:
 - google-workspace/integrations/google-workspace-integration-edges.yml
 - https://api.llmgateway.io/v1/models
 - https://api.nuget.org/v3
-- https://cdn.winget.microsoft.com/cache
 - https://cloudsecurityalliance.org/star/registry
 - https://composio.dev/toolkits/openai
 - https://connectors.airbyte.com/files/registries/v0/cloud_registry.json
@@ -20,14 +19,10 @@ checked:
 - https://eucoc.cloud/en/public-register/list-of-adherent-services
 - https://fivetran.com/docs-sitemap.xml
 - https://fivetran.com/docs/connectors/partner-built-program
-- https://formulae.brew.sh/api/cask.json
-- https://formulae.brew.sh/api/formula.json
 - https://github.com/BerriAI/litellm/blob/main/model_prices_and_context_window.json
 - https://github.com/PipedreamHQ/pipedream/tree/94800dd6de6640b942c65ea7ee655f71ac56d438/components/
 - https://github.com/PipedreamHQ/pipedream/tree/d5872355ef27b4efa769f05352f2820c299a456e/components/
 - https://github.com/Portkey-AI/gateway/tree/main/src/providers
-- https://github.com/ScoopInstaller/Extras
-- https://github.com/ScoopInstaller/Main
 - https://github.com/langchain-ai/langchain/tree/master/libs/partners
 - https://github.com/livekit/agents/tree/main/livekit-plugins
 - https://github.com/n8n-io/n8n/tree/860f1273ebd73fabbd668cbec2c49ed9b48a286d/packages/nodes-base/nodes/
@@ -50,6 +45,13 @@ checked:
 - https://zapier.com/apps/openai/integrations
 - microsoft-teams/integrations/microsoft-teams-integration-edges.yml
 - slack/integrations/slack-integration-edges.yml
+- https://cdn.winget.microsoft.com/cache
+- https://formulae.brew.sh/api/cask.json
+- https://formulae.brew.sh/api/formula.json
+- https://github.com/ScoopInstaller/Extras
+- https://github.com/ScoopInstaller/Main
+- https://pypi.org/org/{org}/
+- https://pypi.org/pypi/{package}/json
 summary: null
 marketplace_apps:
 - marketplace: zapier
@@ -1369,6 +1371,34 @@ edges:
     detected_by: sweep-official-clis.py
     detected: '2026-10-20'
   detected_by: sweep-official-clis.py
+  first_seen: '2026-10-20'
+- partner_name: PyPI organization accounts
+  partner: pypi
+  partner_match: register
+  type: register
+  channel: package-registry
+  relationship: distribution-channel
+  direction: third-party
+  evidence: https://pypi.org/org/openai/
+  category: PyPI organization
+  contract_reference:
+    register: PyPI organization accounts
+    spec_file: null
+    role: pypi-organization
+    registered_name: openai
+    register_id: https://pypi.org/org/openai/
+    org_display_name: OpenAI
+    matched_by: verified-package
+    packages_verified:
+    - openai
+    - openai-agents
+    org_projects: 9
+    identity_note: the org is reached through packages sweep-official-sdks / official-clis verified as the provider's
+      own (domain / org leg AND publisher leg); never by the org name
+    signal_note: 'participation only (python): an organization account on PyPI, not a package count'
+    detected_by: sweep-ide-extension-marketplaces.py
+    detected: '2026-10-20'
+  detected_by: sweep-ide-extension-marketplaces.py
   first_seen: '2026-10-20'
 templates:
 - title: Automatically reply to Google Business Profile reviews with ChatGPT
