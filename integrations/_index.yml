@@ -1185,3 +1185,108 @@
       P856 not contradicting (Kin 2026-10-20 decision 2)
   status: not-a-workflow
   arazzo: null
+- slug: openai-cve-program-cve-numbering-authorities
+  label: CVE Program (CVE Numbering Authorities)
+  partner_name: CVE Program (CVE Numbering Authorities)
+  category: Vulnerability disclosure (CVE Numbering Authority)
+  type: register
+  channel: standard-directory
+  evidence: https://www.cve.org/PartnerInformation/ListofPartners/partner/OAI
+  source: edge
+  relationship: standard-participant
+  contract_reference:
+    register: CVE Program CNA list (github.com/CVEProject/cve-website CNAsList.json @ 239d3d9b68e0)
+    standard: CVE Program CNA Operational Rules (CVE Numbering Authority)
+    spec_file: null
+    role: cve-numbering-authority
+    registered_name: OpenAI
+    matched_domain: openai.com
+    matched_by: domain+name-among-holders
+    cna_id: CNA-2026-0026
+    cna_short_name: OAI
+    cna_types:
+    - Vendor
+    - AI Researcher (Frontier AI Researcher CVE Numbering Authorities (CNAs) Pilot)
+    cna_roles:
+    - CNA
+    scope: <strong>CNA Scope:</strong> Vulnerabilities in OpenAI installed software including desktop apps, mobile
+      apps, and SDKs only.<br/><br/><strong><a href='/Resources/Roles/Cnas/FrontierAiResearcherCNAsPilot.pdf' target='_blank'>Frontier
+      AI Researcher CVE Numbering Authorities (CNAs) Pilot</a> Scope:</strong> Vulnerabilities discovered by OpenAI
+      that are not within another CNA’s scope.
+    top_level_root: MITRE Corporation
+    root: n/a
+    security_advisories:
+    - https://trust.openai.com/
+    disclosure_policy:
+    - https://openai.com/policies/openai-cve-assignment-policy/
+    country: USA
+    signal_note: listing as a CVE Numbering Authority = participation (a public commitment to assign CVE IDs and
+      publish advisories for its scope); never a count of CVEs
+    detected_by: sweep-vulnerability-disclosure-cna.py
+    detected: '2026-10-22'
+  status: not-a-workflow
+  arazzo: null
+- slug: openai-raycast
+  label: Raycast
+  partner: raycast
+  partner_name: Raycast
+  category: Raycast Store extension (community wrapper)
+  type: marketplace
+  marketplace: raycast-store
+  channel: connector-listing
+  evidence: https://www.raycast.com/simicvm/openai-gpt
+  source: edge
+  relationship: connector-coverage
+  contract_reference:
+    register: Raycast Store (raycast/extensions monorepo + store_listings JSON)
+    spec_file: null
+    role: raycast-community-wrapper
+    builder: community
+    authors:
+    - douo
+    - josephschmitt
+    - simicvm
+    matched_domain: openai.com
+    matched_by: domain+name-among-holders
+    monorepo_commit: 84f9ac51336a8c69f70974a75bc067c0feae3658
+    listings:
+    - title: OpenAI GPT
+      store_url: https://www.raycast.com/simicvm/openai-gpt
+      installs: 62420
+      categories:
+      - Productivity
+      - Fun
+      - Web
+      source: https://github.com/raycast/extensions/tree/84f9ac51336a8c69f70974a75bc067c0feae3658/extensions/openai-gpt/
+      author: simicvm
+    - title: OpenAI Generator
+      store_url: https://www.raycast.com/josephschmitt/ai-gen
+      installs: 11529
+      categories:
+      - Media
+      - Fun
+      - Web
+      source: https://github.com/raycast/extensions/tree/84f9ac51336a8c69f70974a75bc067c0feae3658/extensions/ai-gen/
+      author: josephschmitt
+    - title: OpenAI Translator
+      store_url: https://www.raycast.com/douo/openai-translator
+      installs: 10553
+      categories:
+      - Applications
+      - Productivity
+      source: https://github.com/raycast/extensions/tree/84f9ac51336a8c69f70974a75bc067c0feae3658/extensions/openai-translator/
+      author: douo
+    categories:
+    - Applications
+    - Fun
+    - Media
+    - Productivity
+    - Web
+    identity_note: the extension's own source calls a host on the product's domain AND its title / package name
+      passes partner_link's name check; built by Raycast community developers, not the vendor
+    signal_note: 'coverage: Raycast''s store reaches the product through community-built extensions; one edge per
+      (product, store); install / listing counts are context, never counted'
+    detected_by: sweep-raycast-store-extensions.py
+    detected: '2026-10-22'
+  status: not-a-workflow
+  arazzo: null
