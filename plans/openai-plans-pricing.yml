@@ -1,0 +1,604 @@
+name: OpenAI API Plans
+specification: API Commons Plans
+specificationVersion: '0.1'
+schema: https://raw.githubusercontent.com/api-evangelist/interface-research/main/schema/api-commons.yml#/$defs/Plans
+provider: OpenAI
+providerId: openai
+created: '2026-05-04'
+modified: '2026-08-27'
+generated: '2026-09-23'
+method: searched
+source: https://developers.openai.com/api/docs/pricing.md
+sources:
+- https://developers.openai.com/api/docs/pricing
+- https://developers.openai.com/api/docs/pricing.md
+- https://openai.com/api/pricing/
+- https://developers.openai.com/changelog/
+- https://developers.openai.com/api/docs/guides/rate-limits
+audience: developer-api
+pricing_basis: usage-other
+published: true
+delivery:
+  delivery: managed
+  note: >-
+    OpenAI operates the API as a managed service on api.openai.com. There is no
+    self-hosted edition of the platform; the open-weight `gpt-oss` family is
+    distributed separately and is not this pricing surface.
+plan_count: 13
+reconciled: true
+supersedes: >-
+  The 2026-05-04 bulk-sweep version of this file, which was written without fetching the pricing
+  page and topped out at GPT-5.5 — three model generations behind by the time it was read. Every
+  price below was read from https://developers.openai.com/api/docs/pricing on 2026-08-27 and cross-checked
+  against the dated pricing entries in the changelog (changelog/openai-changelog.yml, 2026-07-30
+  and 2026-08-21).
+tags:
+- AI
+- LLM
+- GPT
+- Foundation Models
+- Usage-Based Pricing
+description: >-
+  OpenAI sells API access purely on metered token consumption — there are no seat plans, no monthly
+  subscription tiers and no free-forever allowance on the API itself. The plan axis is the MODEL
+  and the discount axis is the SERVICE TIER, and the two multiply: the same model costs half as much
+  through the Batch API and twice as much in Fast mode. Prices moved down three times in the four
+  weeks before this read (GPT-5.6 Luna -80%, Terra -20% on 2026-07-30; Sol to $4/$20 on 2026-08-21),
+  so any cached copy of this page ages badly. Note the one uplift: regional processing adds 10% for
+  models released on or after 2026-03-05. Access tiers (Free through Tier 5) are a RATE-LIMIT construct,
+  not a price construct, and live in rate-limits/openai-rate-limits.yml.
+currency: USD
+unit: per 1,000,000 tokens
+service_tiers:
+- name: Standard
+  multiplier: 1.0
+  note: Base pricing, synchronous.
+- name: Batch
+  multiplier: 0.5
+  note: 50% discount on input and output. Asynchronous; cancellable in flight.
+- name: Flex
+  multiplier: 0.5
+  note: Documented as similar to Batch pricing.
+- name: Fast mode
+  multiplier: 2.0
+  note: 2x standard. Replaced Priority Processing on 2026-07-30; supports >272K token context.
+- name: Ultrafast
+  multiplier: null
+  note: Announced 2026-08-13 for GPT-5.6 Sol, up to 14x faster, limited preview to select customers.
+    No public price.
+uplifts:
+- name: Regional processing
+  pct: 10
+  note: >-
+    10% uplift for models released on or after 2026-03-05. Selectable per request via prefixed domains
+    for keys in projects with Global geography (changelog 2026-08-21).
+enterprise:
+  contact: https://openai.com/contact-sales/
+  note: Custom rate limits above Tier 5 and enterprise agreements are arranged through sales; no
+    public price.
+plans:
+- id: openai-gpt-5-6-sol
+  name: GPT-5.6 Sol
+  type: usage-based
+  description: Flagship reasoning model. Price reduced 2026-08-21 and held through at least 2026-11-21.
+  price_text: 'gpt-5.6-sol | $4.00 | $0.40 | $5.00 | $20.00'
+  entries:
+  - label: Input tokens
+    name: input
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '4.00'
+    userMultiplied: false
+  - label: Output tokens
+    name: output
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '20.00'
+    userMultiplied: false
+  elements:
+  - name: Vision
+  - name: Tool use
+  - name: Structured outputs
+  - name: Batch API (50% discount)
+  - name: Flex service tier
+  - name: Fast mode (2x standard)
+  - name: Ultrafast mode (limited preview, up to 14x faster)
+- id: openai-gpt-5-6-terra
+  name: GPT-5.6 Terra
+  type: usage-based
+  description: General-purpose flagship. Price reduced 20% on 2026-07-30.
+  price_text: 'gpt-5.6-terra | $2.00 | $0.20 | $2.50 | $12.00'
+  entries:
+  - label: Input tokens
+    name: input
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '2.00'
+    userMultiplied: false
+  - label: Output tokens
+    name: output
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '12.00'
+    userMultiplied: false
+  elements:
+  - name: Vision
+  - name: Tool use
+  - name: Structured outputs
+  - name: Batch API (50% discount)
+  - name: Flex service tier
+  - name: Fast mode (2x standard)
+- id: openai-gpt-5-6-luna
+  name: GPT-5.6 Luna
+  type: usage-based
+  description: Low-cost model. Price reduced 80% on 2026-07-30.
+  price_text: 'gpt-5.6-luna | $0.20 | $0.02 | $0.25 | $1.20'
+  entries:
+  - label: Input tokens
+    name: input
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '0.20'
+    userMultiplied: false
+  - label: Output tokens
+    name: output
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '1.20'
+    userMultiplied: false
+  elements:
+  - name: Vision
+  - name: Tool use
+  - name: Structured outputs
+  - name: Batch API (50% discount)
+  - name: Flex service tier
+  - name: Fast mode (2x standard)
+- id: openai-gpt-5-5
+  name: GPT-5.5
+  type: usage-based
+  description: Previous flagship general-purpose model.
+  price_text: 'gpt-5.5 (<272K context length) | $5.00 | $0.50 | - | $30.00'
+  entries:
+  - label: Input tokens
+    name: input
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '5.00'
+    userMultiplied: false
+  - label: Output tokens
+    name: output
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '30.00'
+    userMultiplied: false
+  elements:
+  - name: Vision
+  - name: Tool use
+  - name: Structured outputs
+  - name: Batch API (50% discount)
+  - name: Flex service tier
+  - name: Fast mode (2x standard)
+- id: openai-gpt-5-5-pro
+  name: GPT-5.5 Pro
+  type: usage-based
+  description: Highest reasoning tier.
+  price_text: 'gpt-5.5-pro (<272K context length) | $30.00 | - | - | $180.00'
+  entries:
+  - label: Input tokens
+    name: input
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '30.00'
+    userMultiplied: false
+  - label: Output tokens
+    name: output
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '180.00'
+    userMultiplied: false
+  elements:
+  - name: Tool use
+  - name: Structured outputs
+  - name: Batch API (50% discount)
+- id: openai-gpt-5
+  name: GPT-5
+  type: usage-based
+  description: Prior generation flagship.
+  price_text: '| gpt-5 | $1.25 | $0.125 | - | $10.00'
+  entries:
+  - label: Input tokens
+    name: input
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '1.25'
+    userMultiplied: false
+  - label: Output tokens
+    name: output
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '10.00'
+    userMultiplied: false
+  elements:
+  - name: Vision
+  - name: Tool use
+  - name: Structured outputs
+  - name: Batch API (50% discount)
+  - name: Flex service tier
+  - name: Fast mode (2x standard)
+- id: openai-gpt-5-mini
+  name: GPT-5 Mini
+  type: usage-based
+  description: Prior generation small model.
+  price_text: 'gpt-5-mini | $0.25 | $0.025 | - | $2.00'
+  entries:
+  - label: Input tokens
+    name: input
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '0.25'
+    userMultiplied: false
+  - label: Output tokens
+    name: output
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '2.00'
+    userMultiplied: false
+  elements:
+  - name: Vision
+  - name: Tool use
+  - name: Structured outputs
+  - name: Batch API (50% discount)
+  - name: Flex service tier
+  - name: Fast mode (2x standard)
+- id: openai-o3
+  name: o3
+  type: usage-based
+  description: Reasoning model.
+  price_text: '| o3 | $2.00 | $0.50 | - | $8.00'
+  entries:
+  - label: Input tokens
+    name: input
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '2.00'
+    userMultiplied: false
+  - label: Output tokens
+    name: output
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '8.00'
+    userMultiplied: false
+  elements:
+  - name: Tool use
+  - name: Structured outputs
+  - name: Batch API (50% discount)
+- id: openai-o3-mini
+  name: o3 Mini
+  type: usage-based
+  description: Small reasoning model.
+  price_text: 'o3-mini | $1.10 | $0.55 | - | $4.40'
+  entries:
+  - label: Input tokens
+    name: input
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '1.10'
+    userMultiplied: false
+  - label: Output tokens
+    name: output
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '4.40'
+    userMultiplied: false
+  elements:
+  - name: Tool use
+  - name: Structured outputs
+  - name: Batch API (50% discount)
+- id: openai-o1
+  name: o1
+  type: usage-based
+  description: Legacy reasoning model. Shutdown announced 2026-04-22 for 2026-10-23.
+  price_text: '| o1 | $15.00 | $7.50 | - | $60.00'
+  entries:
+  - label: Input tokens
+    name: input
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '15.00'
+    userMultiplied: false
+  - label: Output tokens
+    name: output
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '60.00'
+    userMultiplied: false
+  elements:
+  - name: Tool use
+  - name: Batch API (50% discount)
+  - name: DEPRECATED
+- id: openai-gpt-4o
+  name: GPT-4o
+  type: usage-based
+  description: Legacy multimodal model.
+  price_text: '| gpt-4o | $2.50 | $1.25 | - | $10.00'
+  entries:
+  - label: Input tokens
+    name: input
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '2.50'
+    userMultiplied: false
+  - label: Output tokens
+    name: output
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '10.00'
+    userMultiplied: false
+  elements:
+  - name: Vision
+  - name: Tool use
+  - name: Batch API (50% discount)
+- id: openai-gpt-4o-mini
+  name: GPT-4o Mini
+  type: usage-based
+  description: Legacy small multimodal model.
+  price_text: 'gpt-4o-mini | $0.15 | $0.075 | - | $0.60'
+  entries:
+  - label: Input tokens
+    name: input
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '0.15'
+    userMultiplied: false
+  - label: Output tokens
+    name: output
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '0.60'
+    userMultiplied: false
+  elements:
+  - name: Vision
+  - name: Tool use
+  - name: Batch API (50% discount)
+- id: openai-gpt-3-5-turbo
+  name: GPT-3.5 Turbo
+  type: usage-based
+  description: Legacy model. Shutdown announced 2026-04-22 for 2026-10-23.
+  price_text: '| gpt-3.5-turbo | $0.50 | - | - | $1.50'
+  entries:
+  - label: Input tokens
+    name: input
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '0.50'
+    userMultiplied: false
+  - label: Output tokens
+    name: output
+    type: metered
+    metric: tokens
+    limit: -1
+    timeFrame: usage
+    geo: global
+    unit: 1000000
+    price: '1.50'
+    userMultiplied: false
+  elements:
+  - name: Tool use
+  - name: DEPRECATED
+caveat: >-
+  Only text input/output token prices are recorded per model. OpenAI also publishes separate rates
+  for cached input, audio tokens, image tokens, embeddings, fine-tuning training, and the built-in
+  tools (web search, file search, code interpreter). Those are not reproduced here rather than partially
+  transcribed; the pricing page is the source of truth and is linked as `source`.
+x-canonical:
+  generated: '2026-11-01'
+  vocabulary: engine/economics/plans-canonical.yml
+  models:
+  - metered
+  units:
+  - token
+  plans:
+  - name: GPT-5.6 Sol
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - token
+    periods:
+    - per-use
+  - name: GPT-5.6 Terra
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - token
+    periods:
+    - per-use
+  - name: GPT-5.6 Luna
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - token
+    periods:
+    - per-use
+  - name: GPT-5.5
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - token
+    periods:
+    - per-use
+  - name: GPT-5.5 Pro
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - token
+    periods:
+    - per-use
+  - name: GPT-5
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - token
+    periods:
+    - per-use
+  - name: GPT-5 Mini
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - token
+    periods:
+    - per-use
+  - name: o3
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - token
+    periods:
+    - per-use
+  - name: o3 Mini
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - token
+    periods:
+    - per-use
+  - name: o1
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - token
+    periods:
+    - per-use
+  - name: GPT-4o
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - token
+    periods:
+    - per-use
+  - name: GPT-4o Mini
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - token
+    periods:
+    - per-use
+  - name: GPT-3.5 Turbo
+    access: other
+    model: metered
+    model_how: stated
+    units:
+    - token
+    periods:
+    - per-use
