@@ -1,0 +1,2175 @@
+openapi: 3.2.0
+info:
+  title: Openai Vaults API
+  version: 2.3.0
+  contact:
+    name: OpenAI Support
+    url: https://help.openai.com/
+  license:
+    name: MIT
+    identifier: MIT
+  termsOfService: https://openai.com/policies/terms-of-use
+  description: 'Operations tagged Vaults across 2 of this provider''s published API definitions: openai-openapi-master-2026-09-23.yml, openai-openapi-master-2026-10-12.yml. Each path carries the servers of the definition it was published in.'
+servers:
+- url: https://api.openai.com/v1
+security:
+- ApiKeyAuth: []
+tags:
+- name: Vaults
+paths:
+  /vaults:
+    get:
+      operationId: listVaults
+      summary: List vaults
+      description: Lists vaults using ID-based pagination. See vaults.
+      tags:
+      - Vaults
+      parameters:
+      - name: order
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/ListOrderParam'
+          default: desc
+        description: Sort order by the `created_at` timestamp. Use `asc` for ascending order or `desc` for descending order. Defaults to `desc`.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type:
+          - integer
+          - 'null'
+          format: int64
+          minimum: 0
+        description: The maximum number of resources to return. Defaults to 20. Values are clamped between 1 and 100.
+      - name: status
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/VaultStatusFilterParam'
+        description: Filter by one status or a list, such as `status=active` or `status[]=active&status[]=archived`. Both statuses are included by default.
+      - name: after
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+        description: Return resources after this resource ID in the selected order.
+      responses:
+        '200':
+          description: A page of vaults.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultListResource'
+                description: A page of vaults.
+        '400':
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '401':
+          description: Authentication or project context was missing.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '403':
+          description: The API key lacks the required management permission.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '404':
+          description: The requested vault or credential was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '409':
+          description: The request conflicted with the current vault state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '500':
+          description: An internal error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '503':
+          description: The service is temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+    post:
+      operationId: createVault
+      summary: Create a vault
+      description: Creates a vault for the current project. See vaults.
+      tags:
+      - Vaults
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVaultParams'
+      responses:
+        '201':
+          description: The created vault.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultResource'
+        '400':
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '401':
+          description: Authentication or project context was missing.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '403':
+          description: The API key lacks the required management permission.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '404':
+          description: The requested vault or credential was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '409':
+          description: The request conflicted with the current vault state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '500':
+          description: An internal error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '503':
+          description: The service is temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+    servers:
+    - url: https://api.openai.com/v1
+  /vaults/{vault_id}:
+    get:
+      operationId: retrieveVault
+      summary: Retrieve a vault
+      description: Retrieves a vault by its ID. See vaults.
+      tags:
+      - Vaults
+      parameters:
+      - name: vault_id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+        description: The ID of the vault.
+      responses:
+        '200':
+          description: The requested vault.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultResource'
+        '400':
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '401':
+          description: Authentication or project context was missing.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '403':
+          description: The API key lacks the required management permission.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '404':
+          description: The requested vault or credential was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '409':
+          description: The request conflicted with the current vault state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '500':
+          description: An internal error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '503':
+          description: The service is temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+    delete:
+      operationId: deleteVault
+      summary: Delete a vault
+      description: Deletes a vault and all its credentials. See vaults.
+      tags:
+      - Vaults
+      parameters:
+      - name: vault_id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+        description: The ID of the vault.
+      responses:
+        '200':
+          description: The deleted vault.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeletedVaultResource'
+        '400':
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '401':
+          description: Authentication or project context was missing.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '403':
+          description: The API key lacks the required management permission.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '404':
+          description: The requested vault or credential was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '409':
+          description: The request conflicted with the current vault state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '500':
+          description: An internal error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '503':
+          description: The service is temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+    post:
+      operationId: updateVault
+      summary: Update a vault
+      description: Updates the name or metadata of an active vault. Omitted fields remain unchanged. See vaults.
+      tags:
+      - Vaults
+      parameters:
+      - name: vault_id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+        description: The ID of the vault.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateVaultParams'
+        required: true
+      responses:
+        '200':
+          description: The updated vault.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultResource'
+        '400':
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '401':
+          description: Authentication or project context was missing.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '403':
+          description: The API key lacks the required management permission.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '404':
+          description: The requested vault or credential was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '409':
+          description: The request conflicted with the current vault state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '500':
+          description: An internal error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '503':
+          description: The service is temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+    servers:
+    - url: https://api.openai.com/v1
+  /vaults/{vault_id}/credentials:
+    get:
+      operationId: listVaultCredentials
+      summary: List vault credentials
+      description: Lists a vault's credentials using ID-based pagination without returning secret values. See vaults.
+      tags:
+      - Vaults
+      parameters:
+      - name: vault_id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+        description: The ID of the vault.
+      - name: order
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/ListOrderParam'
+          default: desc
+        description: Sort order by the `created_at` timestamp. Use `asc` for ascending order or `desc` for descending order. Defaults to `desc`.
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type:
+          - integer
+          - 'null'
+          format: int64
+          minimum: 0
+        description: The maximum number of resources to return. Defaults to 20. Values are clamped between 1 and 100.
+      - name: status
+        in: query
+        required: false
+        schema:
+          $ref: '#/components/schemas/VaultStatusFilterParam'
+        description: Filter by one status or a list, such as `status=active` or `status[]=active&status[]=archived`. Both statuses are included by default.
+      - name: after
+        in: query
+        required: false
+        schema:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+        description: Return resources after this resource ID in the selected order.
+      responses:
+        '200':
+          description: A page of vault credentials.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultCredentialListResource'
+                description: A page of credentials in a vault.
+        '400':
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '401':
+          description: Authentication or project context was missing.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '403':
+          description: The API key lacks the required management permission.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '404':
+          description: The requested vault or credential was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '409':
+          description: The request conflicted with the current vault state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '500':
+          description: An internal error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '503':
+          description: The service is temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+    post:
+      operationId: createVaultCredential
+      summary: Create a vault credential
+      description: Creates a vault credential. Secret values are write-only and are never returned. See vaults.
+      tags:
+      - Vaults
+      parameters:
+      - name: vault_id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+        description: The ID of the vault.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateVaultCredentialParams'
+      responses:
+        '201':
+          description: The created vault credential without secret values.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultCredentialResource'
+        '400':
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '401':
+          description: Authentication or project context was missing.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '403':
+          description: The API key lacks the required management permission.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '404':
+          description: The requested vault or credential was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '409':
+          description: The request conflicted with the current vault state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '500':
+          description: An internal error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '503':
+          description: The service is temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+    servers:
+    - url: https://api.openai.com/v1
+  /vaults/{vault_id}/credentials/{credential_id}:
+    get:
+      operationId: retrieveVaultCredential
+      summary: Retrieve a vault credential
+      description: Retrieves vault credential metadata without returning secret values. See vaults.
+      tags:
+      - Vaults
+      parameters:
+      - name: vault_id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+        description: The ID of the vault.
+      - name: credential_id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+        description: The ID of the vault credential.
+      responses:
+        '200':
+          description: The requested vault credential without secret values.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultCredentialResource'
+        '400':
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '401':
+          description: Authentication or project context was missing.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '403':
+          description: The API key lacks the required management permission.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '404':
+          description: The requested vault or credential was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '409':
+          description: The request conflicted with the current vault state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '500':
+          description: An internal error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '503':
+          description: The service is temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+    post:
+      operationId: rotateVaultCredential
+      summary: Update a vault credential
+      description: Updates credential metadata or rotates its write-only secret. See vaults.
+      tags:
+      - Vaults
+      parameters:
+      - name: vault_id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+        description: The ID of the vault.
+      - name: credential_id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+        description: The ID of the vault credential.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RotateVaultCredentialParams'
+      responses:
+        '200':
+          description: The updated vault credential without secret values.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VaultCredentialResource'
+        '400':
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '401':
+          description: Authentication or project context was missing.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '403':
+          description: The API key lacks the required management permission.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '404':
+          description: The requested vault or credential was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '409':
+          description: The request conflicted with the current vault state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '500':
+          description: An internal error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '503':
+          description: The service is temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+    delete:
+      operationId: deleteVaultCredential
+      summary: Delete a vault credential
+      description: Deletes a vault credential. See vaults.
+      tags:
+      - Vaults
+      parameters:
+      - name: vault_id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+        description: The ID of the vault.
+      - name: credential_id
+        in: path
+        required: true
+        schema:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+        description: The ID of the vault credential.
+      responses:
+        '200':
+          description: The deleted vault credential.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeletedVaultCredentialResource'
+        '400':
+          description: The request was invalid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '401':
+          description: Authentication or project context was missing.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '403':
+          description: The API key lacks the required management permission.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '404':
+          description: The requested vault or credential was not found.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '409':
+          description: The request conflicted with the current vault state.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '500':
+          description: An internal error occurred.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+        '503':
+          description: The service is temporarily unavailable.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse-2'
+    servers:
+    - url: https://api.openai.com/v1
+components:
+  schemas:
+    VaultCredentialAuthResourceMcpOauth:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - mcp_oauth
+          default: mcp_oauth
+          x-stainless-const: true
+          description: The type of the object. Always `mcp_oauth`.
+        mcp_server_url:
+          type: string
+          minLength: 0
+          description: The HTTPS MCP server URL authorized by this credential.
+        expires_at:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          description: When the OAuth access token expires, as an RFC 3339 timestamp, if known.
+        refresh:
+          anyOf:
+          - $ref: '#/components/schemas/McpOauthRefreshResource'
+          - type: 'null'
+          description: Public refresh metadata without refresh tokens or OAuth client secrets.
+      required:
+      - type
+      - mcp_server_url
+      - expires_at
+      - refresh
+      additionalProperties: false
+      description: Public metadata for an OAuth credential; tokens and client secrets are never returned.
+    RotateVaultCredentialAuthParamStaticBearer:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - static_bearer
+          default: static_bearer
+          x-stainless-const: true
+          description: The type of the object. Always `static_bearer`.
+        token:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+          description: The replacement bearer token. This secret is never returned in credential resources.
+      required:
+      - type
+      - token
+      additionalProperties: false
+      description: Replace the bearer token for the credential's MCP server.
+    VaultCredentialAuthResource:
+      oneOf:
+      - $ref: '#/components/schemas/VaultCredentialAuthResourceMcpOauth'
+      - $ref: '#/components/schemas/VaultCredentialAuthResourceStaticBearer'
+      - $ref: '#/components/schemas/VaultCredentialAuthResourceEnvironmentVariable'
+      discriminator:
+        propertyName: type
+        mapping:
+          mcp_oauth: '#/components/schemas/VaultCredentialAuthResourceMcpOauth'
+          static_bearer: '#/components/schemas/VaultCredentialAuthResourceStaticBearer'
+          environment_variable: '#/components/schemas/VaultCredentialAuthResourceEnvironmentVariable'
+      x-oai-discriminator-values:
+      - mcp_oauth
+      - static_bearer
+      - environment_variable
+      description: The authentication configuration of a vault credential, excluding secrets.
+    VaultCredentialResource:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 0
+          description: The ID of the credential.
+        object:
+          type: string
+          enum:
+          - vault.credential
+          default: vault.credential
+          x-stainless-const: true
+          description: The object type. Always `vault.credential`.
+        vault_id:
+          type: string
+          minLength: 0
+          description: The ID of the vault containing this credential.
+        name:
+          type: string
+          minLength: 0
+          description: The human-readable name of the credential.
+        auth:
+          $ref: '#/components/schemas/VaultCredentialAuthResource'
+          description: The authentication method and non-secret configuration of the credential.
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+            minLength: 0
+          propertyNames:
+            type: string
+            minLength: 0
+          minProperties: 0
+          description: Application-defined key-value pairs associated with this credential.
+        created_at:
+          type: integer
+          format: int64
+          description: The Unix timestamp, in seconds, when the credential was created.
+        updated_at:
+          type: integer
+          format: int64
+          description: The Unix timestamp, in seconds, when the credential was last updated.
+      required:
+      - id
+      - object
+      - vault_id
+      - name
+      - auth
+      - metadata
+      - created_at
+      - updated_at
+      additionalProperties: false
+      description: Metadata for a stored credential. Secret values are never returned.
+    VaultStatusParam:
+      type: string
+      enum:
+      - active
+      - archived
+      description: Whether a vault or credential is active or archived.
+    McpOauthTokenEndpointAuthResource:
+      oneOf:
+      - $ref: '#/components/schemas/McpOauthTokenEndpointAuthResourceNone'
+      - $ref: '#/components/schemas/McpOauthTokenEndpointAuthResourceClientSecretBasic'
+      - $ref: '#/components/schemas/McpOauthTokenEndpointAuthResourceClientSecretPost'
+      discriminator:
+        propertyName: type
+        mapping:
+          none: '#/components/schemas/McpOauthTokenEndpointAuthResourceNone'
+          client_secret_basic: '#/components/schemas/McpOauthTokenEndpointAuthResourceClientSecretBasic'
+          client_secret_post: '#/components/schemas/McpOauthTokenEndpointAuthResourceClientSecretPost'
+      x-oai-discriminator-values:
+      - none
+      - client_secret_basic
+      - client_secret_post
+      description: The client authentication method used for OAuth token refresh.
+    RotateVaultCredentialAuthParamEnvironmentVariable:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - environment_variable
+          default: environment_variable
+          x-stainless-const: true
+          description: The type of the object. Always `environment_variable`.
+        secret_value:
+          type: string
+          minLength: 1
+          maxLength: 1048576
+          description: The write-only replacement secret. Never returned in credential resources or supplied directly to sandbox code. Must be nonempty and must not contain carriage returns, newlines, or NUL bytes.
+      required:
+      - type
+      - secret_value
+      additionalProperties: false
+      description: Replace the secret for an OpenAI-hosted environment credential. The environment variable name and networking configuration remain unchanged.
+    DeletedVaultResource:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 0
+          description: The ID of the deleted vault.
+        object:
+          type: string
+          enum:
+          - vault.deleted
+          default: vault.deleted
+          x-stainless-const: true
+          description: The object type. Always `vault.deleted`.
+        deleted:
+          type: boolean
+          description: Whether the resource was deleted. Always `true`.
+      required:
+      - id
+      - object
+      - deleted
+      additionalProperties: false
+      description: Confirmation that a vault was deleted.
+    McpOauthTokenEndpointAuthResourceClientSecretPost:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - client_secret_post
+          default: client_secret_post
+          x-stainless-const: true
+          description: The type of the object. Always `client_secret_post`.
+      required:
+      - type
+      additionalProperties: false
+      description: Sends the client ID and secret in the token request body.
+    DeletedVaultCredentialResource:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 0
+          description: The ID of the deleted credential.
+        object:
+          type: string
+          enum:
+          - vault.credential.deleted
+          default: vault.credential.deleted
+          x-stainless-const: true
+          description: The object type. Always `vault.credential.deleted`.
+        deleted:
+          type: boolean
+          description: Whether the resource was deleted. Always `true`.
+      required:
+      - id
+      - object
+      - deleted
+      additionalProperties: false
+      description: Confirmation that a vault credential was deleted.
+    CreateVaultParams:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 1048576
+          description: The name is trimmed before storage. It must contain 1 to 256 UTF-8 bytes after trimming.
+        metadata:
+          type:
+          - object
+          - 'null'
+          additionalProperties:
+            type: string
+            minLength: 0
+            maxLength: 1048576
+          propertyNames:
+            type: string
+            minLength: 1
+            maxLength: 256
+          minProperties: 0
+          maxProperties: 1024
+          description: Key-value pairs to associate with the vault, such as an application or team identifier.
+      additionalProperties: false
+      description: Parameters for creating a vault to store credentials used by agent tools.
+    VaultCredentialListResource:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          default: list
+          x-stainless-const: true
+          description: The object type, which is always `list`.
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/VaultCredentialResource'
+          minItems: 0
+          maxItems: 2000
+          description: The resources returned in this page, in the requested sort order.
+        first_id:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          description: The ID of the first resource in `data`, or `null` if the page is empty.
+        last_id:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          description: The ID of the last resource in `data`, or `null` if the page is empty. Pass this as `after` with the same order and filters.
+        has_more:
+          type: boolean
+          description: Whether there are more resources to retrieve after this page.
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+      additionalProperties: false
+      description: A page of Agents API resources, with IDs for retrieving additional pages.
+    VaultCredentialNetworkingParam:
+      oneOf:
+      - $ref: '#/components/schemas/VaultCredentialNetworkingParamUnrestricted'
+      - $ref: '#/components/schemas/VaultCredentialNetworkingParamLimited'
+      discriminator:
+        propertyName: type
+        mapping:
+          unrestricted: '#/components/schemas/VaultCredentialNetworkingParamUnrestricted'
+          limited: '#/components/schemas/VaultCredentialNetworkingParamLimited'
+      x-oai-discriminator-values:
+      - unrestricted
+      - limited
+      description: Destination permissions for an environment-variable credential. These do not grant network access to the environment.
+    VaultCredentialAuthResourceStaticBearer:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - static_bearer
+          default: static_bearer
+          x-stainless-const: true
+          description: The type of the object. Always `static_bearer`.
+        mcp_server_url:
+          type: string
+          minLength: 0
+          description: The HTTPS MCP server URL authorized by this credential.
+      required:
+      - type
+      - mcp_server_url
+      additionalProperties: false
+      description: Metadata for a bearer-token credential, without automatic OAuth refresh.
+    McpOauthRefreshResource:
+      type: object
+      properties:
+        token_endpoint:
+          type: string
+          minLength: 0
+          description: The HTTPS OAuth token endpoint used for refresh.
+        client_id:
+          type: string
+          minLength: 0
+          description: The OAuth client ID used when requesting a new access token.
+        resource:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          description: The resource URI sent to the OAuth token endpoint during refresh, if configured.
+        scope:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          description: Space-separated OAuth scopes requested during refresh, if configured.
+        token_endpoint_auth:
+          $ref: '#/components/schemas/McpOauthTokenEndpointAuthResource'
+          description: How the OAuth client authenticates to the token endpoint, excluding its client secret.
+      required:
+      - token_endpoint
+      - client_id
+      - resource
+      - scope
+      - token_endpoint_auth
+      additionalProperties: false
+      description: Configuration used to refresh an MCP OAuth access token, excluding secret values.
+    CreateVaultCredentialAuthParamMcpOauth:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - mcp_oauth
+          default: mcp_oauth
+          x-stainless-const: true
+          description: The type of the object. Always `mcp_oauth`.
+        mcp_server_url:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+          description: The HTTPS MCP server URL authorized by this credential.
+        access_token:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+          description: A write-only OAuth access token; never returned by credential resources.
+        expires_at:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          maxLength: 1048576
+          description: When the OAuth access token expires, as an RFC 3339 timestamp, if known.
+        refresh:
+          anyOf:
+          - $ref: '#/components/schemas/CreateMcpOauthRefreshParam'
+          - type: 'null'
+          description: Optional refresh configuration for an HTTPS OAuth token endpoint.
+      required:
+      - type
+      - mcp_server_url
+      - access_token
+      additionalProperties: false
+      description: An OAuth credential for an HTTPS MCP destination.
+    CreateVaultCredentialAuthParam:
+      oneOf:
+      - $ref: '#/components/schemas/CreateVaultCredentialAuthParamMcpOauth'
+      - $ref: '#/components/schemas/CreateVaultCredentialAuthParamStaticBearer'
+      - $ref: '#/components/schemas/CreateVaultCredentialAuthParamEnvironmentVariable'
+      discriminator:
+        propertyName: type
+        mapping:
+          mcp_oauth: '#/components/schemas/CreateVaultCredentialAuthParamMcpOauth'
+          static_bearer: '#/components/schemas/CreateVaultCredentialAuthParamStaticBearer'
+          environment_variable: '#/components/schemas/CreateVaultCredentialAuthParamEnvironmentVariable'
+      x-oai-discriminator-values:
+      - mcp_oauth
+      - static_bearer
+      - environment_variable
+      description: Authentication credentials for an MCP server or an OpenAI-hosted environment.
+    ErrorResponse-2:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorBodyResource'
+          description: The error returned by the API.
+      required:
+      - error
+      additionalProperties: false
+      description: An API error response.
+    CreateMcpOauthTokenEndpointAuthParamClientSecretBasic:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - client_secret_basic
+          default: client_secret_basic
+          x-stainless-const: true
+          description: The type of the object. Always `client_secret_basic`.
+        client_secret:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+          description: The OAuth client secret to store. Never returned in credential resources.
+      required:
+      - type
+      - client_secret
+      additionalProperties: false
+      description: Sends the client ID and secret using HTTP Basic authentication.
+    ListOrderParam:
+      type: string
+      enum:
+      - asc
+      - desc
+      x-enumDescriptions:
+      - Returns resources in ascending order.
+      - Returns resources in descending order.
+      description: The order in which paginated resources are returned.
+    VaultCredentialNetworkingParamLimited:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - limited
+          default: limited
+          x-stainless-const: true
+          description: The type of the object. Always `limited`.
+        allowed_hosts:
+          type: array
+          items:
+            type: string
+            minLength: 0
+            maxLength: 1048576
+          minItems: 1
+          maxItems: 16
+          description: The 1 to 16 distinct allowed hostnames or IPv4 addresses, normalized to lowercase. Entries contain no scheme, path, port, or wildcard. IPv6 addresses are not supported.
+      required:
+      - type
+      - allowed_hosts
+      additionalProperties: false
+      description: Allows substitution only for the listed hosts. The environment network policy must also allow these hosts.
+    CreateVaultCredentialAuthParamStaticBearer:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - static_bearer
+          default: static_bearer
+          x-stainless-const: true
+          description: The type of the object. Always `static_bearer`.
+        mcp_server_url:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+          description: The HTTPS MCP server URL authorized by this credential.
+        token:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+          description: The bearer token to store. This secret is never returned in credential resources.
+      required:
+      - type
+      - mcp_server_url
+      - token
+      additionalProperties: false
+      description: A bearer token for an MCP server, without automatic OAuth refresh.
+    CreateMcpOauthTokenEndpointAuthParam:
+      oneOf:
+      - $ref: '#/components/schemas/CreateMcpOauthTokenEndpointAuthParamNone'
+      - $ref: '#/components/schemas/CreateMcpOauthTokenEndpointAuthParamClientSecretBasic'
+      - $ref: '#/components/schemas/CreateMcpOauthTokenEndpointAuthParamClientSecretPost'
+      discriminator:
+        propertyName: type
+        mapping:
+          none: '#/components/schemas/CreateMcpOauthTokenEndpointAuthParamNone'
+          client_secret_basic: '#/components/schemas/CreateMcpOauthTokenEndpointAuthParamClientSecretBasic'
+          client_secret_post: '#/components/schemas/CreateMcpOauthTokenEndpointAuthParamClientSecretPost'
+      x-oai-discriminator-values:
+      - none
+      - client_secret_basic
+      - client_secret_post
+      description: Client authentication credentials for OAuth token refresh.
+    ErrorBodyResource:
+      type: object
+      properties:
+        type:
+          type: string
+          minLength: 0
+          description: The error type.
+        code:
+          type: string
+          minLength: 0
+          description: A machine-readable error code.
+        message:
+          type: string
+          minLength: 0
+          description: A human-readable error message.
+        param:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          description: The request parameter that caused the error, or null for a request-wide error.
+      required:
+      - type
+      - code
+      - message
+      - param
+      additionalProperties: false
+      description: Details about an API error.
+    VaultResource:
+      type: object
+      properties:
+        id:
+          type: string
+          minLength: 0
+          description: The ID of the vault.
+        object:
+          type: string
+          enum:
+          - vault
+          default: vault
+          x-stainless-const: true
+          description: The object type. Always `vault`.
+        name:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          description: The human-readable name of the vault, if set.
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+            minLength: 0
+          propertyNames:
+            type: string
+            minLength: 0
+          minProperties: 0
+          description: Key-value pairs associated with the vault, such as an application or team identifier.
+        created_at:
+          type: integer
+          format: int64
+          description: The Unix timestamp, in seconds, when the vault was created.
+      required:
+      - id
+      - object
+      - name
+      - metadata
+      - created_at
+      additionalProperties: false
+      description: A collection of credentials for MCP servers and OpenAI-hosted environments.
+    VaultStatusFilterParam:
+      oneOf:
+      - $ref: '#/components/schemas/VaultStatusParam'
+      - type: array
+        items:
+          $ref: '#/components/schemas/VaultStatusParam'
+        minItems: 0
+        maxItems: 16384
+      description: One or more lifecycle statuses to include when listing vaults or credentials.
+    VaultCredentialNetworkingResource:
+      oneOf:
+      - $ref: '#/components/schemas/VaultCredentialNetworkingResourceUnrestricted'
+      - $ref: '#/components/schemas/VaultCredentialNetworkingResourceLimited'
+      discriminator:
+        propertyName: type
+        mapping:
+          unrestricted: '#/components/schemas/VaultCredentialNetworkingResourceUnrestricted'
+          limited: '#/components/schemas/VaultCredentialNetworkingResourceLimited'
+      x-oai-discriminator-values:
+      - unrestricted
+      - limited
+      description: Destination permissions for an environment-variable credential. These do not grant network access to the environment.
+    RotateVaultCredentialAuthParamMcpOauth:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - mcp_oauth
+          default: mcp_oauth
+          x-stainless-const: true
+          description: The type of the object. Always `mcp_oauth`.
+        access_token:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          maxLength: 1048576
+          description: A write-only replacement OAuth access token.
+        expires_at:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          maxLength: 1048576
+          description: The replacement expiry as an RFC 3339 timestamp, or `null` to clear it. Omitting this field preserves the expiry unless a new access token is supplied, in which case the expiry is cleared.
+        refresh:
+          anyOf:
+          - $ref: '#/components/schemas/RotateMcpOauthRefreshParam'
+          - type: 'null'
+          description: Optional write-only refresh-token and client-secret updates.
+      required:
+      - type
+      additionalProperties: false
+      description: Rotate an OAuth credential for an HTTPS MCP destination.
+    McpOauthTokenEndpointAuthResourceClientSecretBasic:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - client_secret_basic
+          default: client_secret_basic
+          x-stainless-const: true
+          description: The type of the object. Always `client_secret_basic`.
+      required:
+      - type
+      additionalProperties: false
+      description: Sends the client ID and secret using HTTP Basic authentication.
+    CreateVaultCredentialParams:
+      type: object
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 1048576
+          description: The name is trimmed before storage. It must contain 1 to 256 UTF-8 bytes after trimming.
+        auth:
+          $ref: '#/components/schemas/CreateVaultCredentialAuthParam'
+          description: The authentication method and write-only secret values to store.
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+            minLength: 0
+            maxLength: 512
+          propertyNames:
+            type: string
+            minLength: 1
+            maxLength: 64
+          minProperties: 0
+          maxProperties: 16
+          description: Up to 16 string key-value pairs, with keys up to 64 and values up to 512 characters. Defaults to an empty map.
+      required:
+      - auth
+      - name
+      additionalProperties: false
+      description: Parameters for storing a credential for an MCP server or an OpenAI-hosted environment.
+    VaultCredentialAuthResourceEnvironmentVariable:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - environment_variable
+          default: environment_variable
+          x-stainless-const: true
+          description: The type of the object. Always `environment_variable`.
+        secret_name:
+          type: string
+          minLength: 0
+          description: The environment variable name that receives the placeholder in the sandbox.
+        networking:
+          $ref: '#/components/schemas/VaultCredentialNetworkingResource'
+          description: The destinations where the proxy can substitute the secret, subject to the environment network policy.
+      required:
+      - type
+      - secret_name
+      - networking
+      additionalProperties: false
+      description: Metadata for an HTTP credential used only in OpenAI-hosted environments. Sandbox code receives a placeholder. The proxy substitutes the secret for allowed HTTPS destinations on ports 443 and 8443. The real secret is not available to sandbox code for local computation and is never returned in this resource.
+    RotateMcpOauthTokenEndpointAuthParam:
+      oneOf:
+      - $ref: '#/components/schemas/RotateMcpOauthTokenEndpointAuthParamClientSecretBasic'
+      - $ref: '#/components/schemas/RotateMcpOauthTokenEndpointAuthParamClientSecretPost'
+      discriminator:
+        propertyName: type
+        mapping:
+          client_secret_basic: '#/components/schemas/RotateMcpOauthTokenEndpointAuthParamClientSecretBasic'
+          client_secret_post: '#/components/schemas/RotateMcpOauthTokenEndpointAuthParamClientSecretPost'
+      x-oai-discriminator-values:
+      - client_secret_basic
+      - client_secret_post
+      description: Client-secret updates that preserve the credential's OAuth authentication method.
+    McpOauthTokenEndpointAuthResourceNone:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - none
+          default: none
+          x-stainless-const: true
+          description: The type of the object. Always `none`.
+      required:
+      - type
+      additionalProperties: false
+      description: Sends the client ID without a client secret.
+    VaultCredentialNetworkingResourceUnrestricted:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - unrestricted
+          default: unrestricted
+          x-stainless-const: true
+          description: The type of the object. Always `unrestricted`.
+      required:
+      - type
+      additionalProperties: false
+      description: Allows substitution for destinations permitted by the environment network policy. Requires `environment.network.access` to be `restricted`, with explicit `allowed_domains`.
+    CreateVaultCredentialAuthParamEnvironmentVariable:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - environment_variable
+          default: environment_variable
+          x-stainless-const: true
+          description: The type of the object. Always `environment_variable`.
+        secret_name:
+          type: string
+          minLength: 1
+          maxLength: 1048576
+          description: The environment variable name that receives the placeholder, such as `SERVICE_API_KEY`. Use ASCII letters, digits, and underscores, starting with a letter or underscore. Names starting with `CODEX_` and managed proxy or certificate variable names are reserved.
+        secret_value:
+          type: string
+          minLength: 1
+          maxLength: 1048576
+          description: The write-only secret to store. Never returned in credential resources or supplied directly to sandbox code. Must be nonempty and must not contain carriage returns, newlines, or NUL bytes.
+        networking:
+          $ref: '#/components/schemas/VaultCredentialNetworkingParam'
+          description: The destinations where the proxy can substitute this secret. The environment network policy must also allow them.
+      required:
+      - type
+      - secret_name
+      - secret_value
+      - networking
+      additionalProperties: false
+      description: An HTTP credential for OpenAI-hosted environments only. The sandbox receives an environment variable containing a placeholder, not the secret. Use the placeholder unchanged in outgoing requests. The egress proxy replaces the placeholder with the secret for allowed HTTPS destinations on ports 443 and 8443. Sandbox code cannot read the real secret or use it for local computation, such as signing a request.
+    RotateMcpOauthRefreshParam:
+      type: object
+      properties:
+        refresh_token:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          maxLength: 1048576
+          description: The replacement refresh token. Omit or pass `null` to keep the stored token. This secret is never returned in resources.
+        scope:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          maxLength: 1048576
+          description: Replacement space-separated OAuth scopes for refresh requests. Omit to keep the scopes, or pass `null` to stop sending a scope parameter.
+        token_endpoint_auth:
+          anyOf:
+          - $ref: '#/components/schemas/RotateMcpOauthTokenEndpointAuthParam'
+          - type: 'null'
+          description: Client-secret updates for the existing token endpoint authentication method.
+      additionalProperties: false
+      description: Updates to an MCP credential's existing OAuth refresh configuration.
+    RotateVaultCredentialAuthParam:
+      oneOf:
+      - $ref: '#/components/schemas/RotateVaultCredentialAuthParamMcpOauth'
+      - $ref: '#/components/schemas/RotateVaultCredentialAuthParamStaticBearer'
+      - $ref: '#/components/schemas/RotateVaultCredentialAuthParamEnvironmentVariable'
+      discriminator:
+        propertyName: type
+        mapping:
+          mcp_oauth: '#/components/schemas/RotateVaultCredentialAuthParamMcpOauth'
+          static_bearer: '#/components/schemas/RotateVaultCredentialAuthParamStaticBearer'
+          environment_variable: '#/components/schemas/RotateVaultCredentialAuthParamEnvironmentVariable'
+      x-oai-discriminator-values:
+      - mcp_oauth
+      - static_bearer
+      - environment_variable
+      description: Updates to a vault credential without changing its authentication method or destination configuration.
+    RotateMcpOauthTokenEndpointAuthParamClientSecretBasic:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - client_secret_basic
+          default: client_secret_basic
+          x-stainless-const: true
+          description: The type of the object. Always `client_secret_basic`.
+        client_secret:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          maxLength: 1048576
+          description: The replacement OAuth client secret. Omit or pass `null` to keep the stored secret. This secret is never returned in resources.
+      required:
+      - type
+      additionalProperties: false
+      description: Updates credentials sent using HTTP Basic authentication.
+    VaultListResource:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          default: list
+          x-stainless-const: true
+          description: The object type, which is always `list`.
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/VaultResource'
+          minItems: 0
+          maxItems: 2000
+          description: The resources returned in this page, in the requested sort order.
+        first_id:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          description: The ID of the first resource in `data`, or `null` if the page is empty.
+        last_id:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          description: The ID of the last resource in `data`, or `null` if the page is empty. Pass this as `after` with the same order and filters.
+        has_more:
+          type: boolean
+          description: Whether there are more resources to retrieve after this page.
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+      additionalProperties: false
+      description: A page of Agents API resources, with IDs for retrieving additional pages.
+    CreateMcpOauthRefreshParam:
+      type: object
+      properties:
+        token_endpoint:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+          description: The HTTPS OAuth token endpoint used to exchange the refresh token for a new access token.
+        client_id:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+          description: The OAuth client ID used when requesting a new access token.
+        resource:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          maxLength: 1048576
+          description: The resource URI to send to the OAuth token endpoint during refresh, if required.
+        scope:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          maxLength: 1048576
+          description: Space-separated OAuth scopes to request during refresh, if required.
+        refresh_token:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+          description: The refresh token to store. This secret is never returned in credential resources.
+        token_endpoint_auth:
+          $ref: '#/components/schemas/CreateMcpOauthTokenEndpointAuthParam'
+          description: How the OAuth client authenticates to the token endpoint.
+      required:
+      - token_endpoint
+      - client_id
+      - refresh_token
+      - token_endpoint_auth
+      additionalProperties: false
+      description: Configuration for refreshing the access token of an MCP OAuth credential.
+    RotateMcpOauthTokenEndpointAuthParamClientSecretPost:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - client_secret_post
+          default: client_secret_post
+          x-stainless-const: true
+          description: The type of the object. Always `client_secret_post`.
+        client_secret:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+          maxLength: 1048576
+          description: The replacement OAuth client secret. Omit or pass `null` to keep the stored secret. This secret is never returned in resources.
+      required:
+      - type
+      additionalProperties: false
+      description: Updates credentials sent in the token request body.
+    CreateMcpOauthTokenEndpointAuthParamClientSecretPost:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - client_secret_post
+          default: client_secret_post
+          x-stainless-const: true
+          description: The type of the object. Always `client_secret_post`.
+        client_secret:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+          description: The OAuth client secret to store. Never returned in credential resources.
+      required:
+      - type
+      - client_secret
+      additionalProperties: false
+      description: Sends the client ID and secret in the token request body.
+    RotateVaultCredentialParams:
+      type: object
+      properties:
+        auth:
+          $ref: '#/components/schemas/RotateVaultCredentialAuthParam'
+          description: Replacement values for the credential's existing authentication method.
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+            minLength: 0
+            maxLength: 512
+          propertyNames:
+            type: string
+            minLength: 1
+            maxLength: 64
+          minProperties: 0
+          maxProperties: 16
+          description: Replaces all metadata. Omit to preserve it, or pass {} to clear it. Up to 16 string key-value pairs, with keys up to 64 and values up to 512 characters.
+      additionalProperties: false
+      description: Metadata, secret, expiry, and OAuth refresh scope updates for an existing vault credential. Supply at least one of `auth` or `metadata`.
+    VaultCredentialNetworkingResourceLimited:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - limited
+          default: limited
+          x-stainless-const: true
+          description: The type of the object. Always `limited`.
+        allowed_hosts:
+          type: array
+          items:
+            type: string
+            minLength: 0
+          minItems: 1
+          maxItems: 16
+          description: The 1 to 16 distinct allowed hostnames or IPv4 addresses, normalized to lowercase. Entries contain no scheme, path, port, or wildcard. IPv6 addresses are not supported.
+      required:
+      - type
+      - allowed_hosts
+      additionalProperties: false
+      description: Allows substitution only for the listed hosts. The environment network policy must also allow these hosts.
+    VaultCredentialNetworkingParamUnrestricted:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - unrestricted
+          default: unrestricted
+          x-stainless-const: true
+          description: The type of the object. Always `unrestricted`.
+      required:
+      - type
+      additionalProperties: false
+      description: Allows substitution for destinations permitted by the environment network policy. Requires `environment.network.access` to be `restricted`, with explicit `allowed_domains`.
+    CreateMcpOauthTokenEndpointAuthParamNone:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - none
+          default: none
+          x-stainless-const: true
+          description: The type of the object. Always `none`.
+      required:
+      - type
+      additionalProperties: false
+      description: Sends the client ID without a client secret.
+    UpdateVaultParams:
+      type: object
+      properties:
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+            minLength: 0
+            maxLength: 512
+          propertyNames:
+            type: string
+            minLength: 1
+            maxLength: 64
+          minProperties: 0
+          maxProperties: 16
+          description: Replaces all metadata. Omit to leave unchanged, or pass {} to clear it. Up to 16 string key-value pairs, with keys up to 64 and values up to 512 characters.
+        name:
+          type:
+          - string
+          - 'null'
+          minLength: 1
+          maxLength: 1048576
+          description: A replacement name. Omit to leave unchanged, or pass null to clear it. The name is trimmed before storage. It must contain 1 to 256 UTF-8 bytes after trimming.
+      additionalProperties: false
+      description: Fields to replace on an active vault.
+    RotateVaultCredentialParams_2:
+      type: object
+      properties:
+        auth:
+          $ref: '#/components/schemas/RotateVaultCredentialAuthParam'
+          description: Replacement values for the credential's existing authentication method.
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+            minLength: 0
+            maxLength: 512
+          propertyNames:
+            type: string
+            minLength: 1
+            maxLength: 64
+          minProperties: 0
+          maxProperties: 16
+          description: Replaces all metadata. Omit to preserve it, or pass {} to clear it. Up to 16 string key-value pairs, with keys up to 64 and values up to 512 characters.
+      additionalProperties: false
+      description: Metadata, secret, expiry, and OAuth refresh scope updates for an existing vault credential. Supply at least one of `auth` or `metadata`.
+      minProperties: 1
+      examples:
+      - metadata: {}
+  securitySchemes:
+    ApiKeyAuth:
+      type: http
+      scheme: bearer
+    AdminApiKeyAuth:
+      type: http
+      scheme: bearer
+x-refined-from:
+- openai-openapi-master-2026-09-23.yml
+- openai-openapi-master-2026-10-12.yml
+x-oaiMeta:
+  groups:
+  - id: audio
+    title: Audio
+    description: 'Learn how to turn audio into text or text into audio.
+
+
+      Related guide: [Speech to text](/docs/guides/speech-to-text)
+
+      '
+    sections:
+    - type: endpoint
+      key: createSpeech
+      path: createSpeech
+    - type: endpoint
+      key: createTranscription
+      path: createTranscription
+    - type: endpoint
+      key: createTranslation
+      path: createTranslation
+  - id: chat
+    title: Chat
+    description: 'Given a list of messages comprising a conversation, the model will return a response.
+
+
+      Related guide: [Chat Completions](/docs/guides/text-generation)
+
+      '
+    sections:
+    - type: endpoint
+      key: createChatCompletion
+      path: create
+    - type: object
+      key: CreateChatCompletionResponse
+      path: object
+    - type: object
+      key: CreateChatCompletionStreamResponse
+      path: streaming
+  - id: embeddings
+    title: Embeddings
+    description: 'Get a vector representation of a given input that can be easily consumed by machine learning models and algorithms.
+
+
+      Related guide: [Embeddings](/docs/guides/embeddings)
+
+      '
+    sections:
+    - type: endpoint
+      key: createEmbedding
+      path: create
+    - type: object
+      key: Embedding
+      path: object
+  - id: fine-tuning
+    title: Fine-tuning
+    description: 'Manage fine-tuning jobs to tailor a model to your specific training data.
+
+
+      Related guide: [Fine-tune models](/docs/guides/fine-tuning)
+
+      '
+    sections:
+    - type: endpoint
+      key: createFineTuningJob
+      path: create
+    - type: endpoint
+      key: listPaginatedFineTuningJobs
+      path: list
+    - type: endpoint
+      key: listFineTuningEvents
+      path: list-events
+    - type: endpoint
+      key: retrieveFineTuningJob
+      path: retrieve
+    - type: endpoint
+      key: cancelFineTuningJob
+      path: cancel
+    - type: object
+      key: FineTuningJob
+      path: object
+    - type: object
+      key: FineTuningJobEvent
+      path: event-object
+  - id: files
+    title: Files
+    description: 'Files are used to upload documents that can be used with features like [Assistants](/docs/api-reference/assistants) and [Fine-tuning](/docs/api-reference/fine-tuning).
+
+      '
+    sections:
+    - type: endpoint
+      key: createFile
+      path: create
+    - type: endpoint
+      key: listFiles
+      path: list
+    - type: endpoint
+      key: retrieveFile
+      path: retrieve
+    - type: endpoint
+      key: deleteFile
+      path: delete
+    - type: endpoint
+      key: downloadFile
+      path: retrieve-contents
+    - type: object
+      key: OpenAIFile
+      path: object
+  - id: images
+    title: Images
+    description: 'Given a prompt and/or an input image, the model will generate a new image.
+
+
+      Related guide: [Image generation](/docs/guides/images)
+
+      '
+    sections:
+    - type: endpoint
+      key: createImage
+      path: create
+    - type: endpoint
+      key: createImageEdit
+      path: createEdit
+    - type: endpoint
+      key: createImageVariation
+      path: createVariation
+    - type: object
+      key: Image
+      path: object
+  - id: models
+    title: Models
+    description: 'List and describe the various models available in the API. You can refer to the [Models](/docs/models) documentation to understand what models are available and the differences between them.
+
+      '
+    sections:
+    - type: endpoint
+      key: listModels
+      path: list
+    - type: endpoint
+      key: retrieveModel
+      path: retrieve
+    - type: endpoint
+      key: deleteModel
+      path: delete
+    - type: object
+      key: Model
+      path: object
+  - id: moderations
+    title: Moderations
+    description: 'Given a input text, outputs if the model classifies it as violating OpenAI''s content policy.
+
+
+      Related guide: [Moderations](/docs/guides/moderation)
+
+      '
+    sections:
+    - type: endpoint
+      key: createModeration
+      path: create
+    - type: object
+      key: CreateModerationResponse
+      path: object
+  - id: assistants
+    title: Assistants
+    beta: true
+    description: 'Build assistants that can call models and use tools to perform tasks.
+
+
+      [Get started with the Assistants API](/docs/assistants)
+
+      '
+    sections:
+    - type: endpoint
+      key: createAssistant
+      path: createAssistant
+    - type: endpoint
+      key: createAssistantFile
+      path: createAssistantFile
+    - type: endpoint
+      key: listAssistants
+      path: listAssistants
+    - type: endpoint
+      key: listAssistantFiles
+      path: listAssistantFiles
+    - type: endpoint
+      key: getAssistant
+      path: getAssistant
+    - type: endpoint
+      key: getAssistantFile
+      path: getAssistantFile
+    - type: endpoint
+      key: modifyAssistant
+      path: modifyAssistant
+    - type: endpoint
+      key: deleteAssistant
+      path: deleteAssistant
+    - type: endpoint
+      key: deleteAssistantFile
+      path: deleteAssistantFile
+    - type: object
+      key: AssistantObject
+      path: object
+    - type: object
+      key: AssistantFileObject
+      path: file-object
+  - id: threads
+    title: Threads
+    beta: true
+    description: 'Create threads that assistants can interact with.
+
+
+      Related guide: [Assistants](/docs/assistants/overview)
+
+      '
+    sections:
+    - type: endpoint
+      key: createThread
+      path: createThread
+    - type: endpoint
+      key: getThread
+      path: getThread
+    - type: endpoint
+      key: modifyThread
+      path: modifyThread
+    - type: endpoint
+      key: deleteThread
+      path: deleteThread
+    - type: object
+      key: ThreadObject
+      path: object
+  - id: messages
+    title: Messages
+    beta: true
+    description: 'Create messages within threads
+
+
+      Related guide: [Assistants](/docs/assistants/overview)
+
+      '
+    sections:
+    - type: endpoint
+      key: createMessage
+      path: createMessage
+    - type: endpoint
+      key: listMessages
+      path: listMessages
+    - type: endpoint
+      key: listMessageFiles
+      path: listMessageFiles
+    - type: endpoint
+      key: getMessage
+      path: getMessage
+    - type: endpoint
+      key: getMessageFile
+      path: getMessageFile
+    - type: endpoint
+      key: modifyMessage
+      path: modifyMessage
+    - type: object
+      key: MessageObject
+      path: object
+    - type: object
+      key: MessageFileObject
+      path: file-object
+  - id: runs
+    title: Runs
+    beta: true
+    description: 'Represents an execution run on a thread.
+
+
+      Related guide: [Assistants](/docs/assistants/overview)
+
+      '
+    sections:
+    - type: endpoint
+      key: createRun
+      path: createRun
+    - type: endpoint
+      key: createThreadAndRun
+      path: createThreadAndRun
+    - type: endpoint
+      key: listRuns
+      path: listRuns
+    - type: endpoint
+      key: listRunSteps
+      path: listRunSteps
+    - type: endpoint
+      key: getRun
+      path: getRun
+    - type: endpoint
+      key: getRunStep
+      path: getRunStep
+    - type: endpoint
+      key: modifyRun
+      path: modifyRun
+    - type: endpoint
+      key: submitToolOuputsToRun
+      path: submitToolOutputs
+    - type: endpoint
+      key: cancelRun
+      path: cancelRun
+    - type: object
+      key: RunObject
+      path: object
+    - type: object
+      key: RunStepObject
+      path: step-object
+  - id: completions
+    title: Completions
+    legacy: true
+    description: 'Given a prompt, the model will return one or more predicted completions along with the probabilities of alternative tokens at each position. Most developer should use our [Chat Completions API](/docs/guides/text-generation/text-generation-models) to leverage our best and newest models. Most models that support the legacy Completions endpoint [will be shut off on January 4th, 2024](/docs/deprecations/2023-07-06-gpt-and-embeddings).
+
+      '
+    sections:
+    - type: endpoint
+      key: createCompletion
+      path: create
+    - type: object
+      key: CreateCompletionResponse
+      path: object

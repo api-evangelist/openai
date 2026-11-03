@@ -51,51 +51,6 @@ paths:
           response: "{\n  \"model\": \"gpt-6-luna\",\n  \"answers\": [\n    {\"type\": \"predicate\", \"name\": \"damaged\", \"probability\": 0.95}\n  ],\n  \"usage\": {\n    \"input_tokens\": 42,\n    \"input_tokens_details\": {\"cached_tokens\": 0, \"cache_write_tokens\": 0},\n    \"output_tokens\": 0,\n    \"output_tokens_details\": {\"reasoning_tokens\": 0},\n    \"total_tokens\": 42\n  }\n}\n"
 components:
   schemas:
-    QuestionParamPredicate:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - predicate
-          default: predicate
-          x-stainless-const: true
-          description: The type of the object. Always `predicate`.
-        name:
-          type: string
-          minLength: 0
-          maxLength: 1048576
-        instructions:
-          type: string
-          minLength: 0
-          maxLength: 1048576
-      required:
-      - type
-      - instructions
-      additionalProperties: false
-      description: Estimate how likely it is that a statement about the input is true.
-    ChoiceValueResource:
-      oneOf:
-      - type: string
-        minLength: 0
-      - type: boolean
-      description: 'Choice values are typed: a string and a boolean with the same text are distinct.'
-    DecisionInputContentParts:
-      type: array
-      items:
-        oneOf:
-        - $ref: '#/components/schemas/DecisionInputText'
-        - $ref: '#/components/schemas/DecisionInputImage'
-        discriminator:
-          propertyName: type
-          mapping:
-            input_text: '#/components/schemas/DecisionInputText'
-            input_image: '#/components/schemas/DecisionInputImage'
-        x-oai-discriminator-values:
-        - input_text
-        - input_image
-      minItems: 0
-      maxItems: 16384
     QuestionParam:
       oneOf:
       - $ref: '#/components/schemas/QuestionParamPredicate'
@@ -129,117 +84,37 @@ components:
       - cached_tokens
       - cache_write_tokens
       additionalProperties: false
-    AnswerResourceRefusal:
+    DecisionInputContentParts:
+      type: array
+      items:
+        oneOf:
+        - $ref: '#/components/schemas/DecisionInputText'
+        - $ref: '#/components/schemas/DecisionInputImage'
+        discriminator:
+          propertyName: type
+          mapping:
+            input_text: '#/components/schemas/DecisionInputText'
+            input_image: '#/components/schemas/DecisionInputImage'
+        x-oai-discriminator-values:
+        - input_text
+        - input_image
+      minItems: 0
+      maxItems: 16384
+    ScoreProbabilityResource:
       type: object
       properties:
-        type:
+        value:
+          type: integer
+          format: int64
+        label:
           type: string
-          enum:
-          - refusal
-          default: refusal
-          x-stainless-const: true
-          description: The type of the object. Always `refusal`.
-        name:
-          type:
-          - string
-          - 'null'
-          minLength: 0
-      required:
-      - type
-      - name
-      additionalProperties: false
-      description: The model declined to answer this question. Other questions in the same request can still receive answers.
-    AnswerResourcePredicate:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - predicate
-          default: predicate
-          x-stainless-const: true
-          description: The type of the object. Always `predicate`.
-        name:
-          type:
-          - string
-          - 'null'
           minLength: 0
         probability:
           type: number
       required:
-      - type
-      - name
+      - value
+      - label
       - probability
-      additionalProperties: false
-    ResponseUsageResource:
-      type: object
-      properties:
-        input_tokens:
-          type: integer
-          format: int64
-          minimum: -2147483648
-          maximum: 2147483647
-        input_tokens_details:
-          $ref: '#/components/schemas/InputTokensDetailsResource'
-        output_tokens:
-          type: integer
-          format: int64
-          minimum: -2147483648
-          maximum: 2147483647
-        output_tokens_details:
-          $ref: '#/components/schemas/OutputTokensDetailsResource'
-        total_tokens:
-          type: integer
-          format: int64
-          minimum: -2147483648
-          maximum: 2147483647
-      required:
-      - input_tokens
-      - input_tokens_details
-      - output_tokens
-      - output_tokens_details
-      - total_tokens
-      additionalProperties: false
-    DecisionInputContent:
-      oneOf:
-      - type: string
-        minLength: 0
-        maxLength: 10485760
-      - $ref: '#/components/schemas/DecisionInputContentParts'
-        title: Parts
-      description: Text evidence or an ordered list of text and image parts.
-    DecisionInputMessage:
-      type: object
-      properties:
-        role:
-          type: string
-          enum:
-          - user
-          default: user
-          x-stainless-const: true
-        content:
-          $ref: '#/components/schemas/DecisionInputContent'
-        type:
-          type: string
-          enum:
-          - message
-          default: message
-          x-stainless-const: true
-      required:
-      - role
-      - content
-      additionalProperties: false
-      description: A user message containing text or images.
-    OutputTokensDetailsResource:
-      type: object
-      properties:
-        reasoning_tokens:
-          type: integer
-          format: int64
-          minimum: -2147483648
-          maximum: 2147483647
-      required:
-      - reasoning_tokens
       additionalProperties: false
     AnswerResourceChoice:
       type: object
@@ -273,71 +148,24 @@ components:
       - probabilities
       - confidence
       additionalProperties: false
-    ChoiceProbabilityResource:
+    ScoreLevelParam:
       type: object
       properties:
-        value:
-          $ref: '#/components/schemas/ChoiceValueResource'
-        probability:
-          type: number
-      required:
-      - value
-      - probability
-      additionalProperties: false
-    DecisionResponse:
-      type: object
-      properties:
-        model:
-          type: string
-          minLength: 0
-        answers:
-          type: array
-          items:
-            $ref: '#/components/schemas/AnswerResource'
-          minItems: 0
-          maxItems: 2000
-        usage:
-          $ref: '#/components/schemas/ResponseUsageResource'
-      required:
-      - model
-      - answers
-      - usage
-      additionalProperties: false
-    QuestionParamScore:
-      type: object
-      properties:
-        type:
-          type: string
-          enum:
-          - score
-          default: score
-          x-stainless-const: true
-          description: The type of the object. Always `score`.
-        name:
+        label:
           type: string
           minLength: 0
           maxLength: 1048576
-        instructions:
+        description:
           type: string
           minLength: 0
           maxLength: 1048576
-        levels:
-          type: array
-          items:
-            $ref: '#/components/schemas/ScoreLevelParam'
-          minItems: 2
-          maxItems: 10
       required:
-      - type
-      - instructions
-      - levels
+      - label
       additionalProperties: false
-      description: Rate the input against the supplied ordered levels.
-    ChoiceValueParam:
+    ChoiceValueResource:
       oneOf:
       - type: string
         minLength: 0
-        maxLength: 1048576
       - type: boolean
       description: 'Choice values are typed: a string and a boolean with the same text are distinct.'
     QuestionParamChoice:
@@ -371,18 +199,6 @@ components:
       - choices
       additionalProperties: false
       description: Choose from the supplied options based on the input.
-    ChoiceOptionParam:
-      type: object
-      properties:
-        value:
-          $ref: '#/components/schemas/ChoiceValueParam'
-        description:
-          type: string
-          minLength: 0
-          maxLength: 1048576
-      required:
-      - value
-      additionalProperties: false
     DecisionRequest:
       type: object
       properties:
@@ -410,44 +226,45 @@ components:
       - input
       - questions
       additionalProperties: false
-    ImageDetailParam:
-      type: string
-      enum:
-      - low
-      - high
-      - auto
-      - original
-    DecisionInputText:
+    QuestionParamScore:
       type: object
       properties:
         type:
           type: string
           enum:
-          - input_text
-          default: input_text
+          - score
+          default: score
           x-stainless-const: true
-        text:
+          description: The type of the object. Always `score`.
+        name:
           type: string
           minLength: 0
-          maxLength: 10485760
+          maxLength: 1048576
+        instructions:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+        levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/ScoreLevelParam'
+          minItems: 2
+          maxItems: 10
       required:
       - type
-      - text
+      - instructions
+      - levels
       additionalProperties: false
-    ScoreProbabilityResource:
+      description: Rate the input against the supplied ordered levels.
+    ChoiceProbabilityResource:
       type: object
       properties:
         value:
-          type: integer
-          format: int64
-        label:
-          type: string
-          minLength: 0
+          $ref: '#/components/schemas/ChoiceValueResource'
         probability:
           type: number
       required:
       - value
-      - label
       - probability
       additionalProperties: false
     AnswerResourceScore:
@@ -482,25 +299,6 @@ components:
       - probabilities
       - confidence
       additionalProperties: false
-    DecisionInput:
-      oneOf:
-      - type: string
-        minLength: 0
-        maxLength: 10485760
-      - type: array
-        items:
-          oneOf:
-          - $ref: '#/components/schemas/DecisionInputMessage'
-          discriminator:
-            propertyName: type
-            mapping:
-              message: '#/components/schemas/DecisionInputMessage'
-          x-oai-discriminator-values:
-          - message
-          x-oai-default-discriminator-value: message
-        minItems: 0
-        maxItems: 131072
-      description: The text or images to evaluate for every question. Provide a text string or user messages containing text and images. Images can be base64 data URLs or publicly accessible HTTP(S) URLs; at most 128 images are allowed across all messages in one request. Files, audio, tools, and item references are not supported.
     AnswerResource:
       oneOf:
       - $ref: '#/components/schemas/AnswerResourcePredicate'
@@ -520,20 +318,142 @@ components:
       - score
       - refusal
       description: A completed question always includes its name, including null when unnamed.
-    ScoreLevelParam:
+    AnswerResourcePredicate:
       type: object
       properties:
-        label:
+        type:
           type: string
+          enum:
+          - predicate
+          default: predicate
+          x-stainless-const: true
+          description: The type of the object. Always `predicate`.
+        name:
+          type:
+          - string
+          - 'null'
           minLength: 0
-          maxLength: 1048576
-        description:
-          type: string
-          minLength: 0
-          maxLength: 1048576
+        probability:
+          type: number
       required:
-      - label
+      - type
+      - name
+      - probability
       additionalProperties: false
+    DecisionInput:
+      oneOf:
+      - type: string
+        minLength: 0
+        maxLength: 10485760
+      - type: array
+        items:
+          oneOf:
+          - $ref: '#/components/schemas/DecisionInputMessage'
+          discriminator:
+            propertyName: type
+            mapping:
+              message: '#/components/schemas/DecisionInputMessage'
+          x-oai-discriminator-values:
+          - message
+          x-oai-default-discriminator-value: message
+        minItems: 0
+        maxItems: 131072
+      description: The text or images to evaluate for every question. Provide a text string or user messages containing text and images. Images can be base64 data URLs or publicly accessible HTTP(S) URLs; at most 128 images are allowed across all messages in one request. Files, audio, tools, and item references are not supported.
+    DecisionInputText:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - input_text
+          default: input_text
+          x-stainless-const: true
+        text:
+          type: string
+          minLength: 0
+          maxLength: 10485760
+      required:
+      - type
+      - text
+      additionalProperties: false
+    ResponseUsageResource:
+      type: object
+      properties:
+        input_tokens:
+          type: integer
+          format: int64
+          minimum: -2147483648
+          maximum: 2147483647
+        input_tokens_details:
+          $ref: '#/components/schemas/InputTokensDetailsResource'
+        output_tokens:
+          type: integer
+          format: int64
+          minimum: -2147483648
+          maximum: 2147483647
+        output_tokens_details:
+          $ref: '#/components/schemas/OutputTokensDetailsResource'
+        total_tokens:
+          type: integer
+          format: int64
+          minimum: -2147483648
+          maximum: 2147483647
+      required:
+      - input_tokens
+      - input_tokens_details
+      - output_tokens
+      - output_tokens_details
+      - total_tokens
+      additionalProperties: false
+    AnswerResourceRefusal:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - refusal
+          default: refusal
+          x-stainless-const: true
+          description: The type of the object. Always `refusal`.
+        name:
+          type:
+          - string
+          - 'null'
+          minLength: 0
+      required:
+      - type
+      - name
+      additionalProperties: false
+      description: The model declined to answer this question. Other questions in the same request can still receive answers.
+    DecisionInputMessage:
+      type: object
+      properties:
+        role:
+          type: string
+          enum:
+          - user
+          default: user
+          x-stainless-const: true
+        content:
+          $ref: '#/components/schemas/DecisionInputContent'
+        type:
+          type: string
+          enum:
+          - message
+          default: message
+          x-stainless-const: true
+      required:
+      - role
+      - content
+      additionalProperties: false
+      description: A user message containing text or images.
+    ImageDetailParam:
+      type: string
+      enum:
+      - low
+      - high
+      - auto
+      - original
     DecisionInputImage:
       type: object
       properties:
@@ -560,6 +480,86 @@ components:
       - type
       additionalProperties: false
       description: An image provided as a base64 data URL or a publicly accessible HTTP(S) URL. File IDs are not supported.
+    ChoiceValueParam:
+      oneOf:
+      - type: string
+        minLength: 0
+        maxLength: 1048576
+      - type: boolean
+      description: 'Choice values are typed: a string and a boolean with the same text are distinct.'
+    DecisionResponse:
+      type: object
+      properties:
+        model:
+          type: string
+          minLength: 0
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/AnswerResource'
+          minItems: 0
+          maxItems: 2000
+        usage:
+          $ref: '#/components/schemas/ResponseUsageResource'
+      required:
+      - model
+      - answers
+      - usage
+      additionalProperties: false
+    QuestionParamPredicate:
+      type: object
+      properties:
+        type:
+          type: string
+          enum:
+          - predicate
+          default: predicate
+          x-stainless-const: true
+          description: The type of the object. Always `predicate`.
+        name:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+        instructions:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+      required:
+      - type
+      - instructions
+      additionalProperties: false
+      description: Estimate how likely it is that a statement about the input is true.
+    DecisionInputContent:
+      oneOf:
+      - type: string
+        minLength: 0
+        maxLength: 10485760
+      - $ref: '#/components/schemas/DecisionInputContentParts'
+        title: Parts
+      description: Text evidence or an ordered list of text and image parts.
+    ChoiceOptionParam:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/ChoiceValueParam'
+        description:
+          type: string
+          minLength: 0
+          maxLength: 1048576
+      required:
+      - value
+      additionalProperties: false
+    OutputTokensDetailsResource:
+      type: object
+      properties:
+        reasoning_tokens:
+          type: integer
+          format: int64
+          minimum: -2147483648
+          maximum: 2147483647
+      required:
+      - reasoning_tokens
+      additionalProperties: false
   securitySchemes:
     ApiKeyAuth:
       type: http
