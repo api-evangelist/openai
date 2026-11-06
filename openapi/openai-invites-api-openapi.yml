@@ -180,39 +180,97 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
-    InviteRequest:
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    InviteDeleteResponse:
       type: object
       properties:
-        email:
-          type: string
-          description: Send an email to this address
-        role:
+        object:
           type: string
           enum:
-          - reader
-          - owner
-          description: '`owner` or `reader`'
-        projects:
-          type: array
-          description: An array of projects to which membership is granted at the same time the org invite is accepted. If omitted, the user will be invited to the default project for compatibility with legacy behavior. If empty list is passed, the user will not be invited to any projects, including the default one.
-          items:
-            type: object
-            properties:
-              id:
-                type: string
-                description: Project's public ID
-              role:
-                type: string
-                enum:
-                - member
-                - owner
-                description: Project membership role
-            required:
-            - id
-            - role
+          - organization.invite.deleted
+          description: The object type, which is always `organization.invite.deleted`
+          x-stainless-const: true
+        id:
+          type: string
+        deleted:
+          type: boolean
       required:
-      - email
-      - role
+      - object
+      - id
+      - deleted
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
+    Error:
+      type: object
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
+    InviteListResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: The object type, which is always `list`
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Invite'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The first `invite_id` in the retrieved `list`
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The last `invite_id` in the retrieved `list`
+        has_more:
+          type: boolean
+          description: The `has_more` property is used for pagination to indicate there are additional results.
+      required:
+      - object
+      - data
+      - has_more
     Invite:
       type: object
       description: Represents an individual `invite` to the organization.
@@ -287,67 +345,50 @@ components:
       x-oaiMeta:
         name: The invite object
         example: "{\n  \"object\": \"organization.invite\",\n  \"id\": \"invite-abc\",\n  \"email\": \"user@example.com\",\n  \"role\": \"owner\",\n  \"status\": \"accepted\",\n  \"created_at\": 1711471533,\n  \"expires_at\": 1711471533,\n  \"accepted_at\": 1711471533,\n  \"projects\": [\n    {\n      \"id\": \"project-xyz\",\n      \"role\": \"member\"\n    }\n  ]\n}\n"
-    Error:
+    PermissionErrorResponse:
       type: object
       properties:
-        code:
+        error:
+          description: Details about the permission error.
           anyOf:
+          - $ref: '#/components/schemas/Error'
           - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+            description: An explanation of the missing API permissions.
       required:
-      - type
-      - message
-      - param
-      - code
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    InviteListResponse:
+      - error
+    InviteRequest:
       type: object
       properties:
-        object:
+        email:
+          type: string
+          description: Send an email to this address
+        role:
           type: string
           enum:
-          - list
-          description: The object type, which is always `list`
-          x-stainless-const: true
-        data:
+          - reader
+          - owner
+          description: '`owner` or `reader`'
+        projects:
           type: array
+          description: An array of projects to which membership is granted at the same time the org invite is accepted. If omitted, the user will be invited to the default project for compatibility with legacy behavior. If empty list is passed, the user will not be invited to any projects, including the default one.
           items:
-            $ref: '#/components/schemas/Invite'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The first `invite_id` in the retrieved `list`
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The last `invite_id` in the retrieved `list`
-        has_more:
-          type: boolean
-          description: The `has_more` property is used for pagination to indicate there are additional results.
+            type: object
+            properties:
+              id:
+                type: string
+                description: Project's public ID
+              role:
+                type: string
+                enum:
+                - member
+                - owner
+                description: Project membership role
+            required:
+            - id
+            - role
       required:
-      - object
-      - data
-      - has_more
+      - email
+      - role
     _MisalignmentSteer:
       properties:
         message:
@@ -361,47 +402,6 @@ components:
       properties:
         error:
           $ref: '#/components/schemas/Error'
-      required:
-      - error
-    InviteDeleteResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.invite.deleted
-          description: The object type, which is always `organization.invite.deleted`
-          x-stainless-const: true
-        id:
-          type: string
-        deleted:
-          type: boolean
-      required:
-      - object
-      - id
-      - deleted
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
-    PermissionErrorResponse:
-      type: object
-      properties:
-        error:
-          description: Details about the permission error.
-          anyOf:
-          - $ref: '#/components/schemas/Error'
-          - type: string
-            description: An explanation of the missing API permissions.
       required:
       - error
     MisalignmentErrorDetailsResource_2:

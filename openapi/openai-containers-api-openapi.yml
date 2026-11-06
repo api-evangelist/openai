@@ -359,54 +359,64 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
-    ContainerListResource:
-      type: object
+    ContainerNetworkPolicyAllowlistParam:
       properties:
-        object:
+        type:
           type: string
           enum:
-          - list
-          description: The type of object returned, must be 'list'.
-        data:
-          type: array
-          description: A list of containers.
+          - allowlist
+          description: Allow outbound network access only to specified domains. Always `allowlist`.
+          default: allowlist
+          x-stainless-const: true
+        allowed_domains:
           items:
-            $ref: '#/components/schemas/ContainerResource'
-        first_id:
-          type: string
-          description: The ID of the first container in the list.
-        last_id:
-          type: string
-          description: The ID of the last container in the list.
-        has_more:
-          type: boolean
-          description: Whether there are more containers available.
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
-    ContainerNetworkPolicyDomainSecretParam:
-      properties:
-        domain:
-          type: string
-          minLength: 1
-          description: The domain associated with the secret.
-        name:
-          type: string
-          minLength: 1
-          description: The name of the secret to inject for the domain.
-        value:
-          type: string
-          maxLength: 10485760
-          minLength: 1
-          description: The secret value to inject for the domain.
+            type: string
+          type: array
+          minItems: 1
+          description: A list of allowed domains when type is `allowlist`.
+        domain_secrets:
+          items:
+            $ref: '#/components/schemas/ContainerNetworkPolicyDomainSecretParam'
+          type: array
+          minItems: 1
+          description: Optional domain-scoped secrets for allowlisted domains.
       type: object
       required:
-      - domain
+      - type
+      - allowed_domains
+    InlineSkillParam:
+      properties:
+        type:
+          type: string
+          enum:
+          - inline
+          description: Defines an inline skill for this request.
+          default: inline
+          x-stainless-const: true
+        name:
+          type: string
+          description: The name of the skill.
+        description:
+          type: string
+          description: The description of the skill.
+        source:
+          $ref: '#/components/schemas/InlineSkillSourceParam'
+          description: Inline skill payload
+      type: object
+      required:
+      - type
       - name
-      - value
+      - description
+      - source
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
     ContainerFileResource:
       type: object
       title: The container file object
@@ -466,15 +476,19 @@ components:
       - message
       - param
       - code
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
     CreateContainerFileBody:
       type: object
       properties:
@@ -488,6 +502,62 @@ components:
           type: string
           format: binary
       required: []
+    ContainerListResource:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: The type of object returned, must be 'list'.
+        data:
+          type: array
+          description: A list of containers.
+          items:
+            $ref: '#/components/schemas/ContainerResource'
+        first_id:
+          type: string
+          description: The ID of the first container in the list.
+        last_id:
+          type: string
+          description: The ID of the last container in the list.
+        has_more:
+          type: boolean
+          description: Whether there are more containers available.
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    ContainerFileListResource:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: The type of object returned, must be 'list'.
+        data:
+          type: array
+          description: A list of container files.
+          items:
+            $ref: '#/components/schemas/ContainerFileResource'
+        first_id:
+          type: string
+          description: The ID of the first file in the list.
+        last_id:
+          type: string
+          description: The ID of the last file in the list.
+        has_more:
+          type: boolean
+          description: Whether there are more files available.
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
     CreateContainerBody:
       type: object
       properties:
@@ -539,38 +609,26 @@ components:
             propertyName: type
       required:
       - name
-    ContainerNetworkPolicyAllowlistParam:
+    ContainerNetworkPolicyDomainSecretParam:
       properties:
-        type:
+        domain:
           type: string
-          enum:
-          - allowlist
-          description: Allow outbound network access only to specified domains. Always `allowlist`.
-          default: allowlist
-          x-stainless-const: true
-        allowed_domains:
-          items:
-            type: string
-          type: array
-          minItems: 1
-          description: A list of allowed domains when type is `allowlist`.
-        domain_secrets:
-          items:
-            $ref: '#/components/schemas/ContainerNetworkPolicyDomainSecretParam'
-          type: array
-          minItems: 1
-          description: Optional domain-scoped secrets for allowlisted domains.
+          minLength: 1
+          description: The domain associated with the secret.
+        name:
+          type: string
+          minLength: 1
+          description: The name of the secret to inject for the domain.
+        value:
+          type: string
+          maxLength: 10485760
+          minLength: 1
+          description: The secret value to inject for the domain.
       type: object
       required:
-      - type
-      - allowed_domains
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
+      - domain
+      - name
+      - value
     ContainerResource:
       type: object
       title: The container object
@@ -651,66 +709,18 @@ components:
       x-oaiMeta:
         name: The container object
         example: "{\n   \"id\": \"cntr_682dfebaacac8198bbfe9c2474fb6f4a085685cbe3cb5863\",\n   \"object\": \"container\",\n   \"created_at\": 1747844794,\n   \"status\": \"running\",\n   \"expires_after\": {\n     \"anchor\": \"last_active_at\",\n     \"minutes\": 20\n   },\n   \"last_active_at\": 1747844794,\n   \"memory_limit\": \"1g\",\n   \"name\": \"My Container\"\n}\n"
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
-    InlineSkillParam:
+    ContainerNetworkPolicyDisabledParam:
       properties:
         type:
           type: string
           enum:
-          - inline
-          description: Defines an inline skill for this request.
-          default: inline
+          - disabled
+          description: Disable outbound network access. Always `disabled`.
+          default: disabled
           x-stainless-const: true
-        name:
-          type: string
-          description: The name of the skill.
-        description:
-          type: string
-          description: The description of the skill.
-        source:
-          $ref: '#/components/schemas/InlineSkillSourceParam'
-          description: Inline skill payload
       type: object
       required:
       - type
-      - name
-      - description
-      - source
-    ContainerFileListResource:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: The type of object returned, must be 'list'.
-        data:
-          type: array
-          description: A list of container files.
-          items:
-            $ref: '#/components/schemas/ContainerFileResource'
-        first_id:
-          type: string
-          description: The ID of the first file in the list.
-        last_id:
-          type: string
-          description: The ID of the last file in the list.
-        has_more:
-          type: boolean
-          description: Whether there are more files available.
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
     InlineSkillSourceParam:
       properties:
         type:
@@ -738,31 +748,14 @@ components:
       - media_type
       - data
       description: Inline skill payload
-    MisalignmentErrorDetailsResource:
+    _MisalignmentSteer:
       properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
+        message:
           type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
-    ContainerNetworkPolicyDisabledParam:
-      properties:
-        type:
-          type: string
-          enum:
-          - disabled
-          description: Disable outbound network access. Always `disabled`.
-          default: disabled
-          x-stainless-const: true
+          description: The public continuation instruction.
       type: object
       required:
-      - type
+      - message
     SkillReferenceParam:
       properties:
         type:
@@ -784,6 +777,13 @@ components:
       required:
       - type
       - skill_id
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
     MisalignmentErrorDetailsResource_2:
       properties:
         review_target:

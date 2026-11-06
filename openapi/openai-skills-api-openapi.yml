@@ -368,177 +368,7 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
-    SetDefaultSkillVersionBody:
-      properties:
-        default_version:
-          type: string
-          description: The skill version number to set as default.
-      type: object
-      required:
-      - default_version
-      title: Update skill request
-      description: Updates the default version pointer for a skill.
-    CreateSkillVersionBody:
-      properties:
-        files:
-          oneOf:
-          - items:
-              type: string
-              format: binary
-            type: array
-            maxItems: 500
-            description: Skill files to upload (directory upload) or a single zip file.
-          - type: string
-            format: binary
-            description: Skill zip file to upload.
-        default:
-          type: boolean
-          description: Whether to set this version as the default.
-      type: object
-      required:
-      - files
-      title: Create skill version request
-      description: Uploads a new immutable version of a skill.
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    CreateSkillBody:
-      properties:
-        files:
-          oneOf:
-          - items:
-              type: string
-              format: binary
-            type: array
-            maxItems: 500
-            description: Skill files to upload (directory upload) or a single zip file.
-          - type: string
-            format: binary
-            description: Skill zip file to upload.
-      type: object
-      required:
-      - files
-      title: Create skill request
-      description: Uploads a skill either as a directory (multipart `files[]`) or as a single zip file.
-    DeletedSkillVersionResource:
-      properties:
-        object:
-          type: string
-          enum:
-          - skill.version.deleted
-          default: skill.version.deleted
-          x-stainless-const: true
-        deleted:
-          type: boolean
-        id:
-          type: string
-        version:
-          type: string
-          description: The deleted skill version.
-      type: object
-      required:
-      - object
-      - deleted
-      - id
-      - version
-    SkillResource:
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the skill.
-        object:
-          type: string
-          enum:
-          - skill
-          description: The object type, which is `skill`.
-          default: skill
-          x-stainless-const: true
-        name:
-          type: string
-          description: Name of the skill.
-        description:
-          type: string
-          description: Description of the skill.
-        created_at:
-          type: integer
-          format: unixtime
-          description: Unix timestamp (seconds) for when the skill was created.
-        default_version:
-          type: string
-          description: Default version for the skill.
-        latest_version:
-          type: string
-          description: Latest version for the skill.
-      type: object
-      required:
-      - id
-      - object
-      - name
-      - description
-      - created_at
-      - default_version
-      - latest_version
-    DeletedSkillResource:
-      properties:
-        object:
-          type: string
-          enum:
-          - skill.deleted
-          default: skill.deleted
-          x-stainless-const: true
-        deleted:
-          type: boolean
-        id:
-          type: string
-      type: object
-      required:
-      - object
-      - deleted
-      - id
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
-    SkillListResource:
+    SkillVersionListResource:
       properties:
         object:
           type: string
@@ -549,7 +379,7 @@ components:
           x-stainless-const: true
         data:
           items:
-            $ref: '#/components/schemas/SkillResource'
+            $ref: '#/components/schemas/SkillVersionResource'
           type: array
           description: A list of items
         first_id:
@@ -609,6 +439,75 @@ components:
       - created_at
       - name
       - description
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    DeletedSkillVersionResource:
+      properties:
+        object:
+          type: string
+          enum:
+          - skill.version.deleted
+          default: skill.version.deleted
+          x-stainless-const: true
+        deleted:
+          type: boolean
+        id:
+          type: string
+        version:
+          type: string
+          description: The deleted skill version.
+      type: object
+      required:
+      - object
+      - deleted
+      - id
+      - version
+    DeletedSkillResource:
+      properties:
+        object:
+          type: string
+          enum:
+          - skill.deleted
+          default: skill.deleted
+          x-stainless-const: true
+        deleted:
+          type: boolean
+        id:
+          type: string
+      type: object
+      required:
+      - object
+      - deleted
+      - id
+    Error:
+      type: object
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
     MisalignmentErrorDetailsResource:
       properties:
         error_type:
@@ -627,7 +526,93 @@ components:
       enum:
       - asc
       - desc
-    SkillVersionListResource:
+    CreateSkillBody:
+      properties:
+        files:
+          oneOf:
+          - items:
+              type: string
+              format: binary
+            type: array
+            maxItems: 500
+            description: Skill files to upload (directory upload) or a single zip file.
+          - type: string
+            format: binary
+            description: Skill zip file to upload.
+      type: object
+      required:
+      - files
+      title: Create skill request
+      description: Uploads a skill either as a directory (multipart `files[]`) or as a single zip file.
+    SetDefaultSkillVersionBody:
+      properties:
+        default_version:
+          type: string
+          description: The skill version number to set as default.
+      type: object
+      required:
+      - default_version
+      title: Update skill request
+      description: Updates the default version pointer for a skill.
+    CreateSkillVersionBody:
+      properties:
+        files:
+          oneOf:
+          - items:
+              type: string
+              format: binary
+            type: array
+            maxItems: 500
+            description: Skill files to upload (directory upload) or a single zip file.
+          - type: string
+            format: binary
+            description: Skill zip file to upload.
+        default:
+          type: boolean
+          description: Whether to set this version as the default.
+      type: object
+      required:
+      - files
+      title: Create skill version request
+      description: Uploads a new immutable version of a skill.
+    SkillResource:
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the skill.
+        object:
+          type: string
+          enum:
+          - skill
+          description: The object type, which is `skill`.
+          default: skill
+          x-stainless-const: true
+        name:
+          type: string
+          description: Name of the skill.
+        description:
+          type: string
+          description: Description of the skill.
+        created_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (seconds) for when the skill was created.
+        default_version:
+          type: string
+          description: Default version for the skill.
+        latest_version:
+          type: string
+          description: Latest version for the skill.
+      type: object
+      required:
+      - id
+      - object
+      - name
+      - description
+      - created_at
+      - default_version
+      - latest_version
+    SkillListResource:
       properties:
         object:
           type: string
@@ -638,7 +623,7 @@ components:
           x-stainless-const: true
         data:
           items:
-            $ref: '#/components/schemas/SkillVersionResource'
+            $ref: '#/components/schemas/SkillResource'
           type: array
           description: A list of items
         first_id:
@@ -661,6 +646,21 @@ components:
       - first_id
       - last_id
       - has_more
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
     MisalignmentErrorDetailsResource_2:
       properties:
         review_target:

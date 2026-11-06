@@ -83,11 +83,6 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
-    SafetyCaseNoticeType:
-      type: string
-      enum:
-      - warning
-      - deactivation
     SafetyCaseResource:
       properties:
         id:
@@ -117,20 +112,11 @@ components:
       - entity_identifier
       - reason
       - notice
-    SafetyAlertErrorType:
+    SafetyCaseNoticeType:
       type: string
       enum:
-      - potentially_unintended_data_transfer
-      - potentially_unintended_data_access
-      - potentially_unintended_destructive_activity
-      - other
-    SafetyCaseNotice:
-      properties:
-        type:
-          $ref: '#/components/schemas/SafetyCaseNoticeType'
-      type: object
-      required:
-      - type
+      - warning
+      - deactivation
     SafetyAlertResource:
       properties:
         id:
@@ -171,28 +157,20 @@ components:
       - request_paused
       - error_type
       - reason
-    Error:
-      type: object
+    SafetyAlertErrorType:
+      type: string
+      enum:
+      - potentially_unintended_data_transfer
+      - potentially_unintended_data_access
+      - potentially_unintended_destructive_activity
+      - other
+    SafetyCaseNotice:
       properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
         type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+          $ref: '#/components/schemas/SafetyCaseNoticeType'
+      type: object
       required:
       - type
-      - message
-      - param
-      - code
     _MisalignmentErrorType:
       anyOf:
       - type: string
@@ -202,21 +180,6 @@ components:
         - potentially_unintended_data_access
         - potentially_unintended_destructive_activity
         - other
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
     MisalignmentErrorDetailsResource:
       properties:
         review_target:
@@ -240,6 +203,28 @@ components:
           description: An optional public continuation instruction.
       type: object
       required: []
+    Error:
+      type: object
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
     SafetyAlertResource_2:
       properties:
         id:
@@ -285,6 +270,21 @@ components:
       - request_paused
       - error_type
       - reason
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
   responses:
     TooManyRequests:
       description: The request was rejected because a rate limit was exceeded.

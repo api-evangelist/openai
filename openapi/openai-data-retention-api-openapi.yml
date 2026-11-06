@@ -137,6 +137,30 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
+    OrganizationDataRetention:
+      type: object
+      description: Represents the organization's data retention control setting.
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.data_retention
+          description: The object type, which is always `organization.data_retention`.
+          x-stainless-const: true
+        type:
+          type: string
+          enum:
+          - zero_data_retention
+          - modified_abuse_monitoring
+          - enhanced_zero_data_retention
+          - enhanced_modified_abuse_monitoring
+          description: The configured organization data retention type.
+      required:
+      - object
+      - type
+      x-oaiMeta:
+        name: The organization data retention object
+        example: "{\n    \"object\": \"organization.data_retention\",\n    \"type\": \"modified_abuse_monitoring\"\n}\n"
     UpdateProjectDataRetentionBody:
       type: object
       description: Parameters for updating project data retention controls.
@@ -179,30 +203,6 @@ components:
       x-oaiMeta:
         name: The project data retention object
         example: "{\n    \"object\": \"project.data_retention\",\n    \"type\": \"organization_default\"\n}\n"
-    OrganizationDataRetention:
-      type: object
-      description: Represents the organization's data retention control setting.
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.data_retention
-          description: The object type, which is always `organization.data_retention`.
-          x-stainless-const: true
-        type:
-          type: string
-          enum:
-          - zero_data_retention
-          - modified_abuse_monitoring
-          - enhanced_zero_data_retention
-          - enhanced_modified_abuse_monitoring
-          description: The configured organization data retention type.
-      required:
-      - object
-      - type
-      x-oaiMeta:
-        name: The organization data retention object
-        example: "{\n    \"object\": \"organization.data_retention\",\n    \"type\": \"modified_abuse_monitoring\"\n}\n"
     UpdateOrganizationDataRetentionBody:
       type: object
       description: Parameters for updating organization data retention controls.
@@ -217,28 +217,6 @@ components:
           description: The desired organization data retention type.
       required:
       - retention_type
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
     _MisalignmentErrorType:
       anyOf:
       - type: string
@@ -248,21 +226,6 @@ components:
         - potentially_unintended_data_access
         - potentially_unintended_destructive_activity
         - other
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
     MisalignmentErrorDetailsResource:
       properties:
         review_target:
@@ -286,6 +249,28 @@ components:
           description: An optional public continuation instruction.
       type: object
       required: []
+    Error:
+      type: object
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
     PermissionErrorResponse:
       type: object
       properties:
@@ -295,6 +280,21 @@ components:
           - $ref: '#/components/schemas/Error'
           - type: string
             description: An explanation of the missing API permissions.
+      required:
+      - error
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
       required:
       - error
   securitySchemes:

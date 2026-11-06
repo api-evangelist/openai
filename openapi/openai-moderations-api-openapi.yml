@@ -73,6 +73,28 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
     Error:
       type: object
       properties:
@@ -95,15 +117,91 @@ components:
       - message
       - param
       - code
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
+    CreateModerationRequest:
+      type: object
+      properties:
+        input:
+          description: 'Input (or inputs) to classify. Can be a single string, an array of strings, or
+
+            an array of multi-modal input objects similar to other models.
+
+            '
+          oneOf:
+          - type: string
+            description: A string of text to classify for moderation.
+            default: ''
+            example: I want to kill them.
+          - type: array
+            description: An array of strings to classify for moderation.
+            items:
+              type: string
+              default: ''
+              example: I want to kill them.
+          - type: array
+            description: An array of multi-modal inputs to the moderation model.
+            items:
+              oneOf:
+              - type: object
+                description: An object describing an image to classify.
+                properties:
+                  type:
+                    description: Always `image_url`.
+                    type: string
+                    enum:
+                    - image_url
+                    x-stainless-const: true
+                  image_url:
+                    type: object
+                    description: Contains either an image URL or a data URL for a base64 encoded image.
+                    properties:
+                      url:
+                        type: string
+                        description: Either a URL of the image or the base64 encoded image data.
+                        format: uri
+                        example: https://example.com/image.jpg
+                    required:
+                    - url
+                required:
+                - type
+                - image_url
+              - type: object
+                description: An object describing text to classify.
+                properties:
+                  type:
+                    description: Always `text`.
+                    type: string
+                    enum:
+                    - text
+                    x-stainless-const: true
+                  text:
+                    description: A string of text to classify.
+                    type: string
+                    example: I want to kill them
+                required:
+                - type
+                - text
+        model:
+          description: 'The content moderation model you would like to use. Learn more in
+
+            [the moderation guide](https://developers.openai.com/api/docs/guides/moderation), and learn about
+
+            available models [here](https://developers.openai.com/api/docs/guides/moderation).
+
+            '
+          nullable: false
+          default: omni-moderation-latest
+          example: omni-moderation-2024-09-26
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - omni-moderation-latest
+            - omni-moderation-2024-09-26
+            - text-moderation-latest
+            - text-moderation-stable
+          x-oaiTypeLabel: string
+      required:
+      - input
     CreateModerationResponse:
       type: object
       description: Represents if a given text input is potentially harmful.
@@ -375,13 +473,6 @@ components:
       x-oaiMeta:
         name: The moderation object
         example: "{\n  \"id\": \"modr-0d9740456c391e43c445bf0f010940c7\",\n  \"model\": \"omni-moderation-latest\",\n  \"results\": [\n    {\n      \"flagged\": true,\n      \"categories\": {\n        \"harassment\": true,\n        \"harassment/threatening\": true,\n        \"sexual\": false,\n        \"hate\": false,\n        \"hate/threatening\": false,\n        \"illicit\": false,\n        \"illicit/violent\": false,\n        \"self-harm/intent\": false,\n        \"self-harm/instructions\": false,\n        \"self-harm\": false,\n        \"sexual/minors\": false,\n        \"violence\": true,\n        \"violence/graphic\": true\n      },\n      \"category_scores\": {\n        \"harassment\": 0.8189693396524255,\n        \"harassment/threatening\": 0.804985420696006,\n        \"sexual\": 1.573112165348997e-6,\n        \"hate\": 0.007562942636942845,\n        \"hate/threatening\": 0.004208854591835476,\n        \"illicit\": 0.030535955153511665,\n        \"illicit/violent\": 0.008925306722380033,\n        \"self-harm/intent\": 0.00023023930975076432,\n        \"self-harm/instructions\": 0.0002293869201073356,\n        \"self-harm\": 0.012598046106750154,\n        \"sexual/minors\": 2.212566909570261e-8,\n        \"violence\": 0.9999992735124786,\n        \"violence/graphic\": 0.843064871157054\n      },\n      \"category_applied_input_types\": {\n        \"harassment\": [\n          \"text\"\n        ],\n        \"harassment/threatening\": [\n          \"text\"\n        ],\n        \"sexual\": [\n          \"text\",\n          \"image\"\n        ],\n        \"hate\": [\n          \"text\"\n        ],\n        \"hate/threatening\": [\n          \"text\"\n        ],\n        \"illicit\": [\n          \"text\"\n        ],\n        \"illicit/violent\": [\n          \"text\"\n        ],\n        \"self-harm/intent\": [\n          \"text\",\n          \"image\"\n        ],\n        \"self-harm/instructions\": [\n          \"text\",\n          \"image\"\n        ],\n        \"self-harm\": [\n          \"text\",\n          \"image\"\n        ],\n        \"sexual/minors\": [\n          \"text\"\n        ],\n        \"violence\": [\n          \"text\",\n          \"image\"\n        ],\n        \"violence/graphic\": [\n          \"text\",\n          \"image\"\n        ]\n      }\n    }\n  ]\n}\n"
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
     _MisalignmentSteer:
       properties:
         message:
@@ -390,93 +481,25 @@ components:
       type: object
       required:
       - message
-    CreateModerationRequest:
+    ErrorResponse:
       type: object
       properties:
-        input:
-          description: 'Input (or inputs) to classify. Can be a single string, an array of strings, or
-
-            an array of multi-modal input objects similar to other models.
-
-            '
-          oneOf:
-          - type: string
-            description: A string of text to classify for moderation.
-            default: ''
-            example: I want to kill them.
-          - type: array
-            description: An array of strings to classify for moderation.
-            items:
-              type: string
-              default: ''
-              example: I want to kill them.
-          - type: array
-            description: An array of multi-modal inputs to the moderation model.
-            items:
-              oneOf:
-              - type: object
-                description: An object describing an image to classify.
-                properties:
-                  type:
-                    description: Always `image_url`.
-                    type: string
-                    enum:
-                    - image_url
-                    x-stainless-const: true
-                  image_url:
-                    type: object
-                    description: Contains either an image URL or a data URL for a base64 encoded image.
-                    properties:
-                      url:
-                        type: string
-                        description: Either a URL of the image or the base64 encoded image data.
-                        format: uri
-                        example: https://example.com/image.jpg
-                    required:
-                    - url
-                required:
-                - type
-                - image_url
-              - type: object
-                description: An object describing text to classify.
-                properties:
-                  type:
-                    description: Always `text`.
-                    type: string
-                    enum:
-                    - text
-                    x-stainless-const: true
-                  text:
-                    description: A string of text to classify.
-                    type: string
-                    example: I want to kill them
-                required:
-                - type
-                - text
-        model:
-          description: 'The content moderation model you would like to use. Learn more in
-
-            [the moderation guide](https://developers.openai.com/api/docs/guides/moderation), and learn about
-
-            available models [here](https://developers.openai.com/api/docs/guides/moderation).
-
-            '
-          nullable: false
-          default: omni-moderation-latest
-          example: omni-moderation-2024-09-26
-          anyOf:
-          - type: string
-          - type: string
-            enum:
-            - omni-moderation-latest
-            - omni-moderation-2024-09-26
-            - text-moderation-latest
-            - text-moderation-stable
-          x-oaiTypeLabel: string
+        error:
+          $ref: '#/components/schemas/Error'
       required:
-      - input
-    MisalignmentErrorDetailsResource:
+      - error
+    MisalignmentErrorDetailsResource_2:
       properties:
+        review_target:
+          anyOf:
+          - not:
+              pattern: '[^A-Za-z0-9._~:-]'
+            type: string
+            maxLength: 96
+            minLength: 1
+            pattern: ^[A-Za-z0-9._~:-]+$
+            description: An opaque target for explicitly continuing this review, or null when unavailable.
+          - type: 'null'
         error_type:
           $ref: '#/components/schemas/_MisalignmentErrorType'
           description: An optional classification; clients must accept additional values.
@@ -572,51 +595,7 @@ components:
           x-oaiTypeLabel: string
       required:
       - input
-    MisalignmentErrorDetailsResource_2:
-      properties:
-        review_target:
-          anyOf:
-          - not:
-              pattern: '[^A-Za-z0-9._~:-]'
-            type: string
-            maxLength: 96
-            minLength: 1
-            pattern: ^[A-Za-z0-9._~:-]+$
-            description: An opaque target for explicitly continuing this review, or null when unavailable.
-          - type: 'null'
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
   responses:
-    InferenceRateLimited:
-      description: The request was rejected because a rate limit was exceeded. A slow_down error means traffic increased too quickly; reduce your request rate, then increase it gradually.
-      headers:
-        Retry-After:
-          description: The minimum number of seconds to wait before retrying. This header is returned when the server has computed a retry delay and may be omitted.
-          schema:
-            type: integer
-            minimum: 1
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          examples:
-            slowDown:
-              summary: Traffic increased too quickly
-              value:
-                error:
-                  message: Your request rate increased too quickly. Please reduce the request rate and gradually increase it again.
-                  type: rate_limit_error
-                  param: null
-                  code: slow_down
     InferenceServiceUnavailable:
       description: The service is temporarily unavailable. A server_is_overloaded error means the requested model is temporarily overloaded; retry after a brief delay.
       headers:
@@ -638,6 +617,27 @@ components:
                   type: service_unavailable_error
                   param: null
                   code: server_is_overloaded
+    InferenceRateLimited:
+      description: The request was rejected because a rate limit was exceeded. A slow_down error means traffic increased too quickly; reduce your request rate, then increase it gradually.
+      headers:
+        Retry-After:
+          description: The minimum number of seconds to wait before retrying. This header is returned when the server has computed a retry delay and may be omitted.
+          schema:
+            type: integer
+            minimum: 1
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            slowDown:
+              summary: Traffic increased too quickly
+              value:
+                error:
+                  message: Your request rate increased too quickly. Please reduce the request rate and gradually increase it again.
+                  type: rate_limit_error
+                  param: null
+                  code: slow_down
   securitySchemes:
     ApiKeyAuth:
       type: http

@@ -1039,164 +1039,6 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
-    UpdateProjectServiceAccountBody:
-      type: object
-      description: Parameters for updating a project service account.
-      properties:
-        name:
-          type: string
-          description: The updated service account name.
-        role:
-          type: string
-          enum:
-          - member
-          - owner
-          description: The updated service account role.
-    ProjectCreateRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The friendly name of the project, this name appears in reports.
-        geography:
-          anyOf:
-          - type: string
-          - type: 'null'
-          deprecated: true
-          description: 'Create the project with the specified data residency region. Your organization must have access to Data residency functionality in order to use. See [data residency controls](https://developers.openai.com/api/docs/guides/your-data#data-residency-controls) to review the functionality and limitations of setting this field.
-
-            Deprecated: use `residency` instead. Do not provide both `geography` and `residency`.'
-        residency:
-          anyOf:
-          - $ref: '#/components/schemas/PublicProjectResidency'
-          - type: 'null'
-          description: Create the project with the specified residency configuration. Your organization must have access to the requested residency configuration in order to use it. See [data residency controls](https://developers.openai.com/api/docs/guides/your-data#data-residency-controls) to review the functionality and limitations of setting this field.
-        external_key_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: External key ID to associate with the project.
-      required:
-      - name
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
-    ProjectUserListResponse:
-      type: object
-      properties:
-        object:
-          type: string
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectUser'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        has_more:
-          type: boolean
-      required:
-      - object
-      - data
-      - has_more
-    ProjectRateLimitUpdateRequest:
-      type: object
-      properties:
-        max_requests_per_1_minute:
-          type: integer
-          description: The maximum requests per minute.
-        max_tokens_per_1_minute:
-          type: integer
-          description: The maximum tokens per minute.
-        max_images_per_1_minute:
-          type: integer
-          description: The maximum images per minute. Only relevant for certain models.
-        max_audio_megabytes_per_1_minute:
-          type: integer
-          description: The maximum audio megabytes per minute. Only relevant for certain models.
-        max_requests_per_1_day:
-          type: integer
-          description: The maximum requests per day. Only relevant for certain models.
-        batch_1_day_max_input_tokens:
-          type: integer
-          description: The maximum batch input tokens per day. Only relevant for certain models.
-    ProjectModelPermissions:
-      type: object
-      description: Represents the model allowlist or denylist policy for a project.
-      properties:
-        object:
-          type: string
-          enum:
-          - project.model_permissions
-          description: The object type, which is always `project.model_permissions`.
-          x-stainless-const: true
-        mode:
-          type: string
-          enum:
-          - allow_list
-          - deny_list
-          description: Whether the project uses an allowlist or a denylist.
-        model_ids:
-          type: array
-          items:
-            type: string
-          description: The model IDs included in the model permissions policy.
-      required:
-      - object
-      - mode
-      - model_ids
-      x-oaiMeta:
-        name: The project model permissions object
-        example: "{\n    \"object\": \"project.model_permissions\",\n    \"mode\": \"allow_list\",\n    \"model_ids\": [\n        \"gpt-6-astra\",\n        \"o3\"\n    ]\n}\n"
-    ProjectModelPermissionsUpdateRequest:
-      type: object
-      properties:
-        mode:
-          type: string
-          enum:
-          - allow_list
-          - deny_list
-          description: The model permissions mode to apply.
-        model_ids:
-          type: array
-          items:
-            type: string
-          description: The model IDs included in this permissions policy.
-      required:
-      - mode
-      - model_ids
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
     ProjectApiKeyOwnerUser:
       type: object
       description: The user that owns a project API key.
@@ -1223,157 +1065,6 @@ components:
       - name
       - created_at
       - role
-    ProjectListResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Project'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        has_more:
-          type: boolean
-      required:
-      - object
-      - data
-      - has_more
-    ProjectUserDeleteResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.user.deleted
-          x-stainless-const: true
-        id:
-          type: string
-        deleted:
-          type: boolean
-      required:
-      - object
-      - id
-      - deleted
-    ProjectServiceAccountListResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectServiceAccount'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        has_more:
-          type: boolean
-      required:
-      - object
-      - data
-      - has_more
-    ProjectRateLimitListResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectRateLimit'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        has_more:
-          type: boolean
-      required:
-      - object
-      - data
-      - has_more
-    PermissionErrorResponse:
-      type: object
-      properties:
-        error:
-          description: Details about the permission error.
-          anyOf:
-          - $ref: '#/components/schemas/Error'
-          - type: string
-            description: An explanation of the missing API permissions.
-      required:
-      - error
-    ProjectApiKeyListResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/ProjectApiKey'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        has_more:
-          type: boolean
-      required:
-      - object
-      - data
-      - has_more
-    ProjectServiceAccountCreateRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The name of the service account being created.
-        create_service_account_only:
-          anyOf:
-          - type: boolean
-            description: Create the service account without default roles or an API key.
-          - type: 'null'
-        expires_in_seconds:
-          anyOf:
-          - type: integer
-            minimum: 1
-            maximum: 31536000
-          - type: 'null'
-          description: Number of seconds until the initial API key expires. If omitted or null, the key does not expire unless the effective organization or project policy requires an expiration. When a policy sets a maximum lifetime, this value must be provided and must not exceed that limit. A non-null value cannot be used when `create_service_account_only` is true.
-      required:
-      - name
     ProjectApiKey:
       type: object
       description: Represents an individual API key in a project.
@@ -1440,59 +1131,6 @@ components:
       x-oaiMeta:
         name: The project API key object
         example: "{\n    \"object\": \"organization.project.api_key\",\n    \"redacted_value\": \"sk-abc...def\",\n    \"name\": \"My API Key\",\n    \"created_at\": 1711471533,\n    \"expires_at\": 1714063533,\n    \"last_used_at\": 1711471534,\n    \"id\": \"key_abc\",\n    \"owner_project_access\": \"active\",\n    \"owner\": {\n        \"type\": \"user\",\n        \"user\": {\n            \"id\": \"user_abc\",\n            \"name\": \"First Last\",\n            \"email\": \"user@example.com\",\n            \"role\": \"owner\",\n            \"created_at\": 1711471533\n        }\n    }\n}\n"
-    ProjectApiKeyDeleteResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.api_key.deleted
-          x-stainless-const: true
-        id:
-          type: string
-        deleted:
-          type: boolean
-      required:
-      - object
-      - id
-      - deleted
-    PublicProjectResidency:
-      type: string
-      enum:
-      - GLOBAL
-      - US_STORAGE_PROCESSING
-      - EU_STORAGE_PROCESSING
-      - JP_STORAGE
-      - KR_STORAGE
-      - CA_STORAGE
-      - SG_STORAGE
-      - IN_STORAGE
-      - AU_STORAGE
-      - GB_STORAGE
-      - AE_STORAGE
-      - AE_STORAGE_PROCESSING
-    ProjectApiKeyOwnerServiceAccount:
-      type: object
-      description: The service account that owns a project API key.
-      properties:
-        id:
-          type: string
-          description: The identifier, which can be referenced in API endpoints
-        name:
-          type: string
-          description: The name of the service account.
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) of when the service account was created.
-        role:
-          type: string
-          description: The service account's project role.
-      required:
-      - id
-      - name
-      - created_at
-      - role
     Project:
       type: object
       description: Represents an individual project.
@@ -1541,90 +1179,47 @@ components:
       x-oaiMeta:
         name: The project object
         example: "{\n    \"id\": \"proj_abc\",\n    \"object\": \"organization.project\",\n    \"name\": \"Project example\",\n    \"created_at\": 1711471533,\n    \"archived_at\": null,\n    \"status\": \"active\",\n    \"external_key_id\": null\n}\n"
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    ProjectUpdateRequest:
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+    ProjectServiceAccountCreateRequest:
       type: object
       properties:
         name:
+          type: string
+          description: The name of the service account being created.
+        create_service_account_only:
           anyOf:
-          - type: string
+          - type: boolean
+            description: Create the service account without default roles or an API key.
           - type: 'null'
-          description: The updated name of the project, this name appears in reports.
-        external_key_id:
+        expires_in_seconds:
           anyOf:
-          - type: string
+          - type: integer
+            minimum: 1
+            maximum: 31536000
           - type: 'null'
-          description: External key ID to associate with the project.
-        geography:
-          anyOf:
-          - type: string
-          - type: 'null'
-          deprecated: true
-          description: 'Geography for the project.
-
-            Deprecated: use `residency` when creating a project to configure data residency. This field is retained for backward compatibility.'
-    ProjectServiceAccountCreateResponse:
+          description: Number of seconds until the initial API key expires. If omitted or null, the key does not expire unless the effective organization or project policy requires an expiration. When a policy sets a maximum lifetime, this value must be provided and must not exceed that limit. A non-null value cannot be used when `create_service_account_only` is true.
+      required:
+      - name
+    UpdateProjectServiceAccountBody:
       type: object
+      description: Parameters for updating a project service account.
       properties:
-        object:
-          type: string
-          enum:
-          - organization.project.service_account
-          x-stainless-const: true
-        id:
-          type: string
         name:
           type: string
+          description: The updated service account name.
         role:
           type: string
           enum:
           - member
-          - none
-          description: 'Service accounts created with default project membership have role `member`. Accounts created with `create_service_account_only` have role `none`.
-
-            '
-        created_at:
-          type: integer
-          format: unixtime
-        api_key:
-          anyOf:
-          - $ref: '#/components/schemas/ProjectServiceAccountApiKey'
-          - type: 'null'
-      required:
-      - object
-      - id
-      - name
-      - role
-      - created_at
-      - api_key
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
+          - owner
+          description: The updated service account role.
     ProjectModelPermissionsDeleteResponse:
       type: object
       description: Confirmation payload returned after deleting project model permissions.
@@ -1644,14 +1239,6 @@ components:
       x-oaiMeta:
         name: Project model permissions deletion confirmation
         example: "{\n    \"object\": \"project.model_permissions.deleted\",\n    \"deleted\": true\n}\n"
-    ProjectUserUpdateRequest:
-      type: object
-      properties:
-        role:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: '`owner` or `member`'
     ProjectServiceAccountApiKey:
       type: object
       properties:
@@ -1682,6 +1269,322 @@ components:
       - name
       - created_at
       - id
+    PublicProjectResidency:
+      type: string
+      enum:
+      - GLOBAL
+      - US_STORAGE_PROCESSING
+      - EU_STORAGE_PROCESSING
+      - JP_STORAGE
+      - KR_STORAGE
+      - CA_STORAGE
+      - SG_STORAGE
+      - IN_STORAGE
+      - AU_STORAGE
+      - GB_STORAGE
+      - AE_STORAGE
+      - AE_STORAGE_PROCESSING
+    ProjectCreateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The friendly name of the project, this name appears in reports.
+        geography:
+          anyOf:
+          - type: string
+          - type: 'null'
+          deprecated: true
+          description: 'Create the project with the specified data residency region. Your organization must have access to Data residency functionality in order to use. See [data residency controls](https://developers.openai.com/api/docs/guides/your-data#data-residency-controls) to review the functionality and limitations of setting this field.
+
+            Deprecated: use `residency` instead. Do not provide both `geography` and `residency`.'
+        residency:
+          anyOf:
+          - $ref: '#/components/schemas/PublicProjectResidency'
+          - type: 'null'
+          description: Create the project with the specified residency configuration. Your organization must have access to the requested residency configuration in order to use it. See [data residency controls](https://developers.openai.com/api/docs/guides/your-data#data-residency-controls) to review the functionality and limitations of setting this field.
+        external_key_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: External key ID to associate with the project.
+      required:
+      - name
+    Error:
+      type: object
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
+    ProjectApiKeyListResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectApiKey'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
+    ProjectUserUpdateRequest:
+      type: object
+      properties:
+        role:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: '`owner` or `member`'
+    ProjectRateLimitListResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectRateLimit'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
+    PermissionErrorResponse:
+      type: object
+      properties:
+        error:
+          description: Details about the permission error.
+          anyOf:
+          - $ref: '#/components/schemas/Error'
+          - type: string
+            description: An explanation of the missing API permissions.
+      required:
+      - error
+    ProjectServiceAccountListResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectServiceAccount'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
+    ProjectRateLimitUpdateRequest:
+      type: object
+      properties:
+        max_requests_per_1_minute:
+          type: integer
+          description: The maximum requests per minute.
+        max_tokens_per_1_minute:
+          type: integer
+          description: The maximum tokens per minute.
+        max_images_per_1_minute:
+          type: integer
+          description: The maximum images per minute. Only relevant for certain models.
+        max_audio_megabytes_per_1_minute:
+          type: integer
+          description: The maximum audio megabytes per minute. Only relevant for certain models.
+        max_requests_per_1_day:
+          type: integer
+          description: The maximum requests per day. Only relevant for certain models.
+        batch_1_day_max_input_tokens:
+          type: integer
+          description: The maximum batch input tokens per day. Only relevant for certain models.
+    ProjectUserDeleteResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.user.deleted
+          x-stainless-const: true
+        id:
+          type: string
+        deleted:
+          type: boolean
+      required:
+      - object
+      - id
+      - deleted
+    ProjectApiKeyDeleteResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.api_key.deleted
+          x-stainless-const: true
+        id:
+          type: string
+        deleted:
+          type: boolean
+      required:
+      - object
+      - id
+      - deleted
+    ProjectUpdateRequest:
+      type: object
+      properties:
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The updated name of the project, this name appears in reports.
+        external_key_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: External key ID to associate with the project.
+        geography:
+          anyOf:
+          - type: string
+          - type: 'null'
+          deprecated: true
+          description: 'Geography for the project.
+
+            Deprecated: use `residency` when creating a project to configure data residency. This field is retained for backward compatibility.'
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    ProjectModelPermissions:
+      type: object
+      description: Represents the model allowlist or denylist policy for a project.
+      properties:
+        object:
+          type: string
+          enum:
+          - project.model_permissions
+          description: The object type, which is always `project.model_permissions`.
+          x-stainless-const: true
+        mode:
+          type: string
+          enum:
+          - allow_list
+          - deny_list
+          description: Whether the project uses an allowlist or a denylist.
+        model_ids:
+          type: array
+          items:
+            type: string
+          description: The model IDs included in the model permissions policy.
+      required:
+      - object
+      - mode
+      - model_ids
+      x-oaiMeta:
+        name: The project model permissions object
+        example: "{\n    \"object\": \"project.model_permissions\",\n    \"mode\": \"allow_list\",\n    \"model_ids\": [\n        \"gpt-6-astra\",\n        \"o3\"\n    ]\n}\n"
+    ProjectUserListResponse:
+      type: object
+      properties:
+        object:
+          type: string
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectUser'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
+    ProjectApiKeyOwnerServiceAccount:
+      type: object
+      description: The service account that owns a project API key.
+      properties:
+        id:
+          type: string
+          description: The identifier, which can be referenced in API endpoints
+        name:
+          type: string
+          description: The name of the service account.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) of when the service account was created.
+        role:
+          type: string
+          description: The service account's project role.
+      required:
+      - id
+      - name
+      - created_at
+      - role
     ProjectRateLimit:
       type: object
       description: Represents a project rate limit config.
@@ -1725,6 +1628,86 @@ components:
       x-oaiMeta:
         name: The project rate limit object
         example: "{\n    \"object\": \"project.rate_limit\",\n    \"id\": \"rl_ada\",\n    \"model\": \"ada\",\n    \"max_requests_per_1_minute\": 600,\n    \"max_tokens_per_1_minute\": 150000,\n    \"max_images_per_1_minute\": 10\n}\n"
+    ProjectListResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    ProjectServiceAccountCreateResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.service_account
+          x-stainless-const: true
+        id:
+          type: string
+        name:
+          type: string
+        role:
+          type: string
+          enum:
+          - member
+          - none
+          description: 'Service accounts created with default project membership have role `member`. Accounts created with `create_service_account_only` have role `none`.
+
+            '
+        created_at:
+          type: integer
+          format: unixtime
+        api_key:
+          anyOf:
+          - $ref: '#/components/schemas/ProjectServiceAccountApiKey'
+          - type: 'null'
+      required:
+      - object
+      - id
+      - name
+      - role
+      - created_at
+      - api_key
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
     ProjectServiceAccountDeleteResponse:
       type: object
       properties:
@@ -1741,44 +1724,6 @@ components:
       - object
       - id
       - deleted
-    ProjectUser:
-      type: object
-      description: Represents an individual user in a project.
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.user
-          description: The object type, which is always `organization.project.user`
-          x-stainless-const: true
-        id:
-          type: string
-          description: The identifier, which can be referenced in API endpoints
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The name of the user
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The email address of the user
-        role:
-          type: string
-          description: '`owner` or `member`'
-        added_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) of when the project was added.
-      required:
-      - object
-      - id
-      - role
-      - added_at
-      x-oaiMeta:
-        name: The project user object
-        example: "{\n    \"object\": \"organization.project.user\",\n    \"id\": \"user_abc\",\n    \"name\": \"First Last\",\n    \"email\": \"user@example.com\",\n    \"role\": \"owner\",\n    \"added_at\": 1711471533\n}\n"
     ProjectServiceAccount:
       type: object
       description: Represents an individual service account in a project.
@@ -1833,6 +1778,61 @@ components:
           description: '`owner` or `member`'
       required:
       - role
+    ProjectModelPermissionsUpdateRequest:
+      type: object
+      properties:
+        mode:
+          type: string
+          enum:
+          - allow_list
+          - deny_list
+          description: The model permissions mode to apply.
+        model_ids:
+          type: array
+          items:
+            type: string
+          description: The model IDs included in this permissions policy.
+      required:
+      - mode
+      - model_ids
+    ProjectUser:
+      type: object
+      description: Represents an individual user in a project.
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.user
+          description: The object type, which is always `organization.project.user`
+          x-stainless-const: true
+        id:
+          type: string
+          description: The identifier, which can be referenced in API endpoints
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The name of the user
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The email address of the user
+        role:
+          type: string
+          description: '`owner` or `member`'
+        added_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) of when the project was added.
+      required:
+      - object
+      - id
+      - role
+      - added_at
+      x-oaiMeta:
+        name: The project user object
+        example: "{\n    \"object\": \"organization.project.user\",\n    \"id\": \"user_abc\",\n    \"name\": \"First Last\",\n    \"email\": \"user@example.com\",\n    \"role\": \"owner\",\n    \"added_at\": 1711471533\n}\n"
     MisalignmentErrorDetailsResource_2:
       properties:
         review_target:

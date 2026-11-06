@@ -212,6 +212,15 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
   schemas:
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
     Error:
       type: object
       properties:
@@ -234,49 +243,19 @@ components:
       - message
       - param
       - code
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    ProjectGroupDeletedResource:
-      type: object
-      description: Confirmation payload returned after removing a group from a project.
+    MisalignmentErrorDetailsResource:
       properties:
-        object:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
           type: string
-          enum:
-          - project.group.deleted
-          description: Always `project.group.deleted`.
-          x-stainless-const: true
-        deleted:
-          type: boolean
-          description: Whether the group membership in the project was removed.
-      required:
-      - object
-      - deleted
-      x-oaiMeta:
-        name: Project group deletion confirmation
-        example: "{\n    \"object\": \"project.group.deleted\",\n    \"deleted\": true\n}\n"
-    InviteProjectGroupBody:
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
       type: object
-      description: Request payload for granting a group access to a project.
-      properties:
-        group_id:
-          type: string
-          description: Identifier of the group to add to the project.
-        role:
-          type: string
-          description: Identifier of the project role to grant to the group.
-      required:
-      - group_id
-      - role
-      x-oaiMeta:
-        example: "{\n    \"group_id\": \"group_01J1F8ABCDXYZ\",\n    \"role\": \"role_01J1F8PROJ\"\n}\n"
+      required: []
     ProjectGroupListResource:
       type: object
       description: Paginated list of groups that have access to a project.
@@ -308,13 +287,21 @@ components:
       x-oaiMeta:
         name: Project group list
         example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"object\": \"project.group\",\n            \"project_id\": \"proj_abc123\",\n            \"group_id\": \"group_01J1F8ABCDXYZ\",\n            \"group_name\": \"Support Team\",\n            \"created_at\": 1711471533\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
-    ErrorResponse:
+    InviteProjectGroupBody:
       type: object
+      description: Request payload for granting a group access to a project.
       properties:
-        error:
-          $ref: '#/components/schemas/Error'
+        group_id:
+          type: string
+          description: Identifier of the group to add to the project.
+        role:
+          type: string
+          description: Identifier of the project role to grant to the group.
       required:
-      - error
+      - group_id
+      - role
+      x-oaiMeta:
+        example: "{\n    \"group_id\": \"group_01J1F8ABCDXYZ\",\n    \"role\": \"role_01J1F8PROJ\"\n}\n"
     _MisalignmentSteer:
       properties:
         message:
@@ -323,19 +310,25 @@ components:
       type: object
       required:
       - message
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
+    ProjectGroupDeletedResource:
       type: object
-      required: []
+      description: Confirmation payload returned after removing a group from a project.
+      properties:
+        object:
+          type: string
+          enum:
+          - project.group.deleted
+          description: Always `project.group.deleted`.
+          x-stainless-const: true
+        deleted:
+          type: boolean
+          description: Whether the group membership in the project was removed.
+      required:
+      - object
+      - deleted
+      x-oaiMeta:
+        name: Project group deletion confirmation
+        example: "{\n    \"object\": \"project.group.deleted\",\n    \"deleted\": true\n}\n"
     ProjectGroup:
       type: object
       description: Details about a group's membership in a project.
@@ -375,37 +368,13 @@ components:
       x-oaiMeta:
         name: The project group object
         example: "{\n    \"object\": \"project.group\",\n    \"project_id\": \"proj_abc123\",\n    \"group_id\": \"group_01J1F8ABCDXYZ\",\n    \"group_name\": \"Support Team\",\n    \"group_type\": \"group\",\n    \"created_at\": 1711471533\n}\n"
-    ProjectGroupListResource_2:
+    ErrorResponse:
       type: object
-      description: Paginated list of groups that have access to a project.
       properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: Always `list`.
-          x-stainless-const: true
-        data:
-          type: array
-          description: Project group memberships returned in the current page.
-          items:
-            $ref: '#/components/schemas/ProjectGroup'
-        has_more:
-          type: boolean
-          description: Whether additional project group memberships are available.
-        next:
-          description: Cursor to fetch the next page of results, or `null` when there are no more results.
-          anyOf:
-          - type: string
-          - type: 'null'
+        error:
+          $ref: '#/components/schemas/Error'
       required:
-      - object
-      - data
-      - has_more
-      - next
-      x-oaiMeta:
-        name: Project group list
-        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"object\": \"project.group\",\n            \"project_id\": \"proj_abc123\",\n            \"group_id\": \"group_01J1F8ABCDXYZ\",\n            \"group_name\": \"Support Team\",\n            \"group_type\": \"group\",\n            \"created_at\": 1711471533\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
+      - error
     MisalignmentErrorDetailsResource_2:
       properties:
         review_target:
@@ -440,6 +409,37 @@ components:
             description: An explanation of the missing API permissions.
       required:
       - error
+    ProjectGroupListResource_2:
+      type: object
+      description: Paginated list of groups that have access to a project.
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: Always `list`.
+          x-stainless-const: true
+        data:
+          type: array
+          description: Project group memberships returned in the current page.
+          items:
+            $ref: '#/components/schemas/ProjectGroup'
+        has_more:
+          type: boolean
+          description: Whether additional project group memberships are available.
+        next:
+          description: Cursor to fetch the next page of results, or `null` when there are no more results.
+          anyOf:
+          - type: string
+          - type: 'null'
+      required:
+      - object
+      - data
+      - has_more
+      - next
+      x-oaiMeta:
+        name: Project group list
+        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"object\": \"project.group\",\n            \"project_id\": \"proj_abc123\",\n            \"group_id\": \"group_01J1F8ABCDXYZ\",\n            \"group_name\": \"Support Team\",\n            \"group_type\": \"group\",\n            \"created_at\": 1711471533\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
   securitySchemes:
     ApiKeyAuth:
       type: http

@@ -163,6 +163,19 @@ components:
       x-oaiMeta:
         name: The model object
         example: "{\n  \"id\": \"gpt-6-astra\",\n  \"object\": \"model\",\n  \"created\": 1686935002,\n  \"owned_by\": \"openai\",\n  \"shutdown_date\": \"2026-10-23\"\n}\n"
+    DeleteModelResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        deleted:
+          type: boolean
+        object:
+          type: string
+      required:
+      - id
+      - object
+      - deleted
     ListModelsResponse:
       type: object
       properties:
@@ -178,41 +191,6 @@ components:
       required:
       - object
       - data
-    DeleteModelResponse:
-      type: object
-      properties:
-        id:
-          type: string
-        deleted:
-          type: boolean
-        object:
-          type: string
-      required:
-      - id
-      - object
-      - deleted
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
     _MisalignmentErrorType:
       anyOf:
       - type: string
@@ -222,21 +200,6 @@ components:
         - potentially_unintended_data_access
         - potentially_unintended_destructive_activity
         - other
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
     MisalignmentErrorDetailsResource:
       properties:
         review_target:
@@ -260,6 +223,28 @@ components:
           description: An optional public continuation instruction.
       type: object
       required: []
+    Error:
+      type: object
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
     PermissionErrorResponse:
       type: object
       properties:
@@ -269,6 +254,21 @@ components:
           - $ref: '#/components/schemas/Error'
           - type: string
             description: An explanation of the missing API permissions.
+      required:
+      - error
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
       required:
       - error
   securitySchemes:

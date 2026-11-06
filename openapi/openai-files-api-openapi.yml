@@ -197,20 +197,6 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
-    ListFilesResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OpenAIFile'
-        object:
-          type: string
-          enum:
-          - list
-      required:
-      - object
-      - data
     DeleteFileResponse:
       type: object
       properties:
@@ -278,47 +264,59 @@ components:
       x-oaiMeta:
         name: The file object
         example: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"file\",\n  \"bytes\": 120000,\n  \"created_at\": 1677610602,\n  \"filename\": \"salesOverview.pdf\",\n  \"purpose\": \"assistants\",\n}\n"
-    ListFilesResponse_2:
+    ListFilesResponse:
       type: object
       properties:
-        object:
-          type: string
-          example: list
         data:
           type: array
           items:
-            $ref: '#/components/schemas/OpenAIFile_2'
-        first_id:
-          type: string
-          example: file-abc123
-        last_id:
-          type: string
-          example: file-abc456
-        has_more:
-          type: boolean
-          example: false
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
-    DeleteFileResponse_2:
-      type: object
-      properties:
-        id:
-          type: string
+            $ref: '#/components/schemas/OpenAIFile'
         object:
           type: string
           enum:
-          - file
-          x-stainless-const: true
-        deleted:
-          type: boolean
+          - list
       required:
-      - id
       - object
-      - deleted
+      - data
+    CreateFileRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        file:
+          description: 'The File object (not file name) to be uploaded.
+
+            '
+          type: string
+          format: binary
+        purpose:
+          description: 'The intended purpose of the uploaded file. One of:
+
+            - `assistants`: Used in the Assistants API
+
+            - `batch`: Used in the Batch API
+
+            - `fine-tune`: Used for fine-tuning
+
+            - `vision`: Images used for vision fine-tuning
+
+            - `user_data`: Flexible file type for any purpose
+
+            - `evals`: Used for eval data sets
+
+            '
+          type: string
+          enum:
+          - assistants
+          - batch
+          - fine-tune
+          - vision
+          - user_data
+          - evals
+        expires_after:
+          $ref: '#/components/schemas/FileExpirationAfter'
+      required:
+      - file
+      - purpose
     FileExpirationAfter:
       type: object
       title: File expiration policy
@@ -401,71 +399,7 @@ components:
       x-oaiMeta:
         name: The file object
         example: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"file\",\n  \"bytes\": 120000,\n  \"created_at\": 1677610602,\n  \"expires_at\": 1680202602,\n  \"filename\": \"salesOverview.pdf\",\n  \"purpose\": \"assistants\",\n}\n"
-    CreateFileRequest:
-      type: object
-      additionalProperties: false
-      properties:
-        file:
-          description: 'The File object (not file name) to be uploaded.
-
-            '
-          type: string
-          format: binary
-        purpose:
-          description: 'The intended purpose of the uploaded file. One of:
-
-            - `assistants`: Used in the Assistants API
-
-            - `batch`: Used in the Batch API
-
-            - `fine-tune`: Used for fine-tuning
-
-            - `vision`: Images used for vision fine-tuning
-
-            - `user_data`: Flexible file type for any purpose
-
-            - `evals`: Used for eval data sets
-
-            '
-          type: string
-          enum:
-          - assistants
-          - batch
-          - fine-tune
-          - vision
-          - user_data
-          - evals
-        expires_after:
-          $ref: '#/components/schemas/FileExpirationAfter'
-      required:
-      - file
-      - purpose
-    ListFilesResponse_3:
-      type: object
-      properties:
-        object:
-          type: string
-          example: list
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OpenAIFile_3'
-        first_id:
-          type: string
-          example: file-abc123
-        last_id:
-          type: string
-          example: file-abc456
-        has_more:
-          type: boolean
-          example: false
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
-    DeleteFileResponse_3:
+    DeleteFileResponse_2:
       type: object
       properties:
         id:
@@ -481,6 +415,63 @@ components:
       - id
       - object
       - deleted
+    ListFilesResponse_2:
+      type: object
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpenAIFile_2'
+        first_id:
+          type: string
+          example: file-abc123
+        last_id:
+          type: string
+          example: file-abc456
+        has_more:
+          type: boolean
+          example: false
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    MisalignmentErrorDetailsResource:
+      properties:
+        review_target:
+          anyOf:
+          - not:
+              pattern: '[^A-Za-z0-9._~:-]'
+            type: string
+            maxLength: 96
+            minLength: 1
+            pattern: ^[A-Za-z0-9._~:-]+$
+            description: An opaque target for explicitly continuing this review, or null when unavailable.
+          - type: 'null'
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
     Error:
       type: object
       properties:
@@ -503,30 +494,6 @@ components:
       - message
       - param
       - code
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
     OpenAIFile_3:
       title: OpenAIFile
       description: The `File` object represents a document that has been uploaded to OpenAI.
@@ -599,29 +566,62 @@ components:
       x-oaiMeta:
         name: The file object
         example: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"file\",\n  \"bytes\": 120000,\n  \"created_at\": 1677610602,\n  \"expires_at\": 1680202602,\n  \"filename\": \"salesOverview.pdf\",\n  \"purpose\": \"assistants\",\n  \"status\": \"processed\"\n}\n"
-    MisalignmentErrorDetailsResource:
-      properties:
-        review_target:
-          anyOf:
-          - not:
-              pattern: '[^A-Za-z0-9._~:-]'
-            type: string
-            maxLength: 96
-            minLength: 1
-            pattern: ^[A-Za-z0-9._~:-]+$
-            description: An opaque target for explicitly continuing this review, or null when unavailable.
-          - type: 'null'
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
+    ListFilesResponse_3:
       type: object
-      required: []
+      properties:
+        object:
+          type: string
+          example: list
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OpenAIFile_3'
+        first_id:
+          type: string
+          example: file-abc123
+        last_id:
+          type: string
+          example: file-abc456
+        has_more:
+          type: boolean
+          example: false
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    DeleteFileResponse_3:
+      type: object
+      properties:
+        id:
+          type: string
+        object:
+          type: string
+          enum:
+          - file
+          x-stainless-const: true
+        deleted:
+          type: boolean
+      required:
+      - id
+      - object
+      - deleted
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
   securitySchemes:
     ApiKeyAuth:
       type: http

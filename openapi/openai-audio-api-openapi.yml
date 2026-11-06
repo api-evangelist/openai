@@ -455,324 +455,6 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
-    TranscriptTextUsageTokens:
-      type: object
-      title: Token Usage
-      description: Usage statistics for models billed by token usage.
-      properties:
-        type:
-          type: string
-          enum:
-          - tokens
-          description: The type of the usage object. Always `tokens` for this variant.
-          x-stainless-const: true
-        input_tokens:
-          type: integer
-          description: Number of input tokens billed for this request.
-        input_token_details:
-          type: object
-          description: Details about the input tokens billed for this request.
-          properties:
-            text_tokens:
-              type: integer
-              description: Number of text tokens billed for this request.
-            audio_tokens:
-              type: integer
-              description: Number of audio tokens billed for this request.
-        output_tokens:
-          type: integer
-          description: Number of output tokens generated.
-        total_tokens:
-          type: integer
-          description: Total number of tokens used (input + output).
-      required:
-      - type
-      - input_tokens
-      - output_tokens
-      - total_tokens
-    VoiceConsentResource:
-      type: object
-      title: Voice consent
-      description: A consent recording used to authorize creation of a custom voice.
-      additionalProperties: false
-      properties:
-        object:
-          type: string
-          description: The object type, which is always `audio.voice_consent`.
-          enum:
-          - audio.voice_consent
-          x-stainless-const: true
-        id:
-          type: string
-          description: The consent recording identifier.
-          example: cons_1234
-        name:
-          type: string
-          description: The label provided when the consent recording was uploaded.
-        language:
-          type: string
-          description: The BCP 47 language tag for the consent phrase (for example, `en-US`).
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) for when the consent recording was created.
-      required:
-      - object
-      - id
-      - name
-      - language
-      - created_at
-      x-oaiMeta:
-        name: The voice consent object
-        example: "{\n  \"object\": \"audio.voice_consent\",\n  \"id\": \"cons_1234\",\n  \"name\": \"John Doe\",\n  \"language\": \"en-US\",\n  \"created_at\": 1734220800\n}\n"
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
-    UpdateVoiceConsentRequest:
-      type: object
-      additionalProperties: false
-      properties:
-        name:
-          type: string
-          description: The updated label for this consent recording.
-      required:
-      - name
-    CreateTranscriptionResponseStreamEvent:
-      anyOf:
-      - $ref: '#/components/schemas/TranscriptTextSegmentEvent'
-      - $ref: '#/components/schemas/TranscriptTextDeltaEvent'
-      - $ref: '#/components/schemas/TranscriptTextDoneEvent'
-      discriminator:
-        propertyName: type
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
-    VoiceIdsOrCustomVoice:
-      title: Voice
-      description: 'A built-in voice name or a custom voice reference.
-
-        '
-      anyOf:
-      - $ref: '#/components/schemas/VoiceIdsShared'
-      - type: object
-        description: Custom voice reference.
-        additionalProperties: false
-        required:
-        - id
-        properties:
-          id:
-            type: string
-            description: The custom voice ID, e.g. `voice_1234`.
-            example: voice_1234
-    CreateTranslationResponseVerboseJson:
-      type: object
-      properties:
-        language:
-          type: string
-          description: The language of the output translation (always `english`).
-        duration:
-          type: number
-          format: double
-          description: The duration of the input audio.
-        text:
-          type: string
-          description: The translated text.
-        segments:
-          type: array
-          description: Segments of the translated text and their corresponding details.
-          items:
-            $ref: '#/components/schemas/TranscriptionSegment'
-      required:
-      - language
-      - duration
-      - text
-    TranscriptTextUsageDuration:
-      type: object
-      title: Duration Usage
-      description: Usage statistics for models billed by audio input duration.
-      properties:
-        type:
-          type: string
-          enum:
-          - duration
-          description: The type of the usage object. Always `duration` for this variant.
-          x-stainless-const: true
-        seconds:
-          type: number
-          format: double
-          description: Duration of the input audio in seconds.
-      required:
-      - type
-      - seconds
-    CreateSpeechRequest:
-      type: object
-      additionalProperties: false
-      properties:
-        model:
-          description: 'One of the available [TTS models](https://developers.openai.com/api/docs/guides/text-to-speech): `tts-1`, `tts-1-hd`, `gpt-4o-mini-tts`, or `gpt-4o-mini-tts-2025-12-15`.
-
-            '
-          anyOf:
-          - type: string
-          - type: string
-            enum:
-            - tts-1
-            - tts-1-hd
-            - gpt-4o-mini-tts
-            - gpt-4o-mini-tts-2025-12-15
-          x-oaiTypeLabel: string
-        input:
-          type: string
-          description: The text to generate audio for. The maximum length is 4096 characters.
-          maxLength: 4096
-        instructions:
-          type: string
-          description: Control the voice of your generated audio with additional instructions. Does not work with `tts-1` or `tts-1-hd`.
-          maxLength: 4096
-        voice:
-          description: 'The voice to use when generating the audio. Supported built-in voices are `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`, and `cedar`. You may also provide a custom voice object with an `id`, for example `{ "id": "voice_1234" }`. Previews of the voices are available in the [Text to speech guide](https://developers.openai.com/api/docs/guides/text-to-speech#voice-options).'
-          $ref: '#/components/schemas/VoiceIdsOrCustomVoice'
-        response_format:
-          description: The format to audio in. Supported formats are `mp3`, `opus`, `aac`, `flac`, `wav`, and `pcm`.
-          default: mp3
-          type: string
-          enum:
-          - mp3
-          - opus
-          - aac
-          - flac
-          - wav
-          - pcm
-        speed:
-          description: The speed of the generated audio. Select a value from `0.25` to `4.0`. `1.0` is the default.
-          type: number
-          default: 1
-          minimum: 0.25
-          maximum: 4
-        stream_format:
-          description: The format to stream the audio in. Supported formats are `sse` and `audio`. `sse` is not supported for `tts-1` or `tts-1-hd`.
-          type: string
-          default: audio
-          enum:
-          - sse
-          - audio
-      required:
-      - model
-      - input
-      - voice
-    CreateTranscriptionResponseDiarizedJson:
-      type: object
-      description: 'Represents a diarized transcription response returned by the model, including the combined transcript and speaker-segment annotations.
-
-        '
-      properties:
-        task:
-          type: string
-          description: The type of task that was run. Always `transcribe`.
-          enum:
-          - transcribe
-          x-stainless-const: true
-        duration:
-          type: number
-          format: double
-          description: Duration of the input audio in seconds.
-        text:
-          type: string
-          description: The concatenated transcript text for the entire audio input.
-        segments:
-          type: array
-          description: Segments of the transcript annotated with timestamps and speaker labels.
-          items:
-            $ref: '#/components/schemas/TranscriptionDiarizedSegment'
-        usage:
-          type: object
-          description: Token or duration usage statistics for the request.
-          oneOf:
-          - $ref: '#/components/schemas/TranscriptTextUsageTokens'
-            title: Token Usage
-          - $ref: '#/components/schemas/TranscriptTextUsageDuration'
-            title: Duration Usage
-          discriminator:
-            propertyName: type
-      required:
-      - task
-      - duration
-      - text
-      - segments
-      x-oaiMeta:
-        name: The transcription object (Diarized JSON)
-        group: audio
-        example: "{\n  \"task\": \"transcribe\",\n  \"duration\": 42.7,\n  \"text\": \"Agent: Thanks for calling OpenAI support.\\nCustomer: Hi, I need help with diarization.\",\n  \"segments\": [\n    {\n      \"type\": \"transcript.text.segment\",\n      \"id\": \"seg_001\",\n      \"start\": 0.0,\n      \"end\": 5.2,\n      \"text\": \"Thanks for calling OpenAI support.\",\n      \"speaker\": \"agent\"\n    },\n    {\n      \"type\": \"transcript.text.segment\",\n      \"id\": \"seg_002\",\n      \"start\": 5.2,\n      \"end\": 12.8,\n      \"text\": \"Hi, I need help with diarization.\",\n      \"speaker\": \"A\"\n    }\n  ],\n  \"usage\": {\n    \"type\": \"duration\",\n    \"seconds\": 43\n  }\n}\n"
-    CreateVoiceConsentRequest:
-      type: object
-      additionalProperties: false
-      properties:
-        name:
-          type: string
-          description: The label to use for this consent recording.
-        recording:
-          type: string
-          format: binary
-          x-oaiTypeLabel: file
-          description: 'The consent audio recording file. Maximum size is 10 MiB.
-
-
-            Supported MIME types:
-
-            `audio/mpeg`, `audio/wav`, `audio/x-wav`, `audio/ogg`, `audio/aac`, `audio/flac`, `audio/webm`, `audio/mp4`.
-
-            '
-        language:
-          type: string
-          description: The BCP 47 language tag for the consent phrase (for example, `en-US`).
-      required:
-      - name
-      - recording
-      - language
-    CreateTranslationResponseJson:
-      type: object
-      properties:
-        text:
-          type: string
-      required:
-      - text
-    AudioResponseFormat:
-      description: 'The format of the output, in one of these options: `json`, `text`, `srt`, `verbose_json`, `vtt`, or `diarized_json`. For `gpt-4o-transcribe` and `gpt-4o-mini-transcribe`, the only supported format is `json`. For `gpt-4o-transcribe-diarize`, the supported formats are `json`, `text`, and `diarized_json`, with `diarized_json` required to receive speaker annotations.
-
-        '
-      type: string
-      enum:
-      - json
-      - text
-      - srt
-      - verbose_json
-      - vtt
-      - diarized_json
-      default: json
     TranscriptionSegment:
       type: object
       properties:
@@ -825,24 +507,6 @@ components:
       - avg_logprob
       - compression_ratio
       - no_speech_prob
-    TranscriptionWord:
-      type: object
-      properties:
-        word:
-          type: string
-          description: The text content of the word.
-        start:
-          type: number
-          format: double
-          description: Start time of the word in seconds.
-        end:
-          type: number
-          format: double
-          description: End time of the word in seconds.
-      required:
-      - word
-      - start
-      - end
     TranscriptTextDoneEvent:
       type: object
       description: Emitted when the transcription is complete. Contains the complete transcription text. Only emitted when you [create a transcription](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) with the `Stream` parameter set to `true`.
@@ -901,81 +565,49 @@ components:
         name: Stream Event (transcript.text.done)
         group: transcript
         example: "{\n  \"type\": \"transcript.text.done\",\n  \"text\": \"I see skies of blue and clouds of white, the bright blessed days, the dark sacred nights, and I think to myself, what a wonderful world.\",\n  \"usage\": {\n    \"type\": \"tokens\",\n    \"input_tokens\": 14,\n    \"input_token_details\": {\n      \"text_tokens\": 10,\n      \"audio_tokens\": 4\n    },\n    \"output_tokens\": 31,\n    \"total_tokens\": 45\n  }\n}\n"
-    TranscriptionDiarizedSegment:
+    VoiceConsentResource:
       type: object
-      description: A segment of diarized transcript text with speaker metadata.
-      properties:
-        type:
-          type: string
-          description: 'The type of the segment. Always `transcript.text.segment`.
-
-            '
-          enum:
-          - transcript.text.segment
-          x-stainless-const: true
-        id:
-          type: string
-          description: Unique identifier for the segment.
-        start:
-          type: number
-          format: double
-          description: Start timestamp of the segment in seconds.
-        end:
-          type: number
-          format: double
-          description: End timestamp of the segment in seconds.
-        text:
-          type: string
-          description: Transcript text for this segment.
-        speaker:
-          type: string
-          description: 'Speaker label for this segment. When known speakers are provided, the label matches `known_speaker_names[]`. Otherwise speakers are labeled sequentially using capital letters (`A`, `B`, ...).
-
-            '
-      required:
-      - type
-      - id
-      - start
-      - end
-      - text
-      - speaker
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    VoiceConsentDeletedResource:
-      type: object
+      title: Voice consent
+      description: A consent recording used to authorize creation of a custom voice.
       additionalProperties: false
       properties:
+        object:
+          type: string
+          description: The object type, which is always `audio.voice_consent`.
+          enum:
+          - audio.voice_consent
+          x-stainless-const: true
         id:
           type: string
           description: The consent recording identifier.
           example: cons_1234
-        object:
+        name:
           type: string
-          enum:
-          - audio.voice_consent
-          x-stainless-const: true
-        deleted:
-          type: boolean
+          description: The label provided when the consent recording was uploaded.
+        language:
+          type: string
+          description: The BCP 47 language tag for the consent phrase (for example, `en-US`).
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the consent recording was created.
       required:
-      - id
       - object
-      - deleted
+      - id
+      - name
+      - language
+      - created_at
       x-oaiMeta:
-        name: The voice consent deletion object
-        example: "{\n  \"object\": \"audio.voice_consent\",\n  \"id\": \"cons_1234\",\n  \"deleted\": true\n}\n"
-    CreateSpeechResponseStreamEvent:
-      anyOf:
-      - $ref: '#/components/schemas/SpeechAudioDeltaEvent'
-      - $ref: '#/components/schemas/SpeechAudioDoneEvent'
-      discriminator:
-        propertyName: type
+        name: The voice consent object
+        example: "{\n  \"object\": \"audio.voice_consent\",\n  \"id\": \"cons_1234\",\n  \"name\": \"John Doe\",\n  \"language\": \"en-US\",\n  \"created_at\": 1734220800\n}\n"
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
     CreateTranscriptionResponseVerboseJson:
       type: object
       description: Represents a verbose json transcription response returned by model, based on the provided input.
@@ -1010,29 +642,46 @@ components:
         name: The transcription object (Verbose JSON)
         group: audio
         example: "{\n  \"task\": \"transcribe\",\n  \"language\": \"english\",\n  \"duration\": 8.470000267028809,\n  \"text\": \"The beach was a popular spot on a hot summer day. People were swimming in the ocean, building sandcastles, and playing beach volleyball.\",\n  \"segments\": [\n    {\n      \"id\": 0,\n      \"seek\": 0,\n      \"start\": 0.0,\n      \"end\": 3.319999933242798,\n      \"text\": \" The beach was a popular spot on a hot summer day.\",\n      \"tokens\": [\n        50364, 440, 7534, 390, 257, 3743, 4008, 322, 257, 2368, 4266, 786, 13, 50530\n      ],\n      \"temperature\": 0.0,\n      \"avg_logprob\": -0.2860786020755768,\n      \"compression_ratio\": 1.2363636493682861,\n      \"no_speech_prob\": 0.00985979475080967\n    },\n    ...\n  ],\n  \"usage\": {\n    \"type\": \"duration\",\n    \"seconds\": 9\n  }\n}\n"
-    ErrorResponse:
+    Error:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/Error'
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
       required:
-      - error
-    VoiceIdsShared:
-      example: ash
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - alloy
-        - ash
-        - ballad
-        - coral
-        - echo
-        - sage
-        - shimmer
-        - verse
-        - marin
-        - cedar
+      - type
+      - message
+      - param
+      - code
+    TranscriptionWord:
+      type: object
+      properties:
+        word:
+          type: string
+          description: The text content of the word.
+        start:
+          type: number
+          format: double
+          description: Start time of the word in seconds.
+        end:
+          type: number
+          format: double
+          description: End time of the word in seconds.
+      required:
+      - word
+      - start
+      - end
     TranscriptTextDeltaEvent:
       type: object
       description: Emitted when there is an additional text delta. This is also the first event emitted when the transcription starts. Only emitted when you [create a transcription](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) with the `Stream` parameter set to `true`.
@@ -1087,15 +736,515 @@ components:
         name: Stream Event (transcript.text.delta)
         group: transcript
         example: "{\n  \"type\": \"transcript.text.delta\",\n  \"delta\": \" wonderful\"\n}\n"
-    TranscriptionLanguage:
+    TranscriptTextUsageDuration:
       type: object
-      description: A language detected in transcribed audio.
+      title: Duration Usage
+      description: Usage statistics for models billed by audio input duration.
       properties:
-        code:
+        type:
           type: string
-          description: The code of a language detected in the audio.
+          enum:
+          - duration
+          description: The type of the usage object. Always `duration` for this variant.
+          x-stainless-const: true
+        seconds:
+          type: number
+          format: double
+          description: Duration of the input audio in seconds.
       required:
-      - code
+      - type
+      - seconds
+    VoiceResource:
+      type: object
+      title: Voice
+      description: A custom voice that can be used for audio output.
+      additionalProperties: false
+      properties:
+        object:
+          type: string
+          description: The object type, which is always `audio.voice`.
+          enum:
+          - audio.voice
+          x-stainless-const: true
+        id:
+          type: string
+          description: The voice identifier, which can be referenced in API endpoints.
+        name:
+          type: string
+          description: The name of the voice.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the voice was created.
+      required:
+      - object
+      - id
+      - name
+      - created_at
+      x-oaiMeta:
+        name: The voice object
+        example: "{\n  \"object\": \"audio.voice\",\n  \"id\": \"voice_123abc\",\n  \"name\": \"My new voice\",\n  \"created_at\": 1734220800\n}\n"
+    TranscriptionDiarizedSegment:
+      type: object
+      description: A segment of diarized transcript text with speaker metadata.
+      properties:
+        type:
+          type: string
+          description: 'The type of the segment. Always `transcript.text.segment`.
+
+            '
+          enum:
+          - transcript.text.segment
+          x-stainless-const: true
+        id:
+          type: string
+          description: Unique identifier for the segment.
+        start:
+          type: number
+          format: double
+          description: Start timestamp of the segment in seconds.
+        end:
+          type: number
+          format: double
+          description: End timestamp of the segment in seconds.
+        text:
+          type: string
+          description: Transcript text for this segment.
+        speaker:
+          type: string
+          description: 'Speaker label for this segment. When known speakers are provided, the label matches `known_speaker_names[]`. Otherwise speakers are labeled sequentially using capital letters (`A`, `B`, ...).
+
+            '
+      required:
+      - type
+      - id
+      - start
+      - end
+      - text
+      - speaker
+    VoiceIdsShared:
+      example: ash
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - alloy
+        - ash
+        - ballad
+        - coral
+        - echo
+        - sage
+        - shimmer
+        - verse
+        - marin
+        - cedar
+    CreateVoiceRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: The name of the new voice.
+        audio_sample:
+          type: string
+          format: binary
+          x-oaiTypeLabel: file
+          description: 'The sample audio recording file. Maximum size is 10 MiB.
+
+
+            Supported MIME types:
+
+            `audio/mpeg`, `audio/wav`, `audio/x-wav`, `audio/ogg`, `audio/aac`, `audio/flac`, `audio/webm`, `audio/mp4`.
+
+            '
+        consent:
+          type: string
+          description: The consent recording ID (for example, `cons_1234`).
+      required:
+      - name
+      - audio_sample
+      - consent
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    TranscriptTextSegmentEvent:
+      type: object
+      description: 'Emitted when a diarized transcription returns a completed segment with speaker information. Only emitted when you [create a transcription](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) with `stream` set to `true` and `response_format` set to `diarized_json`.
+
+        '
+      properties:
+        type:
+          type: string
+          description: The type of the event. Always `transcript.text.segment`.
+          enum:
+          - transcript.text.segment
+          x-stainless-const: true
+        id:
+          type: string
+          description: Unique identifier for the segment.
+        start:
+          type: number
+          format: double
+          description: Start timestamp of the segment in seconds.
+        end:
+          type: number
+          format: double
+          description: End timestamp of the segment in seconds.
+        text:
+          type: string
+          description: Transcript text for this segment.
+        speaker:
+          type: string
+          description: Speaker label for this segment.
+      required:
+      - type
+      - id
+      - start
+      - end
+      - text
+      - speaker
+      x-oaiMeta:
+        name: Stream Event (transcript.text.segment)
+        group: transcript
+        example: "{\n  \"type\": \"transcript.text.segment\",\n  \"id\": \"seg_002\",\n  \"start\": 5.2,\n  \"end\": 12.8,\n  \"text\": \"Hi, I need help with diarization.\",\n  \"speaker\": \"A\"\n}\n"
+    VoiceConsentDeletedResource:
+      type: object
+      additionalProperties: false
+      properties:
+        id:
+          type: string
+          description: The consent recording identifier.
+          example: cons_1234
+        object:
+          type: string
+          enum:
+          - audio.voice_consent
+          x-stainless-const: true
+        deleted:
+          type: boolean
+      required:
+      - id
+      - object
+      - deleted
+      x-oaiMeta:
+        name: The voice consent deletion object
+        example: "{\n  \"object\": \"audio.voice_consent\",\n  \"id\": \"cons_1234\",\n  \"deleted\": true\n}\n"
+    CreateTranslationRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        file:
+          description: 'The audio file object (not file name) translate, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm. The request must include enough format metadata for the file to be identified. We recommend an extension-bearing filename and an appropriate content type.
+
+            '
+          type: string
+          x-oaiTypeLabel: file
+          format: binary
+        model:
+          description: 'ID of the model to use. Only `whisper-1` (which is powered by our open source Whisper V2 model) is currently available.
+
+            '
+          example: whisper-1
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - whisper-1
+            x-stainless-const: true
+          x-oaiTypeLabel: string
+        prompt:
+          description: 'An optional text to guide the model''s style or continue a previous audio segment. The [prompt](https://developers.openai.com/api/docs/guides/speech-to-text#prompting) should be in English.
+
+            '
+          type: string
+        response_format:
+          description: 'The format of the output, in one of these options: `json`, `text`, `srt`, `verbose_json`, or `vtt`.
+
+            '
+          type: string
+          enum:
+          - json
+          - text
+          - srt
+          - verbose_json
+          - vtt
+          default: json
+        temperature:
+          description: 'The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. If set to 0, the model will use [log probability](https://en.wikipedia.org/wiki/Log_probability) to automatically increase the temperature until certain thresholds are hit.
+
+            '
+          type: number
+          default: 0
+      required:
+      - file
+      - model
+    CreateTranslationResponseJson:
+      type: object
+      properties:
+        text:
+          type: string
+      required:
+      - text
+    CreateSpeechRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        model:
+          description: 'One of the available [TTS models](https://developers.openai.com/api/docs/guides/text-to-speech): `tts-1`, `tts-1-hd`, `gpt-4o-mini-tts`, or `gpt-4o-mini-tts-2025-12-15`.
+
+            '
+          anyOf:
+          - type: string
+          - type: string
+            enum:
+            - tts-1
+            - tts-1-hd
+            - gpt-4o-mini-tts
+            - gpt-4o-mini-tts-2025-12-15
+          x-oaiTypeLabel: string
+        input:
+          type: string
+          description: The text to generate audio for. The maximum length is 4096 characters.
+          maxLength: 4096
+        instructions:
+          type: string
+          description: Control the voice of your generated audio with additional instructions. Does not work with `tts-1` or `tts-1-hd`.
+          maxLength: 4096
+        voice:
+          description: 'The voice to use when generating the audio. Supported built-in voices are `alloy`, `ash`, `ballad`, `coral`, `echo`, `fable`, `onyx`, `nova`, `sage`, `shimmer`, `verse`, `marin`, and `cedar`. You may also provide a custom voice object with an `id`, for example `{ "id": "voice_1234" }`. Previews of the voices are available in the [Text to speech guide](https://developers.openai.com/api/docs/guides/text-to-speech#voice-options).'
+          $ref: '#/components/schemas/VoiceIdsOrCustomVoice'
+        response_format:
+          description: The format to audio in. Supported formats are `mp3`, `opus`, `aac`, `flac`, `wav`, and `pcm`.
+          default: mp3
+          type: string
+          enum:
+          - mp3
+          - opus
+          - aac
+          - flac
+          - wav
+          - pcm
+        speed:
+          description: The speed of the generated audio. Select a value from `0.25` to `4.0`. `1.0` is the default.
+          type: number
+          default: 1
+          minimum: 0.25
+          maximum: 4
+        stream_format:
+          description: The format to stream the audio in. Supported formats are `sse` and `audio`. `sse` is not supported for `tts-1` or `tts-1-hd`.
+          type: string
+          default: audio
+          enum:
+          - sse
+          - audio
+      required:
+      - model
+      - input
+      - voice
+    VadConfig:
+      type: object
+      additionalProperties: false
+      required:
+      - type
+      properties:
+        type:
+          type: string
+          enum:
+          - server_vad
+          description: Must be set to `server_vad` to enable manual chunking using server side VAD.
+        prefix_padding_ms:
+          type: integer
+          default: 300
+          description: "Amount of audio to include before the VAD detected speech (in \nmilliseconds).\n"
+        silence_duration_ms:
+          type: integer
+          default: 200
+          description: "Duration of silence to detect speech stop (in milliseconds).\nWith shorter values the model will respond more quickly, \nbut may jump in on short pauses from the user.\n"
+        threshold:
+          type: number
+          default: 0.5
+          description: "Sensitivity threshold (0.0 to 1.0) for voice activity detection. A \nhigher threshold will require louder audio to activate the model, and \nthus might perform better in noisy environments.\n"
+    SpeechAudioDoneEvent:
+      type: object
+      description: Emitted when the speech synthesis is complete and all audio has been streamed.
+      properties:
+        type:
+          type: string
+          description: 'The type of the event. Always `speech.audio.done`.
+
+            '
+          enum:
+          - speech.audio.done
+          x-stainless-const: true
+        usage:
+          type: object
+          description: 'Token usage statistics for the request.
+
+            '
+          properties:
+            input_tokens:
+              type: integer
+              description: Number of input tokens in the prompt.
+            output_tokens:
+              type: integer
+              description: Number of output tokens generated.
+            total_tokens:
+              type: integer
+              description: Total number of tokens used (input + output).
+          required:
+          - input_tokens
+          - output_tokens
+          - total_tokens
+      required:
+      - type
+      - usage
+      x-oaiMeta:
+        name: Stream Event (speech.audio.done)
+        group: speech
+        example: "{\n  \"type\": \"speech.audio.done\",\n  \"usage\": {\n    \"input_tokens\": 14,\n    \"output_tokens\": 101,\n    \"total_tokens\": 115\n  }\n}\n"
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    AudioResponseFormat:
+      description: 'The format of the output, in one of these options: `json`, `text`, `srt`, `verbose_json`, `vtt`, or `diarized_json`. For `gpt-4o-transcribe` and `gpt-4o-mini-transcribe`, the only supported format is `json`. For `gpt-4o-transcribe-diarize`, the supported formats are `json`, `text`, and `diarized_json`, with `diarized_json` required to receive speaker annotations.
+
+        '
+      type: string
+      enum:
+      - json
+      - text
+      - srt
+      - verbose_json
+      - vtt
+      - diarized_json
+      default: json
+    CreateSpeechResponseStreamEvent:
+      anyOf:
+      - $ref: '#/components/schemas/SpeechAudioDeltaEvent'
+      - $ref: '#/components/schemas/SpeechAudioDoneEvent'
+      discriminator:
+        propertyName: type
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
+    VoiceConsentListResource:
+      type: object
+      additionalProperties: false
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/VoiceConsentResource'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
+      x-oaiMeta:
+        name: The voice consent list object
+        example: "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": \"audio.voice_consent\",\n      \"id\": \"cons_1234\",\n      \"name\": \"John Doe\",\n      \"language\": \"en-US\",\n      \"created_at\": 1734220800\n    }\n  ],\n  \"first_id\": \"cons_1234\",\n  \"last_id\": \"cons_1234\",\n  \"has_more\": false\n}\n"
+    SpeechAudioDeltaEvent:
+      type: object
+      description: Emitted for each chunk of audio data generated during speech synthesis.
+      properties:
+        type:
+          type: string
+          description: 'The type of the event. Always `speech.audio.delta`.
+
+            '
+          enum:
+          - speech.audio.delta
+          x-stainless-const: true
+        audio:
+          type: string
+          description: 'A chunk of Base64-encoded audio data.
+
+            '
+      required:
+      - type
+      - audio
+      x-oaiMeta:
+        name: Stream Event (speech.audio.delta)
+        group: speech
+        example: "{\n  \"type\": \"speech.audio.delta\",\n  \"audio\": \"base64-encoded-audio-data\"\n}\n"
+    TranscriptionInclude:
+      type: string
+      enum:
+      - logprobs
+      default: []
+    CreateTranslationResponseVerboseJson:
+      type: object
+      properties:
+        language:
+          type: string
+          description: The language of the output translation (always `english`).
+        duration:
+          type: number
+          format: double
+          description: The duration of the input audio.
+        text:
+          type: string
+          description: The translated text.
+        segments:
+          type: array
+          description: Segments of the translated text and their corresponding details.
+          items:
+            $ref: '#/components/schemas/TranscriptionSegment'
+      required:
+      - language
+      - duration
+      - text
+    VoiceIdsOrCustomVoice:
+      title: Voice
+      description: 'A built-in voice name or a custom voice reference.
+
+        '
+      anyOf:
+      - $ref: '#/components/schemas/VoiceIdsShared'
+      - type: object
+        description: Custom voice reference.
+        additionalProperties: false
+        required:
+        - id
+        properties:
+          id:
+            type: string
+            description: The custom voice ID, e.g. `voice_1234`.
+            example: voice_1234
     CreateTranscriptionRequest:
       type: object
       additionalProperties: false
@@ -1239,192 +1388,121 @@ components:
       required:
       - file
       - model
-    VoiceResource:
+    TranscriptTextUsageTokens:
       type: object
-      title: Voice
-      description: A custom voice that can be used for audio output.
-      additionalProperties: false
+      title: Token Usage
+      description: Usage statistics for models billed by token usage.
       properties:
-        object:
+        type:
           type: string
-          description: The object type, which is always `audio.voice`.
           enum:
-          - audio.voice
+          - tokens
+          description: The type of the usage object. Always `tokens` for this variant.
           x-stainless-const: true
-        id:
-          type: string
-          description: The voice identifier, which can be referenced in API endpoints.
-        name:
-          type: string
-          description: The name of the voice.
-        created_at:
+        input_tokens:
           type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) for when the voice was created.
+          description: Number of input tokens billed for this request.
+        input_token_details:
+          type: object
+          description: Details about the input tokens billed for this request.
+          properties:
+            text_tokens:
+              type: integer
+              description: Number of text tokens billed for this request.
+            audio_tokens:
+              type: integer
+              description: Number of audio tokens billed for this request.
+        output_tokens:
+          type: integer
+          description: Number of output tokens generated.
+        total_tokens:
+          type: integer
+          description: Total number of tokens used (input + output).
       required:
-      - object
-      - id
-      - name
-      - created_at
-      x-oaiMeta:
-        name: The voice object
-        example: "{\n  \"object\": \"audio.voice\",\n  \"id\": \"voice_123abc\",\n  \"name\": \"My new voice\",\n  \"created_at\": 1734220800\n}\n"
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
+      - type
+      - input_tokens
+      - output_tokens
+      - total_tokens
+    CreateTranscriptionResponseDiarizedJson:
       type: object
-      required: []
-    VoiceConsentListResource:
-      type: object
-      additionalProperties: false
+      description: 'Represents a diarized transcription response returned by the model, including the combined transcript and speaker-segment annotations.
+
+        '
       properties:
-        object:
+        task:
           type: string
+          description: The type of task that was run. Always `transcribe`.
           enum:
-          - list
+          - transcribe
           x-stainless-const: true
-        data:
+        duration:
+          type: number
+          format: double
+          description: Duration of the input audio in seconds.
+        text:
+          type: string
+          description: The concatenated transcript text for the entire audio input.
+        segments:
           type: array
+          description: Segments of the transcript annotated with timestamps and speaker labels.
           items:
-            $ref: '#/components/schemas/VoiceConsentResource'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        has_more:
-          type: boolean
+            $ref: '#/components/schemas/TranscriptionDiarizedSegment'
+        usage:
+          type: object
+          description: Token or duration usage statistics for the request.
+          oneOf:
+          - $ref: '#/components/schemas/TranscriptTextUsageTokens'
+            title: Token Usage
+          - $ref: '#/components/schemas/TranscriptTextUsageDuration'
+            title: Duration Usage
+          discriminator:
+            propertyName: type
       required:
-      - object
-      - data
-      - has_more
+      - task
+      - duration
+      - text
+      - segments
       x-oaiMeta:
-        name: The voice consent list object
-        example: "{\n  \"object\": \"list\",\n  \"data\": [\n    {\n      \"object\": \"audio.voice_consent\",\n      \"id\": \"cons_1234\",\n      \"name\": \"John Doe\",\n      \"language\": \"en-US\",\n      \"created_at\": 1734220800\n    }\n  ],\n  \"first_id\": \"cons_1234\",\n  \"last_id\": \"cons_1234\",\n  \"has_more\": false\n}\n"
-    VadConfig:
-      type: object
-      additionalProperties: false
-      required:
-      - type
-      properties:
-        type:
-          type: string
-          enum:
-          - server_vad
-          description: Must be set to `server_vad` to enable manual chunking using server side VAD.
-        prefix_padding_ms:
-          type: integer
-          default: 300
-          description: "Amount of audio to include before the VAD detected speech (in \nmilliseconds).\n"
-        silence_duration_ms:
-          type: integer
-          default: 200
-          description: "Duration of silence to detect speech stop (in milliseconds).\nWith shorter values the model will respond more quickly, \nbut may jump in on short pauses from the user.\n"
-        threshold:
-          type: number
-          default: 0.5
-          description: "Sensitivity threshold (0.0 to 1.0) for voice activity detection. A \nhigher threshold will require louder audio to activate the model, and \nthus might perform better in noisy environments.\n"
-    CreateTranslationRequest:
-      type: object
-      additionalProperties: false
-      properties:
-        file:
-          description: 'The audio file object (not file name) translate, in one of these formats: flac, mp3, mp4, mpeg, mpga, m4a, ogg, wav, or webm. The request must include enough format metadata for the file to be identified. We recommend an extension-bearing filename and an appropriate content type.
-
-            '
-          type: string
-          x-oaiTypeLabel: file
-          format: binary
-        model:
-          description: 'ID of the model to use. Only `whisper-1` (which is powered by our open source Whisper V2 model) is currently available.
-
-            '
-          example: whisper-1
-          anyOf:
-          - type: string
-          - type: string
-            enum:
-            - whisper-1
-            x-stainless-const: true
-          x-oaiTypeLabel: string
-        prompt:
-          description: 'An optional text to guide the model''s style or continue a previous audio segment. The [prompt](https://developers.openai.com/api/docs/guides/speech-to-text#prompting) should be in English.
-
-            '
-          type: string
-        response_format:
-          description: 'The format of the output, in one of these options: `json`, `text`, `srt`, `verbose_json`, or `vtt`.
-
-            '
-          type: string
-          enum:
-          - json
-          - text
-          - srt
-          - verbose_json
-          - vtt
-          default: json
-        temperature:
-          description: 'The sampling temperature, between 0 and 1. Higher values like 0.8 will make the output more random, while lower values like 0.2 will make it more focused and deterministic. If set to 0, the model will use [log probability](https://en.wikipedia.org/wiki/Log_probability) to automatically increase the temperature until certain thresholds are hit.
-
-            '
-          type: number
-          default: 0
-      required:
-      - file
-      - model
-    TranscriptionInclude:
-      type: string
-      enum:
-      - logprobs
-      default: []
-    SpeechAudioDeltaEvent:
-      type: object
-      description: Emitted for each chunk of audio data generated during speech synthesis.
-      properties:
-        type:
-          type: string
-          description: 'The type of the event. Always `speech.audio.delta`.
-
-            '
-          enum:
-          - speech.audio.delta
-          x-stainless-const: true
-        audio:
-          type: string
-          description: 'A chunk of Base64-encoded audio data.
-
-            '
-      required:
-      - type
-      - audio
-      x-oaiMeta:
-        name: Stream Event (speech.audio.delta)
-        group: speech
-        example: "{\n  \"type\": \"speech.audio.delta\",\n  \"audio\": \"base64-encoded-audio-data\"\n}\n"
-    CreateVoiceRequest:
+        name: The transcription object (Diarized JSON)
+        group: audio
+        example: "{\n  \"task\": \"transcribe\",\n  \"duration\": 42.7,\n  \"text\": \"Agent: Thanks for calling OpenAI support.\\nCustomer: Hi, I need help with diarization.\",\n  \"segments\": [\n    {\n      \"type\": \"transcript.text.segment\",\n      \"id\": \"seg_001\",\n      \"start\": 0.0,\n      \"end\": 5.2,\n      \"text\": \"Thanks for calling OpenAI support.\",\n      \"speaker\": \"agent\"\n    },\n    {\n      \"type\": \"transcript.text.segment\",\n      \"id\": \"seg_002\",\n      \"start\": 5.2,\n      \"end\": 12.8,\n      \"text\": \"Hi, I need help with diarization.\",\n      \"speaker\": \"A\"\n    }\n  ],\n  \"usage\": {\n    \"type\": \"duration\",\n    \"seconds\": 43\n  }\n}\n"
+    UpdateVoiceConsentRequest:
       type: object
       additionalProperties: false
       properties:
         name:
           type: string
-          description: The name of the new voice.
-        audio_sample:
+          description: The updated label for this consent recording.
+      required:
+      - name
+    TranscriptionLanguage:
+      type: object
+      description: A language detected in transcribed audio.
+      properties:
+        code:
+          type: string
+          description: The code of a language detected in the audio.
+      required:
+      - code
+    CreateTranscriptionResponseStreamEvent:
+      anyOf:
+      - $ref: '#/components/schemas/TranscriptTextSegmentEvent'
+      - $ref: '#/components/schemas/TranscriptTextDeltaEvent'
+      - $ref: '#/components/schemas/TranscriptTextDoneEvent'
+      discriminator:
+        propertyName: type
+    CreateVoiceConsentRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        name:
+          type: string
+          description: The label to use for this consent recording.
+        recording:
           type: string
           format: binary
           x-oaiTypeLabel: file
-          description: 'The sample audio recording file. Maximum size is 10 MiB.
+          description: 'The consent audio recording file. Maximum size is 10 MiB.
 
 
             Supported MIME types:
@@ -1432,53 +1510,13 @@ components:
             `audio/mpeg`, `audio/wav`, `audio/x-wav`, `audio/ogg`, `audio/aac`, `audio/flac`, `audio/webm`, `audio/mp4`.
 
             '
-        consent:
+        language:
           type: string
-          description: The consent recording ID (for example, `cons_1234`).
+          description: The BCP 47 language tag for the consent phrase (for example, `en-US`).
       required:
       - name
-      - audio_sample
-      - consent
-    TranscriptTextSegmentEvent:
-      type: object
-      description: 'Emitted when a diarized transcription returns a completed segment with speaker information. Only emitted when you [create a transcription](https://developers.openai.com/api/reference/resources/audio/subresources/transcriptions/methods/create) with `stream` set to `true` and `response_format` set to `diarized_json`.
-
-        '
-      properties:
-        type:
-          type: string
-          description: The type of the event. Always `transcript.text.segment`.
-          enum:
-          - transcript.text.segment
-          x-stainless-const: true
-        id:
-          type: string
-          description: Unique identifier for the segment.
-        start:
-          type: number
-          format: double
-          description: Start timestamp of the segment in seconds.
-        end:
-          type: number
-          format: double
-          description: End timestamp of the segment in seconds.
-        text:
-          type: string
-          description: Transcript text for this segment.
-        speaker:
-          type: string
-          description: Speaker label for this segment.
-      required:
-      - type
-      - id
-      - start
-      - end
-      - text
-      - speaker
-      x-oaiMeta:
-        name: Stream Event (transcript.text.segment)
-        group: transcript
-        example: "{\n  \"type\": \"transcript.text.segment\",\n  \"id\": \"seg_002\",\n  \"start\": 5.2,\n  \"end\": 12.8,\n  \"text\": \"Hi, I need help with diarization.\",\n  \"speaker\": \"A\"\n}\n"
+      - recording
+      - language
     CreateTranscriptionResponseJson:
       type: object
       description: Represents a transcription response returned by model, based on the provided input.
@@ -1527,44 +1565,120 @@ components:
         name: The transcription object (JSON)
         group: audio
         example: "{\n  \"text\": \"Imagine the wildest idea that you've ever had, and you're curious about how it might scale to something that's a 100, a 1,000 times bigger. This is a place where you can get to do that.\",\n  \"usage\": {\n    \"type\": \"tokens\",\n    \"input_tokens\": 14,\n    \"input_token_details\": {\n      \"text_tokens\": 10,\n      \"audio_tokens\": 4\n    },\n    \"output_tokens\": 101,\n    \"total_tokens\": 115\n  }\n}\n"
-    SpeechAudioDoneEvent:
+    CreateVoiceFromConsentRequest:
       type: object
-      description: Emitted when the speech synthesis is complete and all audio has been streamed.
+      title: Consent
+      description: Creates a voice from a consent recording and an audio sample. Requires multipart/form-data.
+      additionalProperties: false
       properties:
         type:
           type: string
-          description: 'The type of the event. Always `speech.audio.done`.
-
-            '
           enum:
-          - speech.audio.done
-          x-stainless-const: true
-        usage:
-          type: object
-          description: 'Token usage statistics for the request.
+          - audio_sample
+          default: audio_sample
+          description: The voice creation method. Defaults to `audio_sample` when omitted.
+        name:
+          type: string
+          minLength: 1
+          maxLength: 256
+          description: The name of the new voice.
+        audio_sample:
+          type: string
+          format: binary
+          x-oaiTypeLabel: file
+          description: 'The sample audio recording file. Maximum size is 10 MiB.
+
+
+            Supported MIME types:
+
+            `audio/mpeg`, `audio/wav`, `audio/x-wav`, `audio/ogg`, `audio/aac`, `audio/flac`, `audio/webm`, `audio/mp4`.
 
             '
-          properties:
-            input_tokens:
-              type: integer
-              description: Number of input tokens in the prompt.
-            output_tokens:
-              type: integer
-              description: Number of output tokens generated.
-            total_tokens:
-              type: integer
-              description: Total number of tokens used (input + output).
-          required:
-          - input_tokens
-          - output_tokens
-          - total_tokens
+        consent:
+          type: string
+          description: The consent recording ID (for example, `cons_1234`).
       required:
-      - type
-      - usage
+      - name
+      - audio_sample
+      - consent
+    CreateTranscriptionResponseVerboseJson_2:
+      type: object
+      description: Represents a verbose json transcription response returned by model, based on the provided input.
+      properties:
+        language:
+          type: string
+          description: The language of the input audio.
+        duration:
+          type: number
+          format: double
+          description: The duration of the input audio.
+        text:
+          type: string
+          description: The transcribed text.
+        words:
+          type: array
+          description: Extracted words and their corresponding timestamps.
+          items:
+            $ref: '#/components/schemas/TranscriptionWord'
+        segments:
+          type: array
+          description: Segments of the transcribed text and their corresponding details.
+          items:
+            $ref: '#/components/schemas/TranscriptionSegment'
+        usage:
+          $ref: '#/components/schemas/TranscriptTextUsageDuration'
+      required:
+      - language
+      - duration
+      - text
       x-oaiMeta:
-        name: Stream Event (speech.audio.done)
-        group: speech
-        example: "{\n  \"type\": \"speech.audio.done\",\n  \"usage\": {\n    \"input_tokens\": 14,\n    \"output_tokens\": 101,\n    \"total_tokens\": 115\n  }\n}\n"
+        name: The transcription object (Verbose JSON)
+        group: audio
+        example: "{\n  \"task\": \"transcribe\",\n  \"language\": \"english\",\n  \"duration\": 3.32,\n  \"text\": \"The beach was a popular spot on a hot summer day.\",\n  \"segments\": [\n    {\n      \"id\": 0,\n      \"seek\": 0,\n      \"start\": 0.0,\n      \"end\": 3.319999933242798,\n      \"text\": \" The beach was a popular spot on a hot summer day.\",\n      \"tokens\": [\n        50364, 440, 7534, 390, 257, 3743, 4008, 322, 257, 2368, 4266, 786, 13, 50530\n      ],\n      \"temperature\": 0.0,\n      \"avg_logprob\": -0.2860786020755768,\n      \"compression_ratio\": 1.2363636493682861,\n      \"no_speech_prob\": 0.00985979475080967\n    }\n  ],\n  \"usage\": {\n    \"type\": \"duration\",\n    \"seconds\": 4\n  }\n}\n"
+    VoiceResource_2:
+      type: object
+      title: Voice
+      description: A custom voice that can be used for audio output.
+      additionalProperties: false
+      properties:
+        object:
+          type: string
+          description: The object type, which is always `audio.voice`.
+          enum:
+          - audio.voice
+          x-stainless-const: true
+        id:
+          type: string
+          description: The voice identifier, which can be referenced in API endpoints.
+        type:
+          description: How the voice was created.
+          type: string
+          enum:
+          - audio_sample
+        name:
+          type: string
+          description: The name of the voice.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the voice was created.
+      required:
+      - object
+      - id
+      - name
+      - type
+      - created_at
+      x-oaiMeta:
+        name: The voice object
+        example: "{\n  \"object\": \"audio.voice\",\n  \"id\": \"voice_123abc\",\n  \"name\": \"My new voice\",\n  \"type\": \"audio_sample\",\n  \"created_at\": 1734220800\n}\n"
+    CreateVoiceRequest_2:
+      oneOf:
+      - $ref: '#/components/schemas/CreateVoiceFromConsentRequest'
+      x-oai-default-discriminator-value: audio_sample
+      discriminator:
+        propertyName: type
+        mapping:
+          audio_sample: '#/components/schemas/CreateVoiceFromConsentRequest'
     CreateSpeechRequest_2:
       type: object
       additionalProperties: false
@@ -1639,76 +1753,6 @@ components:
       - model
       - input
       - voice
-    CreateTranscriptionResponseVerboseJson_2:
-      type: object
-      description: Represents a verbose json transcription response returned by model, based on the provided input.
-      properties:
-        language:
-          type: string
-          description: The language of the input audio.
-        duration:
-          type: number
-          format: double
-          description: The duration of the input audio.
-        text:
-          type: string
-          description: The transcribed text.
-        words:
-          type: array
-          description: Extracted words and their corresponding timestamps.
-          items:
-            $ref: '#/components/schemas/TranscriptionWord'
-        segments:
-          type: array
-          description: Segments of the transcribed text and their corresponding details.
-          items:
-            $ref: '#/components/schemas/TranscriptionSegment'
-        usage:
-          $ref: '#/components/schemas/TranscriptTextUsageDuration'
-      required:
-      - language
-      - duration
-      - text
-      x-oaiMeta:
-        name: The transcription object (Verbose JSON)
-        group: audio
-        example: "{\n  \"task\": \"transcribe\",\n  \"language\": \"english\",\n  \"duration\": 3.32,\n  \"text\": \"The beach was a popular spot on a hot summer day.\",\n  \"segments\": [\n    {\n      \"id\": 0,\n      \"seek\": 0,\n      \"start\": 0.0,\n      \"end\": 3.319999933242798,\n      \"text\": \" The beach was a popular spot on a hot summer day.\",\n      \"tokens\": [\n        50364, 440, 7534, 390, 257, 3743, 4008, 322, 257, 2368, 4266, 786, 13, 50530\n      ],\n      \"temperature\": 0.0,\n      \"avg_logprob\": -0.2860786020755768,\n      \"compression_ratio\": 1.2363636493682861,\n      \"no_speech_prob\": 0.00985979475080967\n    }\n  ],\n  \"usage\": {\n    \"type\": \"duration\",\n    \"seconds\": 4\n  }\n}\n"
-    VoiceResource_2:
-      type: object
-      title: Voice
-      description: A custom voice that can be used for audio output.
-      additionalProperties: false
-      properties:
-        object:
-          type: string
-          description: The object type, which is always `audio.voice`.
-          enum:
-          - audio.voice
-          x-stainless-const: true
-        id:
-          type: string
-          description: The voice identifier, which can be referenced in API endpoints.
-        type:
-          description: How the voice was created.
-          type: string
-          enum:
-          - audio_sample
-        name:
-          type: string
-          description: The name of the voice.
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) for when the voice was created.
-      required:
-      - object
-      - id
-      - name
-      - type
-      - created_at
-      x-oaiMeta:
-        name: The voice object
-        example: "{\n  \"object\": \"audio.voice\",\n  \"id\": \"voice_123abc\",\n  \"name\": \"My new voice\",\n  \"type\": \"audio_sample\",\n  \"created_at\": 1734220800\n}\n"
     MisalignmentErrorDetailsResource_2:
       properties:
         review_target:
@@ -1732,54 +1776,10 @@ components:
           description: An optional public continuation instruction.
       type: object
       required: []
-    CreateVoiceFromConsentRequest:
-      type: object
-      title: Consent
-      description: Creates a voice from a consent recording and an audio sample. Requires multipart/form-data.
-      additionalProperties: false
-      properties:
-        type:
-          type: string
-          enum:
-          - audio_sample
-          default: audio_sample
-          description: The voice creation method. Defaults to `audio_sample` when omitted.
-        name:
-          type: string
-          minLength: 1
-          maxLength: 256
-          description: The name of the new voice.
-        audio_sample:
-          type: string
-          format: binary
-          x-oaiTypeLabel: file
-          description: 'The sample audio recording file. Maximum size is 10 MiB.
-
-
-            Supported MIME types:
-
-            `audio/mpeg`, `audio/wav`, `audio/x-wav`, `audio/ogg`, `audio/aac`, `audio/flac`, `audio/webm`, `audio/mp4`.
-
-            '
-        consent:
-          type: string
-          description: The consent recording ID (for example, `cons_1234`).
-      required:
-      - name
-      - audio_sample
-      - consent
     TranscriptionInclude_2:
       type: string
       enum:
       - logprobs
-    CreateVoiceRequest_2:
-      oneOf:
-      - $ref: '#/components/schemas/CreateVoiceFromConsentRequest'
-      x-oai-default-discriminator-value: audio_sample
-      discriminator:
-        propertyName: type
-        mapping:
-          audio_sample: '#/components/schemas/CreateVoiceFromConsentRequest'
   responses:
     InferenceRateLimited:
       description: The request was rejected because a rate limit was exceeded. A slow_down error means traffic increased too quickly; reduce your request rate, then increase it gradually.

@@ -94,6 +94,29 @@ components:
           description: Whether the hosted tool is enabled for the project.
       required:
       - enabled
+    ProjectHostedToolPermissions:
+      type: object
+      description: Represents hosted tool permissions for a project.
+      properties:
+        file_search:
+          $ref: '#/components/schemas/HostedToolPermission'
+        web_search:
+          $ref: '#/components/schemas/HostedToolPermission'
+        image_generation:
+          $ref: '#/components/schemas/HostedToolPermission'
+        mcp:
+          $ref: '#/components/schemas/HostedToolPermission'
+        code_interpreter:
+          $ref: '#/components/schemas/HostedToolPermission'
+      required:
+      - file_search
+      - web_search
+      - image_generation
+      - mcp
+      - code_interpreter
+      x-oaiMeta:
+        name: The project hosted tool permissions object
+        example: "{\n    \"file_search\": {\n        \"enabled\": true\n    },\n    \"web_search\": {\n        \"enabled\": true\n    },\n    \"image_generation\": {\n        \"enabled\": true\n    },\n    \"mcp\": {\n        \"enabled\": true\n    },\n    \"code_interpreter\": {\n        \"enabled\": true\n    }\n}\n"
     HostedToolPermissionUpdate:
       type: object
       properties:
@@ -130,51 +153,6 @@ components:
           - $ref: '#/components/schemas/HostedToolPermissionUpdate'
           - type: 'null'
           description: The code interpreter permission update.
-    ProjectHostedToolPermissions:
-      type: object
-      description: Represents hosted tool permissions for a project.
-      properties:
-        file_search:
-          $ref: '#/components/schemas/HostedToolPermission'
-        web_search:
-          $ref: '#/components/schemas/HostedToolPermission'
-        image_generation:
-          $ref: '#/components/schemas/HostedToolPermission'
-        mcp:
-          $ref: '#/components/schemas/HostedToolPermission'
-        code_interpreter:
-          $ref: '#/components/schemas/HostedToolPermission'
-      required:
-      - file_search
-      - web_search
-      - image_generation
-      - mcp
-      - code_interpreter
-      x-oaiMeta:
-        name: The project hosted tool permissions object
-        example: "{\n    \"file_search\": {\n        \"enabled\": true\n    },\n    \"web_search\": {\n        \"enabled\": true\n    },\n    \"image_generation\": {\n        \"enabled\": true\n    },\n    \"mcp\": {\n        \"enabled\": true\n    },\n    \"code_interpreter\": {\n        \"enabled\": true\n    }\n}\n"
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
     _MisalignmentErrorType:
       anyOf:
       - type: string
@@ -184,21 +162,6 @@ components:
         - potentially_unintended_data_access
         - potentially_unintended_destructive_activity
         - other
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
     MisalignmentErrorDetailsResource:
       properties:
         review_target:
@@ -222,6 +185,28 @@ components:
           description: An optional public continuation instruction.
       type: object
       required: []
+    Error:
+      type: object
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
     PermissionErrorResponse:
       type: object
       properties:
@@ -231,6 +216,21 @@ components:
           - $ref: '#/components/schemas/Error'
           - type: string
             description: An explanation of the missing API permissions.
+      required:
+      - error
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
       required:
       - error
   securitySchemes:
