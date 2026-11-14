@@ -218,81 +218,6 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
   schemas:
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
-    GroupListResource:
-      type: object
-      description: Paginated list of organization groups.
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: Always `list`.
-          x-stainless-const: true
-        data:
-          type: array
-          description: Groups returned in the current page.
-          items:
-            $ref: '#/components/schemas/GroupResponse'
-        has_more:
-          type: boolean
-          description: Whether additional groups are available when paginating.
-        next:
-          description: Cursor to fetch the next page of results, or `null` if there are no more results.
-          anyOf:
-          - type: string
-          - type: 'null'
-      required:
-      - object
-      - data
-      - has_more
-      - next
-      x-oaiMeta:
-        name: Group list
-        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"group_01J1F8ABCDXYZ\",\n            \"name\": \"Support Team\",\n            \"created_at\": 1711471533,\n            \"is_scim_managed\": false\n        },\n        {\n            \"id\": \"group_01J1F8PQRMNO\",\n            \"name\": \"Sales\",\n            \"created_at\": 1711472599,\n            \"is_scim_managed\": true\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
     _MisalignmentSteer:
       properties:
         message:
@@ -301,19 +226,6 @@ components:
       type: object
       required:
       - message
-    CreateGroupBody:
-      type: object
-      description: Request payload for creating a new group in the organization.
-      properties:
-        name:
-          type: string
-          description: Human readable name for the group.
-          minLength: 1
-          maxLength: 255
-      required:
-      - name
-      x-oaiMeta:
-        example: "{\n    \"name\": \"Support Team\"\n}\n"
     GroupDeletedResource:
       type: object
       description: Confirmation payload returned after deleting a group.
@@ -336,6 +248,28 @@ components:
       - deleted
       x-oaiMeta:
         example: "{\n    \"object\": \"group.deleted\",\n    \"id\": \"group_01J1F8ABCDXYZ\",\n    \"deleted\": true\n}\n"
+    Error:
+      type: object
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
     UpdateGroupBody:
       type: object
       description: Request payload for updating the details of an existing group.
@@ -349,6 +283,15 @@ components:
       - name
       x-oaiMeta:
         example: "{\n    \"name\": \"Escalations\"\n}\n"
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
     GroupResponse:
       type: object
       description: Details about an organization group.
@@ -381,6 +324,70 @@ components:
       x-oaiMeta:
         name: Group
         example: "{\n    \"id\": \"group_01J1F8ABCDXYZ\",\n    \"name\": \"Support Team\",\n    \"created_at\": 1711471533,\n    \"is_scim_managed\": false,\n    \"group_type\": \"group\"\n}\n"
+    CreateGroupBody:
+      type: object
+      description: Request payload for creating a new group in the organization.
+      properties:
+        name:
+          type: string
+          description: Human readable name for the group.
+          minLength: 1
+          maxLength: 255
+      required:
+      - name
+      x-oaiMeta:
+        example: "{\n    \"name\": \"Support Team\"\n}\n"
+    GroupListResource:
+      type: object
+      description: Paginated list of organization groups.
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: Always `list`.
+          x-stainless-const: true
+        data:
+          type: array
+          description: Groups returned in the current page.
+          items:
+            $ref: '#/components/schemas/GroupResponse'
+        has_more:
+          type: boolean
+          description: Whether additional groups are available when paginating.
+        next:
+          description: Cursor to fetch the next page of results, or `null` if there are no more results.
+          anyOf:
+          - type: string
+          - type: 'null'
+      required:
+      - object
+      - data
+      - has_more
+      - next
+      x-oaiMeta:
+        name: Group list
+        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"group_01J1F8ABCDXYZ\",\n            \"name\": \"Support Team\",\n            \"created_at\": 1711471533,\n            \"is_scim_managed\": false\n        },\n        {\n            \"id\": \"group_01J1F8PQRMNO\",\n            \"name\": \"Sales\",\n            \"created_at\": 1711472599,\n            \"is_scim_managed\": true\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
     GroupResourceWithSuccess:
       type: object
       description: Response returned after updating a group.
@@ -405,36 +412,17 @@ components:
       - is_scim_managed
       x-oaiMeta:
         example: "{\n    \"id\": \"group_01J1F8ABCDXYZ\",\n    \"name\": \"Escalations\",\n    \"created_at\": 1711471533,\n    \"is_scim_managed\": false\n}\n"
-    ErrorResponse:
+    PermissionErrorResponse:
       type: object
       properties:
         error:
-          $ref: '#/components/schemas/Error'
+          description: Details about the permission error.
+          anyOf:
+          - $ref: '#/components/schemas/Error'
+          - type: string
+            description: An explanation of the missing API permissions.
       required:
       - error
-    MisalignmentErrorDetailsResource_2:
-      properties:
-        review_target:
-          anyOf:
-          - not:
-              pattern: '[^A-Za-z0-9._~:-]'
-            type: string
-            maxLength: 96
-            minLength: 1
-            pattern: ^[A-Za-z0-9._~:-]+$
-            description: An opaque target for explicitly continuing this review, or null when unavailable.
-          - type: 'null'
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
     GroupListResource_2:
       type: object
       description: Paginated list of organization groups.
@@ -466,17 +454,29 @@ components:
       x-oaiMeta:
         name: Group list
         example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"group_01J1F8ABCDXYZ\",\n            \"name\": \"Support Team\",\n            \"created_at\": 1711471533,\n            \"group_type\": \"group\",\n            \"is_scim_managed\": false\n        },\n        {\n            \"id\": \"group_01J1F8PQRMNO\",\n            \"name\": \"Sales\",\n            \"created_at\": 1711472599,\n            \"group_type\": \"group\",\n            \"is_scim_managed\": true\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
-    PermissionErrorResponse:
-      type: object
+    MisalignmentErrorDetailsResource_2:
       properties:
-        error:
-          description: Details about the permission error.
+        review_target:
           anyOf:
-          - $ref: '#/components/schemas/Error'
-          - type: string
-            description: An explanation of the missing API permissions.
-      required:
-      - error
+          - not:
+              pattern: '[^A-Za-z0-9._~:-]'
+            type: string
+            maxLength: 96
+            minLength: 1
+            pattern: ^[A-Za-z0-9._~:-]+$
+            description: An opaque target for explicitly continuing this review, or null when unavailable.
+          - type: 'null'
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
   securitySchemes:
     ApiKeyAuth:
       type: http

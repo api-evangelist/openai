@@ -359,256 +359,6 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
-    ContainerNetworkPolicyAllowlistParam:
-      properties:
-        type:
-          type: string
-          enum:
-          - allowlist
-          description: Allow outbound network access only to specified domains. Always `allowlist`.
-          default: allowlist
-          x-stainless-const: true
-        allowed_domains:
-          items:
-            type: string
-          type: array
-          minItems: 1
-          description: A list of allowed domains when type is `allowlist`.
-        domain_secrets:
-          items:
-            $ref: '#/components/schemas/ContainerNetworkPolicyDomainSecretParam'
-          type: array
-          minItems: 1
-          description: Optional domain-scoped secrets for allowlisted domains.
-      type: object
-      required:
-      - type
-      - allowed_domains
-    InlineSkillParam:
-      properties:
-        type:
-          type: string
-          enum:
-          - inline
-          description: Defines an inline skill for this request.
-          default: inline
-          x-stainless-const: true
-        name:
-          type: string
-          description: The name of the skill.
-        description:
-          type: string
-          description: The description of the skill.
-        source:
-          $ref: '#/components/schemas/InlineSkillSourceParam'
-          description: Inline skill payload
-      type: object
-      required:
-      - type
-      - name
-      - description
-      - source
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    ContainerFileResource:
-      type: object
-      title: The container file object
-      properties:
-        id:
-          type: string
-          description: Unique identifier for the file.
-        object:
-          type: string
-          description: The type of this object (`container.file`).
-        container_id:
-          type: string
-          description: The container this file belongs to.
-        created_at:
-          type: integer
-          format: unixtime
-          description: Unix timestamp (in seconds) when the file was created.
-        bytes:
-          type: integer
-          description: Size of the file in bytes.
-        path:
-          type: string
-          description: Path of the file in the container.
-        source:
-          type: string
-          description: Source of the file (e.g., `user`, `assistant`).
-      required:
-      - id
-      - object
-      - created_at
-      - bytes
-      - container_id
-      - path
-      - source
-      x-oaiMeta:
-        name: The container file object
-        example: "{\n    \"id\": \"cfile_682e0e8a43c88191a7978f477a09bdf5\",\n    \"object\": \"container.file\",\n    \"created_at\": 1747848842,\n    \"bytes\": 880,\n    \"container_id\": \"cntr_682e0e7318108198aa783fd921ff305e08e78805b9fdbb04\",\n    \"path\": \"/mnt/data/88e12fa445d32636f190a0b33daed6cb-tsconfig.json\",\n    \"source\": \"user\"\n}\n"
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
-    CreateContainerFileBody:
-      type: object
-      properties:
-        file_id:
-          type: string
-          description: Name of the file to create.
-        file:
-          description: 'The File object (not file name) to be uploaded.
-
-            '
-          type: string
-          format: binary
-      required: []
-    ContainerListResource:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: The type of object returned, must be 'list'.
-        data:
-          type: array
-          description: A list of containers.
-          items:
-            $ref: '#/components/schemas/ContainerResource'
-        first_id:
-          type: string
-          description: The ID of the first container in the list.
-        last_id:
-          type: string
-          description: The ID of the last container in the list.
-        has_more:
-          type: boolean
-          description: Whether there are more containers available.
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
-    ContainerFileListResource:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: The type of object returned, must be 'list'.
-        data:
-          type: array
-          description: A list of container files.
-          items:
-            $ref: '#/components/schemas/ContainerFileResource'
-        first_id:
-          type: string
-          description: The ID of the first file in the list.
-        last_id:
-          type: string
-          description: The ID of the last file in the list.
-        has_more:
-          type: boolean
-          description: Whether there are more files available.
-      required:
-      - object
-      - data
-      - first_id
-      - last_id
-      - has_more
-    CreateContainerBody:
-      type: object
-      properties:
-        name:
-          type: string
-          description: Name of the container to create.
-        file_ids:
-          type: array
-          description: IDs of files to copy to the container.
-          items:
-            type: string
-        expires_after:
-          type: object
-          description: Container expiration time in seconds relative to the 'anchor' time.
-          properties:
-            anchor:
-              type: string
-              enum:
-              - last_active_at
-              description: Time anchor for the expiration time. Currently only 'last_active_at' is supported.
-            minutes:
-              type: integer
-          required:
-          - anchor
-          - minutes
-        skills:
-          type: array
-          description: An optional list of skills referenced by id or inline data.
-          items:
-            oneOf:
-            - $ref: '#/components/schemas/SkillReferenceParam'
-            - $ref: '#/components/schemas/InlineSkillParam'
-            discriminator:
-              propertyName: type
-        memory_limit:
-          type: string
-          enum:
-          - 1g
-          - 4g
-          - 16g
-          - 64g
-          description: Optional memory limit for the container. Defaults to "1g".
-        network_policy:
-          description: Network access policy for the container.
-          oneOf:
-          - $ref: '#/components/schemas/ContainerNetworkPolicyDisabledParam'
-          - $ref: '#/components/schemas/ContainerNetworkPolicyAllowlistParam'
-          discriminator:
-            propertyName: type
-      required:
-      - name
     ContainerNetworkPolicyDomainSecretParam:
       properties:
         domain:
@@ -629,6 +379,14 @@ components:
       - domain
       - name
       - value
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
     ContainerResource:
       type: object
       title: The container object
@@ -709,18 +467,78 @@ components:
       x-oaiMeta:
         name: The container object
         example: "{\n   \"id\": \"cntr_682dfebaacac8198bbfe9c2474fb6f4a085685cbe3cb5863\",\n   \"object\": \"container\",\n   \"created_at\": 1747844794,\n   \"status\": \"running\",\n   \"expires_after\": {\n     \"anchor\": \"last_active_at\",\n     \"minutes\": 20\n   },\n   \"last_active_at\": 1747844794,\n   \"memory_limit\": \"1g\",\n   \"name\": \"My Container\"\n}\n"
-    ContainerNetworkPolicyDisabledParam:
+    Error:
+      type: object
       properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
         type:
           type: string
-          enum:
-          - disabled
-          description: Disable outbound network access. Always `disabled`.
-          default: disabled
-          x-stainless-const: true
-      type: object
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
       required:
       - type
+      - message
+      - param
+      - code
+    ContainerFileResource:
+      type: object
+      title: The container file object
+      properties:
+        id:
+          type: string
+          description: Unique identifier for the file.
+        object:
+          type: string
+          description: The type of this object (`container.file`).
+        container_id:
+          type: string
+          description: The container this file belongs to.
+        created_at:
+          type: integer
+          format: unixtime
+          description: Unix timestamp (in seconds) when the file was created.
+        bytes:
+          type: integer
+          description: Size of the file in bytes.
+        path:
+          type: string
+          description: Path of the file in the container.
+        source:
+          type: string
+          description: Source of the file (e.g., `user`, `assistant`).
+      required:
+      - id
+      - object
+      - created_at
+      - bytes
+      - container_id
+      - path
+      - source
+      x-oaiMeta:
+        name: The container file object
+        example: "{\n    \"id\": \"cfile_682e0e8a43c88191a7978f477a09bdf5\",\n    \"object\": \"container.file\",\n    \"created_at\": 1747848842,\n    \"bytes\": 880,\n    \"container_id\": \"cntr_682e0e7318108198aa783fd921ff305e08e78805b9fdbb04\",\n    \"path\": \"/mnt/data/88e12fa445d32636f190a0b33daed6cb-tsconfig.json\",\n    \"source\": \"user\"\n}\n"
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
     InlineSkillSourceParam:
       properties:
         type:
@@ -748,14 +566,130 @@ components:
       - media_type
       - data
       description: Inline skill payload
-    _MisalignmentSteer:
+    CreateContainerBody:
+      type: object
       properties:
-        message:
+        name:
           type: string
-          description: The public continuation instruction.
+          description: Name of the container to create.
+        file_ids:
+          type: array
+          description: IDs of files to copy to the container.
+          items:
+            type: string
+        expires_after:
+          type: object
+          description: Container expiration time in seconds relative to the 'anchor' time.
+          properties:
+            anchor:
+              type: string
+              enum:
+              - last_active_at
+              description: Time anchor for the expiration time. Currently only 'last_active_at' is supported.
+            minutes:
+              type: integer
+          required:
+          - anchor
+          - minutes
+        skills:
+          type: array
+          description: An optional list of skills referenced by id or inline data.
+          items:
+            oneOf:
+            - $ref: '#/components/schemas/SkillReferenceParam'
+            - $ref: '#/components/schemas/InlineSkillParam'
+            discriminator:
+              propertyName: type
+        memory_limit:
+          type: string
+          enum:
+          - 1g
+          - 4g
+          - 16g
+          - 64g
+          description: Optional memory limit for the container. Defaults to "1g".
+        network_policy:
+          description: Network access policy for the container.
+          oneOf:
+          - $ref: '#/components/schemas/ContainerNetworkPolicyDisabledParam'
+          - $ref: '#/components/schemas/ContainerNetworkPolicyAllowlistParam'
+          discriminator:
+            propertyName: type
+      required:
+      - name
+    InlineSkillParam:
+      properties:
+        type:
+          type: string
+          enum:
+          - inline
+          description: Defines an inline skill for this request.
+          default: inline
+          x-stainless-const: true
+        name:
+          type: string
+          description: The name of the skill.
+        description:
+          type: string
+          description: The description of the skill.
+        source:
+          $ref: '#/components/schemas/InlineSkillSourceParam'
+          description: Inline skill payload
       type: object
       required:
-      - message
+      - type
+      - name
+      - description
+      - source
+    ContainerFileListResource:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: The type of object returned, must be 'list'.
+        data:
+          type: array
+          description: A list of container files.
+          items:
+            $ref: '#/components/schemas/ContainerFileResource'
+        first_id:
+          type: string
+          description: The ID of the first file in the list.
+        last_id:
+          type: string
+          description: The ID of the last file in the list.
+        has_more:
+          type: boolean
+          description: Whether there are more files available.
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    ContainerNetworkPolicyDisabledParam:
+      properties:
+        type:
+          type: string
+          enum:
+          - disabled
+          description: Disable outbound network access. Always `disabled`.
+          default: disabled
+          x-stainless-const: true
+      type: object
+      required:
+      - type
     SkillReferenceParam:
       properties:
         type:
@@ -784,29 +718,72 @@ components:
           $ref: '#/components/schemas/Error'
       required:
       - error
-    MisalignmentErrorDetailsResource_2:
-      properties:
-        review_target:
-          anyOf:
-          - not:
-              pattern: '[^A-Za-z0-9._~:-]'
-            type: string
-            maxLength: 96
-            minLength: 1
-            pattern: ^[A-Za-z0-9._~:-]+$
-            description: An opaque target for explicitly continuing this review, or null when unavailable.
-          - type: 'null'
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
+    CreateContainerFileBody:
       type: object
+      properties:
+        file_id:
+          type: string
+          description: Name of the file to create.
+        file:
+          description: 'The File object (not file name) to be uploaded.
+
+            '
+          type: string
+          format: binary
       required: []
+    ContainerListResource:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: The type of object returned, must be 'list'.
+        data:
+          type: array
+          description: A list of containers.
+          items:
+            $ref: '#/components/schemas/ContainerResource'
+        first_id:
+          type: string
+          description: The ID of the first container in the list.
+        last_id:
+          type: string
+          description: The ID of the last container in the list.
+        has_more:
+          type: boolean
+          description: Whether there are more containers available.
+      required:
+      - object
+      - data
+      - first_id
+      - last_id
+      - has_more
+    ContainerNetworkPolicyAllowlistParam:
+      properties:
+        type:
+          type: string
+          enum:
+          - allowlist
+          description: Allow outbound network access only to specified domains. Always `allowlist`.
+          default: allowlist
+          x-stainless-const: true
+        allowed_domains:
+          items:
+            type: string
+          type: array
+          minItems: 1
+          description: A list of allowed domains when type is `allowlist`.
+        domain_secrets:
+          items:
+            $ref: '#/components/schemas/ContainerNetworkPolicyDomainSecretParam'
+          type: array
+          minItems: 1
+          description: Optional domain-scoped secrets for allowlisted domains.
+      type: object
+      required:
+      - type
+      - allowed_domains
     ContainerResource_2:
       type: object
       title: The container object
@@ -883,6 +860,29 @@ components:
       x-oaiMeta:
         name: The container object
         example: "{\n   \"id\": \"cntr_682dfebaacac8198bbfe9c2474fb6f4a085685cbe3cb5863\",\n   \"object\": \"container\",\n   \"created_at\": 1747844794,\n   \"status\": \"running\",\n   \"expires_after\": {\n     \"anchor\": \"last_active_at\",\n     \"minutes\": 20\n   },\n   \"last_active_at\": 1747844794,\n   \"memory_limit\": \"1g\",\n   \"name\": \"My Container\"\n}\n"
+    MisalignmentErrorDetailsResource_2:
+      properties:
+        review_target:
+          anyOf:
+          - not:
+              pattern: '[^A-Za-z0-9._~:-]'
+            type: string
+            maxLength: 96
+            minLength: 1
+            pattern: ^[A-Za-z0-9._~:-]+$
+            description: An opaque target for explicitly continuing this review, or null when unavailable.
+          - type: 'null'
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
   responses:
     TooManyRequests:
       description: The request was rejected because a rate limit was exceeded.

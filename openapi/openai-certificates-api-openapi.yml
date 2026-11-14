@@ -457,22 +457,30 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
-    OrganizationProjectCertificateDeactivationResponse:
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    DeleteCertificateResponse:
       type: object
       properties:
         object:
           type: string
+          description: The object type, must be `certificate.deleted`.
           enum:
-          - organization.project.certificate.deactivation
-          description: The project certificate deactivation result type.
+          - certificate.deleted
           x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationProjectCertificate'
+        id:
+          type: string
+          description: The ID of the certificate that was deleted.
       required:
       - object
-      - data
+      - id
     ListCertificatesResponse:
       type: object
       properties:
@@ -503,14 +511,105 @@ components:
       - has_more
       - first_id
       - last_id
-    OrganizationCertificateActivationResponse:
+    UploadCertificateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: An optional name for the certificate
+        certificate:
+          type: string
+          description: The certificate content in PEM format
+      required:
+      - certificate
+    ModifyCertificateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The updated name for the certificate
+    ToggleCertificatesRequest:
+      type: object
+      properties:
+        certificate_ids:
+          type: array
+          items:
+            type: string
+            example: cert_abc
+          minItems: 1
+          maxItems: 10
+      required:
+      - certificate_ids
+    OrganizationProjectCertificateActivationResponse:
       type: object
       properties:
         object:
           type: string
           enum:
-          - organization.certificate.activation
-          description: The organization certificate activation result type.
+          - organization.project.certificate.activation
+          description: The project certificate activation result type.
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationProjectCertificate'
+      required:
+      - object
+      - data
+    OrganizationProjectCertificateDeactivationResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.certificate.deactivation
+          description: The project certificate deactivation result type.
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationProjectCertificate'
+      required:
+      - object
+      - data
+    ListProjectCertificatesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationProjectCertificate'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: cert_abc
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: cert_abc
+        has_more:
+          type: boolean
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+      required:
+      - object
+      - data
+      - has_more
+      - first_id
+      - last_id
+    OrganizationCertificateDeactivationResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.certificate.deactivation
+          description: The organization certificate deactivation result type.
           x-stainless-const: true
         data:
           type: array
@@ -519,20 +618,6 @@ components:
       required:
       - object
       - data
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
-    ModifyCertificateRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The updated name for the certificate
     Error:
       type: object
       properties:
@@ -555,85 +640,27 @@ components:
       - message
       - param
       - code
-    UploadCertificateRequest:
-      type: object
+    _MisalignmentSteer:
       properties:
-        name:
+        message:
           type: string
-          description: An optional name for the certificate
-        certificate:
-          type: string
-          description: The certificate content in PEM format
-      required:
-      - certificate
-    ToggleCertificatesRequest:
+          description: The public continuation instruction.
       type: object
-      properties:
-        certificate_ids:
-          type: array
-          items:
-            type: string
-            example: cert_abc
-          minItems: 1
-          maxItems: 10
       required:
-      - certificate_ids
-    DeleteCertificateResponse:
+      - message
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
       type: object
-      properties:
-        object:
-          type: string
-          description: The object type, must be `certificate.deleted`.
-          enum:
-          - certificate.deleted
-          x-stainless-const: true
-        id:
-          type: string
-          description: The ID of the certificate that was deleted.
-      required:
-      - object
-      - id
-    OrganizationProjectCertificateActivationResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.certificate.activation
-          description: The project certificate activation result type.
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationProjectCertificate'
-      required:
-      - object
-      - data
-    OrganizationCertificateDeactivationResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.certificate.deactivation
-          description: The organization certificate deactivation result type.
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationCertificate'
-      required:
-      - object
-      - data
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
+      required: []
     OrganizationProjectCertificate:
       type: object
       description: Represents an individual certificate configured at the project level.
@@ -677,6 +704,72 @@ components:
       - created_at
       - certificate_details
       - active
+    OrganizationCertificate:
+      type: object
+      description: Represents an individual certificate configured at the organization level.
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.certificate
+          description: The object type, which is always `organization.certificate`.
+          x-stainless-const: true
+        id:
+          type: string
+          description: The identifier, which can be referenced in API endpoints
+        name:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The name of the certificate.
+        created_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) of when the certificate was uploaded.
+        certificate_details:
+          type: object
+          properties:
+            valid_at:
+              type: integer
+              format: unixtime
+              description: The Unix timestamp (in seconds) of when the certificate becomes valid.
+            expires_at:
+              type: integer
+              format: unixtime
+              description: The Unix timestamp (in seconds) of when the certificate expires.
+        active:
+          type: boolean
+          description: Whether the certificate is currently active at the organization level.
+      required:
+      - object
+      - id
+      - name
+      - created_at
+      - certificate_details
+      - active
+    OrganizationCertificateActivationResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.certificate.activation
+          description: The organization certificate activation result type.
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationCertificate'
+      required:
+      - object
+      - data
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
     Certificate:
       type: object
       description: Represents an individual `certificate` uploaded to the organization.
@@ -736,99 +829,6 @@ components:
       x-oaiMeta:
         name: The certificate object
         example: "{\n  \"object\": \"certificate\",\n  \"id\": \"cert_abc\",\n  \"name\": \"My Certificate\",\n  \"created_at\": 1234567,\n  \"certificate_details\": {\n    \"valid_at\": 1234567,\n    \"expires_at\": 12345678,\n    \"content\": \"-----BEGIN CERTIFICATE----- MIIGAjCCA...6znFlOW+ -----END CERTIFICATE-----\"\n  }\n}\n"
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
-    ListProjectCertificatesResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationProjectCertificate'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          example: cert_abc
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          example: cert_abc
-        has_more:
-          type: boolean
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-      required:
-      - object
-      - data
-      - has_more
-      - first_id
-      - last_id
-    OrganizationCertificate:
-      type: object
-      description: Represents an individual certificate configured at the organization level.
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.certificate
-          description: The object type, which is always `organization.certificate`.
-          x-stainless-const: true
-        id:
-          type: string
-          description: The identifier, which can be referenced in API endpoints
-        name:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The name of the certificate.
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) of when the certificate was uploaded.
-        certificate_details:
-          type: object
-          properties:
-            valid_at:
-              type: integer
-              format: unixtime
-              description: The Unix timestamp (in seconds) of when the certificate becomes valid.
-            expires_at:
-              type: integer
-              format: unixtime
-              description: The Unix timestamp (in seconds) of when the certificate expires.
-        active:
-          type: boolean
-          description: Whether the certificate is currently active at the organization level.
-      required:
-      - object
-      - id
-      - name
-      - created_at
-      - certificate_details
-      - active
     PermissionErrorResponse:
       type: object
       properties:

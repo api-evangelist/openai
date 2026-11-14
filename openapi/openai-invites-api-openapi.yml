@@ -180,45 +180,14 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    InviteDeleteResponse:
-      type: object
+    _MisalignmentSteer:
       properties:
-        object:
+        message:
           type: string
-          enum:
-          - organization.invite.deleted
-          description: The object type, which is always `organization.invite.deleted`
-          x-stainless-const: true
-        id:
-          type: string
-        deleted:
-          type: boolean
+          description: The public continuation instruction.
+      type: object
       required:
-      - object
-      - id
-      - deleted
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
+      - message
     Error:
       type: object
       properties:
@@ -241,36 +210,15 @@ components:
       - message
       - param
       - code
-    InviteListResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          description: The object type, which is always `list`
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Invite'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The first `invite_id` in the retrieved `list`
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The last `invite_id` in the retrieved `list`
-        has_more:
-          type: boolean
-          description: The `has_more` property is used for pagination to indicate there are additional results.
-      required:
-      - object
-      - data
-      - has_more
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
     Invite:
       type: object
       description: Represents an individual `invite` to the organization.
@@ -345,6 +293,36 @@ components:
       x-oaiMeta:
         name: The invite object
         example: "{\n  \"object\": \"organization.invite\",\n  \"id\": \"invite-abc\",\n  \"email\": \"user@example.com\",\n  \"role\": \"owner\",\n  \"status\": \"accepted\",\n  \"created_at\": 1711471533,\n  \"expires_at\": 1711471533,\n  \"accepted_at\": 1711471533,\n  \"projects\": [\n    {\n      \"id\": \"project-xyz\",\n      \"role\": \"member\"\n    }\n  ]\n}\n"
+    InviteListResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: The object type, which is always `list`
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Invite'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The first `invite_id` in the retrieved `list`
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The last `invite_id` in the retrieved `list`
+        has_more:
+          type: boolean
+          description: The `has_more` property is used for pagination to indicate there are additional results.
+      required:
+      - object
+      - data
+      - has_more
     PermissionErrorResponse:
       type: object
       properties:
@@ -356,6 +334,43 @@ components:
             description: An explanation of the missing API permissions.
       required:
       - error
+    InviteDeleteResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.invite.deleted
+          description: The object type, which is always `organization.invite.deleted`
+          x-stainless-const: true
+        id:
+          type: string
+        deleted:
+          type: boolean
+      required:
+      - object
+      - id
+      - deleted
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
     InviteRequest:
       type: object
       properties:
@@ -389,21 +404,6 @@ components:
       required:
       - email
       - role
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
     MisalignmentErrorDetailsResource_2:
       properties:
         review_target:

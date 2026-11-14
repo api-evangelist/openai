@@ -245,6 +245,86 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
+    GroupUser:
+      type: object
+      description: Represents an individual user returned when inspecting group membership.
+      properties:
+        id:
+          type: string
+          description: The identifier, which can be referenced in API endpoints
+        name:
+          type: string
+          description: The name of the user.
+        email:
+          anyOf:
+          - type: string
+          - type: 'null'
+          description: The email address of the user.
+      required:
+      - id
+      - name
+      - email
+    UserListResource:
+      type: object
+      description: Paginated list of user objects returned when inspecting group membership.
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          description: Always `list`.
+          x-stainless-const: true
+        data:
+          type: array
+          description: Users in the current page.
+          items:
+            $ref: '#/components/schemas/GroupUser'
+        has_more:
+          type: boolean
+          description: Whether more users are available when paginating.
+        next:
+          description: Cursor to fetch the next page of results, or `null` when no further users are available.
+          anyOf:
+          - type: string
+          - type: 'null'
+      required:
+      - object
+      - data
+      - has_more
+      - next
+      x-oaiMeta:
+        name: Group user list
+        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"user_abc123\",\n            \"name\": \"Ada Lovelace\",\n            \"email\": \"ada@example.com\"\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+    Error:
+      type: object
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
     GroupMemberUser:
       type: object
       description: Details about a user returned from an organization group membership lookup.
@@ -286,91 +366,6 @@ components:
       x-oaiMeta:
         name: The group member user object
         example: "{\n    \"id\": \"user_abc123\",\n    \"name\": \"Ada Lovelace\",\n    \"email\": \"ada@example.com\",\n    \"picture\": null,\n    \"is_service_account\": false,\n    \"user_type\": \"user\"\n}\n"
-    CreateGroupUserBody:
-      type: object
-      description: Request payload for adding a user to a group.
-      properties:
-        user_id:
-          type: string
-          description: Identifier of the user to add to the group.
-      required:
-      - user_id
-      x-oaiMeta:
-        example: "{\n    \"user_id\": \"user_abc123\"\n}\n"
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
-    GroupUser:
-      type: object
-      description: Represents an individual user returned when inspecting group membership.
-      properties:
-        id:
-          type: string
-          description: The identifier, which can be referenced in API endpoints
-        name:
-          type: string
-          description: The name of the user.
-        email:
-          anyOf:
-          - type: string
-          - type: 'null'
-          description: The email address of the user.
-      required:
-      - id
-      - name
-      - email
-    PermissionErrorResponse:
-      type: object
-      properties:
-        error:
-          description: Details about the permission error.
-          anyOf:
-          - $ref: '#/components/schemas/Error'
-          - type: string
-            description: An explanation of the missing API permissions.
-      required:
-      - error
     GroupUserAssignment:
       type: object
       description: Confirmation payload returned after adding a user to a group.
@@ -394,45 +389,44 @@ components:
       x-oaiMeta:
         name: The group user object
         example: "{\n    \"object\": \"group.user\",\n    \"user_id\": \"user_abc123\",\n    \"group_id\": \"group_01J1F8ABCDXYZ\"\n}\n"
-    UserListResource:
+    CreateGroupUserBody:
       type: object
-      description: Paginated list of user objects returned when inspecting group membership.
+      description: Request payload for adding a user to a group.
       properties:
-        object:
+        user_id:
           type: string
-          enum:
-          - list
-          description: Always `list`.
-          x-stainless-const: true
-        data:
-          type: array
-          description: Users in the current page.
-          items:
-            $ref: '#/components/schemas/GroupUser'
-        has_more:
-          type: boolean
-          description: Whether more users are available when paginating.
-        next:
-          description: Cursor to fetch the next page of results, or `null` when no further users are available.
-          anyOf:
-          - type: string
-          - type: 'null'
+          description: Identifier of the user to add to the group.
       required:
-      - object
-      - data
-      - has_more
-      - next
+      - user_id
       x-oaiMeta:
-        name: Group user list
-        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"user_abc123\",\n            \"name\": \"Ada Lovelace\",\n            \"email\": \"ada@example.com\"\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
+        example: "{\n    \"user_id\": \"user_abc123\"\n}\n"
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    PermissionErrorResponse:
       type: object
+      properties:
+        error:
+          description: Details about the permission error.
+          anyOf:
+          - $ref: '#/components/schemas/Error'
+          - type: string
+            description: An explanation of the missing API permissions.
       required:
-      - message
+      - error
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
     GroupUserDeletedResource:
       type: object
       description: Confirmation payload returned after removing a user from a group.
@@ -452,13 +446,19 @@ components:
       x-oaiMeta:
         name: Group user deletion confirmation
         example: "{\n    \"object\": \"group.user.deleted\",\n    \"deleted\": true\n}\n"
-    ErrorResponse:
-      type: object
+    MisalignmentErrorDetailsResource:
       properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
     MisalignmentErrorDetailsResource_2:
       properties:
         review_target:

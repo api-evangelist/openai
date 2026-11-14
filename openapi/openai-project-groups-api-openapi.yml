@@ -212,15 +212,14 @@ components:
           schema:
             $ref: '#/components/schemas/ErrorResponse'
   schemas:
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
     Error:
       type: object
       properties:
@@ -243,19 +242,25 @@ components:
       - message
       - param
       - code
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
+    ProjectGroupDeletedResource:
       type: object
-      required: []
+      description: Confirmation payload returned after removing a group from a project.
+      properties:
+        object:
+          type: string
+          enum:
+          - project.group.deleted
+          description: Always `project.group.deleted`.
+          x-stainless-const: true
+        deleted:
+          type: boolean
+          description: Whether the group membership in the project was removed.
+      required:
+      - object
+      - deleted
+      x-oaiMeta:
+        name: Project group deletion confirmation
+        example: "{\n    \"object\": \"project.group.deleted\",\n    \"deleted\": true\n}\n"
     ProjectGroupListResource:
       type: object
       description: Paginated list of groups that have access to a project.
@@ -287,6 +292,22 @@ components:
       x-oaiMeta:
         name: Project group list
         example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"object\": \"project.group\",\n            \"project_id\": \"proj_abc123\",\n            \"group_id\": \"group_01J1F8ABCDXYZ\",\n            \"group_name\": \"Support Team\",\n            \"created_at\": 1711471533\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
     InviteProjectGroupBody:
       type: object
       description: Request payload for granting a group access to a project.
@@ -302,33 +323,6 @@ components:
       - role
       x-oaiMeta:
         example: "{\n    \"group_id\": \"group_01J1F8ABCDXYZ\",\n    \"role\": \"role_01J1F8PROJ\"\n}\n"
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
-    ProjectGroupDeletedResource:
-      type: object
-      description: Confirmation payload returned after removing a group from a project.
-      properties:
-        object:
-          type: string
-          enum:
-          - project.group.deleted
-          description: Always `project.group.deleted`.
-          x-stainless-const: true
-        deleted:
-          type: boolean
-          description: Whether the group membership in the project was removed.
-      required:
-      - object
-      - deleted
-      x-oaiMeta:
-        name: Project group deletion confirmation
-        example: "{\n    \"object\": \"project.group.deleted\",\n    \"deleted\": true\n}\n"
     ProjectGroup:
       type: object
       description: Details about a group's membership in a project.
@@ -368,25 +362,8 @@ components:
       x-oaiMeta:
         name: The project group object
         example: "{\n    \"object\": \"project.group\",\n    \"project_id\": \"proj_abc123\",\n    \"group_id\": \"group_01J1F8ABCDXYZ\",\n    \"group_name\": \"Support Team\",\n    \"group_type\": \"group\",\n    \"created_at\": 1711471533\n}\n"
-    ErrorResponse:
-      type: object
+    MisalignmentErrorDetailsResource:
       properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    MisalignmentErrorDetailsResource_2:
-      properties:
-        review_target:
-          anyOf:
-          - not:
-              pattern: '[^A-Za-z0-9._~:-]'
-            type: string
-            maxLength: 96
-            minLength: 1
-            pattern: ^[A-Za-z0-9._~:-]+$
-            description: An opaque target for explicitly continuing this review, or null when unavailable.
-          - type: 'null'
         error_type:
           $ref: '#/components/schemas/_MisalignmentErrorType'
           description: An optional classification; clients must accept additional values.
@@ -398,17 +375,6 @@ components:
           description: An optional public continuation instruction.
       type: object
       required: []
-    PermissionErrorResponse:
-      type: object
-      properties:
-        error:
-          description: Details about the permission error.
-          anyOf:
-          - $ref: '#/components/schemas/Error'
-          - type: string
-            description: An explanation of the missing API permissions.
-      required:
-      - error
     ProjectGroupListResource_2:
       type: object
       description: Paginated list of groups that have access to a project.
@@ -440,6 +406,40 @@ components:
       x-oaiMeta:
         name: Project group list
         example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"object\": \"project.group\",\n            \"project_id\": \"proj_abc123\",\n            \"group_id\": \"group_01J1F8ABCDXYZ\",\n            \"group_name\": \"Support Team\",\n            \"group_type\": \"group\",\n            \"created_at\": 1711471533\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
+    PermissionErrorResponse:
+      type: object
+      properties:
+        error:
+          description: Details about the permission error.
+          anyOf:
+          - $ref: '#/components/schemas/Error'
+          - type: string
+            description: An explanation of the missing API permissions.
+      required:
+      - error
+    MisalignmentErrorDetailsResource_2:
+      properties:
+        review_target:
+          anyOf:
+          - not:
+              pattern: '[^A-Za-z0-9._~:-]'
+            type: string
+            maxLength: 96
+            minLength: 1
+            pattern: ^[A-Za-z0-9._~:-]+$
+            description: An opaque target for explicitly continuing this review, or null when unavailable.
+          - type: 'null'
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
   securitySchemes:
     ApiKeyAuth:
       type: http
