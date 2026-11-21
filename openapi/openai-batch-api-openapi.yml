@@ -172,6 +172,64 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
+    Metadata:
+      anyOf:
+      - type: object
+        description: 'Set of 16 key-value pairs that can be attached to an object. This can be
+
+          useful for storing additional information about the object in a structured
+
+          format, and querying for objects via API or the dashboard.
+
+
+          Keys are strings with a maximum length of 64 characters. Values are strings
+
+          with a maximum length of 512 characters.
+
+          '
+        additionalProperties:
+          type: string
+        x-oaiTypeLabel: map
+      - type: 'null'
+    CreateBatchRequest:
+      type: object
+      required:
+      - input_file_id
+      - endpoint
+      - completion_window
+      properties:
+        input_file_id:
+          type: string
+          description: 'The ID of an uploaded file that contains requests for the new batch.
+
+
+            See [upload file](https://developers.openai.com/api/reference/resources/files/methods/create) for how to upload a file.
+
+
+            Your input file must be formatted as a [JSONL file](https://developers.openai.com/api/docs/guides/batch#1-prepare-your-batch-file), and must be uploaded with the purpose `batch`. The file can contain up to 50,000 requests, and can be up to 200 MB in size.
+
+            '
+        endpoint:
+          type: string
+          enum:
+          - /v1/responses
+          - /v1/chat/completions
+          - /v1/embeddings
+          - /v1/completions
+          - /v1/moderations
+          - /v1/images/generations
+          - /v1/images/edits
+          - /v1/videos
+          description: The endpoint to be used for all requests in the batch. Currently `/v1/responses`, `/v1/chat/completions`, `/v1/embeddings`, `/v1/completions`, `/v1/moderations`, `/v1/images/generations`, `/v1/images/edits`, and `/v1/videos` are supported. Note that `/v1/embeddings` batches are also restricted to a maximum of 50,000 embedding inputs across all requests in the batch.
+        completion_window:
+          type: string
+          enum:
+          - 24h
+          description: The time frame within which the batch should be processed. Currently only `24h` is supported.
+        metadata:
+          $ref: '#/components/schemas/Metadata'
+        output_expires_after:
+          $ref: '#/components/schemas/BatchFileExpirationAfter'
     BatchRequestCounts:
       type: object
       properties:
@@ -189,6 +247,25 @@ components:
       - completed
       - failed
       description: The request counts for different statuses within the batch.
+    BatchError:
+      type: object
+      properties:
+        code:
+          type: string
+          description: An error code identifying the error type.
+        message:
+          type: string
+          description: A human-readable message providing more details about the error.
+        param:
+          anyOf:
+          - type: string
+            description: The name of the parameter that caused the error, if applicable.
+          - type: 'null'
+        line:
+          anyOf:
+          - type: integer
+            description: The line number of the input file where the error occurred, if applicable.
+          - type: 'null'
     BatchFileExpirationAfter:
       type: object
       title: File expiration policy
@@ -209,25 +286,30 @@ components:
       required:
       - anchor
       - seconds
-    Metadata:
-      anyOf:
-      - type: object
-        description: 'Set of 16 key-value pairs that can be attached to an object. This can be
-
-          useful for storing additional information about the object in a structured
-
-          format, and querying for objects via API or the dashboard.
-
-
-          Keys are strings with a maximum length of 64 characters. Values are strings
-
-          with a maximum length of 512 characters.
-
-          '
-        additionalProperties:
+    ListBatchesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Batch'
+        first_id:
           type: string
-        x-oaiTypeLabel: map
-      - type: 'null'
+          example: batch_abc123
+        last_id:
+          type: string
+          example: batch_abc456
+        has_more:
+          type: boolean
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+      required:
+      - object
+      - data
+      - has_more
     Batch:
       type: object
       properties:
@@ -385,88 +467,15 @@ components:
       x-oaiMeta:
         name: The batch object
         example: "{\n  \"id\": \"batch_abc123\",\n  \"object\": \"batch\",\n  \"endpoint\": \"/v1/chat/completions\",\n  \"model\": \"gpt-6-astra\",\n  \"errors\": null,\n  \"input_file_id\": \"file-abc123\",\n  \"completion_window\": \"24h\",\n  \"status\": \"completed\",\n  \"output_file_id\": \"file-cvaTdG\",\n  \"error_file_id\": \"file-HOWS94\",\n  \"created_at\": 1711471533,\n  \"in_progress_at\": 1711471538,\n  \"expires_at\": 1711557933,\n  \"finalizing_at\": 1711493133,\n  \"completed_at\": 1711493163,\n  \"failed_at\": null,\n  \"expired_at\": null,\n  \"cancelling_at\": null,\n  \"cancelled_at\": null,\n  \"request_counts\": {\n    \"total\": 100,\n    \"completed\": 95,\n    \"failed\": 5\n  },\n  \"usage\": {\n    \"input_tokens\": 1500,\n    \"input_tokens_details\": {\n      \"cached_tokens\": 1024\n    },\n    \"output_tokens\": 500,\n    \"output_tokens_details\": {\n      \"reasoning_tokens\": 300\n    },\n    \"total_tokens\": 2000\n  },\n  \"metadata\": {\n    \"customer_id\": \"user_123456789\",\n    \"batch_description\": \"Nightly eval job\",\n  }\n}\n"
-    ListBatchesResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/Batch'
-        first_id:
-          type: string
-          example: batch_abc123
-        last_id:
-          type: string
-          example: batch_abc456
-        has_more:
-          type: boolean
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-      required:
-      - object
-      - data
-      - has_more
-    CreateBatchRequest:
-      type: object
-      required:
-      - input_file_id
-      - endpoint
-      - completion_window
-      properties:
-        input_file_id:
-          type: string
-          description: 'The ID of an uploaded file that contains requests for the new batch.
-
-
-            See [upload file](https://developers.openai.com/api/reference/resources/files/methods/create) for how to upload a file.
-
-
-            Your input file must be formatted as a [JSONL file](https://developers.openai.com/api/docs/guides/batch#1-prepare-your-batch-file), and must be uploaded with the purpose `batch`. The file can contain up to 50,000 requests, and can be up to 200 MB in size.
-
-            '
-        endpoint:
-          type: string
-          enum:
-          - /v1/responses
-          - /v1/chat/completions
-          - /v1/embeddings
-          - /v1/completions
-          - /v1/moderations
-          - /v1/images/generations
-          - /v1/images/edits
-          - /v1/videos
-          description: The endpoint to be used for all requests in the batch. Currently `/v1/responses`, `/v1/chat/completions`, `/v1/embeddings`, `/v1/completions`, `/v1/moderations`, `/v1/images/generations`, `/v1/images/edits`, and `/v1/videos` are supported. Note that `/v1/embeddings` batches are also restricted to a maximum of 50,000 embedding inputs across all requests in the batch.
-        completion_window:
-          type: string
-          enum:
-          - 24h
-          description: The time frame within which the batch should be processed. Currently only `24h` is supported.
-        metadata:
-          $ref: '#/components/schemas/Metadata'
-        output_expires_after:
-          $ref: '#/components/schemas/BatchFileExpirationAfter'
-    BatchError:
-      type: object
-      properties:
-        code:
-          type: string
-          description: An error code identifying the error type.
-        message:
-          type: string
-          description: A human-readable message providing more details about the error.
-        param:
-          anyOf:
-          - type: string
-            description: The name of the parameter that caused the error, if applicable.
-          - type: 'null'
-        line:
-          anyOf:
-          - type: integer
-            description: The line number of the input file where the error occurred, if applicable.
-          - type: 'null'
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
     Error:
       type: object
       properties:
@@ -489,6 +498,13 @@ components:
       - message
       - param
       - code
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
     _MisalignmentSteer:
       properties:
         message:
@@ -497,6 +513,29 @@ components:
       type: object
       required:
       - message
+    MisalignmentErrorDetailsResource:
+      properties:
+        review_target:
+          anyOf:
+          - not:
+              pattern: '[^A-Za-z0-9._~:-]'
+            type: string
+            maxLength: 96
+            minLength: 1
+            pattern: ^[A-Za-z0-9._~:-]+$
+            description: An opaque target for explicitly continuing this review, or null when unavailable.
+          - type: 'null'
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
     Batch_2:
       type: object
       properties:
@@ -676,45 +715,6 @@ components:
       x-oaiMeta:
         name: The batch object
         example: "{\n  \"id\": \"batch_abc123\",\n  \"object\": \"batch\",\n  \"endpoint\": \"/v1/chat/completions\",\n  \"model\": \"gpt-6-astra\",\n  \"errors\": null,\n  \"input_file_id\": \"file-abc123\",\n  \"completion_window\": \"24h\",\n  \"status\": \"completed\",\n  \"output_file_id\": \"file-cvaTdG\",\n  \"error_file_id\": \"file-HOWS94\",\n  \"created_at\": 1711471533,\n  \"in_progress_at\": 1711471538,\n  \"expires_at\": 1711557933,\n  \"finalizing_at\": 1711493133,\n  \"completed_at\": 1711493163,\n  \"failed_at\": null,\n  \"expired_at\": null,\n  \"cancelling_at\": null,\n  \"cancelled_at\": null,\n  \"request_counts\": {\n    \"total\": 100,\n    \"completed\": 95,\n    \"failed\": 5\n  },\n  \"usage\": {\n    \"input_tokens\": 1500,\n    \"input_tokens_details\": {\n      \"cached_tokens\": 1024\n    },\n    \"output_tokens\": 500,\n    \"output_tokens_details\": {\n      \"reasoning_tokens\": 300\n    },\n    \"total_tokens\": 2000\n  },\n  \"metadata\": {\n    \"customer_id\": \"user_123456789\",\n    \"batch_description\": \"Nightly eval job\"\n  }\n}\n"
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    MisalignmentErrorDetailsResource:
-      properties:
-        review_target:
-          anyOf:
-          - not:
-              pattern: '[^A-Za-z0-9._~:-]'
-            type: string
-            maxLength: 96
-            minLength: 1
-            pattern: ^[A-Za-z0-9._~:-]+$
-            description: An opaque target for explicitly continuing this review, or null when unavailable.
-          - type: 'null'
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
   securitySchemes:
     ApiKeyAuth:
       type: http

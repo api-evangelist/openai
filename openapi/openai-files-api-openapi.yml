@@ -340,14 +340,15 @@ components:
       required:
       - anchor
       - seconds
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
     Error:
       type: object
       properties:
@@ -370,15 +371,44 @@ components:
       - message
       - param
       - code
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+    MisalignmentErrorDetailsResource:
+      properties:
+        review_target:
+          anyOf:
+          - not:
+              pattern: '[^A-Za-z0-9._~:-]'
+            type: string
+            maxLength: 96
+            minLength: 1
+            pattern: ^[A-Za-z0-9._~:-]+$
+            description: An opaque target for explicitly continuing this review, or null when unavailable.
+          - type: 'null'
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
     OpenAIFile_2:
       title: OpenAIFile
       description: The `File` object represents a document that has been uploaded to OpenAI.
@@ -451,36 +481,6 @@ components:
       x-oaiMeta:
         name: The file object
         example: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"file\",\n  \"bytes\": 120000,\n  \"created_at\": 1677610602,\n  \"expires_at\": 1680202602,\n  \"filename\": \"salesOverview.pdf\",\n  \"purpose\": \"assistants\",\n  \"status\": \"processed\"\n}\n"
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    MisalignmentErrorDetailsResource:
-      properties:
-        review_target:
-          anyOf:
-          - not:
-              pattern: '[^A-Za-z0-9._~:-]'
-            type: string
-            maxLength: 96
-            minLength: 1
-            pattern: ^[A-Za-z0-9._~:-]+$
-            description: An opaque target for explicitly continuing this review, or null when unavailable.
-          - type: 'null'
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
   securitySchemes:
     ApiKeyAuth:
       type: http

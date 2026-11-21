@@ -195,6 +195,86 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    Error:
+      type: object
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    UserDeleteResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.user.deleted
+          x-stainless-const: true
+        id:
+          type: string
+        deleted:
+          type: boolean
+      required:
+      - object
+      - id
+      - deleted
+    UserListResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
     UserRoleUpdateRequest:
       type: object
       properties:
@@ -218,45 +298,6 @@ components:
           - type: string
           - type: 'null'
           description: Developer persona metadata.
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
     PermissionErrorResponse:
       type: object
       properties:
@@ -268,22 +309,27 @@ components:
             description: An explanation of the missing API permissions.
       required:
       - error
-    UserDeleteResponse:
-      type: object
+    _MisalignmentSteer:
       properties:
-        object:
+        message:
           type: string
-          enum:
-          - organization.user.deleted
-          x-stainless-const: true
-        id:
-          type: string
-        deleted:
-          type: boolean
+          description: The public continuation instruction.
+      type: object
       required:
-      - object
-      - id
-      - deleted
+      - message
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
     User:
       type: object
       description: Represents an individual `user` within an organization.
@@ -427,52 +473,6 @@ components:
       x-oaiMeta:
         name: The user object
         example: "{\n    \"object\": \"organization.user\",\n    \"id\": \"user_abc\",\n    \"name\": \"First Last\",\n    \"email\": \"user@example.com\",\n    \"role\": \"owner\",\n    \"added_at\": 1711471533\n}\n"
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
-    UserListResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/User'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-        has_more:
-          type: boolean
-      required:
-      - object
-      - data
-      - has_more
     MisalignmentErrorDetailsResource_2:
       properties:
         review_target:

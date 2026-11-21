@@ -142,6 +142,74 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    Error:
+      type: object
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    AuditLogActorUser:
+      type: object
+      description: The user who performed the audit logged action.
+      properties:
+        id:
+          type: string
+          description: The user id.
+        email:
+          type: string
+          description: The user email.
+    provider:
+      oneOf:
+      - $ref: '#/components/schemas/AwsExternalStorageProviderResponse'
+      - $ref: '#/components/schemas/AzureExternalStorageProviderResponse'
+      - $ref: '#/components/schemas/GcpExternalStorageProviderResponse'
+      discriminator:
+        propertyName: type
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
     AuditLogActorApiKey:
       type: object
       description: The API Key used to perform the audit logged action.
@@ -159,6 +227,156 @@ components:
           $ref: '#/components/schemas/AuditLogActorUser'
         service_account:
           $ref: '#/components/schemas/AuditLogActorServiceAccount'
+    AuditLogActorSession:
+      type: object
+      description: The session in which the audit logged action was performed.
+      properties:
+        user:
+          $ref: '#/components/schemas/AuditLogActorUser'
+        ip_address:
+          type: string
+          description: The IP address from which the action was performed.
+    AuditLogActorServiceAccount:
+      type: object
+      description: The service account that performed the audit logged action.
+      properties:
+        id:
+          type: string
+          description: The service account id.
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+    AzureExternalStorageProviderResponse:
+      properties:
+        type:
+          type: string
+          enum:
+          - azure
+          default: azure
+          x-stainless-const: true
+        tenant_id:
+          type: string
+        subscription_id:
+          type: string
+        resource_group:
+          type: string
+        account_name:
+          type: string
+        container:
+          type: string
+        region:
+          type: string
+      type: object
+      required:
+      - type
+      - tenant_id
+      - subscription_id
+      - resource_group
+      - account_name
+      - container
+      - region
+    AwsExternalStorageProviderResponse:
+      properties:
+        type:
+          type: string
+          enum:
+          - aws
+          default: aws
+          x-stainless-const: true
+        account_id:
+          type: string
+        region:
+          type: string
+        bucket:
+          type: string
+        role_arn:
+          type: string
+        external_id:
+          type: string
+      type: object
+      required:
+      - type
+      - account_id
+      - region
+      - bucket
+      - role_arn
+      - external_id
+    AuditLogActor:
+      type: object
+      description: The actor who performed the audit logged action.
+      properties:
+        type:
+          type: string
+          description: The type of actor. Is either `session` or `api_key`.
+          enum:
+          - session
+          - api_key
+        session:
+          $ref: '#/components/schemas/AuditLogActorSession'
+        api_key:
+          $ref: '#/components/schemas/AuditLogActorApiKey'
+    ListAuditLogsResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuditLog'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: audit_log-defb456h8dks
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: audit_log-hnbkd8s93s
+        has_more:
+          type: boolean
+      required:
+      - object
+      - data
+      - has_more
+    GcpExternalStorageProviderResponse:
+      properties:
+        type:
+          type: string
+          enum:
+          - gcp
+          default: gcp
+          x-stainless-const: true
+        bucket:
+          type: string
+        workload_identity_project_number:
+          type: string
+        workload_identity_pool_id:
+          type: string
+        workload_identity_provider_id:
+          type: string
+        region:
+          type: string
+        audience:
+          type: string
+      type: object
+      required:
+      - type
+      - bucket
+      - workload_identity_project_number
+      - workload_identity_pool_id
+      - workload_identity_provider_id
+      - region
+      - audience
     AuditLog:
       type: object
       description: A log of a user action or configuration change within this organization.
@@ -981,118 +1199,6 @@ components:
       x-oaiMeta:
         name: The audit log object
         example: "{\n    \"id\": \"req_xxx_20240101\",\n    \"type\": \"api_key.created\",\n    \"effective_at\": 1720804090,\n    \"actor\": {\n        \"type\": \"session\",\n        \"session\": {\n            \"user\": {\n                \"id\": \"user-xxx\",\n                \"email\": \"user@example.com\"\n            },\n            \"ip_address\": \"127.0.0.1\",\n            \"user_agent\": \"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36\"\n        }\n    },\n    \"api_key.created\": {\n        \"id\": \"key_xxxx\",\n        \"data\": {\n            \"scopes\": [\"resource.operation\"]\n        }\n    }\n}\n"
-    AzureExternalStorageProviderResponse:
-      properties:
-        type:
-          type: string
-          enum:
-          - azure
-          default: azure
-          x-stainless-const: true
-        tenant_id:
-          type: string
-        subscription_id:
-          type: string
-        resource_group:
-          type: string
-        account_name:
-          type: string
-        container:
-          type: string
-        region:
-          type: string
-      type: object
-      required:
-      - type
-      - tenant_id
-      - subscription_id
-      - resource_group
-      - account_name
-      - container
-      - region
-    GcpExternalStorageProviderResponse:
-      properties:
-        type:
-          type: string
-          enum:
-          - gcp
-          default: gcp
-          x-stainless-const: true
-        bucket:
-          type: string
-        workload_identity_project_number:
-          type: string
-        workload_identity_pool_id:
-          type: string
-        workload_identity_provider_id:
-          type: string
-        region:
-          type: string
-        audience:
-          type: string
-      type: object
-      required:
-      - type
-      - bucket
-      - workload_identity_project_number
-      - workload_identity_pool_id
-      - workload_identity_provider_id
-      - region
-      - audience
-    AuditLogActorUser:
-      type: object
-      description: The user who performed the audit logged action.
-      properties:
-        id:
-          type: string
-          description: The user id.
-        email:
-          type: string
-          description: The user email.
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
-    AuditLogActor:
-      type: object
-      description: The actor who performed the audit logged action.
-      properties:
-        type:
-          type: string
-          description: The type of actor. Is either `session` or `api_key`.
-          enum:
-          - session
-          - api_key
-        session:
-          $ref: '#/components/schemas/AuditLogActorSession'
-        api_key:
-          $ref: '#/components/schemas/AuditLogActorApiKey'
     AuditLogEventType:
       type: string
       description: The event type.
@@ -1246,112 +1352,6 @@ components:
       - tenant.membership.accepted
       - tenant.membership.declined
       - tenant.workspace_invite_email_settings.updated
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    AuditLogActorServiceAccount:
-      type: object
-      description: The service account that performed the audit logged action.
-      properties:
-        id:
-          type: string
-          description: The service account id.
-    AwsExternalStorageProviderResponse:
-      properties:
-        type:
-          type: string
-          enum:
-          - aws
-          default: aws
-          x-stainless-const: true
-        account_id:
-          type: string
-        region:
-          type: string
-        bucket:
-          type: string
-        role_arn:
-          type: string
-        external_id:
-          type: string
-      type: object
-      required:
-      - type
-      - account_id
-      - region
-      - bucket
-      - role_arn
-      - external_id
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    AuditLogActorSession:
-      type: object
-      description: The session in which the audit logged action was performed.
-      properties:
-        user:
-          $ref: '#/components/schemas/AuditLogActorUser'
-        ip_address:
-          type: string
-          description: The IP address from which the action was performed.
-    provider:
-      oneOf:
-      - $ref: '#/components/schemas/AwsExternalStorageProviderResponse'
-      - $ref: '#/components/schemas/AzureExternalStorageProviderResponse'
-      - $ref: '#/components/schemas/GcpExternalStorageProviderResponse'
-      discriminator:
-        propertyName: type
-    ListAuditLogsResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/AuditLog'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          example: audit_log-defb456h8dks
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          example: audit_log-hnbkd8s93s
-        has_more:
-          type: boolean
-      required:
-      - object
-      - data
-      - has_more
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
     OciExternalStorageProviderResponse:
       properties:
         type:

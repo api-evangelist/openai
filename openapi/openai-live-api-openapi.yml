@@ -227,6 +227,456 @@ components:
     properties-store:
       description: Whether to store the forked session. Omission inherits the stored session's setting.
       type: boolean
+    LiveInitialInputTextContentPartParam:
+      description: Text supplied in a developer or user message when starting a Live session.
+      type: object
+      properties:
+        type:
+          description: The text content type. Always `input_text`.
+          default: input_text
+          x-stainless-const: true
+          type: string
+          enum:
+          - input_text
+        text:
+          description: The message text to include in the Live session’s initial conversation history.
+          type: string
+      required:
+      - text
+    LiveCallAcceptRequest:
+      type: object
+      description: Accept an incoming SIP call with Live startup configuration.
+      properties:
+        session:
+          $ref: '#/components/schemas/LiveCallAcceptSession'
+          description: Model and startup configuration for the Live session that answers the incoming SIP call.
+      required:
+      - session
+      additionalProperties: false
+    LiveInitialItem:
+      description: A developer, user, or assistant message supplied as text history before the Live session starts.
+      discriminator:
+        propertyName: role
+      oneOf:
+      - $ref: '#/components/schemas/LiveInitialDeveloperMessageItemParam'
+      - $ref: '#/components/schemas/LiveInitialUserMessageItemParam'
+      - $ref: '#/components/schemas/LiveInitialAssistantMessageItemParam'
+    LiveInitialUserMessageItemParam:
+      description: A user message included in the initial text history of a Live session.
+      type: object
+      properties:
+        id:
+          anyOf:
+          - description: An optional identifier for the supplied history message. Live uses the message’s role and text to initialize the conversation.
+            type: string
+          - type: 'null'
+        type:
+          description: The history item type. Always `message`.
+          default: message
+          x-stainless-const: true
+          type: string
+          enum:
+          - message
+        status:
+          anyOf:
+          - description: The supplied message’s status. Live uses its text as history and does not resume an incomplete message.
+            $ref: '#/components/schemas/LiveInitialMessageStatus'
+          - type: 'null'
+        role:
+          description: The author of this history message. Always `user`.
+          default: user
+          x-stainless-const: true
+          type: string
+          enum:
+          - user
+        content:
+          description: The message content. Supply exactly one text part for the initial Live conversation history.
+          type: array
+          items:
+            $ref: '#/components/schemas/LiveInitialInputTextContentPartParam'
+          minItems: 1
+          maxItems: 1
+      required:
+      - role
+      - content
+    instructions:
+      anyOf:
+      - description: Frontend instructions for voice, conversation, interruptions, and when to delegate. Start with the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting); put business rules and tool workflows in a separate [backend prompt](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt). Limited to 16,384 client-supplied tokens. Omitted or blank instructions use server defaults. Immutable after startup.
+        type: string
+      - type: 'null'
+    LiveDelegationReasoningInputParam:
+      description: Reasoning options for Responses requests made on behalf of the Live session.
+      type: object
+      properties:
+        effort:
+          anyOf:
+          - description: How much reasoning effort the delegated Responses model should use. Supported values depend on the backend model.
+            $ref: '#/components/schemas/LiveReasoningEffort'
+          - type: 'null'
+        summary:
+          anyOf:
+          - description: The reasoning summary to request from the delegated Responses model, when supported.
+            $ref: '#/components/schemas/LiveReasoningSummary'
+          - type: 'null'
+      required: []
+    LiveCallReferRequest:
+      type: object
+      description: Parameters used to transfer a Live SIP call to another destination.
+      properties:
+        target_uri:
+          $ref: '#/components/schemas/target_uri'
+          minLength: 1
+          pattern: \S
+          description: Nonblank URI for the SIP Refer-To header, such as tel:+14155550123 or sip:agent@example.com.
+      required:
+      - target_uri
+      additionalProperties: false
+    LiveInitialOutputTextContentPartParam:
+      description: Assistant output text supplied as conversation history when starting a Live session.
+      type: object
+      properties:
+        type:
+          description: The text content type. Always `output_text`.
+          default: output_text
+          x-stainless-const: true
+          type: string
+          enum:
+          - output_text
+        text:
+          description: The message text to include in the Live session’s initial conversation history.
+          type: string
+      required:
+      - type
+      - text
+    input:
+      description: Ordered text-only history supplied before startup. Supports developer, user, and assistant messages with one text part each; at most 128 messages and 8,192 rendered tokens in total.
+      type: array
+      items:
+        $ref: '#/components/schemas/LiveInitialItem'
+      maxItems: 128
+    LiveInitialSessionAudioOutputParam:
+      description: Settings for speech generated by the Live model. Choose the voice before starting the session.
+      type: object
+      properties:
+        voice:
+          description: The voice used for Live speech, as a built-in voice name or a custom voice object containing its ID. Defaults to `marin` and cannot change after startup.
+          oneOf:
+          - anyOf:
+            - type: string
+            - type: string
+              enum:
+              - alloy
+              - ash
+              - ballad
+              - beacon
+              - bossa
+              - cedar
+              - cinder
+              - coral
+              - delta
+              - echo
+              - gleam
+              - marin
+              - meridian
+              - quartz
+              - ripple
+              - sage
+              - shimmer
+              - stone
+              - tempo
+              - verse
+              - vesper
+              - willow
+          - $ref: '#/components/schemas/LiveCustomVoiceParam'
+      required: []
+    LiveReasoningEffort:
+      type: string
+      enum:
+      - none
+      - minimal
+      - low
+      - medium
+      - high
+      - xhigh
+    LiveReasoningSummary:
+      type: string
+      enum:
+      - concise
+      - detailed
+      - auto
+    LiveResponsesDelegationParam:
+      description: Delegate tasks to a Responses model managed by the Live session.
+      type: object
+      properties:
+        type:
+          description: The delegation owner. Always `responses` for tasks handled by the Responses API.
+          default: responses
+          x-stainless-const: true
+          type: string
+          enum:
+          - responses
+        responses:
+          description: Backend model, prompt, and tools used when the Live session delegates a task to Responses.
+          $ref: '#/components/schemas/LiveResponsesDelegationSettingsInputParam'
+      required:
+      - type
+      - responses
+    LiveMediaSessionForkParams:
+      type: object
+      description: Optional overrides for a stored Live session. Omitted settings are inherited. The model, voice, frontend instructions, and prior conversation come from the stored session. WebRTC negotiates its audio format; audio.format is only supported on WebSocket forks.
+      properties:
+        store:
+          $ref: '#/components/schemas/properties-store'
+        delegation:
+          $ref: '#/components/schemas/LiveResponsesDelegationUpdateParam'
+        client:
+          $ref: '#/components/schemas/LiveClientConfigParam'
+      additionalProperties: false
+    LiveDataChannelConfigParam:
+      description: Control which Live events an untrusted WebRTC frontend can send and receive over its data channel. These restrictions do not apply to trusted sideband connections.
+      type: object
+      properties:
+        allowed_client_events:
+          description: Client event types that the frontend data channel may send. Use 'all' to allow every client event; an empty array allows none. Omission preserves the existing allow-all behavior.
+          oneOf:
+          - default: all
+            x-stainless-const: true
+            type: string
+            enum:
+            - all
+          - type: array
+            items:
+              description: A Live client event type allowed on the frontend data channel, such as `session.input_audio.mute`.
+              type: string
+              minLength: 1
+              maxLength: 256
+              pattern: ^(?:error|info|[a-z][a-z0-9_-]*(?:\.[a-z0-9_-]+)+)$
+            maxItems: 256
+        allowed_server_events:
+          description: Server events that may be sent to the frontend data channel. Use 'all' to allow every server event; an empty array allows none. Omission preserves the existing allow-all behavior. Responses events use an object with type 'response.event' and a response_event selector.
+          oneOf:
+          - default: all
+            x-stainless-const: true
+            type: string
+            enum:
+            - all
+          - type: array
+            items:
+              $ref: '#/components/schemas/LiveAllowedServerEventParam'
+            maxItems: 256
+      required: []
+    LiveMediaSessionCreateParams:
+      type: object
+      description: Startup configuration for a Live media session. Follow the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) when writing frontend instructions and the backend prompt under delegation.responses.instructions.
+      properties:
+        model:
+          $ref: '#/components/schemas/ModelIdsLive'
+        instructions:
+          $ref: '#/components/schemas/instructions'
+        audio:
+          $ref: '#/components/schemas/LiveMediaSessionAudioParam'
+          description: Startup audio configuration. WebRTC and SIP negotiate their audio format on the media transport.
+        delegation:
+          $ref: '#/components/schemas/delegation'
+        store:
+          $ref: '#/components/schemas/store'
+        input:
+          $ref: '#/components/schemas/input'
+        client:
+          $ref: '#/components/schemas/LiveClientConfigParam'
+      required:
+      - model
+      additionalProperties: false
+    LiveMediaSessionAudioParam:
+      type: object
+      description: Startup audio output configuration. WebRTC and SIP negotiate the media format; audio.format is only accepted for primary WebSockets. Voice cannot change after startup.
+      properties:
+        output:
+          $ref: '#/components/schemas/LiveInitialSessionAudioOutputParam'
+      additionalProperties: false
+    LiveAllowedServerEventParam:
+      description: A Live server event selector for the WebRTC frontend data channel.
+      example:
+        type: session.started
+      type: object
+      properties:
+        type:
+          description: The outer Live server event type. Use 'response.event' for Responses events.
+          type: string
+          minLength: 1
+          maxLength: 256
+        response_event:
+          description: The nested Responses event type. Required when type is 'response.event'; forbidden for other event types.
+          type: string
+          minLength: 1
+          maxLength: 256
+      required:
+      - type
+      additionalProperties: false
+      x-oaiMeta:
+        example:
+          type: session.started
+    LiveCallRejectRequest:
+      type: object
+      description: Parameters used to reject an incoming Live SIP call.
+      properties:
+        status_code:
+          type: integer
+          minimum: 300
+          maximum: 699
+          description: SIP rejection status sent to the caller. This field is required.
+          example: 486
+      required:
+      - status_code
+      additionalProperties: false
+    LiveClientDelegationParam:
+      description: Delegate tasks to your application. The Live session emits delegation events that your backend handles.
+      type: object
+      properties:
+        type:
+          description: The delegation owner. Always `client` for tasks handled by your application.
+          default: client
+          x-stainless-const: true
+          type: string
+          enum:
+          - client
+      required:
+      - type
+    ModelIdsLive:
+      description: The Live model. Required in the session configuration for every transport; do not pass it as a URL query parameter.
+      example: gpt-live-1
+      anyOf:
+      - type: string
+        minLength: 1
+      - type: string
+        enum:
+        - gpt-live-1
+    LiveResponsesServiceTier:
+      type: string
+      enum:
+      - auto
+      - default
+      - fast_tier_temp_pilot
+      - flex
+      - priority
+      - ultrafast
+    store:
+      description: Whether to store the session for later forking and recording download. Defaults to false for new sessions.
+      type: boolean
+    LiveInitialDeveloperMessageItemParam:
+      description: A developer message included in the initial text history of a Live session.
+      type: object
+      properties:
+        id:
+          anyOf:
+          - description: An optional identifier for the supplied history message. Live uses the message’s role and text to initialize the conversation.
+            type: string
+          - type: 'null'
+        type:
+          description: The history item type. Always `message`.
+          default: message
+          x-stainless-const: true
+          type: string
+          enum:
+          - message
+        status:
+          anyOf:
+          - description: The supplied message’s status. Live uses its text as history and does not resume an incomplete message.
+            $ref: '#/components/schemas/LiveInitialMessageStatus'
+          - type: 'null'
+        role:
+          description: The author of this history message. Always `developer`.
+          default: developer
+          x-stainless-const: true
+          type: string
+          enum:
+          - developer
+        content:
+          description: The message content. Supply exactly one text part for the initial Live conversation history.
+          type: array
+          items:
+            $ref: '#/components/schemas/LiveInitialInputTextContentPartParam'
+          minItems: 1
+          maxItems: 1
+      required:
+      - role
+      - content
+    LiveResponsesDelegationUpdateParam:
+      description: Update the Responses backend for an existing Live session without changing delegation ownership.
+      type: object
+      properties:
+        type:
+          description: The delegation owner. Always `responses` for tasks handled by the Responses API.
+          default: responses
+          x-stainless-const: true
+          type: string
+          enum:
+          - responses
+        responses:
+          description: Responses backend settings to update. Omitted settings keep their existing values.
+          $ref: '#/components/schemas/LiveResponsesDelegationSettingsUpdateInputParam'
+      required:
+      - type
+    LiveResponsesDelegationSettingsUpdateInputParam:
+      description: Updates to the Responses backend of an existing Live session. Omitted settings retain their current values.
+      type: object
+      properties:
+        model:
+          description: The Responses backend model to use for subsequent delegated requests. Omit to keep the current backend model.
+          type: string
+        instructions:
+          anyOf:
+          - description: Instructions for the delegated Responses model, separate from Live instructions. See [backend prompting](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt).
+            type: string
+          - type: 'null'
+        max_output_tokens:
+          anyOf:
+          - description: Maximum number of output tokens for each delegated response.
+            type: integer
+            minimum: 16
+          - type: 'null'
+        service_tier:
+          anyOf:
+          - description: Service tier for delegated Responses requests.
+            $ref: '#/components/schemas/LiveResponsesServiceTier'
+          - type: 'null'
+        reasoning:
+          anyOf:
+          - description: Reasoning settings passed to each delegated Responses request.
+            $ref: '#/components/schemas/LiveDelegationReasoningInputParam'
+          - type: 'null'
+        text:
+          anyOf:
+          - description: Text generation settings passed to each delegated Responses request.
+            $ref: '#/components/schemas/LiveDelegationTextInputParam'
+          - type: 'null'
+        tools:
+          description: Tools available to the Responses backend while it handles tasks delegated by the Live model.
+          type: array
+          items:
+            discriminator:
+              propertyName: type
+            oneOf:
+            - $ref: '#/components/schemas/LiveFunctionToolInputParam'
+            - $ref: '#/components/schemas/LiveWebSearchToolInputParam'
+        tool_choice:
+          description: Controls which tool the Responses backend uses when handling a task delegated by the Live model.
+          oneOf:
+          - $ref: '#/components/schemas/LiveToolChoiceEnum'
+          - $ref: '#/components/schemas/LiveFunctionToolChoiceParam'
+          - $ref: '#/components/schemas/LiveMCPToolChoiceParam'
+        parallel_tool_calls:
+          anyOf:
+          - description: Whether the delegated Responses model may request multiple tool calls in a single response.
+            type: boolean
+          - type: 'null'
+      required: []
+    target_uri:
+      type: string
+      description: 'URI that should appear in the SIP Refer-To header. Supports values like
+
+        `tel:+14155550123` or `sip:agent@example.com`.'
+      example: tel:+14155550123
     LiveMCPToolChoiceParam:
       type: object
       properties:
@@ -250,6 +700,75 @@ components:
       - type
       - server_label
       - name
+    LiveForkRequest:
+      type: object
+      description: Fork a stored Live session onto a new WebRTC connection. Omit session or send an empty object to inherit its configuration.
+      properties:
+        session:
+          $ref: '#/components/schemas/LiveMediaSessionForkParams'
+          description: Optional configuration overrides for the new Live session. Omit this object or send an empty object to inherit the stored session's settings.
+        transport:
+          $ref: '#/components/schemas/LiveWebRTCTransport'
+          description: WebRTC transport with an SDP offer for the new connection to the forked session.
+      required:
+      - transport
+      additionalProperties: false
+    LiveInitialTextContentPartParam:
+      description: Assistant text supplied as conversation history when starting a Live session.
+      type: object
+      properties:
+        type:
+          description: The text content type. Always `text`.
+          default: text
+          x-stainless-const: true
+          type: string
+          enum:
+          - text
+        text:
+          description: The message text to include in the Live session’s initial conversation history.
+          type: string
+      required:
+      - text
+    LiveFunctionToolChoiceParam:
+      type: object
+      properties:
+        type:
+          default: function
+          x-stainless-const: true
+          type: string
+          enum:
+          - function
+        name:
+          type: string
+          minLength: 1
+          maxLength: 64
+          pattern: ^[a-zA-Z0-9_-]+$
+      required:
+      - type
+      - name
+    LiveWebRTCTransport:
+      type: object
+      description: WebRTC transport carrying the offer SDP in a creation request or answer SDP in its response.
+      properties:
+        type:
+          type: string
+          description: The transport used for the Live session. Always `webrtc`.
+          enum:
+          - webrtc
+          x-stainless-const: true
+        sdp:
+          type: string
+          minLength: 1
+          description: Session Description Protocol message for the WebRTC connection.
+      required:
+      - type
+      - sdp
+      additionalProperties: false
+    LiveInitialMessageStatus:
+      type: string
+      enum:
+      - incomplete
+      - completed
     LiveCustomVoiceParam:
       type: object
       properties:
@@ -259,11 +778,25 @@ components:
           maxLength: 128
       required:
       - id
-    instructions:
-      anyOf:
-      - description: Frontend instructions for voice, conversation, interruptions, and when to delegate. Start with the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting); put business rules and tool workflows in a separate [backend prompt](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt). Limited to 16,384 client-supplied tokens. Omitted or blank instructions use server defaults. Immutable after startup.
-        type: string
-      - type: 'null'
+    LiveToolChoiceEnum:
+      type: string
+      enum:
+      - auto
+      - none
+      - required
+    LiveWebSearchToolInputParam:
+      description: A web search tool available to the Live session’s Responses backend.
+      type: object
+      properties:
+        type:
+          description: The tool type. Always `web_search`.
+          default: web_search
+          x-stainless-const: true
+          type: string
+          enum:
+          - web_search
+      required:
+      - type
     LiveResponsesDelegationSettingsInputParam:
       description: Model, prompt, and tool settings for tasks delegated by the Live session to a Responses backend.
       type: object
@@ -319,38 +852,6 @@ components:
           - type: 'null'
       required:
       - model
-    LiveReasoningSummary:
-      type: string
-      enum:
-      - concise
-      - detailed
-      - auto
-    LiveCallRejectRequest:
-      type: object
-      description: Parameters used to reject an incoming Live SIP call.
-      properties:
-        status_code:
-          type: integer
-          minimum: 300
-          maximum: 699
-          description: SIP rejection status sent to the caller. This field is required.
-          example: 486
-      required:
-      - status_code
-      additionalProperties: false
-    LiveMediaSessionAudioParam:
-      type: object
-      description: Startup audio output configuration. WebRTC and SIP negotiate the media format; audio.format is only accepted for primary WebSockets. Voice cannot change after startup.
-      properties:
-        output:
-          $ref: '#/components/schemas/LiveInitialSessionAudioOutputParam'
-      additionalProperties: false
-    LiveTextVerbosity:
-      type: string
-      enum:
-      - low
-      - medium
-      - high
     LiveClientConfigParam:
       description: Startup-only capabilities for an untrusted frontend attached to a unified WebRTC session. Trusted sideband connections are unaffected.
       type: object
@@ -360,358 +861,6 @@ components:
           $ref: '#/components/schemas/LiveDataChannelConfigParam'
       required:
       - data_channel
-    LiveMediaSessionCreateParams:
-      type: object
-      description: Startup configuration for a Live media session. Follow the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) when writing frontend instructions and the backend prompt under delegation.responses.instructions.
-      properties:
-        model:
-          $ref: '#/components/schemas/ModelIdsLive'
-        instructions:
-          $ref: '#/components/schemas/instructions'
-        audio:
-          $ref: '#/components/schemas/LiveMediaSessionAudioParam'
-          description: Startup audio configuration. WebRTC and SIP negotiate their audio format on the media transport.
-        delegation:
-          $ref: '#/components/schemas/delegation'
-        store:
-          $ref: '#/components/schemas/store'
-        input:
-          $ref: '#/components/schemas/input'
-        client:
-          $ref: '#/components/schemas/LiveClientConfigParam'
-      required:
-      - model
-      additionalProperties: false
-    LiveCallAcceptRequest:
-      type: object
-      description: Accept an incoming SIP call with Live startup configuration.
-      properties:
-        session:
-          $ref: '#/components/schemas/LiveCallAcceptSession'
-          description: Model and startup configuration for the Live session that answers the incoming SIP call.
-      required:
-      - session
-      additionalProperties: false
-    delegation:
-      anyOf:
-      - description: Who handles tasks delegated by the Live model. Omitted or null selects your application; use `responses` to let the API manage a Responses backend.
-        discriminator:
-          propertyName: type
-        oneOf:
-        - $ref: '#/components/schemas/LiveClientDelegationParam'
-        - $ref: '#/components/schemas/LiveResponsesDelegationParam'
-      - type: 'null'
-    LiveInitialUserMessageItemParam:
-      description: A user message included in the initial text history of a Live session.
-      type: object
-      properties:
-        id:
-          anyOf:
-          - description: An optional identifier for the supplied history message. Live uses the message’s role and text to initialize the conversation.
-            type: string
-          - type: 'null'
-        type:
-          description: The history item type. Always `message`.
-          default: message
-          x-stainless-const: true
-          type: string
-          enum:
-          - message
-        status:
-          anyOf:
-          - description: The supplied message’s status. Live uses its text as history and does not resume an incomplete message.
-            $ref: '#/components/schemas/LiveInitialMessageStatus'
-          - type: 'null'
-        role:
-          description: The author of this history message. Always `user`.
-          default: user
-          x-stainless-const: true
-          type: string
-          enum:
-          - user
-        content:
-          description: The message content. Supply exactly one text part for the initial Live conversation history.
-          type: array
-          items:
-            $ref: '#/components/schemas/LiveInitialInputTextContentPartParam'
-          minItems: 1
-          maxItems: 1
-      required:
-      - role
-      - content
-    LiveInitialSessionAudioOutputParam:
-      description: Settings for speech generated by the Live model. Choose the voice before starting the session.
-      type: object
-      properties:
-        voice:
-          description: The voice used for Live speech, as a built-in voice name or a custom voice object containing its ID. Defaults to `marin` and cannot change after startup.
-          oneOf:
-          - anyOf:
-            - type: string
-            - type: string
-              enum:
-              - alloy
-              - ash
-              - ballad
-              - beacon
-              - bossa
-              - cedar
-              - cinder
-              - coral
-              - delta
-              - echo
-              - gleam
-              - marin
-              - meridian
-              - quartz
-              - ripple
-              - sage
-              - shimmer
-              - stone
-              - tempo
-              - verse
-              - vesper
-              - willow
-          - $ref: '#/components/schemas/LiveCustomVoiceParam'
-      required: []
-    LiveInitialItem:
-      description: A developer, user, or assistant message supplied as text history before the Live session starts.
-      discriminator:
-        propertyName: role
-      oneOf:
-      - $ref: '#/components/schemas/LiveInitialDeveloperMessageItemParam'
-      - $ref: '#/components/schemas/LiveInitialUserMessageItemParam'
-      - $ref: '#/components/schemas/LiveInitialAssistantMessageItemParam'
-    LiveFunctionToolChoiceParam:
-      type: object
-      properties:
-        type:
-          default: function
-          x-stainless-const: true
-          type: string
-          enum:
-          - function
-        name:
-          type: string
-          minLength: 1
-          maxLength: 64
-          pattern: ^[a-zA-Z0-9_-]+$
-      required:
-      - type
-      - name
-    LiveDataChannelConfigParam:
-      description: Control which Live events an untrusted WebRTC frontend can send and receive over its data channel. These restrictions do not apply to trusted sideband connections.
-      type: object
-      properties:
-        allowed_client_events:
-          description: Client event types that the frontend data channel may send. Use 'all' to allow every client event; an empty array allows none. Omission preserves the existing allow-all behavior.
-          oneOf:
-          - default: all
-            x-stainless-const: true
-            type: string
-            enum:
-            - all
-          - type: array
-            items:
-              description: A Live client event type allowed on the frontend data channel, such as `session.input_audio.mute`.
-              type: string
-              minLength: 1
-              maxLength: 256
-              pattern: ^(?:error|info|[a-z][a-z0-9_-]*(?:\.[a-z0-9_-]+)+)$
-            maxItems: 256
-        allowed_server_events:
-          description: Server events that may be sent to the frontend data channel. Use 'all' to allow every server event; an empty array allows none. Omission preserves the existing allow-all behavior. Responses events use an object with type 'response.event' and a response_event selector.
-          oneOf:
-          - default: all
-            x-stainless-const: true
-            type: string
-            enum:
-            - all
-          - type: array
-            items:
-              $ref: '#/components/schemas/LiveAllowedServerEventParam'
-            maxItems: 256
-      required: []
-    target_uri:
-      type: string
-      description: 'URI that should appear in the SIP Refer-To header. Supports values like
-
-        `tel:+14155550123` or `sip:agent@example.com`.'
-      example: tel:+14155550123
-    LiveInitialDeveloperMessageItemParam:
-      description: A developer message included in the initial text history of a Live session.
-      type: object
-      properties:
-        id:
-          anyOf:
-          - description: An optional identifier for the supplied history message. Live uses the message’s role and text to initialize the conversation.
-            type: string
-          - type: 'null'
-        type:
-          description: The history item type. Always `message`.
-          default: message
-          x-stainless-const: true
-          type: string
-          enum:
-          - message
-        status:
-          anyOf:
-          - description: The supplied message’s status. Live uses its text as history and does not resume an incomplete message.
-            $ref: '#/components/schemas/LiveInitialMessageStatus'
-          - type: 'null'
-        role:
-          description: The author of this history message. Always `developer`.
-          default: developer
-          x-stainless-const: true
-          type: string
-          enum:
-          - developer
-        content:
-          description: The message content. Supply exactly one text part for the initial Live conversation history.
-          type: array
-          items:
-            $ref: '#/components/schemas/LiveInitialInputTextContentPartParam'
-          minItems: 1
-          maxItems: 1
-      required:
-      - role
-      - content
-    LiveReasoningEffort:
-      type: string
-      enum:
-      - none
-      - minimal
-      - low
-      - medium
-      - high
-      - xhigh
-    ModelIdsLive:
-      description: The Live model. Required in the session configuration for every transport; do not pass it as a URL query parameter.
-      example: gpt-live-1
-      anyOf:
-      - type: string
-        minLength: 1
-      - type: string
-        enum:
-        - gpt-live-1
-    LiveResponsesServiceTier:
-      type: string
-      enum:
-      - auto
-      - default
-      - fast_tier_temp_pilot
-      - flex
-      - priority
-      - ultrafast
-    LiveForkRequest:
-      type: object
-      description: Fork a stored Live session onto a new WebRTC connection. Omit session or send an empty object to inherit its configuration.
-      properties:
-        session:
-          $ref: '#/components/schemas/LiveMediaSessionForkParams'
-          description: Optional configuration overrides for the new Live session. Omit this object or send an empty object to inherit the stored session's settings.
-        transport:
-          $ref: '#/components/schemas/LiveWebRTCTransport'
-          description: WebRTC transport with an SDP offer for the new connection to the forked session.
-      required:
-      - transport
-      additionalProperties: false
-    LiveInitialMessageStatus:
-      type: string
-      enum:
-      - incomplete
-      - completed
-    LiveResponsesDelegationSettingsUpdateInputParam:
-      description: Updates to the Responses backend of an existing Live session. Omitted settings retain their current values.
-      type: object
-      properties:
-        model:
-          description: The Responses backend model to use for subsequent delegated requests. Omit to keep the current backend model.
-          type: string
-        instructions:
-          anyOf:
-          - description: Instructions for the delegated Responses model, separate from Live instructions. See [backend prompting](https://developers.openai.com/api/docs/guides/live-delegation#start-with-your-existing-backend-prompt).
-            type: string
-          - type: 'null'
-        max_output_tokens:
-          anyOf:
-          - description: Maximum number of output tokens for each delegated response.
-            type: integer
-            minimum: 16
-          - type: 'null'
-        service_tier:
-          anyOf:
-          - description: Service tier for delegated Responses requests.
-            $ref: '#/components/schemas/LiveResponsesServiceTier'
-          - type: 'null'
-        reasoning:
-          anyOf:
-          - description: Reasoning settings passed to each delegated Responses request.
-            $ref: '#/components/schemas/LiveDelegationReasoningInputParam'
-          - type: 'null'
-        text:
-          anyOf:
-          - description: Text generation settings passed to each delegated Responses request.
-            $ref: '#/components/schemas/LiveDelegationTextInputParam'
-          - type: 'null'
-        tools:
-          description: Tools available to the Responses backend while it handles tasks delegated by the Live model.
-          type: array
-          items:
-            discriminator:
-              propertyName: type
-            oneOf:
-            - $ref: '#/components/schemas/LiveFunctionToolInputParam'
-            - $ref: '#/components/schemas/LiveWebSearchToolInputParam'
-        tool_choice:
-          description: Controls which tool the Responses backend uses when handling a task delegated by the Live model.
-          oneOf:
-          - $ref: '#/components/schemas/LiveToolChoiceEnum'
-          - $ref: '#/components/schemas/LiveFunctionToolChoiceParam'
-          - $ref: '#/components/schemas/LiveMCPToolChoiceParam'
-        parallel_tool_calls:
-          anyOf:
-          - description: Whether the delegated Responses model may request multiple tool calls in a single response.
-            type: boolean
-          - type: 'null'
-      required: []
-    LiveInitialTextContentPartParam:
-      description: Assistant text supplied as conversation history when starting a Live session.
-      type: object
-      properties:
-        type:
-          description: The text content type. Always `text`.
-          default: text
-          x-stainless-const: true
-          type: string
-          enum:
-          - text
-        text:
-          description: The message text to include in the Live session’s initial conversation history.
-          type: string
-      required:
-      - text
-    input:
-      description: Ordered text-only history supplied before startup. Supports developer, user, and assistant messages with one text part each; at most 128 messages and 8,192 rendered tokens in total.
-      type: array
-      items:
-        $ref: '#/components/schemas/LiveInitialItem'
-      maxItems: 128
-    LiveCallReferRequest:
-      type: object
-      description: Parameters used to transfer a Live SIP call to another destination.
-      properties:
-        target_uri:
-          $ref: '#/components/schemas/target_uri'
-          minLength: 1
-          pattern: \S
-          description: Nonblank URI for the SIP Refer-To header, such as tel:+14155550123 or sip:agent@example.com.
-      required:
-      - target_uri
-      additionalProperties: false
-    store:
-      description: Whether to store the session for later forking and recording download. Defaults to false for new sessions.
-      type: boolean
     LiveDelegationTextInputParam:
       description: Text generation options for the Live session’s Responses backend.
       type: object
@@ -722,135 +871,6 @@ components:
             $ref: '#/components/schemas/LiveTextVerbosity'
           - type: 'null'
       required: []
-    LiveToolChoiceEnum:
-      type: string
-      enum:
-      - auto
-      - none
-      - required
-    LiveCallAcceptSession:
-      type: object
-      description: Startup configuration for accepting an incoming Live SIP call. Follow the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) when writing frontend and backend instructions.
-      properties:
-        model:
-          $ref: '#/components/schemas/ModelIdsLive'
-          description: The Live model to use for the accepted call.
-          minLength: 1
-        instructions:
-          $ref: '#/components/schemas/instructions'
-        audio:
-          $ref: '#/components/schemas/LiveMediaSessionAudioParam'
-          description: Startup audio output configuration. SIP negotiates the media format; audio.format is only accepted for primary WebSockets. Voice cannot change after startup.
-        delegation:
-          $ref: '#/components/schemas/delegation'
-        store:
-          $ref: '#/components/schemas/store'
-        input:
-          $ref: '#/components/schemas/input'
-        type:
-          type: string
-          enum:
-          - live
-          default: live
-          x-stainless-const: true
-          description: The session type. Always `live`.
-      required:
-      - model
-      - type
-      additionalProperties: false
-    LiveResponsesDelegationParam:
-      description: Delegate tasks to a Responses model managed by the Live session.
-      type: object
-      properties:
-        type:
-          description: The delegation owner. Always `responses` for tasks handled by the Responses API.
-          default: responses
-          x-stainless-const: true
-          type: string
-          enum:
-          - responses
-        responses:
-          description: Backend model, prompt, and tools used when the Live session delegates a task to Responses.
-          $ref: '#/components/schemas/LiveResponsesDelegationSettingsInputParam'
-      required:
-      - type
-      - responses
-    LiveCreateResponse:
-      type: object
-      description: The created Live session identifier and WebRTC answer. Apply transport.sdp as the peer's remote answer and wait for session.started on the data channel before sending commands.
-      properties:
-        session:
-          type: object
-          description: The newly created Live session. Use its ID for session controls and sideband connections.
-          properties:
-            id:
-              type: string
-              description: Opaque session identifier. Preserve the returned value unchanged, including its prefix.
-          required:
-          - id
-        transport:
-          $ref: '#/components/schemas/LiveWebRTCTransport'
-          description: WebRTC transport with the SDP answer.
-      required:
-      - session
-      - transport
-    LiveDelegationReasoningInputParam:
-      description: Reasoning options for Responses requests made on behalf of the Live session.
-      type: object
-      properties:
-        effort:
-          anyOf:
-          - description: How much reasoning effort the delegated Responses model should use. Supported values depend on the backend model.
-            $ref: '#/components/schemas/LiveReasoningEffort'
-          - type: 'null'
-        summary:
-          anyOf:
-          - description: The reasoning summary to request from the delegated Responses model, when supported.
-            $ref: '#/components/schemas/LiveReasoningSummary'
-          - type: 'null'
-      required: []
-    LiveInitialInputTextContentPartParam:
-      description: Text supplied in a developer or user message when starting a Live session.
-      type: object
-      properties:
-        type:
-          description: The text content type. Always `input_text`.
-          default: input_text
-          x-stainless-const: true
-          type: string
-          enum:
-          - input_text
-        text:
-          description: The message text to include in the Live session’s initial conversation history.
-          type: string
-      required:
-      - text
-    LiveClientDelegationParam:
-      description: Delegate tasks to your application. The Live session emits delegation events that your backend handles.
-      type: object
-      properties:
-        type:
-          description: The delegation owner. Always `client` for tasks handled by your application.
-          default: client
-          x-stainless-const: true
-          type: string
-          enum:
-          - client
-      required:
-      - type
-    LiveWebSearchToolInputParam:
-      description: A web search tool available to the Live session’s Responses backend.
-      type: object
-      properties:
-        type:
-          description: The tool type. Always `web_search`.
-          default: web_search
-          x-stainless-const: true
-          type: string
-          enum:
-          - web_search
-      required:
-      - type
     LiveFunctionToolInputParam:
       description: A function tool available to the Responses backend when the Live model delegates a task.
       type: object
@@ -884,51 +904,55 @@ components:
       required:
       - type
       - name
-    LiveWebRTCTransport:
+    LiveCallAcceptSession:
       type: object
-      description: WebRTC transport carrying the offer SDP in a creation request or answer SDP in its response.
+      description: Startup configuration for accepting an incoming Live SIP call. Follow the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) when writing frontend and backend instructions.
       properties:
-        type:
-          type: string
-          description: The transport used for the Live session. Always `webrtc`.
-          enum:
-          - webrtc
-          x-stainless-const: true
-        sdp:
-          type: string
+        model:
+          $ref: '#/components/schemas/ModelIdsLive'
+          description: The Live model to use for the accepted call.
           minLength: 1
-          description: Session Description Protocol message for the WebRTC connection.
-      required:
-      - type
-      - sdp
-      additionalProperties: false
-    LiveResponsesDelegationUpdateParam:
-      description: Update the Responses backend for an existing Live session without changing delegation ownership.
-      type: object
-      properties:
+        instructions:
+          $ref: '#/components/schemas/instructions'
+        audio:
+          $ref: '#/components/schemas/LiveMediaSessionAudioParam'
+          description: Startup audio output configuration. SIP negotiates the media format; audio.format is only accepted for primary WebSockets. Voice cannot change after startup.
+        delegation:
+          $ref: '#/components/schemas/delegation'
+        store:
+          $ref: '#/components/schemas/store'
+        input:
+          $ref: '#/components/schemas/input'
         type:
-          description: The delegation owner. Always `responses` for tasks handled by the Responses API.
-          default: responses
-          x-stainless-const: true
           type: string
           enum:
-          - responses
-        responses:
-          description: Responses backend settings to update. Omitted settings keep their existing values.
-          $ref: '#/components/schemas/LiveResponsesDelegationSettingsUpdateInputParam'
+          - live
+          default: live
+          x-stainless-const: true
+          description: The session type. Always `live`.
       required:
+      - model
       - type
-    LiveMediaSessionForkParams:
-      type: object
-      description: Optional overrides for a stored Live session. Omitted settings are inherited. The model, voice, frontend instructions, and prior conversation come from the stored session. WebRTC negotiates its audio format; audio.format is only supported on WebSocket forks.
-      properties:
-        store:
-          $ref: '#/components/schemas/properties-store'
-        delegation:
-          $ref: '#/components/schemas/LiveResponsesDelegationUpdateParam'
-        client:
-          $ref: '#/components/schemas/LiveClientConfigParam'
       additionalProperties: false
+    LiveCreateResponse:
+      type: object
+      description: The created Live session identifier and WebRTC answer. Apply transport.sdp as the peer's remote answer and wait for session.started on the data channel before sending commands.
+      properties:
+        session:
+          type: object
+          description: The newly created Live session. Use its ID for session controls and sideband connections.
+          properties:
+            id:
+              type: string
+              description: Opaque session identifier. Preserve the returned value unchanged, including its prefix.
+          required:
+          - id
+        transport:
+          $ref: '#/components/schemas/LiveWebRTCTransport'
+          description: WebRTC transport with the SDP answer.
+      required:
+      - session
+      - transport
     LiveInitialAssistantMessageItemParam:
       description: An assistant message included in the initial text history of a Live session.
       type: object
@@ -972,28 +996,6 @@ components:
       required:
       - role
       - content
-    LiveAllowedServerEventParam:
-      description: A Live server event selector for the WebRTC frontend data channel.
-      example:
-        type: session.started
-      type: object
-      properties:
-        type:
-          description: The outer Live server event type. Use 'response.event' for Responses events.
-          type: string
-          minLength: 1
-          maxLength: 256
-        response_event:
-          description: The nested Responses event type. Required when type is 'response.event'; forbidden for other event types.
-          type: string
-          minLength: 1
-          maxLength: 256
-      required:
-      - type
-      additionalProperties: false
-      x-oaiMeta:
-        example:
-          type: session.started
     LiveCreateRequest:
       type: object
       description: Create a Live WebRTC session with JSON session configuration and an SDP offer. Follow the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) before choosing frontend and backend instructions. The request starts the session; do not send session.start on the data channel.
@@ -1008,23 +1010,503 @@ components:
       - session
       - transport
       additionalProperties: false
-    LiveInitialOutputTextContentPartParam:
-      description: Assistant output text supplied as conversation history when starting a Live session.
+    delegation:
+      anyOf:
+      - description: Who handles tasks delegated by the Live model. Omitted or null selects your application; use `responses` to let the API manage a Responses backend.
+        discriminator:
+          propertyName: type
+        oneOf:
+        - $ref: '#/components/schemas/LiveClientDelegationParam'
+        - $ref: '#/components/schemas/LiveResponsesDelegationParam'
+      - type: 'null'
+    LiveTextVerbosity:
+      type: string
+      enum:
+      - low
+      - medium
+      - high
+    LiveToolSearchToolInputParam:
       type: object
       properties:
         type:
-          description: The text content type. Always `output_text`.
-          default: output_text
+          default: tool_search
           x-stainless-const: true
           type: string
           enum:
-          - output_text
-        text:
-          description: The message text to include in the Live session’s initial conversation history.
+          - tool_search
+      required:
+      - type
+    LiveInlineSkillSourceParam:
+      description: Inline skill payload
+      type: object
+      properties:
+        type:
+          description: The type of the inline skill source. Must be `base64`.
+          default: base64
+          x-stainless-const: true
+          type: string
+          enum:
+          - base64
+        media_type:
+          description: The media type of the inline skill payload. Must be `application/zip`.
+          default: application/zip
+          x-stainless-const: true
+          type: string
+          enum:
+          - application/zip
+        data:
+          description: Base64-encoded skill zip bundle.
+          type: string
+          minLength: 1
+          maxLength: 70254592
+      required:
+      - type
+      - media_type
+      - data
+    LiveHostedShellContainerAutoParam:
+      type: object
+      properties:
+        type:
+          description: Automatically creates a container for this request
+          default: container_auto
+          x-stainless-const: true
+          type: string
+          enum:
+          - container_auto
+        file_ids:
+          anyOf:
+          - description: An optional list of uploaded files to make available to your code.
+            type: array
+            items:
+              type: string
+            maxItems: 50
+          - type: 'null'
+        memory_limit:
+          anyOf:
+          - description: The memory limit for the container.
+            $ref: '#/components/schemas/LiveContainerMemoryLimit'
+          - type: 'null'
+        network_policy:
+          anyOf:
+          - description: Network access policy for the container.
+            discriminator:
+              propertyName: type
+            oneOf:
+            - $ref: '#/components/schemas/LiveContainerNetworkPolicyDisabledParam'
+            - $ref: '#/components/schemas/LiveHostedShellNetworkPolicyAllowlistParam'
+          - type: 'null'
+        skills:
+          anyOf:
+          - description: An optional list of skills referenced by id or inline data.
+            type: array
+            items:
+              discriminator:
+                propertyName: type
+              oneOf:
+              - $ref: '#/components/schemas/LiveSkillReferenceParam'
+              - $ref: '#/components/schemas/LiveInlineSkillParam'
+            maxItems: 200
+          - type: 'null'
+      required:
+      - type
+    LiveSpecificCustomToolParam:
+      type: object
+      properties:
+        type:
+          description: The tool to call. Always `custom`.
+          default: custom
+          x-stainless-const: true
+          type: string
+          enum:
+          - custom
+        name:
+          description: The name of the custom tool to call.
           type: string
       required:
       - type
-      - text
+      - name
+    LiveHostedShellToolInputParam:
+      description: A Responses shell tool. Use a hosted container or return local shell results with response.item.create. Domain secrets are not supported.
+      type: object
+      properties:
+        type:
+          default: shell
+          x-stainless-const: true
+          type: string
+          enum:
+          - shell
+        environment:
+          anyOf:
+          - discriminator:
+              propertyName: type
+            oneOf:
+            - $ref: '#/components/schemas/LiveHostedShellContainerAutoParam'
+            - $ref: '#/components/schemas/LiveContainerReferenceParam'
+            - $ref: '#/components/schemas/LiveLocalEnvironmentParam'
+          - type: 'null'
+      required:
+      - type
+    LiveCustomToolInputParam:
+      type: object
+      properties:
+        type:
+          default: custom
+          x-stainless-const: true
+          type: string
+          enum:
+          - custom
+      required:
+      - type
+    LiveSIPTrunkAuth:
+      type: object
+      description: Credentials for SIP Digest authentication with your trunk provider.
+      properties:
+        type:
+          type: string
+          description: Use `digest` for SIP Digest authentication. Handles 401 and 407 challenges.
+          enum:
+          - digest
+        username:
+          type: string
+          minLength: 1
+          description: Provider username. Must contain a non-whitespace character, be at most 256 bytes, and contain no CR, LF, or NUL.
+        password:
+          type: string
+          minLength: 1
+          writeOnly: true
+          description: Provider password. Must be at most 4096 bytes and contain no CR, LF, or NUL.
+      required:
+      - type
+      - username
+      - password
+      additionalProperties: false
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    LiveLocalSkillParam:
+      type: object
+      properties:
+        name:
+          description: The name of the skill.
+          type: string
+        description:
+          description: The description of the skill.
+          type: string
+        path:
+          description: The path to the directory containing the skill.
+          type: string
+      required:
+      - name
+      - description
+      - path
+    LiveImageGenerationToolInputParam:
+      type: object
+      properties:
+        type:
+          default: image_generation
+          x-stainless-const: true
+          type: string
+          enum:
+          - image_generation
+      required:
+      - type
+    LiveAllowedToolsChoiceParam:
+      type: object
+      properties:
+        type:
+          description: The tool choice type. Always `allowed_tools`.
+          default: allowed_tools
+          x-stainless-const: true
+          type: string
+          enum:
+          - allowed_tools
+        tools:
+          description: The tools that the delegated Responses model may call.
+          type: array
+          items:
+            discriminator:
+              propertyName: type
+            oneOf:
+            - $ref: '#/components/schemas/LiveFunctionToolChoiceParam_2'
+            - $ref: '#/components/schemas/LiveMCPToolChoiceParam_2'
+            - $ref: '#/components/schemas/LiveSpecificFileSearchParam'
+            - $ref: '#/components/schemas/LiveSpecificWebSearchParam'
+            - $ref: '#/components/schemas/LiveSpecificWebSearchPreviewParam'
+            - $ref: '#/components/schemas/LiveSpecificImageGenParam'
+            - $ref: '#/components/schemas/LiveSpecificComputerParam'
+            - $ref: '#/components/schemas/LiveSpecificCodeInterpreterParam'
+            - $ref: '#/components/schemas/LiveSpecificProgrammaticToolCallingParam'
+            - $ref: '#/components/schemas/LiveSpecificFunctionShellParam'
+            - $ref: '#/components/schemas/LiveSpecificCustomToolParam'
+            - $ref: '#/components/schemas/LiveSpecificApplyPatchParam'
+          minItems: 1
+          maxItems: 128
+        mode:
+          anyOf:
+          - description: How to select a tool from the allowed set.
+            $ref: '#/components/schemas/LiveToolChoiceValueEnum'
+          - type: 'null'
+      required:
+      - type
+      - tools
+    LiveSessionCreateRequest:
+      type: object
+      description: Create a Live session with a WebRTC SDP offer or place an outbound SIP call. Follow the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) before choosing frontend and backend instructions. The request starts the session; do not send session.start again on the data channel or sideband.
+      properties:
+        session:
+          $ref: '#/components/schemas/LiveMediaSessionCreateParams'
+          description: Startup configuration for the Live session.
+        transport:
+          description: WebRTC transport with an SDP offer, or SIP transport with a destination and per-call trunk credentials.
+          oneOf:
+          - $ref: '#/components/schemas/LiveWebRTCTransport'
+          - $ref: '#/components/schemas/LiveSIPTransport'
+          discriminator:
+            propertyName: type
+      required:
+      - session
+      - transport
+      additionalProperties: false
+    LiveFunctionToolChoiceParam_2:
+      type: object
+      properties:
+        type:
+          description: The tool to call. Always `function`.
+          default: function
+          x-stainless-const: true
+          type: string
+          enum:
+          - function
+        name:
+          description: The name of the function tool to call.
+          type: string
+      required:
+      - type
+      - name
+    LiveSpecificImageGenParam:
+      type: object
+      properties:
+        type:
+          description: The tool to call. Always `image_generation`.
+          default: image_generation
+          x-stainless-const: true
+          type: string
+          enum:
+          - image_generation
+      required:
+      - type
+    LiveCodeInterpreterToolInputParam:
+      type: object
+      properties:
+        type:
+          default: code_interpreter
+          x-stainless-const: true
+          type: string
+          enum:
+          - code_interpreter
+      required:
+      - type
+    LiveLocalEnvironmentParam:
+      type: object
+      properties:
+        type:
+          description: Use a local computer environment.
+          default: local
+          x-stainless-const: true
+          type: string
+          enum:
+          - local
+        skills:
+          anyOf:
+          - description: An optional list of skills.
+            type: array
+            items:
+              $ref: '#/components/schemas/LiveLocalSkillParam'
+            maxItems: 200
+          - type: 'null'
+      required:
+      - type
+    LiveApplyPatchToolInputParam:
+      type: object
+      properties:
+        type:
+          default: apply_patch
+          x-stainless-const: true
+          type: string
+          enum:
+          - apply_patch
+      required:
+      - type
+    LiveSessionCreateResponse:
+      type: object
+      description: The created Live session and its transport. WebRTC creation returns 201 Created with an SDP answer. Outbound SIP creation returns 201 Created after initialization, before the callee necessarily answers, without SDP or trunk credentials.
+      properties:
+        session:
+          $ref: '#/components/schemas/session'
+        transport:
+          description: WebRTC transport with an SDP answer, or SIP transport without SDP or trunk credentials. For SIP, attach a sideband using session.id to receive transport.ringing, transport.answered, and transport.failed notifications.
+          oneOf:
+          - $ref: '#/components/schemas/LiveWebRTCTransport'
+          - type: object
+            description: The SIP transport. Trunk credentials and SDP are not returned.
+            properties:
+              type:
+                type: string
+                description: The transport used for the Live session. Always `sip`.
+                enum:
+                - sip
+                x-stainless-const: true
+            required:
+            - type
+          discriminator:
+            propertyName: type
+      required:
+      - session
+      - transport
+    LiveInlineSkillParam:
+      type: object
+      properties:
+        type:
+          description: Defines an inline skill for this request.
+          default: inline
+          x-stainless-const: true
+          type: string
+          enum:
+          - inline
+        name:
+          description: The name of the skill.
+          type: string
+        description:
+          description: The description of the skill.
+          type: string
+        source:
+          description: Inline skill payload
+          $ref: '#/components/schemas/LiveInlineSkillSourceParam'
+      required:
+      - type
+      - name
+      - description
+      - source
+    session:
+      type: object
+      description: The newly created Live session. Use its ID for session controls and sideband connections.
+      properties:
+        id:
+          type: string
+          description: Opaque session identifier. Preserve the returned value unchanged, including its prefix.
+      required:
+      - id
+    LiveSpecificFunctionShellParam:
+      title: Specific shell tool choice
+      description: Forces the model to call the shell tool when a tool call is required.
+      type: object
+      properties:
+        type:
+          description: The tool to call. Always `shell`.
+          default: shell
+          x-stainless-const: true
+          type: string
+          enum:
+          - shell
+      required:
+      - type
+    LiveSIPTrunk:
+      type: object
+      description: SIP trunk configuration supplied for this call. Keep trunk credentials on your server. The creation response does not return this configuration.
+      properties:
+        provider_url:
+          type: string
+          description: Provider endpoint in the form `sips:host[:port][;transport=tcp]`. The default port is 5061. IPv6 addresses must be bracketed. TLS signaling is required; plaintext SIP is not supported. Do not include userinfo, a path, URI headers, or other URI parameters. Local hostnames and literal private, loopback, link-local, unspecified, multicast, and broadcast IP addresses are rejected.
+          example: sips:sip.example.com:5061
+        auth:
+          $ref: '#/components/schemas/LiveSIPTrunkAuth'
+        caller_number:
+          type: string
+          description: Caller phone number in E.164 format to use in the SIP From header.
+          pattern: ^\+[1-9][0-9]{1,14}$
+          example: '+14155550100'
+      required:
+      - provider_url
+      - auth
+      - caller_number
+      additionalProperties: false
+    LiveSpecificWebSearchParam:
+      type: object
+      properties:
+        type:
+          description: The tool to call. Always `web_search`.
+          default: web_search
+          x-stainless-const: true
+          type: string
+          enum:
+          - web_search
+      required:
+      - type
+    LiveContainerNetworkPolicyDisabledParam:
+      type: object
+      properties:
+        type:
+          description: Disable outbound network access. Always `disabled`.
+          default: disabled
+          x-stainless-const: true
+          type: string
+          enum:
+          - disabled
+      required:
+      - type
+    LiveSpecificCodeInterpreterParam:
+      type: object
+      properties:
+        type:
+          description: The tool to call. Always `code_interpreter`.
+          default: code_interpreter
+          x-stainless-const: true
+          type: string
+          enum:
+          - code_interpreter
+      required:
+      - type
+    LiveSpecificComputerParam:
+      type: object
+      properties:
+        type:
+          description: The tool to call. Always `computer`.
+          default: computer
+          x-stainless-const: true
+          type: string
+          enum:
+          - computer
+      required:
+      - type
+    LiveToolChoiceValueEnum:
+      type: string
+      enum:
+      - none
+      - auto
+      - required
+    LiveHostedShellNetworkPolicyAllowlistParam:
+      type: object
+      properties:
+        type:
+          description: Allow outbound network access only to specified domains. Always `allowlist`.
+          default: allowlist
+          x-stainless-const: true
+          type: string
+          enum:
+          - allowlist
+        allowed_domains:
+          description: A list of allowed domains when type is `allowlist`.
+          type: array
+          items:
+            type: string
+          minItems: 1
+      required:
+      - type
+      - allowed_domains
     LiveMCPToolChoiceParam_2:
       type: object
       properties:
@@ -1046,6 +1528,18 @@ components:
       required:
       - type
       - server_label
+    LiveSpecificProgrammaticToolCallingParam:
+      type: object
+      properties:
+        type:
+          description: The tool to call. Always `programmatic_tool_calling`.
+          default: programmatic_tool_calling
+          x-stainless-const: true
+          type: string
+          enum:
+          - programmatic_tool_calling
+      required:
+      - type
     LiveResponsesDelegationSettingsInputParam_2:
       description: Model, prompt, and tool settings for tasks delegated by the Live session to a Responses backend.
       type: object
@@ -1126,20 +1620,33 @@ components:
           - type: 'null'
       required:
       - model
-    session:
-      type: object
-      description: The newly created Live session. Use its ID for session controls and sideband connections.
+    MisalignmentErrorDetailsResource:
       properties:
-        id:
+        review_target:
+          anyOf:
+          - not:
+              pattern: '[^A-Za-z0-9._~:-]'
+            type: string
+            maxLength: 96
+            minLength: 1
+            pattern: ^[A-Za-z0-9._~:-]+$
+            description: An opaque target for explicitly continuing this review, or null when unavailable.
+          - type: 'null'
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
           type: string
-          description: Opaque session identifier. Preserve the returned value unchanged, including its prefix.
-      required:
-      - id
-    LiveSpecificComputerParam:
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
+    LiveComputerToolInputParam:
       type: object
       properties:
         type:
-          description: The tool to call. Always `computer`.
           default: computer
           x-stainless-const: true
           type: string
@@ -1147,15 +1654,42 @@ components:
           - computer
       required:
       - type
-    LiveProgrammaticToolInputParam:
+    LiveContainerMemoryLimit:
+      type: string
+      enum:
+      - 1g
+      - 4g
+      - 16g
+      - 64g
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+    LiveMCPToolInputParam:
       type: object
       properties:
         type:
-          default: programmatic_tool_calling
+          default: mcp
           x-stainless-const: true
           type: string
           enum:
-          - programmatic_tool_calling
+          - mcp
+      required:
+      - type
+    LiveSpecificFileSearchParam:
+      type: object
+      properties:
+        type:
+          description: The tool to call. Always `file_search`.
+          default: file_search
+          x-stainless-const: true
+          type: string
+          enum:
+          - file_search
       required:
       - type
     LiveContainerReferenceParam:
@@ -1174,134 +1708,40 @@ components:
       required:
       - type
       - container_id
-    LiveNamespaceToolInputParam:
+    LiveSpecificWebSearchPreviewParam:
       type: object
       properties:
         type:
-          default: namespace
+          description: The tool to call. Always `web_search_preview`.
+          default: web_search_preview
           x-stainless-const: true
           type: string
           enum:
-          - namespace
+          - web_search_preview
       required:
       - type
-    LiveToolSearchToolInputParam:
+    Error:
       type: object
       properties:
-        type:
-          default: tool_search
-          x-stainless-const: true
-          type: string
-          enum:
-          - tool_search
-      required:
-      - type
-    LiveSpecificFileSearchParam:
-      type: object
-      properties:
-        type:
-          description: The tool to call. Always `file_search`.
-          default: file_search
-          x-stainless-const: true
-          type: string
-          enum:
-          - file_search
-      required:
-      - type
-    LiveSIPTrunkAuth:
-      type: object
-      description: Credentials for SIP Digest authentication with your trunk provider.
-      properties:
-        type:
-          type: string
-          description: Use `digest` for SIP Digest authentication. Handles 401 and 407 challenges.
-          enum:
-          - digest
-        username:
-          type: string
-          minLength: 1
-          description: Provider username. Must contain a non-whitespace character, be at most 256 bytes, and contain no CR, LF, or NUL.
-        password:
-          type: string
-          minLength: 1
-          writeOnly: true
-          description: Provider password. Must be at most 4096 bytes and contain no CR, LF, or NUL.
-      required:
-      - type
-      - username
-      - password
-      additionalProperties: false
-    LiveAllowedToolsChoiceParam:
-      type: object
-      properties:
-        type:
-          description: The tool choice type. Always `allowed_tools`.
-          default: allowed_tools
-          x-stainless-const: true
-          type: string
-          enum:
-          - allowed_tools
-        tools:
-          description: The tools that the delegated Responses model may call.
-          type: array
-          items:
-            discriminator:
-              propertyName: type
-            oneOf:
-            - $ref: '#/components/schemas/LiveFunctionToolChoiceParam_2'
-            - $ref: '#/components/schemas/LiveMCPToolChoiceParam_2'
-            - $ref: '#/components/schemas/LiveSpecificFileSearchParam'
-            - $ref: '#/components/schemas/LiveSpecificWebSearchParam'
-            - $ref: '#/components/schemas/LiveSpecificWebSearchPreviewParam'
-            - $ref: '#/components/schemas/LiveSpecificImageGenParam'
-            - $ref: '#/components/schemas/LiveSpecificComputerParam'
-            - $ref: '#/components/schemas/LiveSpecificCodeInterpreterParam'
-            - $ref: '#/components/schemas/LiveSpecificProgrammaticToolCallingParam'
-            - $ref: '#/components/schemas/LiveSpecificFunctionShellParam'
-            - $ref: '#/components/schemas/LiveSpecificCustomToolParam'
-            - $ref: '#/components/schemas/LiveSpecificApplyPatchParam'
-          minItems: 1
-          maxItems: 128
-        mode:
+        code:
           anyOf:
-          - description: How to select a tool from the allowed set.
-            $ref: '#/components/schemas/LiveToolChoiceValueEnum'
+          - type: string
           - type: 'null'
-      required:
-      - type
-      - tools
-    LiveSIPTrunk:
-      type: object
-      description: SIP trunk configuration supplied for this call. Keep trunk credentials on your server. The creation response does not return this configuration.
-      properties:
-        provider_url:
+        message:
           type: string
-          description: Provider endpoint in the form `sips:host[:port][;transport=tcp]`. The default port is 5061. IPv6 addresses must be bracketed. TLS signaling is required; plaintext SIP is not supported. Do not include userinfo, a path, URI headers, or other URI parameters. Local hostnames and literal private, loopback, link-local, unspecified, multicast, and broadcast IP addresses are rejected.
-          example: sips:sip.example.com:5061
-        auth:
-          $ref: '#/components/schemas/LiveSIPTrunkAuth'
-        caller_number:
-          type: string
-          description: Caller phone number in E.164 format to use in the SIP From header.
-          pattern: ^\+[1-9][0-9]{1,14}$
-          example: '+14155550100'
-      required:
-      - provider_url
-      - auth
-      - caller_number
-      additionalProperties: false
-    LiveSpecificImageGenParam:
-      type: object
-      properties:
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
         type:
-          description: The tool to call. Always `image_generation`.
-          default: image_generation
-          x-stainless-const: true
           type: string
-          enum:
-          - image_generation
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
       required:
       - type
+      - message
+      - param
+      - code
     LiveInitialSessionAudioOutputParam_2:
       description: Settings for speech generated by the Live model. Choose the voice before starting the session.
       type: object
@@ -1346,230 +1786,6 @@ components:
               - willow
           - $ref: '#/components/schemas/LiveCustomVoiceParam'
       required: []
-    LiveHostedShellToolInputParam:
-      description: A Responses shell tool. Use a hosted container or return local shell results with response.item.create. Domain secrets are not supported.
-      type: object
-      properties:
-        type:
-          default: shell
-          x-stainless-const: true
-          type: string
-          enum:
-          - shell
-        environment:
-          anyOf:
-          - discriminator:
-              propertyName: type
-            oneOf:
-            - $ref: '#/components/schemas/LiveHostedShellContainerAutoParam'
-            - $ref: '#/components/schemas/LiveContainerReferenceParam'
-            - $ref: '#/components/schemas/LiveLocalEnvironmentParam'
-          - type: 'null'
-      required:
-      - type
-    LiveInlineSkillSourceParam:
-      description: Inline skill payload
-      type: object
-      properties:
-        type:
-          description: The type of the inline skill source. Must be `base64`.
-          default: base64
-          x-stainless-const: true
-          type: string
-          enum:
-          - base64
-        media_type:
-          description: The media type of the inline skill payload. Must be `application/zip`.
-          default: application/zip
-          x-stainless-const: true
-          type: string
-          enum:
-          - application/zip
-        data:
-          description: Base64-encoded skill zip bundle.
-          type: string
-          minLength: 1
-          maxLength: 70254592
-      required:
-      - type
-      - media_type
-      - data
-    LiveHostedShellNetworkPolicyAllowlistParam:
-      type: object
-      properties:
-        type:
-          description: Allow outbound network access only to specified domains. Always `allowlist`.
-          default: allowlist
-          x-stainless-const: true
-          type: string
-          enum:
-          - allowlist
-        allowed_domains:
-          description: A list of allowed domains when type is `allowlist`.
-          type: array
-          items:
-            type: string
-          minItems: 1
-      required:
-      - type
-      - allowed_domains
-    LiveInlineSkillParam:
-      type: object
-      properties:
-        type:
-          description: Defines an inline skill for this request.
-          default: inline
-          x-stainless-const: true
-          type: string
-          enum:
-          - inline
-        name:
-          description: The name of the skill.
-          type: string
-        description:
-          description: The description of the skill.
-          type: string
-        source:
-          description: Inline skill payload
-          $ref: '#/components/schemas/LiveInlineSkillSourceParam'
-      required:
-      - type
-      - name
-      - description
-      - source
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
-    LiveSIPTransport:
-      type: object
-      description: Place an outbound SIP call using your provider's trunk. Outbound SIP calling must be enabled for your organization. The trunk must support TLS signaling, Opus audio, and SDES-SRTP media. See [Telephony and SIP](https://developers.openai.com/api/docs/guides/voice-sip?api=live#place-an-outbound-call).
-      properties:
-        type:
-          type: string
-          description: The transport used for the Live session. Always `sip`.
-          enum:
-          - sip
-          x-stainless-const: true
-        destination:
-          type: string
-          description: Phone number to call in E.164 format. SIP URI destinations are not supported.
-          pattern: ^\+[1-9][0-9]{1,14}$
-          example: '+14155550123'
-        trunk:
-          $ref: '#/components/schemas/LiveSIPTrunk'
-      required:
-      - type
-      - destination
-      - trunk
-      additionalProperties: false
-    LiveContainerNetworkPolicyDisabledParam:
-      type: object
-      properties:
-        type:
-          description: Disable outbound network access. Always `disabled`.
-          default: disabled
-          x-stainless-const: true
-          type: string
-          enum:
-          - disabled
-      required:
-      - type
-    LiveSpecificApplyPatchParam:
-      title: Specific apply patch tool choice
-      description: Forces the model to call the apply_patch tool when executing a tool call.
-      type: object
-      properties:
-        type:
-          description: The tool to call. Always `apply_patch`.
-          default: apply_patch
-          x-stainless-const: true
-          type: string
-          enum:
-          - apply_patch
-      required:
-      - type
-    LiveApplyPatchToolInputParam:
-      type: object
-      properties:
-        type:
-          default: apply_patch
-          x-stainless-const: true
-          type: string
-          enum:
-          - apply_patch
-      required:
-      - type
-    LiveContainerMemoryLimit:
-      type: string
-      enum:
-      - 1g
-      - 4g
-      - 16g
-      - 64g
-    LiveSpecificWebSearchPreviewParam:
-      type: object
-      properties:
-        type:
-          description: The tool to call. Always `web_search_preview`.
-          default: web_search_preview
-          x-stainless-const: true
-          type: string
-          enum:
-          - web_search_preview
-      required:
-      - type
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    LiveLocalEnvironmentParam:
-      type: object
-      properties:
-        type:
-          description: Use a local computer environment.
-          default: local
-          x-stainless-const: true
-          type: string
-          enum:
-          - local
-        skills:
-          anyOf:
-          - description: An optional list of skills.
-            type: array
-            items:
-              $ref: '#/components/schemas/LiveLocalSkillParam'
-            maxItems: 200
-          - type: 'null'
-      required:
-      - type
-    LiveSessionCreateRequest:
-      type: object
-      description: Create a Live session with a WebRTC SDP offer or place an outbound SIP call. Follow the [Live prompting guide](https://developers.openai.com/api/docs/guides/live-prompting) before choosing frontend and backend instructions. The request starts the session; do not send session.start again on the data channel or sideband.
-      properties:
-        session:
-          $ref: '#/components/schemas/LiveMediaSessionCreateParams'
-          description: Startup configuration for the Live session.
-        transport:
-          description: WebRTC transport with an SDP offer, or SIP transport with a destination and per-call trunk credentials.
-          oneOf:
-          - $ref: '#/components/schemas/LiveWebRTCTransport'
-          - $ref: '#/components/schemas/LiveSIPTransport'
-          discriminator:
-            propertyName: type
-      required:
-      - session
-      - transport
-      additionalProperties: false
     LiveFileSearchToolInputParam:
       type: object
       properties:
@@ -1581,181 +1797,6 @@ components:
           - file_search
       required:
       - type
-    LiveSpecificWebSearchParam:
-      type: object
-      properties:
-        type:
-          description: The tool to call. Always `web_search`.
-          default: web_search
-          x-stainless-const: true
-          type: string
-          enum:
-          - web_search
-      required:
-      - type
-    LiveHostedShellContainerAutoParam:
-      type: object
-      properties:
-        type:
-          description: Automatically creates a container for this request
-          default: container_auto
-          x-stainless-const: true
-          type: string
-          enum:
-          - container_auto
-        file_ids:
-          anyOf:
-          - description: An optional list of uploaded files to make available to your code.
-            type: array
-            items:
-              type: string
-            maxItems: 50
-          - type: 'null'
-        memory_limit:
-          anyOf:
-          - description: The memory limit for the container.
-            $ref: '#/components/schemas/LiveContainerMemoryLimit'
-          - type: 'null'
-        network_policy:
-          anyOf:
-          - description: Network access policy for the container.
-            discriminator:
-              propertyName: type
-            oneOf:
-            - $ref: '#/components/schemas/LiveContainerNetworkPolicyDisabledParam'
-            - $ref: '#/components/schemas/LiveHostedShellNetworkPolicyAllowlistParam'
-          - type: 'null'
-        skills:
-          anyOf:
-          - description: An optional list of skills referenced by id or inline data.
-            type: array
-            items:
-              discriminator:
-                propertyName: type
-              oneOf:
-              - $ref: '#/components/schemas/LiveSkillReferenceParam'
-              - $ref: '#/components/schemas/LiveInlineSkillParam'
-            maxItems: 200
-          - type: 'null'
-      required:
-      - type
-    LiveToolChoiceValueEnum:
-      type: string
-      enum:
-      - none
-      - auto
-      - required
-    LiveSpecificCodeInterpreterParam:
-      type: object
-      properties:
-        type:
-          description: The tool to call. Always `code_interpreter`.
-          default: code_interpreter
-          x-stainless-const: true
-          type: string
-          enum:
-          - code_interpreter
-      required:
-      - type
-    LiveSpecificCustomToolParam:
-      type: object
-      properties:
-        type:
-          description: The tool to call. Always `custom`.
-          default: custom
-          x-stainless-const: true
-          type: string
-          enum:
-          - custom
-        name:
-          description: The name of the custom tool to call.
-          type: string
-      required:
-      - type
-      - name
-    LiveComputerToolInputParam:
-      type: object
-      properties:
-        type:
-          default: computer
-          x-stainless-const: true
-          type: string
-          enum:
-          - computer
-      required:
-      - type
-    LiveFunctionToolChoiceParam_2:
-      type: object
-      properties:
-        type:
-          description: The tool to call. Always `function`.
-          default: function
-          x-stainless-const: true
-          type: string
-          enum:
-          - function
-        name:
-          description: The name of the function tool to call.
-          type: string
-      required:
-      - type
-      - name
-    LiveMCPToolInputParam:
-      type: object
-      properties:
-        type:
-          default: mcp
-          x-stainless-const: true
-          type: string
-          enum:
-          - mcp
-      required:
-      - type
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
-    LiveSkillReferenceParam:
-      type: object
-      properties:
-        type:
-          description: References a skill created with the /v1/skills endpoint.
-          default: skill_reference
-          x-stainless-const: true
-          type: string
-          enum:
-          - skill_reference
-        skill_id:
-          description: The ID of the referenced skill.
-          type: string
-          minLength: 1
-          maxLength: 64
-        version:
-          anyOf:
-          - description: Optional skill version. Use a positive integer or 'latest'. Omit for default.
-            type: string
-          - type: 'null'
-      required:
-      - type
-      - skill_id
     LiveResponsesDelegationSettingsUpdateInputParam_2:
       description: Updates to the Responses backend of an existing Live session. Omitted settings retain their current values.
       type: object
@@ -1835,123 +1876,10 @@ components:
             type: boolean
           - type: 'null'
       required: []
-    LiveSpecificFunctionShellParam:
-      title: Specific shell tool choice
-      description: Forces the model to call the shell tool when a tool call is required.
+    LiveProgrammaticToolInputParam:
       type: object
       properties:
         type:
-          description: The tool to call. Always `shell`.
-          default: shell
-          x-stainless-const: true
-          type: string
-          enum:
-          - shell
-      required:
-      - type
-    MisalignmentErrorDetailsResource:
-      properties:
-        review_target:
-          anyOf:
-          - not:
-              pattern: '[^A-Za-z0-9._~:-]'
-            type: string
-            maxLength: 96
-            minLength: 1
-            pattern: ^[A-Za-z0-9._~:-]+$
-            description: An opaque target for explicitly continuing this review, or null when unavailable.
-          - type: 'null'
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
-    LiveImageGenerationToolInputParam:
-      type: object
-      properties:
-        type:
-          default: image_generation
-          x-stainless-const: true
-          type: string
-          enum:
-          - image_generation
-      required:
-      - type
-    LiveLocalSkillParam:
-      type: object
-      properties:
-        name:
-          description: The name of the skill.
-          type: string
-        description:
-          description: The description of the skill.
-          type: string
-        path:
-          description: The path to the directory containing the skill.
-          type: string
-      required:
-      - name
-      - description
-      - path
-    LiveCustomToolInputParam:
-      type: object
-      properties:
-        type:
-          default: custom
-          x-stainless-const: true
-          type: string
-          enum:
-          - custom
-      required:
-      - type
-    LiveCodeInterpreterToolInputParam:
-      type: object
-      properties:
-        type:
-          default: code_interpreter
-          x-stainless-const: true
-          type: string
-          enum:
-          - code_interpreter
-      required:
-      - type
-    LiveSessionCreateResponse:
-      type: object
-      description: The created Live session and its transport. WebRTC creation returns 201 Created with an SDP answer. Outbound SIP creation returns 201 Created after initialization, before the callee necessarily answers, without SDP or trunk credentials.
-      properties:
-        session:
-          $ref: '#/components/schemas/session'
-        transport:
-          description: WebRTC transport with an SDP answer, or SIP transport without SDP or trunk credentials. For SIP, attach a sideband using session.id to receive transport.ringing, transport.answered, and transport.failed notifications.
-          oneOf:
-          - $ref: '#/components/schemas/LiveWebRTCTransport'
-          - type: object
-            description: The SIP transport. Trunk credentials and SDP are not returned.
-            properties:
-              type:
-                type: string
-                description: The transport used for the Live session. Always `sip`.
-                enum:
-                - sip
-                x-stainless-const: true
-            required:
-            - type
-          discriminator:
-            propertyName: type
-      required:
-      - session
-      - transport
-    LiveSpecificProgrammaticToolCallingParam:
-      type: object
-      properties:
-        type:
-          description: The tool to call. Always `programmatic_tool_calling`.
           default: programmatic_tool_calling
           x-stainless-const: true
           type: string
@@ -1959,13 +1887,85 @@ components:
           - programmatic_tool_calling
       required:
       - type
-    ErrorResponse:
+    LiveNamespaceToolInputParam:
       type: object
       properties:
-        error:
-          $ref: '#/components/schemas/Error'
+        type:
+          default: namespace
+          x-stainless-const: true
+          type: string
+          enum:
+          - namespace
       required:
-      - error
+      - type
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    LiveSkillReferenceParam:
+      type: object
+      properties:
+        type:
+          description: References a skill created with the /v1/skills endpoint.
+          default: skill_reference
+          x-stainless-const: true
+          type: string
+          enum:
+          - skill_reference
+        skill_id:
+          description: The ID of the referenced skill.
+          type: string
+          minLength: 1
+          maxLength: 64
+        version:
+          anyOf:
+          - description: Optional skill version. Use a positive integer or 'latest'. Omit for default.
+            type: string
+          - type: 'null'
+      required:
+      - type
+      - skill_id
+    LiveSIPTransport:
+      type: object
+      description: Place an outbound SIP call using your provider's trunk. Outbound SIP calling must be enabled for your organization. The trunk must support TLS signaling, Opus audio, and SDES-SRTP media. See [Telephony and SIP](https://developers.openai.com/api/docs/guides/voice-sip?api=live#place-an-outbound-call).
+      properties:
+        type:
+          type: string
+          description: The transport used for the Live session. Always `sip`.
+          enum:
+          - sip
+          x-stainless-const: true
+        destination:
+          type: string
+          description: Phone number to call in E.164 format. SIP URI destinations are not supported.
+          pattern: ^\+[1-9][0-9]{1,14}$
+          example: '+14155550123'
+        trunk:
+          $ref: '#/components/schemas/LiveSIPTrunk'
+      required:
+      - type
+      - destination
+      - trunk
+      additionalProperties: false
+    LiveSpecificApplyPatchParam:
+      title: Specific apply patch tool choice
+      description: Forces the model to call the apply_patch tool when executing a tool call.
+      type: object
+      properties:
+        type:
+          description: The tool to call. Always `apply_patch`.
+          default: apply_patch
+          x-stainless-const: true
+          type: string
+          enum:
+          - apply_patch
+      required:
+      - type
   responses:
     TooManyRequests:
       description: The request was rejected because a rate limit was exceeded.

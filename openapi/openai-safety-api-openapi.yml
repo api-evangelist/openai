@@ -83,6 +83,11 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
+    SafetyCaseNoticeType:
+      type: string
+      enum:
+      - warning
+      - deactivation
     SafetyCaseResource:
       properties:
         id:
@@ -112,13 +117,6 @@ components:
       - entity_identifier
       - reason
       - notice
-    SafetyAlertErrorType:
-      type: string
-      enum:
-      - potentially_unintended_data_transfer
-      - potentially_unintended_data_access
-      - potentially_unintended_destructive_activity
-      - other
     SafetyCaseNotice:
       properties:
         type:
@@ -166,19 +164,22 @@ components:
       - request_paused
       - error_type
       - reason
-    SafetyCaseNoticeType:
+    SafetyAlertErrorType:
       type: string
       enum:
-      - warning
-      - deactivation
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
+      - potentially_unintended_data_transfer
+      - potentially_unintended_data_access
+      - potentially_unintended_destructive_activity
+      - other
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
     Error:
       type: object
       properties:
@@ -201,15 +202,6 @@ components:
       - message
       - param
       - code
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
     ErrorResponse:
       type: object
       properties:
@@ -217,6 +209,37 @@ components:
           $ref: '#/components/schemas/Error'
       required:
       - error
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+    MisalignmentErrorDetailsResource:
+      properties:
+        review_target:
+          anyOf:
+          - not:
+              pattern: '[^A-Za-z0-9._~:-]'
+            type: string
+            maxLength: 96
+            minLength: 1
+            pattern: ^[A-Za-z0-9._~:-]+$
+            description: An opaque target for explicitly continuing this review, or null when unavailable.
+          - type: 'null'
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
     SafetyAlertResource_2:
       properties:
         id:
@@ -262,29 +285,6 @@ components:
       - request_paused
       - error_type
       - reason
-    MisalignmentErrorDetailsResource:
-      properties:
-        review_target:
-          anyOf:
-          - not:
-              pattern: '[^A-Za-z0-9._~:-]'
-            type: string
-            maxLength: 96
-            minLength: 1
-            pattern: ^[A-Za-z0-9._~:-]+$
-            description: An opaque target for explicitly continuing this review, or null when unavailable.
-          - type: 'null'
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
   responses:
     TooManyRequests:
       description: The request was rejected because a rate limit was exceeded.

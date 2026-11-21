@@ -56,14 +56,15 @@ components:
       required:
       - object
       - data
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
     Error:
       type: object
       properties:
@@ -86,15 +87,6 @@ components:
       - message
       - param
       - code
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
     ErrorResponse:
       type: object
       properties:
@@ -102,6 +94,14 @@ components:
           $ref: '#/components/schemas/Error'
       required:
       - error
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
     MisalignmentErrorDetailsResource:
       properties:
         review_target:

@@ -187,37 +187,71 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
-    RoleListResource:
+    DeletedRoleAssignmentResource:
       type: object
-      description: Paginated list of roles assigned to a principal.
+      description: Confirmation payload returned after unassigning a role.
       properties:
         object:
           type: string
-          enum:
-          - list
-          description: Always `list`.
-          x-stainless-const: true
-        data:
-          type: array
-          description: Role assignments returned in the current page.
-          items:
-            $ref: '#/components/schemas/AssignedRoleDetails'
-        has_more:
+          description: Identifier for the deleted assignment, such as `group.role.deleted` or `user.role.deleted`.
+        deleted:
           type: boolean
-          description: Whether additional assignments are available when paginating.
-        next:
-          description: Cursor to fetch the next page of results, or `null` when there are no more assignments.
+          description: Whether the assignment was removed.
+      required:
+      - object
+      - deleted
+      x-oaiMeta:
+        name: Role assignment deletion confirmation
+        example: "{\n    \"object\": \"group.role.deleted\",\n    \"deleted\": true\n}\n"
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    Error:
+      type: object
+      properties:
+        code:
           anyOf:
           - type: string
           - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
       required:
-      - object
-      - data
-      - has_more
-      - next
+      - type
+      - message
+      - param
+      - code
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    PublicAssignOrganizationGroupRoleBody:
+      type: object
+      description: Request payload for assigning a role to a group or user.
+      properties:
+        role_id:
+          type: string
+          description: Identifier of the role to assign.
+      required:
+      - role_id
       x-oaiMeta:
-        name: Assigned role list
-        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"role_01J1F8ROLE01\",\n            \"name\": \"API Group Manager\",\n            \"permissions\": [\n                \"api.groups.read\",\n                \"api.groups.write\"\n            ],\n            \"resource_type\": \"api.organization\",\n            \"predefined_role\": false,\n            \"description\": \"Allows managing organization groups\",\n            \"created_at\": 1711471533,\n            \"updated_at\": 1711472599,\n            \"created_by\": \"user_abc123\",\n            \"created_by_user_obj\": {\n                \"id\": \"user_abc123\",\n                \"name\": \"Ada Lovelace\",\n                \"email\": \"ada@example.com\"\n            },\n            \"metadata\": {},\n            \"assignment_sources\": null\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
+        example: "{\n    \"role_id\": \"role_01J1F8ROLE01\"\n}\n"
     Group:
       type: object
       description: Summary information about a group returned in role assignment responses.
@@ -258,44 +292,6 @@ components:
       type: object
       required:
       - message
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
-    DeletedRoleAssignmentResource:
-      type: object
-      description: Confirmation payload returned after unassigning a role.
-      properties:
-        object:
-          type: string
-          description: Identifier for the deleted assignment, such as `group.role.deleted` or `user.role.deleted`.
-        deleted:
-          type: boolean
-          description: Whether the assignment was removed.
-      required:
-      - object
-      - deleted
-      x-oaiMeta:
-        name: Role assignment deletion confirmation
-        example: "{\n    \"object\": \"group.role.deleted\",\n    \"deleted\": true\n}\n"
     AssignedRoleDetails:
       type: object
       description: Detailed information about a role assignment entry returned when listing assignments.
@@ -379,43 +375,37 @@ components:
       - created_by_user_obj
       - metadata
       - assignment_sources
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    ErrorResponse:
+    RoleListResource:
       type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    GroupRoleAssignment:
-      type: object
-      description: Role assignment linking a group to a role.
+      description: Paginated list of roles assigned to a principal.
       properties:
         object:
           type: string
           enum:
-          - group.role
-          description: Always `group.role`.
+          - list
+          description: Always `list`.
           x-stainless-const: true
-        group:
-          $ref: '#/components/schemas/Group'
-        role:
-          $ref: '#/components/schemas/Role'
+        data:
+          type: array
+          description: Role assignments returned in the current page.
+          items:
+            $ref: '#/components/schemas/AssignedRoleDetails'
+        has_more:
+          type: boolean
+          description: Whether additional assignments are available when paginating.
+        next:
+          description: Cursor to fetch the next page of results, or `null` when there are no more assignments.
+          anyOf:
+          - type: string
+          - type: 'null'
       required:
       - object
-      - group
-      - role
+      - data
+      - has_more
+      - next
       x-oaiMeta:
-        name: The group role object
-        example: "{\n    \"object\": \"group.role\",\n    \"group\": {\n        \"object\": \"group\",\n        \"id\": \"group_01J1F8ABCDXYZ\",\n        \"name\": \"Support Team\",\n        \"created_at\": 1711471533,\n        \"scim_managed\": false\n    },\n    \"role\": {\n        \"object\": \"role\",\n        \"id\": \"role_01J1F8ROLE01\",\n        \"name\": \"API Group Manager\",\n        \"description\": \"Allows managing organization groups\",\n        \"permissions\": [\n            \"api.groups.read\",\n            \"api.groups.write\"\n        ],\n        \"resource_type\": \"api.organization\",\n        \"predefined_role\": false\n    }\n}\n"
+        name: Assigned role list
+        example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"id\": \"role_01J1F8ROLE01\",\n            \"name\": \"API Group Manager\",\n            \"permissions\": [\n                \"api.groups.read\",\n                \"api.groups.write\"\n            ],\n            \"resource_type\": \"api.organization\",\n            \"predefined_role\": false,\n            \"description\": \"Allows managing organization groups\",\n            \"created_at\": 1711471533,\n            \"updated_at\": 1711472599,\n            \"created_by\": \"user_abc123\",\n            \"created_by_user_obj\": {\n                \"id\": \"user_abc123\",\n                \"name\": \"Ada Lovelace\",\n                \"email\": \"ada@example.com\"\n            },\n            \"metadata\": {},\n            \"assignment_sources\": null\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
     MisalignmentErrorDetailsResource:
       properties:
         error_type:
@@ -472,17 +462,27 @@ components:
       x-oaiMeta:
         name: The role object
         example: "{\n    \"object\": \"role\",\n    \"id\": \"role_01J1F8ROLE01\",\n    \"name\": \"API Group Manager\",\n    \"description\": \"Allows managing organization groups\",\n    \"permissions\": [\n        \"api.groups.read\",\n        \"api.groups.write\"\n    ],\n    \"resource_type\": \"api.organization\",\n    \"predefined_role\": false\n}\n"
-    PublicAssignOrganizationGroupRoleBody:
+    GroupRoleAssignment:
       type: object
-      description: Request payload for assigning a role to a group or user.
+      description: Role assignment linking a group to a role.
       properties:
-        role_id:
+        object:
           type: string
-          description: Identifier of the role to assign.
+          enum:
+          - group.role
+          description: Always `group.role`.
+          x-stainless-const: true
+        group:
+          $ref: '#/components/schemas/Group'
+        role:
+          $ref: '#/components/schemas/Role'
       required:
-      - role_id
+      - object
+      - group
+      - role
       x-oaiMeta:
-        example: "{\n    \"role_id\": \"role_01J1F8ROLE01\"\n}\n"
+        name: The group role object
+        example: "{\n    \"object\": \"group.role\",\n    \"group\": {\n        \"object\": \"group\",\n        \"id\": \"group_01J1F8ABCDXYZ\",\n        \"name\": \"Support Team\",\n        \"created_at\": 1711471533,\n        \"scim_managed\": false\n    },\n    \"role\": {\n        \"object\": \"role\",\n        \"id\": \"role_01J1F8ROLE01\",\n        \"name\": \"API Group Manager\",\n        \"description\": \"Allows managing organization groups\",\n        \"permissions\": [\n            \"api.groups.read\",\n            \"api.groups.write\"\n        ],\n        \"resource_type\": \"api.organization\",\n        \"predefined_role\": false\n    }\n}\n"
     PermissionErrorResponse:
       type: object
       properties:

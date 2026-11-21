@@ -153,14 +153,15 @@ components:
           - $ref: '#/components/schemas/HostedToolPermissionUpdate'
           - type: 'null'
           description: The code interpreter permission update.
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
     Error:
       type: object
       properties:
@@ -183,15 +184,13 @@ components:
       - message
       - param
       - code
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
     PermissionErrorResponse:
       type: object
       properties:
@@ -203,13 +202,14 @@ components:
             description: An explanation of the missing API permissions.
       required:
       - error
-    ErrorResponse:
-      type: object
+    _MisalignmentSteer:
       properties:
-        error:
-          $ref: '#/components/schemas/Error'
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
       required:
-      - error
+      - message
     MisalignmentErrorDetailsResource:
       properties:
         review_target:

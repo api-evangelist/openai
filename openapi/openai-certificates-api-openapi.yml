@@ -457,77 +457,6 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    DeleteCertificateResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          description: The object type, must be `certificate.deleted`.
-          enum:
-          - certificate.deleted
-          x-stainless-const: true
-        id:
-          type: string
-          description: The ID of the certificate that was deleted.
-      required:
-      - object
-      - id
-    ListCertificatesResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationCertificate'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          example: cert_abc
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          example: cert_abc
-        has_more:
-          type: boolean
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-      required:
-      - object
-      - data
-      - has_more
-      - first_id
-      - last_id
-    UploadCertificateRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: An optional name for the certificate
-        certificate:
-          type: string
-          description: The certificate content in PEM format
-      required:
-      - certificate
-    ModifyCertificateRequest:
-      type: object
-      properties:
-        name:
-          type: string
-          description: The updated name for the certificate
     ToggleCertificatesRequest:
       type: object
       properties:
@@ -540,106 +469,6 @@ components:
           maxItems: 10
       required:
       - certificate_ids
-    OrganizationProjectCertificateActivationResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.certificate.activation
-          description: The project certificate activation result type.
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationProjectCertificate'
-      required:
-      - object
-      - data
-    OrganizationProjectCertificateDeactivationResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.project.certificate.deactivation
-          description: The project certificate deactivation result type.
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationProjectCertificate'
-      required:
-      - object
-      - data
-    ListProjectCertificatesResponse:
-      type: object
-      properties:
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationProjectCertificate'
-        first_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          example: cert_abc
-        last_id:
-          anyOf:
-          - type: string
-          - type: 'null'
-          example: cert_abc
-        has_more:
-          type: boolean
-        object:
-          type: string
-          enum:
-          - list
-          x-stainless-const: true
-      required:
-      - object
-      - data
-      - has_more
-      - first_id
-      - last_id
-    OrganizationCertificateDeactivationResponse:
-      type: object
-      properties:
-        object:
-          type: string
-          enum:
-          - organization.certificate.deactivation
-          description: The organization certificate deactivation result type.
-          x-stainless-const: true
-        data:
-          type: array
-          items:
-            $ref: '#/components/schemas/OrganizationCertificate'
-      required:
-      - object
-      - data
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
     _MisalignmentSteer:
       properties:
         message:
@@ -648,19 +477,6 @@ components:
       type: object
       required:
       - message
-    MisalignmentErrorDetailsResource:
-      properties:
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
     OrganizationProjectCertificate:
       type: object
       description: Represents an individual certificate configured at the project level.
@@ -704,6 +520,51 @@ components:
       - created_at
       - certificate_details
       - active
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    OrganizationCertificateActivationResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.certificate.activation
+          description: The organization certificate activation result type.
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationCertificate'
+      required:
+      - object
+      - data
+    ModifyCertificateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The updated name for the certificate
+    OrganizationCertificateDeactivationResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.certificate.deactivation
+          description: The organization certificate deactivation result type.
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationCertificate'
+      required:
+      - object
+      - data
     OrganizationCertificate:
       type: object
       description: Represents an individual certificate configured at the organization level.
@@ -747,29 +608,22 @@ components:
       - created_at
       - certificate_details
       - active
-    OrganizationCertificateActivationResponse:
+    OrganizationProjectCertificateActivationResponse:
       type: object
       properties:
         object:
           type: string
           enum:
-          - organization.certificate.activation
-          description: The organization certificate activation result type.
+          - organization.project.certificate.activation
+          description: The project certificate activation result type.
           x-stainless-const: true
         data:
           type: array
           items:
-            $ref: '#/components/schemas/OrganizationCertificate'
+            $ref: '#/components/schemas/OrganizationProjectCertificate'
       required:
       - object
       - data
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
     Certificate:
       type: object
       description: Represents an individual `certificate` uploaded to the organization.
@@ -829,6 +683,152 @@ components:
       x-oaiMeta:
         name: The certificate object
         example: "{\n  \"object\": \"certificate\",\n  \"id\": \"cert_abc\",\n  \"name\": \"My Certificate\",\n  \"created_at\": 1234567,\n  \"certificate_details\": {\n    \"valid_at\": 1234567,\n    \"expires_at\": 12345678,\n    \"content\": \"-----BEGIN CERTIFICATE----- MIIGAjCCA...6znFlOW+ -----END CERTIFICATE-----\"\n  }\n}\n"
+    UploadCertificateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+          description: An optional name for the certificate
+        certificate:
+          type: string
+          description: The certificate content in PEM format
+      required:
+      - certificate
+    ListCertificatesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationCertificate'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: cert_abc
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: cert_abc
+        has_more:
+          type: boolean
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+      required:
+      - object
+      - data
+      - has_more
+      - first_id
+      - last_id
+    DeleteCertificateResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          description: The object type, must be `certificate.deleted`.
+          enum:
+          - certificate.deleted
+          x-stainless-const: true
+        id:
+          type: string
+          description: The ID of the certificate that was deleted.
+      required:
+      - object
+      - id
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    Error:
+      type: object
+      properties:
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
+          type: string
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
+      required:
+      - type
+      - message
+      - param
+      - code
+    OrganizationProjectCertificateDeactivationResponse:
+      type: object
+      properties:
+        object:
+          type: string
+          enum:
+          - organization.project.certificate.deactivation
+          description: The project certificate deactivation result type.
+          x-stainless-const: true
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationProjectCertificate'
+      required:
+      - object
+      - data
+    ListProjectCertificatesResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/OrganizationProjectCertificate'
+        first_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: cert_abc
+        last_id:
+          anyOf:
+          - type: string
+          - type: 'null'
+          example: cert_abc
+        has_more:
+          type: boolean
+        object:
+          type: string
+          enum:
+          - list
+          x-stainless-const: true
+      required:
+      - object
+      - data
+      - has_more
+      - first_id
+      - last_id
+    MisalignmentErrorDetailsResource:
+      properties:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
     PermissionErrorResponse:
       type: object
       properties:

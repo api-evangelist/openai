@@ -198,28 +198,16 @@ paths:
     servers:
     - url: https://api.openai.com/v1
 components:
-  responses:
-    TooManyRequests:
-      description: The request was rejected because a rate limit was exceeded.
-      headers:
-        Retry-After:
-          description: The minimum number of seconds to wait before retrying. This header is returned when the server has computed a retry delay and may be omitted for 429 responses that require user action.
-          schema:
-            type: integer
-            minimum: 1
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
   schemas:
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
     Error:
       type: object
       properties:
@@ -242,6 +230,28 @@ components:
       - message
       - param
       - code
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    InviteProjectGroupBody:
+      type: object
+      description: Request payload for granting a group access to a project.
+      properties:
+        group_id:
+          type: string
+          description: Identifier of the group to add to the project.
+        role:
+          type: string
+          description: Identifier of the project role to grant to the group.
+      required:
+      - group_id
+      - role
+      x-oaiMeta:
+        example: "{\n    \"group_id\": \"group_01J1F8ABCDXYZ\",\n    \"role\": \"role_01J1F8PROJ\"\n}\n"
     ProjectGroupDeletedResource:
       type: object
       description: Confirmation payload returned after removing a group from a project.
@@ -261,6 +271,14 @@ components:
       x-oaiMeta:
         name: Project group deletion confirmation
         example: "{\n    \"object\": \"project.group.deleted\",\n    \"deleted\": true\n}\n"
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
     ProjectGroupListResource:
       type: object
       description: Paginated list of groups that have access to a project.
@@ -292,37 +310,19 @@ components:
       x-oaiMeta:
         name: Project group list
         example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"object\": \"project.group\",\n            \"project_id\": \"proj_abc123\",\n            \"group_id\": \"group_01J1F8ABCDXYZ\",\n            \"group_name\": \"Support Team\",\n            \"created_at\": 1711471533\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    ErrorResponse:
-      type: object
+    MisalignmentErrorDetailsResource:
       properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    InviteProjectGroupBody:
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
       type: object
-      description: Request payload for granting a group access to a project.
-      properties:
-        group_id:
-          type: string
-          description: Identifier of the group to add to the project.
-        role:
-          type: string
-          description: Identifier of the project role to grant to the group.
-      required:
-      - group_id
-      - role
-      x-oaiMeta:
-        example: "{\n    \"group_id\": \"group_01J1F8ABCDXYZ\",\n    \"role\": \"role_01J1F8PROJ\"\n}\n"
+      required: []
     ProjectGroup:
       type: object
       description: Details about a group's membership in a project.
@@ -362,8 +362,29 @@ components:
       x-oaiMeta:
         name: The project group object
         example: "{\n    \"object\": \"project.group\",\n    \"project_id\": \"proj_abc123\",\n    \"group_id\": \"group_01J1F8ABCDXYZ\",\n    \"group_name\": \"Support Team\",\n    \"group_type\": \"group\",\n    \"created_at\": 1711471533\n}\n"
-    MisalignmentErrorDetailsResource:
+    PermissionErrorResponse:
+      type: object
       properties:
+        error:
+          description: Details about the permission error.
+          anyOf:
+          - $ref: '#/components/schemas/Error'
+          - type: string
+            description: An explanation of the missing API permissions.
+      required:
+      - error
+    MisalignmentErrorDetailsResource_2:
+      properties:
+        review_target:
+          anyOf:
+          - not:
+              pattern: '[^A-Za-z0-9._~:-]'
+            type: string
+            maxLength: 96
+            minLength: 1
+            pattern: ^[A-Za-z0-9._~:-]+$
+            description: An opaque target for explicitly continuing this review, or null when unavailable.
+          - type: 'null'
         error_type:
           $ref: '#/components/schemas/_MisalignmentErrorType'
           description: An optional classification; clients must accept additional values.
@@ -406,40 +427,19 @@ components:
       x-oaiMeta:
         name: Project group list
         example: "{\n    \"object\": \"list\",\n    \"data\": [\n        {\n            \"object\": \"project.group\",\n            \"project_id\": \"proj_abc123\",\n            \"group_id\": \"group_01J1F8ABCDXYZ\",\n            \"group_name\": \"Support Team\",\n            \"group_type\": \"group\",\n            \"created_at\": 1711471533\n        }\n    ],\n    \"has_more\": false,\n    \"next\": null\n}\n"
-    PermissionErrorResponse:
-      type: object
-      properties:
-        error:
-          description: Details about the permission error.
-          anyOf:
-          - $ref: '#/components/schemas/Error'
-          - type: string
-            description: An explanation of the missing API permissions.
-      required:
-      - error
-    MisalignmentErrorDetailsResource_2:
-      properties:
-        review_target:
-          anyOf:
-          - not:
-              pattern: '[^A-Za-z0-9._~:-]'
-            type: string
-            maxLength: 96
-            minLength: 1
-            pattern: ^[A-Za-z0-9._~:-]+$
-            description: An opaque target for explicitly continuing this review, or null when unavailable.
-          - type: 'null'
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
+  responses:
+    TooManyRequests:
+      description: The request was rejected because a rate limit was exceeded.
+      headers:
+        Retry-After:
+          description: The minimum number of seconds to wait before retrying. This header is returned when the server has computed a retry delay and may be omitted for 429 responses that require user action.
+          schema:
+            type: integer
+            minimum: 1
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
   securitySchemes:
     ApiKeyAuth:
       type: http

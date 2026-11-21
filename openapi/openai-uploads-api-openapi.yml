@@ -210,6 +210,56 @@ paths:
     - url: https://api.openai.com/v1
 components:
   schemas:
+    CompleteUploadRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        part_ids:
+          type: array
+          description: 'The ordered list of Part IDs.
+
+            '
+          items:
+            type: string
+        md5:
+          description: 'The optional md5 checksum for the file contents to verify if the bytes uploaded matches what you expect.
+
+            '
+          type: string
+      required:
+      - part_ids
+    AddUploadPartRequest:
+      type: object
+      additionalProperties: false
+      properties:
+        data:
+          description: 'The chunk of bytes for this Part.
+
+            '
+          type: string
+          format: binary
+      required:
+      - data
+    FileExpirationAfter:
+      type: object
+      title: File expiration policy
+      description: The expiration policy for a file. By default, files with `purpose=batch` expire after 30 days and all other files are persisted until they are manually deleted.
+      properties:
+        anchor:
+          description: 'Anchor timestamp after which the expiration policy applies. Supported anchors: `created_at`.'
+          type: string
+          enum:
+          - created_at
+          x-stainless-const: true
+        seconds:
+          description: The number of seconds after the anchor time that the file will expire. Must be between 3600 (1 hour) and 2592000 (30 days).
+          type: integer
+          format: int64
+          minimum: 3600
+          maximum: 2592000
+      required:
+      - anchor
+      - seconds
     CreateUploadRequest:
       type: object
       additionalProperties: false
@@ -257,26 +307,63 @@ components:
       - purpose
       - bytes
       - mime_type
-    FileExpirationAfter:
+    Upload:
       type: object
-      title: File expiration policy
-      description: The expiration policy for a file. By default, files with `purpose=batch` expire after 30 days and all other files are persisted until they are manually deleted.
+      title: Upload
+      description: 'The Upload object can accept byte chunks in the form of Parts.
+
+        '
       properties:
-        anchor:
-          description: 'Anchor timestamp after which the expiration policy applies. Supported anchors: `created_at`.'
+        id:
           type: string
-          enum:
-          - created_at
-          x-stainless-const: true
-        seconds:
-          description: The number of seconds after the anchor time that the file will expire. Must be between 3600 (1 hour) and 2592000 (30 days).
+          description: The Upload unique identifier, which can be referenced in API endpoints.
+        created_at:
           type: integer
-          format: int64
-          minimum: 3600
-          maximum: 2592000
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the Upload was created.
+        filename:
+          type: string
+          description: The name of the file to be uploaded.
+        bytes:
+          type: integer
+          description: The intended number of bytes to be uploaded.
+        purpose:
+          type: string
+          description: The intended purpose of the file. [Please refer here](https://developers.openai.com/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) for acceptable values.
+        status:
+          type: string
+          description: The status of the Upload.
+          enum:
+          - pending
+          - completed
+          - cancelled
+          - expired
+        expires_at:
+          type: integer
+          format: unixtime
+          description: The Unix timestamp (in seconds) for when the Upload will expire.
+        object:
+          type: string
+          description: The object type, which is always "upload".
+          enum:
+          - upload
+          x-stainless-const: true
+        file:
+          allOf:
+          - $ref: '#/components/schemas/OpenAIFile'
+          - nullable: true
+            description: The ready File object after the Upload is completed.
       required:
-      - anchor
-      - seconds
+      - bytes
+      - created_at
+      - expires_at
+      - filename
+      - id
+      - purpose
+      - status
+      x-oaiMeta:
+        name: The upload object
+        example: "{\n  \"id\": \"upload_abc123\",\n  \"object\": \"upload\",\n  \"bytes\": 2147483648,\n  \"created_at\": 1719184911,\n  \"filename\": \"training_examples.jsonl\",\n  \"purpose\": \"fine-tune\",\n  \"status\": \"completed\",\n  \"expires_at\": 1719127296,\n  \"file\": {\n    \"id\": \"file-xyz321\",\n    \"object\": \"file\",\n    \"bytes\": 2147483648,\n    \"created_at\": 1719186911,\n    \"filename\": \"training_examples.jsonl\",\n    \"purpose\": \"fine-tune\",\n  }\n}\n"
     UploadPart:
       type: object
       title: UploadPart
@@ -370,19 +457,76 @@ components:
       x-oaiMeta:
         name: The file object
         example: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"file\",\n  \"bytes\": 120000,\n  \"created_at\": 1677610602,\n  \"expires_at\": 1680202602,\n  \"filename\": \"salesOverview.pdf\",\n  \"purpose\": \"assistants\",\n}\n"
-    AddUploadPartRequest:
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
+    Error:
       type: object
-      additionalProperties: false
       properties:
-        data:
-          description: 'The chunk of bytes for this Part.
-
-            '
+        code:
+          anyOf:
+          - type: string
+          - type: 'null'
+        message:
           type: string
-          format: binary
+        param:
+          anyOf:
+          - type: string
+          - type: 'null'
+        type:
+          type: string
+        misalignment:
+          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
       required:
-      - data
-    Upload:
+      - type
+      - message
+      - param
+      - code
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    MisalignmentErrorDetailsResource:
+      properties:
+        review_target:
+          anyOf:
+          - not:
+              pattern: '[^A-Za-z0-9._~:-]'
+            type: string
+            maxLength: 96
+            minLength: 1
+            pattern: ^[A-Za-z0-9._~:-]+$
+            description: An opaque target for explicitly continuing this review, or null when unavailable.
+          - type: 'null'
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
+    Upload_2:
       type: object
       title: Upload
       description: 'The Upload object can accept byte chunks in the form of Parts.
@@ -424,10 +568,10 @@ components:
           - upload
           x-stainless-const: true
         file:
-          allOf:
-          - $ref: '#/components/schemas/OpenAIFile'
-          - nullable: true
-            description: The ready File object after the Upload is completed.
+          description: The ready File object after the Upload is completed.
+          anyOf:
+          - $ref: '#/components/schemas/OpenAIFile_2'
+          - type: 'null'
       required:
       - bytes
       - created_at
@@ -438,64 +582,7 @@ components:
       - status
       x-oaiMeta:
         name: The upload object
-        example: "{\n  \"id\": \"upload_abc123\",\n  \"object\": \"upload\",\n  \"bytes\": 2147483648,\n  \"created_at\": 1719184911,\n  \"filename\": \"training_examples.jsonl\",\n  \"purpose\": \"fine-tune\",\n  \"status\": \"completed\",\n  \"expires_at\": 1719127296,\n  \"file\": {\n    \"id\": \"file-xyz321\",\n    \"object\": \"file\",\n    \"bytes\": 2147483648,\n    \"created_at\": 1719186911,\n    \"filename\": \"training_examples.jsonl\",\n    \"purpose\": \"fine-tune\",\n  }\n}\n"
-    CompleteUploadRequest:
-      type: object
-      additionalProperties: false
-      properties:
-        part_ids:
-          type: array
-          description: 'The ordered list of Part IDs.
-
-            '
-          items:
-            type: string
-        md5:
-          description: 'The optional md5 checksum for the file contents to verify if the bytes uploaded matches what you expect.
-
-            '
-          type: string
-      required:
-      - part_ids
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
-    Error:
-      type: object
-      properties:
-        code:
-          anyOf:
-          - type: string
-          - type: 'null'
-        message:
-          type: string
-        param:
-          anyOf:
-          - type: string
-          - type: 'null'
-        type:
-          type: string
-        misalignment:
-          $ref: '#/components/schemas/MisalignmentErrorDetailsResource'
-      required:
-      - type
-      - message
-      - param
-      - code
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
+        example: "{\n  \"id\": \"upload_abc123\",\n  \"object\": \"upload\",\n  \"bytes\": 2147483648,\n  \"created_at\": 1719184911,\n  \"filename\": \"training_examples.jsonl\",\n  \"purpose\": \"fine-tune\",\n  \"status\": \"completed\",\n  \"expires_at\": 1719127296,\n  \"file\": {\n    \"id\": \"file-xyz321\",\n    \"object\": \"file\",\n    \"bytes\": 2147483648,\n    \"created_at\": 1719186911,\n    \"filename\": \"training_examples.jsonl\",\n    \"purpose\": \"fine-tune\",\n    \"status\": \"processed\"\n  }\n}\n"
     OpenAIFile_2:
       title: OpenAIFile
       description: The `File` object represents a document that has been uploaded to OpenAI.
@@ -568,93 +655,6 @@ components:
       x-oaiMeta:
         name: The file object
         example: "{\n  \"id\": \"file-abc123\",\n  \"object\": \"file\",\n  \"bytes\": 120000,\n  \"created_at\": 1677610602,\n  \"expires_at\": 1680202602,\n  \"filename\": \"salesOverview.pdf\",\n  \"purpose\": \"assistants\",\n  \"status\": \"processed\"\n}\n"
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
-    Upload_2:
-      type: object
-      title: Upload
-      description: 'The Upload object can accept byte chunks in the form of Parts.
-
-        '
-      properties:
-        id:
-          type: string
-          description: The Upload unique identifier, which can be referenced in API endpoints.
-        created_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) for when the Upload was created.
-        filename:
-          type: string
-          description: The name of the file to be uploaded.
-        bytes:
-          type: integer
-          description: The intended number of bytes to be uploaded.
-        purpose:
-          type: string
-          description: The intended purpose of the file. [Please refer here](https://developers.openai.com/api/reference/resources/files#%28resource%29%20files%20%3E%20%28model%29%20file_object%20%3E%20%28schema%29%20%3E%20%28property%29%20purpose) for acceptable values.
-        status:
-          type: string
-          description: The status of the Upload.
-          enum:
-          - pending
-          - completed
-          - cancelled
-          - expired
-        expires_at:
-          type: integer
-          format: unixtime
-          description: The Unix timestamp (in seconds) for when the Upload will expire.
-        object:
-          type: string
-          description: The object type, which is always "upload".
-          enum:
-          - upload
-          x-stainless-const: true
-        file:
-          description: The ready File object after the Upload is completed.
-          anyOf:
-          - $ref: '#/components/schemas/OpenAIFile_2'
-          - type: 'null'
-      required:
-      - bytes
-      - created_at
-      - expires_at
-      - filename
-      - id
-      - purpose
-      - status
-      x-oaiMeta:
-        name: The upload object
-        example: "{\n  \"id\": \"upload_abc123\",\n  \"object\": \"upload\",\n  \"bytes\": 2147483648,\n  \"created_at\": 1719184911,\n  \"filename\": \"training_examples.jsonl\",\n  \"purpose\": \"fine-tune\",\n  \"status\": \"completed\",\n  \"expires_at\": 1719127296,\n  \"file\": {\n    \"id\": \"file-xyz321\",\n    \"object\": \"file\",\n    \"bytes\": 2147483648,\n    \"created_at\": 1719186911,\n    \"filename\": \"training_examples.jsonl\",\n    \"purpose\": \"fine-tune\",\n    \"status\": \"processed\"\n  }\n}\n"
-    MisalignmentErrorDetailsResource:
-      properties:
-        review_target:
-          anyOf:
-          - not:
-              pattern: '[^A-Za-z0-9._~:-]'
-            type: string
-            maxLength: 96
-            minLength: 1
-            pattern: ^[A-Za-z0-9._~:-]+$
-            description: An opaque target for explicitly continuing this review, or null when unavailable.
-          - type: 'null'
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
   securitySchemes:
     ApiKeyAuth:
       type: http

@@ -54,88 +54,16 @@ paths:
     servers:
     - url: https://api.openai.com/v1
 components:
-  responses:
-    InferenceRateLimited:
-      description: The request was rejected because a rate limit was exceeded. A slow_down error means traffic increased too quickly; reduce your request rate, then increase it gradually.
-      headers:
-        Retry-After:
-          description: The minimum number of seconds to wait before retrying. This header is returned when the server has computed a retry delay and may be omitted.
-          schema:
-            type: integer
-            minimum: 1
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          examples:
-            slowDown:
-              summary: Traffic increased too quickly
-              value:
-                error:
-                  message: Your request rate increased too quickly. Please reduce the request rate and gradually increase it again.
-                  type: rate_limit_error
-                  param: null
-                  code: slow_down
-    InferenceServiceUnavailable:
-      description: The service is temporarily unavailable. A server_is_overloaded error means the requested model is temporarily overloaded; retry after a brief delay.
-      headers:
-        Retry-After:
-          description: The minimum number of seconds to wait before retrying. This header is returned when the server has computed a retry delay and may be omitted.
-          schema:
-            type: integer
-            minimum: 1
-      content:
-        application/json:
-          schema:
-            $ref: '#/components/schemas/ErrorResponse'
-          examples:
-            serverOverloaded:
-              summary: The requested model is temporarily overloaded
-              value:
-                error:
-                  message: The model is temporarily overloaded. Please retry your request after a brief delay.
-                  type: service_unavailable_error
-                  param: null
-                  code: server_is_overloaded
   schemas:
-    Embedding:
-      type: object
-      description: 'Represents an embedding vector returned by embedding endpoint.
-
-        '
-      properties:
-        index:
-          type: integer
-          description: The index of the embedding in the list of embeddings.
-        embedding:
-          type: array
-          description: 'The embedding vector, which is a list of floats. The length of vector depends on the model as listed in the [embedding guide](https://developers.openai.com/api/docs/guides/embeddings).
-
-            '
-          items:
-            type: number
-            format: float
-        object:
-          type: string
-          description: The object type, which is always "embedding".
-          enum:
-          - embedding
-          x-stainless-const: true
-      required:
-      - index
-      - object
-      - embedding
-      x-oaiMeta:
-        name: The embedding object
-        example: "{\n  \"object\": \"embedding\",\n  \"embedding\": [\n    0.0023064255,\n    -0.009327292,\n    .... (1536 floats total for ada-002)\n    -0.0028842222,\n  ],\n  \"index\": 0\n}\n"
-    _MisalignmentSteer:
-      properties:
-        message:
-          type: string
-          description: The public continuation instruction.
-      type: object
-      required:
-      - message
+    _MisalignmentErrorType:
+      anyOf:
+      - type: string
+      - type: string
+        enum:
+        - potentially_unintended_data_transfer
+        - potentially_unintended_data_access
+        - potentially_unintended_destructive_activity
+        - other
     Error:
       type: object
       properties:
@@ -158,6 +86,21 @@ components:
       - message
       - param
       - code
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/Error'
+      required:
+      - error
+    _MisalignmentSteer:
+      properties:
+        message:
+          type: string
+          description: The public continuation instruction.
+      type: object
+      required:
+      - message
     CreateEmbeddingResponse:
       type: object
       properties:
@@ -193,22 +136,6 @@ components:
       - model
       - data
       - usage
-    _MisalignmentErrorType:
-      anyOf:
-      - type: string
-      - type: string
-        enum:
-        - potentially_unintended_data_transfer
-        - potentially_unintended_data_access
-        - potentially_unintended_destructive_activity
-        - other
-    ErrorResponse:
-      type: object
-      properties:
-        error:
-          $ref: '#/components/schemas/Error'
-      required:
-      - error
     CreateEmbeddingRequest:
       type: object
       additionalProperties: false
@@ -301,6 +228,59 @@ components:
           description: An optional public continuation instruction.
       type: object
       required: []
+    Embedding:
+      type: object
+      description: 'Represents an embedding vector returned by embedding endpoint.
+
+        '
+      properties:
+        index:
+          type: integer
+          description: The index of the embedding in the list of embeddings.
+        embedding:
+          type: array
+          description: 'The embedding vector, which is a list of floats. The length of vector depends on the model as listed in the [embedding guide](https://developers.openai.com/api/docs/guides/embeddings).
+
+            '
+          items:
+            type: number
+            format: float
+        object:
+          type: string
+          description: The object type, which is always "embedding".
+          enum:
+          - embedding
+          x-stainless-const: true
+      required:
+      - index
+      - object
+      - embedding
+      x-oaiMeta:
+        name: The embedding object
+        example: "{\n  \"object\": \"embedding\",\n  \"embedding\": [\n    0.0023064255,\n    -0.009327292,\n    .... (1536 floats total for ada-002)\n    -0.0028842222,\n  ],\n  \"index\": 0\n}\n"
+    MisalignmentErrorDetailsResource_2:
+      properties:
+        review_target:
+          anyOf:
+          - not:
+              pattern: '[^A-Za-z0-9._~:-]'
+            type: string
+            maxLength: 96
+            minLength: 1
+            pattern: ^[A-Za-z0-9._~:-]+$
+            description: An opaque target for explicitly continuing this review, or null when unavailable.
+          - type: 'null'
+        error_type:
+          $ref: '#/components/schemas/_MisalignmentErrorType'
+          description: An optional classification; clients must accept additional values.
+        detailed_explanation:
+          type: string
+          description: The public explanation for this block.
+        steer:
+          $ref: '#/components/schemas/_MisalignmentSteer'
+          description: An optional public continuation instruction.
+      type: object
+      required: []
     Embedding_2:
       type: object
       description: 'Represents an embedding vector returned by embedding endpoint.
@@ -334,29 +314,49 @@ components:
       x-oaiMeta:
         name: The embedding object
         example: "{\n  \"object\": \"embedding\",\n  \"embedding\": [\n    0.26726124,\n    0.53452248,\n    0.80178373\n  ],\n  \"index\": 0\n}\n"
-    MisalignmentErrorDetailsResource_2:
-      properties:
-        review_target:
-          anyOf:
-          - not:
-              pattern: '[^A-Za-z0-9._~:-]'
-            type: string
-            maxLength: 96
-            minLength: 1
-            pattern: ^[A-Za-z0-9._~:-]+$
-            description: An opaque target for explicitly continuing this review, or null when unavailable.
-          - type: 'null'
-        error_type:
-          $ref: '#/components/schemas/_MisalignmentErrorType'
-          description: An optional classification; clients must accept additional values.
-        detailed_explanation:
-          type: string
-          description: The public explanation for this block.
-        steer:
-          $ref: '#/components/schemas/_MisalignmentSteer'
-          description: An optional public continuation instruction.
-      type: object
-      required: []
+  responses:
+    InferenceRateLimited:
+      description: The request was rejected because a rate limit was exceeded. A slow_down error means traffic increased too quickly; reduce your request rate, then increase it gradually.
+      headers:
+        Retry-After:
+          description: The minimum number of seconds to wait before retrying. This header is returned when the server has computed a retry delay and may be omitted.
+          schema:
+            type: integer
+            minimum: 1
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            slowDown:
+              summary: Traffic increased too quickly
+              value:
+                error:
+                  message: Your request rate increased too quickly. Please reduce the request rate and gradually increase it again.
+                  type: rate_limit_error
+                  param: null
+                  code: slow_down
+    InferenceServiceUnavailable:
+      description: The service is temporarily unavailable. A server_is_overloaded error means the requested model is temporarily overloaded; retry after a brief delay.
+      headers:
+        Retry-After:
+          description: The minimum number of seconds to wait before retrying. This header is returned when the server has computed a retry delay and may be omitted.
+          schema:
+            type: integer
+            minimum: 1
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          examples:
+            serverOverloaded:
+              summary: The requested model is temporarily overloaded
+              value:
+                error:
+                  message: The model is temporarily overloaded. Please retry your request after a brief delay.
+                  type: service_unavailable_error
+                  param: null
+                  code: server_is_overloaded
   securitySchemes:
     ApiKeyAuth:
       type: http
